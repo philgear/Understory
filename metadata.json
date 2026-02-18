@@ -1,0 +1,5 @@
+{
+  "name": "Integrative Care Intake Assistant",
+  "description": "A streamlined patient intake tool for doctors featuring an interactive 3D-style body viewer and AI-powered integrative care research generation.",
+  "requestFramePermissions": []
+}

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Integrative Care Intake</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { 
+      font-family: 'Inter', sans-serif; 
+      background-color: #f8fafc; 
+      color: #0f172a;
+    }
+    
+    /* Minimalist scrollbar */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    
+    /* Body Part Styling - Flat, Technical */
+    .body-part { 
+      fill: #f1f5f9; 
+      stroke: #cbd5e1;
+      stroke-width: 1.5px;
+      transition: fill 0.3s ease, stroke 0.3s ease; 
+      cursor: pointer; 
+      outline: none; /* Remove focus outline */
+    }
+    .body-part:hover { 
+      fill: #e2e8f0; 
+      stroke: #94a3b8;
+    }
+
+    /* Animation: Brief Flash on Click (Instant Feedback) */
+    @keyframes flash-active {
+      0% { fill: #e2e8f0; }
+      30% { fill: #f97316; stroke: #ea580c; } /* Vivid Orange Flash */
+      100% { fill: #334155; stroke: #334155; } /* Morph to Selected State */
+    }
+
+    .body-part.highlight-anim {
+      animation: flash-active 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      transition: none; /* Override base transition */
+    }
+
+    /* Animation: Persistent Selected State (Subtle Pulse) */
+    @keyframes pulse-selected {
+      0% { filter: drop-shadow(0 0 0 rgba(51, 65, 85, 0)); }
+      50% { filter: drop-shadow(0 0 6px rgba(51, 65, 85, 0.2)); }
+      100% { filter: drop-shadow(0 0 0 rgba(51, 65, 85, 0)); }
+    }
+
+    .body-part.selected { 
+      fill: #334155; 
+      stroke: #334155; 
+      animation: pulse-selected 3s infinite ease-in-out;
+    }
+
+    /* State: Has Issue (Inactive) */
+    .body-part.has-issue { 
+      fill: #fff7ed; /* Light orange tint */
+      stroke: #f97316; /* Orange stroke */
+    }
+    
+    /* State: Has Issue AND Selected */
+    .body-part.has-issue.selected { 
+      fill: #334155; 
+      stroke: #f97316; /* Orange stroke maintains context */
+    }
+  </style>
+<script type="importmap">
+{
+  "imports": {
+    "rxjs": "https://esm.sh/rxjs@^7.8.2?conditions=es2015",
+    "rxjs/operators": "https://esm.sh/rxjs@^7.8.2/operators?conditions=es2015",
+    "rxjs/ajax": "https://esm.sh/rxjs@^7.8.2/ajax?conditions=es2015",
+    "rxjs/webSocket": "https://esm.sh/rxjs@^7.8.2/webSocket?conditions=es2015",
+    "rxjs/testing": "https://esm.sh/rxjs@^7.8.2/testing?conditions=es2015",
+    "rxjs/fetch": "https://esm.sh/rxjs@^7.8.2/fetch?conditions=es2015",
+    "@google/genai": "https://esm.sh/@google/genai@^1.41.0?external=rxjs",
+    "@angular/core": "https://esm.sh/@angular/core@^21.1.5?external=rxjs",
+    "@angular/compiler": "https://esm.sh/@angular/compiler@^21.1.5?external=rxjs",
+    "@angular/platform-browser": "https://esm.sh/@angular/platform-browser@^21.1.5?external=rxjs",
+    "@angular/common": "https://esm.sh/@angular/common@^21.1.5?external=rxjs",
+    "@angular/forms": "https://esm.sh/@angular/forms@^21.1.5?external=rxjs",
+    "marked": "https://esm.sh/marked@15.0.0"
+  }
+}
+</script>
+</head>
+<body>
+  <app-root></app-root>
+</body>
+</html>
