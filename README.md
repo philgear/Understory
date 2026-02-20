@@ -26,11 +26,55 @@ This tool aims to accelerate the data-gathering process, allowing physicians to 
 - **Real-time & Responsive:** Built with Angular signals for a reactive UI that updates instantly as data is entered.
 - **Modern UI/UX:** A minimalist, professional interface designed for clinical environments, built with Tailwind CSS.
 
+## Architecture
+
+The application follows a modern, reactive architecture using Angular Signals and the Google Gemini API.
+
+```mermaid
+graph TD
+    User[Doctor/User] -->|Interacts| UI[Angular Frontend]
+    
+    subgraph "Client-Side (Angular)"
+        UI -->|Selects Body Part| BodyMap[BodyViewer Component]
+        UI -->|Enters Data| Intake[IntakeForm Component]
+        UI -->|Requests Analysis| Analysis[Analysis Component]
+        
+        BodyMap -->|Updates| State[PatientState Service]
+        Intake -->|Updates| State
+        
+        Analysis -->|Reads| State
+        Analysis -->|Calls| GeminiSvc[Gemini Service]
+        BodyMap -->|Calls| VeoSvc[Veo Service]
+    end
+    
+    subgraph "Google Cloud / AI Studio"
+        GeminiSvc -->|Generate Content| Flash[Gemini 2.5 Flash]
+        GeminiSvc -->|Reasoning| Pro[Gemini 2.0 Pro]
+        VeoSvc -->|Generate Video| Veo[Veo 3.1]
+    end
+    
+    Flash -->|Returns JSON/Text| GeminiSvc
+    Pro -->|Returns Analysis| GeminiSvc
+    Veo -->|Returns Video URI| VeoSvc
+```
+
+## Powered By
+
+This project leverages the following Google technologies:
+
+-   [**Google Gemini API**](https://ai.google.dev/) - The core intelligence engine for patient analysis and report generation.
+-   [**Google Veo**](https://deepmind.google/technologies/veo/) - Generative video model used to create 3D-style rotating medical visualizations from text prompts.
+-   [**Angular**](https://angular.dev/) - The web framework used for the reactive, signal-based user interface.
+-   [**Google AI Studio**](https://aistudio.google.com/) - The development platform used to build and prototype this agent.
+
 ## Tech Stack
 
-- **Framework:** Angular (v20+, Standalone Components, Zoneless)
+- **Framework:** Angular (v18+, Standalone Components, Zoneless)
 - **Styling:** Tailwind CSS
-- **AI Integration:** Google Gemini API (`gemini-2.5-flash`)
+- **AI Integration:** 
+  - `gemini-2.5-flash` (Fast data processing)
+  - `gemini-2.0-pro-exp` (Complex medical reasoning)
+  - `veo-3.1-fast-generate-preview` (3D Body Rotation Videos)
 - **Speech:** Web Speech API (SpeechRecognition & SpeechSynthesis)
 
 ## Getting Started

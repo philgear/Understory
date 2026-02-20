@@ -51,7 +51,7 @@ interface NoteTimelineItem extends BodyPartIssue {
                     <!-- Vertical Timeline Line -->
                     <div class="absolute left-3 top-2 bottom-2 w-0.5 bg-gray-200"></div>
 
-                    @for (timelineNote of noteTimeline(); track timelineNote.noteId) {
+                    @for (timelineNote of noteTimeline(); track $index) {
                         <div class="relative pl-10" [class.pb-6]="!$last">
                             <!-- Node on the timeline -->
                             <div class="absolute left-3 top-2 -translate-x-1/2 w-4 h-4 rounded-full bg-white flex items-center justify-center border-2"
@@ -346,6 +346,11 @@ export class IntakeFormComponent implements OnDestroy {
     this.recognition.onerror = (event: any) => {
       if (event.error === 'not-allowed') {
         this.permissionError.set('Microphone access denied. Please allow it in browser settings.');
+      } else if (event.error === 'no-speech') {
+        // Ignore no-speech errors, just reset state. It happens when user doesn't speak.
+        // Optionally set a temporary hint if needed, but for now just reset.
+      } else if (event.error === 'network') {
+         this.permissionError.set('Network error. Please check your connection.');
       } else {
         this.permissionError.set(`Speech recognition error: ${event.error}`);
       }

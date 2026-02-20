@@ -607,6 +607,10 @@ export class AnalysisReportComponent implements OnDestroy {
     this.recognition.onerror = (event: any) => {
       if (event.error === 'not-allowed') {
         this.permissionError.set('Microphone permission was denied. Please allow microphone access in your browser settings.');
+      } else if (event.error === 'no-speech') {
+        // Ignore no-speech errors, just reset state.
+      } else if (event.error === 'network') {
+         this.permissionError.set('Network error. Please check your connection.');
       } else {
          this.permissionError.set(`Speech recognition error: ${event.error}`);
       }

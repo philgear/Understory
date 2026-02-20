@@ -50,7 +50,33 @@ import { AnalysisContainerComponent } from './components/analysis-container.comp
         </div>
       }
 
-      <app-patient-sidebar class="no-print"></app-patient-sidebar>
+      <div class="flex h-full transition-all duration-300 ease-in-out relative" 
+           [style.width.px]="isSidebarCollapsed() ? 0 : 250"
+           [class.border-r]="!isSidebarCollapsed()"
+           [class.border-[#EEEEEE]]="!isSidebarCollapsed()">
+        <div class="w-[250px] h-full overflow-hidden">
+           <app-patient-sidebar class="no-print h-full block"></app-patient-sidebar>
+        </div>
+      </div>
+
+      <!-- Sidebar Toggle Button -->
+      <button (click)="toggleSidebar()" 
+              class="absolute top-[calc(50%-3.5rem)] z-50 bg-white border border-[#EEEEEE] shadow-[2px_0_5px_rgba(0,0,0,0.05)] rounded-r-lg p-1 hover:bg-gray-50 transition-all duration-300 flex flex-col items-center justify-center h-20 w-8 gap-2 group"
+              [style.left.px]="isSidebarCollapsed() ? 0 : 250"
+              title="Toggle Patient List">
+        <div class="text-gray-400 group-hover:text-[#1C1C1C] transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+        </div>
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-gray-300 group-hover:text-gray-500 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          @if (isSidebarCollapsed()) {
+            <path d="M9 18l6-6-6-6"/>
+          } @else {
+            <path d="M15 18l-6-6 6-6"/>
+          }
+        </svg>
+      </button>
 
       <div class="flex-1 flex flex-col min-w-0 relative"> <!-- Main Content -->
         <!-- Navbar: Pure utility, no decoration -->
@@ -93,13 +119,42 @@ import { AnalysisContainerComponent } from './components/analysis-container.comp
         <div #mainContainer class="flex-1 flex overflow-hidden">
           
           <!-- Column 1: Patient Medical Chart -->
-          <app-medical-chart class="no-print shrink-0 overflow-y-auto" 
-               [style.width.px]="inputPanelWidth()">
-          </app-medical-chart>
+          <div class="relative h-full transition-all duration-300 ease-in-out"
+               [style.width.px]="isChartCollapsed() ? 0 : inputPanelWidth()"
+               [class.border-r]="!isChartCollapsed()"
+               [class.border-[#EEEEEE]]="!isChartCollapsed()">
+               
+               <div class="h-full w-full overflow-hidden">
+                  <app-medical-chart class="no-print h-full block overflow-y-auto" 
+                       [style.width.px]="inputPanelWidth()">
+                  </app-medical-chart>
+               </div>
+          </div>
 
-          <!-- RESIZER -->
-          <div class="w-2 shrink-0 cursor-col-resize app-resizer"
-              (mousedown)="startColumnDrag($event)"></div>
+          <!-- Chart Toggle Button (Left side of resizer) -->
+          <button (click)="toggleChart()" 
+                  class="absolute top-[calc(50%+3.5rem)] z-50 bg-white border border-[#EEEEEE] shadow-[2px_0_5px_rgba(0,0,0,0.05)] rounded-r-lg p-1 hover:bg-gray-50 transition-all duration-300 flex flex-col items-center justify-center h-20 w-8 gap-2 group"
+                  [style.left.px]="(isSidebarCollapsed() ? 0 : 250) + (isChartCollapsed() ? 0 : inputPanelWidth())"
+                  title="Toggle Medical Chart">
+            <div class="text-gray-400 group-hover:text-[#1C1C1C] transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/>
+                </svg>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-gray-300 group-hover:text-gray-500 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              @if (isChartCollapsed()) {
+                <path d="M9 18l6-6-6-6"/>
+              } @else {
+                <path d="M15 18l-6-6 6-6"/>
+              }
+            </svg>
+          </button>
+
+          <!-- RESIZER (Only visible if chart is open) -->
+          @if (!isChartCollapsed()) {
+            <div class="w-2 shrink-0 cursor-col-resize app-resizer hover:bg-blue-500/10 transition-colors"
+                (mousedown)="startColumnDrag($event)"></div>
+          }
           
           <!-- Column 2: Analysis (Report & Live Consult) / Intake Form -->
           <div class="flex-1 bg-white h-full overflow-hidden flex flex-col min-w-[320px]">
@@ -124,6 +179,8 @@ export class AppComponent {
   state = inject(PatientStateService);
   today = new Date();
   hasApiKey = signal<boolean>(true);
+  isSidebarCollapsed = signal<boolean>(false);
+  isChartCollapsed = signal<boolean>(false);
 
   // --- Resizable Panel State ---
   mainContainer = viewChild<ElementRef<HTMLDivElement>>('mainContainer');
@@ -166,6 +223,14 @@ export class AppComponent {
       await window.aistudio.openSelectKey();
       this.hasApiKey.set(true);
     }
+  }
+
+  toggleSidebar() {
+    this.isSidebarCollapsed.update(v => !v);
+  }
+
+  toggleChart() {
+    this.isChartCollapsed.update(v => !v);
   }
 
   // --- Column Resizing Logic ---

@@ -40,7 +40,7 @@ export class VeoService {
       error: null
     });
 
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = process.env.GEMINI_API_KEY || (process.env as any).API_KEY;
     if (!apiKey) {
       this.state.update(s => ({ ...s, isGenerating: false, error: 'API Key not found. Please select an API key.' }));
       return;
@@ -70,16 +70,39 @@ export class VeoService {
         operation = await ai.operations.getVideosOperation({ operation: operation });
       }
 
-      const downloadLink = operation.response?.generatedVideos?.[0]?.video?.uri;
+      // Check for errors in the operation result
+      if ((operation as any).error) {
+        throw new Error(`Video generation failed: ${(operation as any).error.message}`);
+      }
+
+      const downloadLink = operation.response?.generatedVideos?.[0]?.video?.uri || (operation as any).result?.generatedVideos?.[0]?.video?.uri;
+      
       if (downloadLink) {
+        this.state.update(s => ({ ...s, progress: 'Downloading video...' }));
+        
+        // Fetch the video with the API key header
+        const videoResponse = await fetch(downloadLink, {
+          headers: {
+            'x-goog-api-key': apiKey
+          }
+        });
+
+        if (!videoResponse.ok) {
+          throw new Error(`Failed to download video: ${videoResponse.statusText}`);
+        }
+
+        const blob = await videoResponse.blob();
+        const objectUrl = URL.createObjectURL(blob);
+
         this.state.update(s => ({ 
           ...s, 
           isGenerating: false, 
           progress: 'Generation complete!',
-          videoUrl: downloadLink 
+          videoUrl: objectUrl 
         }));
       } else {
-        throw new Error('Video generation failed: No download link received.');
+        console.error('Veo Operation Result:', operation);
+        throw new Error('Video generation failed: No download link received in response.');
       }
 
     } catch (e: any) {

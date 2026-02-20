@@ -96,6 +96,34 @@ import { marked } from 'marked';
               </section>
             }
 
+            <!-- Draft Care Plan -->
+            @if (state.draftCarePlanItems().length > 0) {
+              <section class="bg-yellow-50 p-4 border border-yellow-200 rounded-sm">
+                <h2 class="text-xs font-bold text-yellow-700 uppercase tracking-widest mb-3 font-sans flex justify-between items-center">
+                  <span>Care Plan Draft</span>
+                  <span class="text-[10px] font-normal normal-case opacity-70">Review & Finalize</span>
+                </h2>
+                <ul class="list-disc pl-4 space-y-2 text-sm text-gray-800">
+                  @for (item of state.draftCarePlanItems(); track $index) {
+                    <li class="pl-1">
+                      <div class="flex justify-between items-start gap-2">
+                        <span>{{ item }}</span>
+                        <button (click)="removeDraftItem(item)" class="text-gray-400 hover:text-red-500 shrink-0" title="Remove">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                        </button>
+                      </div>
+                    </li>
+                  }
+                </ul>
+                <div class="mt-4 pt-3 border-t border-yellow-200/50 flex justify-end">
+                   <button (click)="finalizeDraftPlan()" class="text-xs font-bold text-yellow-800 hover:text-yellow-900 uppercase tracking-widest flex items-center gap-1">
+                      <span>Add to Active Plan</span>
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5l10-10"/></svg>
+                   </button>
+                </div>
+              </section>
+            }
+
             <!-- Active Care Plan -->
             @if (activeCarePlanHTML(); as html) {
               <section>
@@ -171,5 +199,27 @@ export class MedicalChartSummaryComponent {
     };
     
     this.patientManager.addHistoryEntry(patientId, historyEntry);
+  }
+
+  removeDraftItem(item: string) {
+    this.state.removeDraftCarePlanItem(item);
+  }
+
+  finalizeDraftPlan() {
+    const draftItems = this.state.draftCarePlanItems();
+    if (draftItems.length === 0) return;
+
+    const currentPlan = this.state.activeCarePlan() || '';
+    
+    // Format the new items as a markdown list
+    const newContent = draftItems.map(item => `- ${item}`).join('\n');
+    
+    // Append to existing plan or start fresh
+    const updatedPlan = currentPlan 
+      ? `${currentPlan}\n\n### Added ${new Date().toLocaleDateString()}\n${newContent}`
+      : `### Care Plan\n${newContent}`;
+
+    this.state.updateActiveCarePlan(updatedPlan);
+    this.state.clearDraftCarePlanItems();
   }
 }
