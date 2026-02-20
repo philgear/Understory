@@ -1,5 +1,7 @@
 {
-  "name": "Integrative Care Intake Assistant",
-  "description": "A streamlined patient intake tool for doctors featuring an interactive 3D-style body viewer and AI-powered integrative care research generation.",
-  "requestFramePermissions": []
+  "name": "Understory",
+  "description": "Understory streamlines patient intake with an interactive body map and AI-powered insights. It empowers doctors with rapid data visualization and analysis for proactive care decisions.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
 }
