@@ -114,20 +114,15 @@ interface ParsedTranscriptEntry extends TranscriptEntry {
       
       @if (!gemini.isLoading()) {
         <div class="flex items-center gap-2">
-          <button (click)="printReport()" [disabled]="!hasAnyReport()"
-            class="group flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-700 text-xs font-bold uppercase tracking-widest hover:bg-[#EEEEEE] hover:border-gray-400 disabled:opacity-20 disabled:hover:bg-transparent transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="currentColor"><path d="M18 7H6q-.825 0-1.412-.587T4 5q0-.825.588-1.413T6 3h12q.825 0 1.413.587T20 5q0 .825-.587 1.413T18 7M5 10h14q.425 0 .713.288T20 11v6q0 .425-.288.713T19 18h-2v3H7v-3H5q-.425 0-.712-.288T4 17v-6q0-.425.288-.712T5 10m2 8h8v-5H7z"/></svg>
-            <span>Print</span>
-          </button>
            @if (state.isLiveAgentActive()) {
               <button (click)="endLiveConsult()" class="group flex items-center gap-2 px-4 py-2 border border-red-300 text-red-700 text-xs font-bold uppercase tracking-widest hover:bg-red-50 disabled:opacity-20 transition-colors">
-                 <span>End Consult</span>
+                 <span>Close Assistant</span>
               </button>
             } @else {
-               <button (click)="startLiveConsult()" [disabled]="!state.hasIssues() || !hasAnyReport()"
+               <button (click)="openVoicePanel()" [disabled]="!state.hasIssues() || !hasAnyReport()"
                 class="group flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-700 text-xs font-bold uppercase tracking-widest hover:bg-[#EEEEEE] hover:border-gray-400 disabled:opacity-20 disabled:hover:bg-transparent transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14q-1.25 0-2.125-.875T9 11V5q0-1.25.875-2.125T12 2q1.25 0 2.125.875T15 5v6q0 1.25-.875 2.125T12 14m-1 7v-3.075q-2.6-.35-4.3-2.325T5 11h2q0 2.075 1.463 3.537T12 16q2.075 0 3.538-1.463T17 11h2q0 2.225-1.7 4.2T13 17.925V21z"/></svg>
-                <span>Live Consult</span>
+                <span>Voice Assistant</span>
               </button>
             }
           <button (click)="generate()" [disabled]="!state.hasIssues()"
@@ -245,6 +240,9 @@ interface ParsedTranscriptEntry extends TranscriptEntry {
                   <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3z"/></svg>
               </button>
               <div class="h-px w-full bg-gray-200 my-0.5"></div>
+              <button (click)="printReport()" title="Print Report" class="w-7 h-7 flex items-center justify-center rounded-sm text-gray-500 hover:bg-gray-100 hover:text-gray-800 transition-colors">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M18 7H6q-.825 0-1.412-.587T4 5q0-.825.588-1.413T6 3h12q.825 0 1.413.587T20 5q0 .825-.587 1.413T18 7M5 10h14q.425 0 .713.288T20 11v6q0 .425-.288.713T19 18h-2v3H7v-3H5q-.425 0-.712-.288T4 17v-6q0-.425.288-.712T5 10m2 8h8v-5H7z"/></svg>
+              </button>
               <button (click)="dismissSelection()" title="Dismiss" class="w-7 h-7 flex items-center justify-center rounded-sm text-gray-500 hover:bg-gray-100 hover:text-red-600 transition-colors">
                   <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 7c2.76 0 5 2.24 5 5s-2.24 5-5 5s-5-2.24-5-5s2.24-5 5-5m0-2C7 5 3.27 7.94 2 12c1.27 4.06 5 7 10 7s8.73-2.94 10-7c-1.27-4.06-5-7-10-7m0 9.5c.95 0 1.8-.32 2.48-1.02l-3.5-3.5C10.32 10.7 11.05 11.5 12 11.5m6.06-3.56L16.65 6.5l-2.83 2.83c-.42-.1-.86-.17-1.32-.17c-2.21 0-4 1.79-4 4c0 .46.07.9.17 1.32l-2.83 2.83l-1.41-1.41l10-10l1.41 1.41z"/></svg>
               </button>
@@ -252,70 +250,167 @@ interface ParsedTranscriptEntry extends TranscriptEntry {
         }
     </div>
 
-    <!-- Live Consult Section -->
+    <!-- Live Consult / Voice Assistant Section -->
     @if (state.isLiveAgentActive()) {
         <!-- Draggable Resizer -->
         <div (mousedown)="startDrag($event)" class="shrink-0 h-2 bg-gray-100 hover:bg-gray-200 transition-colors cursor-row-resize z-20 no-print"></div>
 
         <div class="shrink-0 bg-white z-10 no-print flex flex-col" [style.height.px]="chatHeight()">
             
-            <!-- Transcript -->
-            <div #transcriptContainer class="flex-1 overflow-y-auto p-8 space-y-6">
-                 @for (entry of parsedTranscript(); track $index) {
-                  <div class="flex gap-4 max-w-[85%]" [class.ml-auto]="entry.role === 'user'" [class.flex-row-reverse]="entry.role === 'user'">
-                    <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
-                         [class.bg-[#F1F8E9]]="entry.role === 'model'"
-                         [class.text-[#558B2F]]="entry.role === 'model'"
-                         [class.bg-[#4527A0]]="entry.role === 'user'"
-                         [class.text-white]="entry.role === 'user'">
-                         {{ entry.role === 'model' ? 'AI' : 'DR' }}
-                    </div>
-                    @if (entry.role === 'model') {
-                        <div class="p-4 rounded-lg bg-[#F8F8F8] text-[#1C1C1C] rams-typography" [innerHTML]="entry.htmlContent"></div>
-                    } @else {
-                        <div class="p-4 rounded-lg text-sm font-light leading-relaxed bg-[#4527A0] text-white/90">
-                          <p>{{ entry.text }}</p>
-                        </div>
+            <!-- Panel Header / Tabs -->
+            <div class="flex items-center justify-between px-6 py-2 border-b border-gray-100 bg-gray-50">
+                <div class="flex items-center gap-4">
+                    <button (click)="panelMode.set('selection')" 
+                            class="text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-gray-800 transition-colors flex items-center gap-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                        Home
+                    </button>
+                    @if (panelMode() !== 'selection') {
+                        <span class="text-gray-300">/</span>
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-[#1C1C1C]">
+                            {{ panelMode() === 'chat' ? 'Live Consult' : 'Dictation' }}
+                        </span>
                     }
-                  </div>
-                }
+                </div>
+                <button (click)="endLiveConsult()" class="text-gray-400 hover:text-red-500 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
             </div>
 
-            <!-- Controls -->
-            <div class="shrink-0 p-6 border-t border-[#EEEEEE] flex flex-col items-center justify-center gap-4">
-                @if (permissionError(); as error) {
-                  <div class="p-2 mb-2 bg-red-50 border border-red-200 text-center max-w-md w-full">
-                    <p class="font-bold text-red-700 text-xs">Microphone Access Issue</p>
-                    <p class="text-xs text-red-600/80 mt-1">{{ error }}</p>
-                  </div>
-                }
-                <form (submit)="sendMessage()" class="w-full max-w-2xl flex items-center gap-2">
-                    <textarea
-                      #chatInput
-                      rows="1"
-                      [value]="messageText()"
-                      (input)="messageText.set($event.target.value)"
-                      (keydown.enter)="sendMessage($event)"
-                      placeholder="Ask a follow-up question..."
-                      [disabled]="agentState() !== 'idle'"
-                      class="flex-1 bg-white border border-[#EEEEEE] p-3 text-sm text-[#1C1C1C] focus:border-[#1C1C1C] focus:ring-0 transition-colors placeholder-gray-400 resize-none disabled:bg-gray-50"
-                    ></textarea>
+            <!-- MODE: SELECTION -->
+            @if (panelMode() === 'selection') {
+                <div class="flex-1 flex items-center justify-center gap-8 p-8 bg-gray-50/50">
+                    <button (click)="activateChat()" class="group relative w-64 h-48 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md hover:border-[#1C1C1C] transition-all p-6 flex flex-col items-center justify-center text-center gap-4">
+                        <div class="w-16 h-16 rounded-full bg-[#F1F8E9] flex items-center justify-center text-[#558B2F] group-hover:scale-110 transition-transform">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-[#1C1C1C] uppercase tracking-wider text-sm mb-1">Live Consult</h3>
+                            <p class="text-xs text-gray-500 leading-relaxed">Discuss patient data, ask questions, and explore diagnoses with AI.</p>
+                        </div>
+                    </button>
 
-                    <button type="submit" [disabled]="!messageText().trim() || agentState() !== 'idle'"
-                            class="w-12 h-12 flex items-center justify-center bg-[#1C1C1C] hover:bg-[#689F38] disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors text-white shrink-0">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M3 20v-6l8-2-8-2V4l19 8z"/></svg>
+                    <button (click)="activateDictation()" class="group relative w-64 h-48 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md hover:border-[#1C1C1C] transition-all p-6 flex flex-col items-center justify-center text-center gap-4">
+                        <div class="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 group-hover:scale-110 transition-transform">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-[#1C1C1C] uppercase tracking-wider text-sm mb-1">Dictation Tool</h3>
+                            <p class="text-xs text-gray-500 leading-relaxed">Transcribe voice notes to clipboard for use in reports or care plans.</p>
+                        </div>
                     </button>
-                    <button type="button" (click)="toggleListening()" [disabled]="agentState() !== 'idle' || !!permissionError()"
-                            class="w-12 h-12 flex items-center justify-center border border-[#EEEEEE] hover:border-[#1C1C1C] disabled:opacity-50 disabled:cursor-not-allowed transition-colors shrink-0"
-                            [class.bg-[#689F38]]="agentState() === 'listening'"
-                            [class.border-[#689F38]]="agentState() === 'listening'">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5"
-                             [class.text-white]="agentState() === 'listening'"
-                             [class.text-gray-500]="agentState() === 'idle'"
-                             viewBox="0 0 24 24" fill="currentColor"><path d="M12 14q-1.25 0-2.125-.875T9 11V5q0-1.25.875-2.125T12 2q1.25 0 2.125.875T15 5v6q0 1.25-.875 2.125T12 14m-1 7v-3.075q-2.6-.35-4.3-2.325T5 11h2q0 2.075 1.463 3.537T12 16q2.075 0 3.538-1.463T17 11h2q0 2.225-1.7 4.2T13 17.925V21z"/></svg>
-                    </button>
-                </form>
-            </div>
+                </div>
+            }
+
+            <!-- MODE: CHAT -->
+            @if (panelMode() === 'chat') {
+                <!-- Transcript -->
+                <div #transcriptContainer class="flex-1 overflow-y-auto p-8 space-y-6">
+                     @for (entry of parsedTranscript(); track $index) {
+                      <div class="flex gap-4 max-w-[85%]" [class.ml-auto]="entry.role === 'user'" [class.flex-row-reverse]="entry.role === 'user'">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
+                             [class.bg-[#F1F8E9]]="entry.role === 'model'"
+                             [class.text-[#558B2F]]="entry.role === 'model'"
+                             [class.bg-[#4527A0]]="entry.role === 'user'"
+                             [class.text-white]="entry.role === 'user'">
+                             {{ entry.role === 'model' ? 'AI' : 'DR' }}
+                        </div>
+                        @if (entry.role === 'model') {
+                            <div class="p-4 rounded-lg bg-[#F8F8F8] text-[#1C1C1C] rams-typography" [innerHTML]="entry.htmlContent"></div>
+                        } @else {
+                            <div class="p-4 rounded-lg text-sm font-light leading-relaxed bg-[#4527A0] text-white/90">
+                              <p>{{ entry.text }}</p>
+                            </div>
+                        }
+                      </div>
+                    }
+                </div>
+
+                <!-- Controls -->
+                <div class="shrink-0 p-6 border-t border-[#EEEEEE] flex flex-col items-center justify-center gap-4">
+                    @if (permissionError(); as error) {
+                      <div class="p-2 mb-2 bg-red-50 border border-red-200 text-center max-w-md w-full">
+                        <p class="font-bold text-red-700 text-xs">Microphone Access Issue</p>
+                        <p class="text-xs text-red-600/80 mt-1">{{ error }}</p>
+                      </div>
+                    }
+                    <form (submit)="sendMessage()" class="w-full max-w-2xl flex items-center gap-2">
+                        <textarea
+                          #chatInput
+                          rows="1"
+                          [value]="messageText()"
+                          (input)="messageText.set($event.target.value)"
+                          (keydown.enter)="sendMessage($event)"
+                          placeholder="Ask a follow-up question..."
+                          [disabled]="agentState() !== 'idle'"
+                          class="flex-1 bg-white border border-[#EEEEEE] p-3 text-sm text-[#1C1C1C] focus:border-[#1C1C1C] focus:ring-0 transition-colors placeholder-gray-400 resize-none disabled:bg-gray-50"
+                        ></textarea>
+
+                        <button type="submit" [disabled]="!messageText().trim() || agentState() !== 'idle'"
+                                class="w-12 h-12 flex items-center justify-center bg-[#1C1C1C] hover:bg-[#689F38] disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors text-white shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M3 20v-6l8-2-8-2V4l19 8z"/></svg>
+                        </button>
+                        <button type="button" (click)="toggleListening()" [disabled]="agentState() !== 'idle' || !!permissionError()"
+                                class="w-12 h-12 flex items-center justify-center border border-[#EEEEEE] hover:border-[#1C1C1C] disabled:opacity-50 disabled:cursor-not-allowed transition-colors shrink-0"
+                                [class.bg-[#689F38]]="agentState() === 'listening'"
+                                [class.border-[#689F38]]="agentState() === 'listening'">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5"
+                                 [class.text-white]="agentState() === 'listening'"
+                                 [class.text-gray-500]="agentState() === 'idle'"
+                                 viewBox="0 0 24 24" fill="currentColor"><path d="M12 14q-1.25 0-2.125-.875T9 11V5q0-1.25.875-2.125T12 2q1.25 0 2.125.875T15 5v6q0 1.25-.875 2.125T12 14m-1 7v-3.075q-2.6-.35-4.3-2.325T5 11h2q0 2.075 1.463 3.537T12 16q2.075 0 3.538-1.463T17 11h2q0 2.225-1.7 4.2T13 17.925V21z"/></svg>
+                        </button>
+                    </form>
+                </div>
+            }
+
+            <!-- MODE: DICTATION -->
+            @if (panelMode() === 'dictation') {
+                <div class="flex-1 flex flex-col p-8 bg-gray-50/30">
+                    <div class="flex-1 bg-white border border-gray-200 rounded-lg shadow-sm p-6 relative flex flex-col">
+                        <textarea 
+                            [value]="dictationText()"
+                            (input)="dictationText.set($event.target.value)"
+                            class="flex-1 w-full resize-none outline-none text-lg leading-relaxed text-gray-800 placeholder-gray-300"
+                            placeholder="Start dictating..."></textarea>
+                        
+                        @if (isDictating()) {
+                            <div class="absolute bottom-6 right-6 flex gap-1">
+                                <span class="w-2 h-2 bg-red-500 rounded-full animate-bounce" style="animation-delay: 0ms"></span>
+                                <span class="w-2 h-2 bg-red-500 rounded-full animate-bounce" style="animation-delay: 150ms"></span>
+                                <span class="w-2 h-2 bg-red-500 rounded-full animate-bounce" style="animation-delay: 300ms"></span>
+                            </div>
+                        }
+                    </div>
+                    
+                    <div class="shrink-0 pt-6 flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <button (click)="toggleDictation()" 
+                                    class="flex items-center gap-3 px-6 py-3 rounded-full font-bold uppercase tracking-widest text-xs transition-all shadow-sm"
+                                    [class.bg-red-600]="isDictating()"
+                                    [class.text-white]="isDictating()"
+                                    [class.hover:bg-red-700]="isDictating()"
+                                    [class.bg-[#1C1C1C]]="!isDictating()"
+                                    [class.text-white]="!isDictating()"
+                                    [class.hover:bg-gray-800]="!isDictating()">
+                                @if (isDictating()) {
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                                    <span>Pause Recording</span>
+                                } @else {
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+                                    <span>Start Recording</span>
+                                }
+                            </button>
+                            <button (click)="clearDictation()" [disabled]="!dictationText()" class="text-xs font-bold text-gray-400 hover:text-red-500 uppercase tracking-wider disabled:opacity-30 transition-colors">
+                                Clear
+                            </button>
+                        </div>
+                        <button (click)="copyDictation()" [disabled]="!dictationText()" class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-md text-xs font-bold uppercase tracking-wider text-gray-600 hover:bg-gray-100 hover:text-black disabled:opacity-30 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                            Copy Text
+                        </button>
+                    </div>
+                </div>
+            }
         </div>
     }
   `
@@ -338,17 +433,24 @@ export class AnalysisReportComponent implements OnDestroy {
   permissionError = signal<string | null>(null);
   messageText = signal<string>('');
   
+  // --- Panel State ---
+  panelMode = signal<'selection' | 'chat' | 'dictation'>('selection');
+  
   private recognition: any;
   private preferredVoice = signal<SpeechSynthesisVoice | undefined>(undefined);
   private hasStartedChat = false;
 
   // --- Resizable Chat State ---
-  chatHeight = signal<number>(256); // Default height (h-64 = 16rem = 256px)
+  chatHeight = signal<number>(350); // Increased default height
   private boundDoDrag = this.doDrag.bind(this);
   private boundStopDrag = this.stopDrag.bind(this);
   private initialDragY: number = 0;
   private initialChatHeight: number = 0;
   
+  // --- Dictation State ---
+  dictationText = signal('');
+  isDictating = signal(false);
+
   // --- Auto-scroll State ---
   transcriptContainer = viewChild<ElementRef<HTMLDivElement>>('transcriptContainer');
   contentArea = viewChild<ElementRef<HTMLDivElement>>('contentArea');
@@ -510,9 +612,12 @@ export class AnalysisReportComponent implements OnDestroy {
 
   // --- Report Actions ---
   async generate() {
-    const reportData = await this.gemini.generateComprehensiveReport(this.state.getAllDataForPrompt());
-
     const patientId = this.patientManager.selectedPatientId();
+    const patient = patientId ? this.patientManager.patients().find(p => p.id === patientId) : null;
+    const history = patient?.history || [];
+
+    const reportData = await this.gemini.generateComprehensiveReport(this.state.getAllDataForPrompt(history));
+
     if (patientId && Object.keys(reportData).length > 0) {
         const historyEntry: HistoryEntry = {
             type: 'AnalysisRun',
@@ -532,22 +637,83 @@ export class AnalysisReportComponent implements OnDestroy {
   printReport() { window.print(); }
 
   // --- Live Consult Actions ---
-  startLiveConsult() { 
+  openVoicePanel() { 
     this.state.toggleLiveAgent(true);
+    // If we haven't started a chat yet, show the selection screen.
+    // If we have, we probably want to return to where we were (or default to chat).
     if (!this.hasStartedChat) {
-      this.gemini.startChatSession(this.state.getAllDataForPrompt());
+        this.panelMode.set('selection');
+    } else {
+        this.panelMode.set('chat');
+    }
+  }
+
+  activateChat() {
+    this.panelMode.set('chat');
+    if (!this.hasStartedChat) {
+      const patientId = this.patientManager.selectedPatientId();
+      const patient = patientId ? this.patientManager.patients().find(p => p.id === patientId) : null;
+      const history = patient?.history || [];
+
+      this.gemini.startChatSession(this.state.getAllDataForPrompt(history));
       this.gemini.getInitialGreeting().then(greeting => {
           this.speak(greeting);
       });
       this.hasStartedChat = true;
     }
   }
-  endLiveConsult() { this.state.toggleLiveAgent(false); }
+
+  activateDictation() {
+    this.panelMode.set('dictation');
+  }
+
+  endLiveConsult() { 
+      this.state.toggleLiveAgent(false); 
+      this.stopDictation(); // Ensure dictation stops if panel closes
+  }
+
+  // --- Dictation Logic (Embedded) ---
+  toggleDictation() {
+      if (this.isDictating()) {
+          this.stopDictation();
+      } else {
+          this.startDictation();
+      }
+  }
+
+  startDictation() {
+      if (!this.recognition) return;
+      try {
+          this.recognition.start();
+          this.isDictating.set(true);
+      } catch (e) {
+          console.error('Failed to start dictation', e);
+      }
+  }
+
+  stopDictation() {
+      if (!this.recognition) return;
+      this.recognition.stop();
+      this.isDictating.set(false);
+  }
+
+  clearDictation() {
+      this.dictationText.set('');
+  }
+
+  copyDictation() {
+      navigator.clipboard.writeText(this.dictationText());
+  }
 
   insertSectionIntoChat(sectionMarkdown: string) {
+    this.openVoicePanel(); // Ensure panel is open
+    this.activateChat();   // Ensure we are in chat mode
     this.messageText.set(`Regarding this section:\n\n> ${sectionMarkdown.replace(/\n/g, '\n> ')}\n\n`);
-    const input = document.querySelector<HTMLTextAreaElement>('#chatInput');
-    input?.focus();
+    // Need to wait for view to update if we just switched modes
+    setTimeout(() => {
+        const input = document.querySelector<HTMLTextAreaElement>('#chatInput');
+        input?.focus();
+    }, 100);
   }
   
   // --- Drag/Resize Handlers ---
@@ -598,29 +764,79 @@ export class AnalysisReportComponent implements OnDestroy {
     }
     
     this.recognition = new SpeechRecognitionAPI();
-    this.recognition.continuous = false;
+    this.recognition.continuous = true;
     this.recognition.lang = 'en-US';
-    this.recognition.interimResults = false;
+    this.recognition.interimResults = true;
 
-    this.recognition.onstart = () => { this.permissionError.set(null); this.agentState.set('listening'); };
-    this.recognition.onend = () => { if (this.agentState() === 'listening') this.agentState.set('idle'); };
+    this.recognition.onstart = () => { 
+        this.permissionError.set(null); 
+        if (this.panelMode() === 'chat') {
+            this.agentState.set('listening'); 
+        } else if (this.panelMode() === 'dictation') {
+            this.isDictating.set(true);
+        }
+    };
+    
+    this.recognition.onend = () => { 
+        if (this.panelMode() === 'chat') {
+            if (this.agentState() === 'listening') this.agentState.set('idle'); 
+        } else if (this.panelMode() === 'dictation') {
+            // If we are still supposed to be dictating, try to restart (handling timeouts)
+            if (this.isDictating()) {
+                try {
+                    this.recognition.start();
+                } catch (e) {
+                    // If start fails (e.g. already started), just ignore
+                }
+            }
+        }
+    };
+
     this.recognition.onerror = (event: any) => {
       if (event.error === 'not-allowed') {
         this.permissionError.set('Microphone permission was denied. Please allow microphone access in your browser settings.');
+        this.isDictating.set(false);
+        this.agentState.set('idle');
       } else if (event.error === 'no-speech') {
-        // Ignore no-speech errors, just reset state.
+        // Ignore no-speech errors, let onend handle restart if needed
       } else if (event.error === 'network') {
          this.permissionError.set('Network error. Please check your connection.');
+         this.isDictating.set(false);
+         this.agentState.set('idle');
       } else {
-         this.permissionError.set(`Speech recognition error: ${event.error}`);
+         // For other errors, stop to prevent infinite loops
+         console.error('Speech recognition error:', event.error);
+         this.isDictating.set(false);
+         this.agentState.set('idle');
       }
-      this.agentState.set('idle');
     };
+
     this.recognition.onresult = async (event: any) => {
-      const transcript = event.results[event.results.length - 1][0].transcript;
-      this.agentState.set('processing');
-      const responseText = await this.gemini.sendChatMessage(transcript);
-      this.speak(responseText);
+      let final = '';
+      let interim = '';
+      
+      for (let i = event.resultIndex; i < event.results.length; ++i) {
+        if (event.results[i].isFinal) {
+          final += event.results[i][0].transcript;
+        } else {
+          interim += event.results[i][0].transcript;
+        }
+      }
+
+      if (this.panelMode() === 'chat') {
+          if (final) {
+              this.recognition.stop(); // Stop listening to process
+              this.agentState.set('processing');
+              const responseText = await this.gemini.sendChatMessage(final);
+              this.speak(responseText);
+          }
+      } else if (this.panelMode() === 'dictation') {
+          if (final) {
+              const current = this.dictationText();
+              const needsSpace = current.length > 0 && !current.endsWith(' ');
+              this.dictationText.set(current + (needsSpace ? ' ' : '') + final);
+          }
+      }
     };
   }
   

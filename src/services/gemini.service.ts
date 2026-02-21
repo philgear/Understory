@@ -68,7 +68,8 @@ export class GeminiService {
     };
 
     try {
-        await Promise.all(lenses.map(async (lens) => {
+        // Execute requests sequentially to avoid rate limits or parallel execution issues
+        for (const lens of lenses) {
             const systemInstruction = systemInstructions[lens];
             try {
                 const response: GenerateContentResponse = await this.ai.models.generateContent({
@@ -83,7 +84,7 @@ export class GeminiService {
                 console.error(`Error generating report for lens: ${lens}`, e);
                 newReport[lens] = `### Error\nAn error occurred while generating the analysis for this section. Please try again.`;
             }
-        }));
+        }
 
         this.analysisResults.set(newReport);
         return newReport;

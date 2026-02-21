@@ -7,6 +7,7 @@ import { ResearchFrameComponent } from './components/research-frame.component';
 import { MedicalChartComponent } from './components/medical-chart.component';
 import { VisitReviewComponent } from './components/visit-review.component';
 import { AnalysisContainerComponent } from './components/analysis-container.component';
+import { DictationModalComponent } from './components/dictation-modal.component';
 
 @Component({
   selector: 'app-root',
@@ -19,11 +20,14 @@ import { AnalysisContainerComponent } from './components/analysis-container.comp
     MedicalChartComponent,
     VisitReviewComponent,
     AnalysisContainerComponent,
+    DictationModalComponent
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="h-screen w-screen flex flex-row bg-white overflow-hidden selection:bg-green-100 selection:text-green-900">
+    <div class="h-screen w-screen flex flex-row bg-white overflow-hidden selection:bg-green-100 selection:text-green-900 group/app">
       
+      <app-dictation-modal></app-dictation-modal>
+
       @if (!hasApiKey()) {
         <div class="fixed inset-0 bg-white z-[100] flex flex-col items-center justify-center p-8 text-center">
           <div class="mb-8">
@@ -61,15 +65,15 @@ import { AnalysisContainerComponent } from './components/analysis-container.comp
 
       <!-- Sidebar Toggle Button -->
       <button (click)="toggleSidebar()" 
-              class="absolute top-[calc(50%-3.5rem)] z-50 bg-white border border-[#EEEEEE] shadow-[2px_0_5px_rgba(0,0,0,0.05)] rounded-r-lg p-1 hover:bg-gray-50 transition-all duration-300 flex flex-col items-center justify-center h-20 w-8 gap-2 group"
+              class="absolute top-[calc(50%-3.5rem)] z-50 bg-white border border-[#EEEEEE] shadow-[2px_0_5px_rgba(0,0,0,0.05)] rounded-r-lg p-1 hover:bg-gray-50 transition-all duration-300 flex flex-col items-center justify-center h-20 w-12 gap-2 group cursor-pointer opacity-0 group-hover/app:opacity-100 focus:opacity-100 focus-within:opacity-100"
               [style.left.px]="isSidebarCollapsed() ? 0 : 250"
               title="Toggle Patient List">
         <div class="text-gray-400 group-hover:text-[#1C1C1C] transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
             </svg>
         </div>
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-gray-300 group-hover:text-gray-500 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-300 group-hover:text-gray-500 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           @if (isSidebarCollapsed()) {
             <path d="M9 18l6-6-6-6"/>
           } @else {
@@ -78,7 +82,7 @@ import { AnalysisContainerComponent } from './components/analysis-container.comp
         </svg>
       </button>
 
-      <div class="flex-1 flex flex-col min-w-0 relative"> <!-- Main Content -->
+      <div class="flex-1 flex flex-col min-w-0 relative group/main"> <!-- Main Content -->
         <!-- Navbar: Pure utility, no decoration -->
         <nav class="h-14 border-b border-[#EEEEEE] flex items-center justify-between px-6 shrink-0 bg-white z-20 no-print">
           <div class="flex items-center gap-4">
@@ -92,7 +96,7 @@ import { AnalysisContainerComponent } from './components/analysis-container.comp
                       </g>
                       <g transform="translate(512, 0) scale(-1, 1)">
                         <path d="M251 270 C200 250 155 200 155 145 C155 180 185 240 251 270Z" fill="#76B362" />
-                        <path d="M251 270 C240 210 215 155 185 145 C185 145 230 200 251 270Z" fill="#244626" />
+                        <path d="M251 270 C240 210 215 155 185 145 C185 145 230 200 251 270Z" fill="#76B362" />
                       </g>
                     </g>
                   </svg>
@@ -116,7 +120,7 @@ import { AnalysisContainerComponent } from './components/analysis-container.comp
         </nav>
 
         <!-- Main Grid Layout -->
-        <div #mainContainer class="flex-1 flex overflow-hidden">
+        <div #mainContainer class="flex-1 flex overflow-hidden relative">
           
           <!-- Column 1: Patient Medical Chart -->
           <div class="relative h-full transition-all duration-300 ease-in-out"
@@ -133,15 +137,15 @@ import { AnalysisContainerComponent } from './components/analysis-container.comp
 
           <!-- Chart Toggle Button (Left side of resizer) -->
           <button (click)="toggleChart()" 
-                  class="absolute top-[calc(50%+3.5rem)] z-50 bg-white border border-[#EEEEEE] shadow-[2px_0_5px_rgba(0,0,0,0.05)] rounded-r-lg p-1 hover:bg-gray-50 transition-all duration-300 flex flex-col items-center justify-center h-20 w-8 gap-2 group"
-                  [style.left.px]="(isSidebarCollapsed() ? 0 : 250) + (isChartCollapsed() ? 0 : inputPanelWidth())"
+                  class="absolute top-[calc(50%)] z-50 bg-white border border-[#EEEEEE] shadow-[2px_0_5px_rgba(0,0,0,0.05)] rounded-r-lg p-1 hover:bg-gray-50 transition-all duration-300 flex flex-col items-center justify-center h-20 w-12 gap-2 group cursor-pointer opacity-0 group-hover/main:opacity-100 focus:opacity-100 focus-within:opacity-100"
+                  [style.left.px]="isChartCollapsed() ? 0 : inputPanelWidth()"
                   title="Toggle Medical Chart">
             <div class="text-gray-400 group-hover:text-[#1C1C1C] transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/>
                 </svg>
             </div>
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-gray-300 group-hover:text-gray-500 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-300 group-hover:text-gray-500 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               @if (isChartCollapsed()) {
                 <path d="M9 18l6-6-6-6"/>
               } @else {
@@ -157,15 +161,47 @@ import { AnalysisContainerComponent } from './components/analysis-container.comp
           }
           
           <!-- Column 2: Analysis (Report & Live Consult) / Intake Form -->
-          <div class="flex-1 bg-white h-full overflow-hidden flex flex-col min-w-[320px]">
-            @if (isViewingVisitDetails()) {
-              <app-visit-review [visit]="state.viewingPastVisit()!"></app-visit-review>
-            } @else if (state.selectedPartId() && !state.isLiveAgentActive()) {
-              <app-intake-form></app-intake-form>
-            } @else {
-              <app-analysis-container></app-analysis-container>
-            }
+          <div class="relative h-full transition-all duration-300 ease-in-out bg-white flex flex-col overflow-hidden"
+               [class.flex-1]="!isAnalysisCollapsed()"
+               [class.min-w-[320px]]="!isAnalysisCollapsed()"
+               [style.width.px]="isAnalysisCollapsed() ? 0 : null"
+               [class.border-l]="isAnalysisCollapsed()"
+               [class.border-[#EEEEEE]]="isAnalysisCollapsed()">
+               
+            <div class="h-full w-full overflow-hidden" [class.hidden]="isAnalysisCollapsed()">
+                @if (isViewingVisitDetails()) {
+                  <app-visit-review [visit]="state.viewingPastVisit()!"></app-visit-review>
+                } @else if (state.selectedPartId() && !state.isLiveAgentActive()) {
+                  <app-intake-form></app-intake-form>
+                } @else {
+                  <app-analysis-container></app-analysis-container>
+                }
+            </div>
           </div>
+
+          <!-- Analysis Toggle Button (Right side of resizer, pointing left/right) -->
+           <button (click)="toggleAnalysis()" 
+                  class="absolute top-[calc(50%+6rem)] z-50 bg-white border border-[#EEEEEE] shadow-[2px_0_5px_rgba(0,0,0,0.05)] rounded-l-lg p-1 hover:bg-gray-50 transition-all duration-300 flex flex-col items-center justify-center h-20 w-12 gap-2 group cursor-pointer opacity-0 group-hover/main:opacity-100 focus:opacity-100 focus-within:opacity-100"
+                  [style.left.px]="(isChartCollapsed() ? 0 : inputPanelWidth()) + (isChartCollapsed() ? 0 : 8) - 48"
+                  title="Toggle Analysis Panel">
+            <div class="text-gray-400 group-hover:text-[#1C1C1C] transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-300 group-hover:text-gray-500 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              @if (isAnalysisCollapsed()) {
+                <path d="M15 18l-6-6 6-6"/>
+              } @else {
+                <path d="M9 18l6-6-6-6"/>
+              }
+            </svg>
+          </button>
+
         </div>
         
         @if(state.isResearchFrameVisible()) {
@@ -181,6 +217,7 @@ export class AppComponent {
   hasApiKey = signal<boolean>(true);
   isSidebarCollapsed = signal<boolean>(false);
   isChartCollapsed = signal<boolean>(false);
+  isAnalysisCollapsed = signal<boolean>(false);
 
   // --- Resizable Panel State ---
   mainContainer = viewChild<ElementRef<HTMLDivElement>>('mainContainer');
@@ -231,6 +268,10 @@ export class AppComponent {
 
   toggleChart() {
     this.isChartCollapsed.update(v => !v);
+  }
+
+  toggleAnalysis() {
+    this.isAnalysisCollapsed.update(v => !v);
   }
 
   // --- Column Resizing Logic ---

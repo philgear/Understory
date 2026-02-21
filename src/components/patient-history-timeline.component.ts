@@ -143,7 +143,10 @@ const ICONS: Record<string, string> = {
                         [class.border-green-200/80]="activeVisit() !== entry"
                         [class.border]="true">
                   <div>
-                    <p class="text-xs font-bold text-green-700">{{ entry.date }}</p>
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-green-100 text-green-700 uppercase tracking-wider border border-green-200">AI Report</span>
+                        <p class="text-xs font-bold text-green-700">{{ entry.date }}</p>
+                    </div>
                     <p class="text-sm text-green-900 mt-1 leading-relaxed">{{ entry.summary }}</p>
                   </div>
                 </button>

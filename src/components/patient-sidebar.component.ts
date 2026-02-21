@@ -25,21 +25,39 @@ import { PatientManagementService } from '../services/patient-management.service
     </div>
 
     <!-- Patient List -->
-    <div class="flex-1 overflow-y-auto">
-      <ul>
+    <div class="flex-1 overflow-y-auto px-3 py-4 space-y-2">
+      <ul class="space-y-2">
         @for (patient of patientManagement.patients(); track patient.id) {
           <li>
             <button (click)="patientManagement.selectPatient(patient.id)" 
-                    class="w-full flex items-center gap-3 text-left p-4 border-b border-white/5 hover:bg-white/5 transition-colors"
-                    [class.bg-[#689F38]/20]="patient.id === patientManagement.selectedPatientId()">
-              <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs shrink-0"
+                    class="w-full flex items-center gap-3 text-left p-3 rounded-lg border transition-all duration-200 group relative overflow-hidden"
+                    [class.bg-[#2C2C2C]]="patient.id !== patientManagement.selectedPatientId()"
+                    [class.border-transparent]="patient.id !== patientManagement.selectedPatientId()"
+                    [class.hover:bg-[#333333]]="patient.id !== patientManagement.selectedPatientId()"
+                    [class.bg-[#1C1C1C]]="patient.id === patientManagement.selectedPatientId()"
+                    [class.border-[#689F38]]="patient.id === patientManagement.selectedPatientId()"
+                    [class.shadow-md]="patient.id === patientManagement.selectedPatientId()">
+              
+              <!-- Active Indicator Strip -->
+              @if (patient.id === patientManagement.selectedPatientId()) {
+                <div class="absolute left-0 top-0 bottom-0 w-1 bg-[#689F38]"></div>
+              }
+
+              <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs shrink-0 font-bold transition-transform group-hover:scale-105"
                    [class.bg-[#689F38]]="patient.id === patientManagement.selectedPatientId()"
-                   [class.bg-gray-500]="patient.id !== patientManagement.selectedPatientId()">
+                   [class.text-white]="patient.id === patientManagement.selectedPatientId()"
+                   [class.bg-[#333333]]="patient.id !== patientManagement.selectedPatientId()"
+                   [class.text-gray-400]="patient.id !== patientManagement.selectedPatientId()">
                 {{ patient.name.charAt(0) }}
               </div>
-              <div class="overflow-hidden" [class.opacity-0]="isCollapsed()" [class.w-0]="isCollapsed()">
-                <p class="text-sm font-medium truncate">{{ patient.name }}</p>
-                <p class="text-xs text-gray-400 truncate">{{ patient.age }} / {{ patient.gender }}</p>
+              
+              <div class="overflow-hidden transition-opacity duration-200" [class.opacity-0]="isCollapsed()" [class.w-0]="isCollapsed()">
+                <p class="text-xs font-bold text-gray-200 truncate group-hover:text-white transition-colors">{{ patient.name }}</p>
+                <div class="flex items-center gap-2 text-[10px] text-gray-500 font-medium uppercase tracking-wider">
+                    <span>{{ patient.age }} YRS</span>
+                    <span class="w-0.5 h-0.5 bg-gray-600 rounded-full"></span>
+                    <span>{{ patient.gender }}</span>
+                </div>
               </div>
             </button>
           </li>
@@ -48,10 +66,16 @@ import { PatientManagementService } from '../services/patient-management.service
     </div>
 
     <!-- Footer Action -->
-    <div class="shrink-0 p-4 border-t border-white/10">
-      <button (click)="patientManagement.createNewPatient()" class="w-full h-10 flex items-center gap-3 justify-center bg-white/10 hover:bg-white/20 transition-colors">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"/></svg>
-        <span class="text-xs font-bold uppercase tracking-widest" [class.opacity-0]="isCollapsed()" [class.absolute]="isCollapsed()" [class.pointer-events-none]="isCollapsed()">New Patient</span>
+    <div class="shrink-0 p-4 border-t border-white/5 bg-[#1C1C1C]">
+      <button (click)="patientManagement.createNewPatient()" 
+              class="w-full h-10 flex items-center gap-2 justify-center bg-[#2C2C2C] hover:bg-[#333333] border border-white/5 hover:border-white/10 rounded-lg transition-all group">
+        <div class="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-[#689F38] group-hover:text-white transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 24 24" fill="currentColor"><path d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"/></svg>
+        </div>
+        <span class="text-[10px] font-bold uppercase tracking-widest text-gray-400 group-hover:text-white transition-colors" 
+              [class.opacity-0]="isCollapsed()" [class.absolute]="isCollapsed()" [class.pointer-events-none]="isCollapsed()">
+              New Patient
+        </span>
       </button>
     </div>
   `

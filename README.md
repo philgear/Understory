@@ -19,10 +19,11 @@ This tool aims to accelerate the data-gathering process, allowing physicians to 
 ## Key Features
 
 - **Interactive Body Map:** A clean, SVG-based human model for doctors to quickly select and log areas of concern.
-- **High-Fidelity Anatomical Sprite Model:** Replaced the previous vector-based model with a detailed, high-resolution sprite sheet for improved visual quality and performance. The model dynamically adjusts to reflect patient-provided gender.
+- **Voice Dictation:** Integrated speech-to-text functionality allows physicians to dictate notes directly into the patient chart and intake forms, streamlining documentation.
 - **Dynamic Intake Forms:** Context-aware forms appear for selected body parts to log pain levels and symptoms.
 - **AI-Powered Analysis:** With a single click, generate a detailed integrative care report based on all entered patient data, using the Gemini API.
 - **Live AI Consult:** A voice-enabled, conversational overlay where doctors can speak directly with an AI assistant to ask follow-up questions about the patient's case.
+- **Generative 3D Visualization:** Uses Google Veo to generate 3D-style rotating medical visualizations of the patient's body type.
 - **Real-time & Responsive:** Built with Angular signals for a reactive UI that updates instantly as data is entered.
 - **Modern UI/UX:** A minimalist, professional interface designed for clinical environments, built with Tailwind CSS.
 
@@ -38,9 +39,11 @@ graph TD
         UI -->|Selects Body Part| BodyMap[BodyViewer Component]
         UI -->|Enters Data| Intake[IntakeForm Component]
         UI -->|Requests Analysis| Analysis[Analysis Component]
+        UI -->|Dictates Notes| Dictation[Dictation Service]
         
         BodyMap -->|Updates| State[PatientState Service]
         Intake -->|Updates| State
+        Dictation -->|Updates| Intake
         
         Analysis -->|Reads| State
         Analysis -->|Calls| GeminiSvc[Gemini Service]
@@ -49,12 +52,10 @@ graph TD
     
     subgraph "Google Cloud / AI Studio"
         GeminiSvc -->|Generate Content| Flash[Gemini 2.5 Flash]
-        GeminiSvc -->|Reasoning| Pro[Gemini 2.0 Pro]
         VeoSvc -->|Generate Video| Veo[Veo 3.1]
     end
     
     Flash -->|Returns JSON/Text| GeminiSvc
-    Pro -->|Returns Analysis| GeminiSvc
     Veo -->|Returns Video URI| VeoSvc
 ```
 
@@ -72,8 +73,7 @@ This project leverages the following Google technologies:
 - **Framework:** Angular (v18+, Standalone Components, Zoneless)
 - **Styling:** Tailwind CSS
 - **AI Integration:** 
-  - `gemini-2.5-flash` (Fast data processing)
-  - `gemini-2.0-pro-exp` (Complex medical reasoning)
+  - `gemini-2.5-flash` (Analysis & Chat)
   - `veo-3.1-fast-generate-preview` (3D Body Rotation Videos)
 - **Speech:** Web Speech API (SpeechRecognition & SpeechSynthesis)
 

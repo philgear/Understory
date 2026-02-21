@@ -219,15 +219,17 @@ export class PatientStateService {
 
 
   // --- Data Aggregation ---
-  getAllDataForPrompt(): string {
+  getAllDataForPrompt(patientHistory: HistoryEntry[] = []): string {
     const issues = this.issues();
     const vitals = this.vitals();
     const carePlan = this.activeCarePlan();
     
+    // 1. Current Issues
     const partsText = Object.values(issues).flat().map((i: BodyPartIssue) => 
       `- Body Part: ${i.name}, Pain Level: ${i.painLevel}/10, Description: ${i.description}`
     ).join('\n');
 
+    // 2. Vitals
     const vitalsText = `
     - BP: ${vitals.bp || 'N/A'}
     - HR: ${vitals.hr || 'N/A'}
@@ -237,14 +239,28 @@ export class PatientStateService {
     - Height: ${vitals.height || 'N/A'}
     `;
     
+    // 3. Historical Context (Last 3 visits and recent notes)
+    const recentHistory = patientHistory
+        .filter(h => h.type === 'Visit' || h.type === 'NoteCreated' || h.type === 'BookmarkAdded')
+        .slice(0, 5) // Limit to last 5 relevant entries to keep context manageable
+        .map(h => {
+            if (h.type === 'Visit') return `- Visit (${h.date}): ${h.summary}`;
+            if (h.type === 'NoteCreated') return `- Note (${h.date}): ${h.summary}`;
+            if (h.type === 'BookmarkAdded') return `- Bookmark (${h.date}): ${h.summary}`;
+            return '';
+        }).join('\n');
+
     let prompt = `
     Patient Goals/Chief Complaint: ${this.patientGoals()}
     
     Vitals:
     ${vitalsText}
 
-    Reported Body Issues:
+    Reported Body Issues (Current):
     ${partsText || 'None selected'}
+
+    Recent History & Context:
+    ${recentHistory || 'No recent history available.'}
     `;
 
     if (carePlan) {

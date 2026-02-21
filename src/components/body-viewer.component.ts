@@ -23,10 +23,10 @@ import { VeoService } from '../services/veo.service';
       }
 
       <!-- Minimalist View Toggle -->
-      <div class="absolute top-4 right-4 flex text-[10px] font-bold tracking-widest uppercase gap-4 z-20">
+      <div class="absolute top-4 right-4 flex text-[10px] font-bold tracking-widest uppercase gap-2 z-20">
         <button 
           (click)="manualRotation.set(0)" 
-          class="pb-1 border-b-2 transition-colors text-gray-500 hover:text-black"
+          class="px-3 py-2 border-b-2 transition-colors text-gray-500 hover:text-black"
           [class.border-black]="view() === 'front'"
           [class.text-black]="view() === 'front'"
           [class.border-transparent]="view() !== 'front'">
@@ -34,7 +34,7 @@ import { VeoService } from '../services/veo.service';
         </button>
         <button 
           (click)="manualRotation.set(180)" 
-          class="pb-1 border-b-2 transition-colors text-gray-500 hover:text-black"
+          class="px-3 py-2 border-b-2 transition-colors text-gray-500 hover:text-black"
           [class.border-black]="view() === 'back'"
           [class.text-black]="view() === 'back'"
           [class.border-transparent]="view() !== 'back'">
@@ -42,16 +42,16 @@ import { VeoService } from '../services/veo.service';
         </button>
         <button 
           (click)="manualRotation.set(90)" 
-          class="pb-1 border-b-2 transition-colors text-gray-500 hover:text-black"
+          class="px-3 py-2 border-b-2 transition-colors text-gray-500 hover:text-black"
           [class.border-black]="view() === 'side_right' || view() === 'side_left'"
           [class.text-black]="view() === 'side_right' || view() === 'side_left'"
           [class.border-transparent]="view() !== 'side_right' && view() !== 'side_left'">
           Side
         </button>
-        <div class="w-px h-3 bg-gray-300 self-center"></div>
+        <div class="w-px h-6 bg-gray-300 self-center mx-2"></div>
         <button 
           (click)="toggleInternalView()" 
-          class="pb-1 border-b-2 transition-colors text-gray-500 hover:text-black"
+          class="px-3 py-2 border-b-2 transition-colors text-gray-500 hover:text-black"
           [class.border-black]="isInternalView()"
           [class.text-black]="isInternalView()"
           [class.border-transparent]="!isInternalView()">
@@ -511,14 +511,14 @@ import { VeoService } from '../services/veo.service';
       
       <!-- Manual Controls -->
       <div class="absolute bottom-4 left-4 flex flex-col gap-2 z-20 no-print">
-        <button (click)="zoomIn()" class="p-2 bg-white border border-[#EEEEEE] hover:bg-[#F8F8F8] rounded-full shadow-sm transition-all active:scale-95">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+        <button (click)="zoomIn()" class="p-3 bg-white border border-[#EEEEEE] hover:bg-[#F8F8F8] rounded-full shadow-sm transition-all active:scale-95">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
         </button>
-        <button (click)="zoomOut()" class="p-2 bg-white border border-[#EEEEEE] hover:bg-[#F8F8F8] rounded-full shadow-sm transition-all active:scale-95">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/></svg>
+        <button (click)="zoomOut()" class="p-3 bg-white border border-[#EEEEEE] hover:bg-[#F8F8F8] rounded-full shadow-sm transition-all active:scale-95">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/></svg>
         </button>
-        <button (click)="resetControls()" class="p-2 bg-white border border-[#EEEEEE] hover:bg-[#F8F8F8] rounded-full shadow-sm transition-all active:scale-95" title="Reset View">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        <button (click)="resetControls()" class="p-3 bg-white border border-[#EEEEEE] hover:bg-[#F8F8F8] rounded-full shadow-sm transition-all active:scale-95" title="Reset View">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
         </button>
       </div>
 

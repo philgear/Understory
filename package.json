@@ -7,19 +7,22 @@
     "dev": "ng serve",
     "build": "ng build",
     "lint": "tsc --noEmit",
-    "preview": "ng serve --configuration=production"
+    "preview": "ng serve --configuration=production",
+    "start": "node server.js"
   },
   "dependencies": {
-    "rxjs": "^7.8.2",
-    "@google/genai": "^1.42.0",
-    "@angular/common": "^21.1.0",
-    "@angular/platform-browser": "^21.1.0",
-    "@angular/core": "^21.1.0",
-    "@angular/compiler": "^21.1.0",
-    "marked": "^17.0.3",
     "@angular/build": "^21.1.0",
     "@angular/cli": "^21.1.0",
+    "@angular/common": "^21.1.0",
+    "@angular/compiler": "^21.1.0",
     "@angular/compiler-cli": "^21.1.0",
+    "@angular/core": "^21.1.0",
+    "@angular/platform-browser": "^21.1.0",
+    "@google/genai": "^1.42.0",
+    "@types/express": "^5.0.6",
+    "express": "^5.2.1",
+    "marked": "^17.0.3",
+    "rxjs": "^7.8.2",
     "tailwindcss": "latest"
   },
   "devDependencies": {
