@@ -182,45 +182,64 @@ interface ParsedTranscriptEntry extends TranscriptEntry {
     <div #contentArea
          (mouseover)="handleContentMouseOver($event)" 
          (mouseleave)="handleContentMouseLeave()"
-         class="flex-1 overflow-y-auto p-8 min-h-0 relative">
-        @if (gemini.isLoading()) {
-          <div class="h-full flex flex-col items-center justify-center opacity-50 no-print">
-            <div class="w-8 h-8 border-2 border-[#EEEEEE] border-t-[#1C1C1C] rounded-full animate-spin mb-4"></div>
-            <p class="text-[10px] font-bold uppercase tracking-widest text-[#1C1C1C]">Processing Comprehensive Analysis</p>
-          </div>
-        }
-        @if (gemini.error() && !hasAnyReport(); as error) {
-          <div class="p-4 border border-red-200 bg-red-50 text-red-900 text-xs">
-            <strong class="block uppercase tracking-wider mb-1">System Error</strong>
-            {{ error }}
-          </div>
-        }
-        
-        <!-- AI Report Section -->
-        @if (reportSections(); as sections) {
-          <div class="rams-typography">
-              @for(section of sections; track $index) {
-                <div class="relative group/section">
-                    <div [innerHTML]="section.heading"></div>
-                     @if (state.isLiveAgentActive()) {
-                        <button (click)="insertSectionIntoChat(section.raw)"
-                                class="absolute -left-8 top-8 opacity-0 group-hover/section:opacity-100 transition-opacity text-gray-300 hover:text-[#689F38]"
-                                title="Insert section into chat">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M10 9h4V6h3l-5-5-5 5h3zm-1 1H6V7l-5 5 5 5v-3h3zm11 3-5 5v-3h-4v3l-5-5 5-5v3h4z"/></svg>
-                        </button>
-                    }
-                    <div [innerHTML]="section.contentHtml"></div>
+         class="flex-1 overflow-y-auto p-8 min-h-0 relative bg-[#F9FAFB]">
+         
+         <!-- TASK BRACKET: Analysis Engine -->
+         <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden min-h-full transition-all duration-300 hover:shadow-md">
+            <!-- Bracket Header -->
+            <div class="bg-gray-50/50 px-6 py-4 border-b border-gray-100 flex justify-between items-center">
+              <div class="flex items-center gap-2">
+                  <div class="w-1.5 h-4 bg-[#4527A0] rounded-full"></div>
+                  <span class="text-[10px] font-bold uppercase tracking-widest text-gray-500">Analysis Engine</span>
+              </div>
+              <div class="flex items-center gap-1.5 px-2 py-1 bg-purple-50 rounded-full border border-purple-100">
+                  <div class="w-1.5 h-1.5 rounded-full bg-purple-500 animate-pulse"></div>
+                  <span class="text-[10px] font-medium text-purple-700 uppercase tracking-wide">Processing</span>
+              </div>
+            </div>
+
+            <!-- Bracket Body -->
+            <div class="p-6">
+              @if (gemini.isLoading()) {
+                <div class="h-64 flex flex-col items-center justify-center opacity-50 no-print">
+                  <div class="w-8 h-8 border-2 border-[#EEEEEE] border-t-[#1C1C1C] rounded-full animate-spin mb-4"></div>
+                  <p class="text-[10px] font-bold uppercase tracking-widest text-[#1C1C1C]">Processing Comprehensive Analysis</p>
                 </div>
               }
-          </div>
-          <div class="mt-12 pt-4 border-t border-[#EEEEEE] text-[10px] text-gray-300 uppercase tracking-widest">
-            AI Generated Content. Physician Review Required.
-          </div>
-        } @else if (!gemini.isLoading() && !hasAnyReport()) {
-          <div class="h-40 border border-dashed border-gray-200 flex items-center justify-center no-print">
-            <p class="text-xs text-gray-300 font-medium">Waiting for input data...</p>
-          </div>
-        }
+              @if (gemini.error() && !hasAnyReport(); as error) {
+                <div class="p-4 border border-red-200 bg-red-50 text-red-900 text-xs rounded-lg mb-4">
+                  <strong class="block uppercase tracking-wider mb-1">System Error</strong>
+                  {{ error }}
+                </div>
+              }
+              
+              <!-- AI Report Section -->
+              @if (reportSections(); as sections) {
+                <div class="rams-typography">
+                    @for(section of sections; track $index) {
+                      <div class="relative group/section">
+                          <div [innerHTML]="section.heading"></div>
+                           @if (state.isLiveAgentActive()) {
+                              <button (click)="insertSectionIntoChat(section.raw)"
+                                      class="absolute -left-8 top-8 opacity-0 group-hover/section:opacity-100 transition-opacity text-gray-300 hover:text-[#689F38]"
+                                      title="Insert section into chat">
+                                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M10 9h4V6h3l-5-5-5 5h3zm-1 1H6V7l-5 5 5 5v-3h3zm11 3-5 5v-3h-4v3l-5-5 5-5v3h4z"/></svg>
+                              </button>
+                          }
+                          <div [innerHTML]="section.contentHtml"></div>
+                      </div>
+                    }
+                </div>
+                <div class="mt-12 pt-4 border-t border-[#EEEEEE] text-[10px] text-gray-300 uppercase tracking-widest">
+                  AI Generated Content. Physician Review Required.
+                </div>
+              } @else if (!gemini.isLoading() && !hasAnyReport()) {
+                <div class="h-64 border border-dashed border-gray-200 rounded-lg flex items-center justify-center no-print">
+                  <p class="text-xs text-gray-400 font-medium uppercase tracking-widest">Waiting for input data...</p>
+                </div>
+              }
+            </div>
+         </div>
 
         <!-- Interactive Toolbar -->
         @if (hoveredElement() && toolbarPosition(); as pos) {

@@ -71,7 +71,7 @@ import { DictationService } from '../services/dictation.service';
                             (input)="updateAge($event)"
                             [disabled]="isReviewMode()"
                             placeholder="0"
-                            class="w-full text-lg font-medium text-[#1C1C1C] placeholder-gray-300 bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 focus:bg-white focus:border-[#1C1C1C] focus:ring-0 transition-all disabled:text-gray-400 disabled:bg-gray-100"
+                            class="w-full text-lg font-medium text-[#1C1C1C] placeholder-gray-300 bg-gray-50 border border-gray-200 rounded-lg pl-4 pr-12 py-2 focus:bg-white focus:border-[#1C1C1C] focus:ring-0 transition-all disabled:text-gray-400 disabled:bg-gray-100"
                         />
                         <span class="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-gray-400 font-medium pointer-events-none">YRS</span>
                     </div>
@@ -83,7 +83,7 @@ import { DictationService } from '../services/dictation.service';
                             [value]="patient.gender"
                             (change)="updateGender($event)"
                             [disabled]="isReviewMode()"
-                            class="w-full text-lg font-medium text-[#1C1C1C] bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 focus:bg-white focus:border-[#1C1C1C] focus:ring-0 appearance-none disabled:text-gray-400 disabled:bg-gray-100 transition-all cursor-pointer">
+                            class="w-full text-lg font-medium text-[#1C1C1C] bg-gray-50 border border-gray-200 rounded-lg pl-4 pr-10 py-2 focus:bg-white focus:border-[#1C1C1C] focus:ring-0 appearance-none disabled:text-gray-400 disabled:bg-gray-100 transition-all cursor-pointer">
                             <option>Male</option>
                             <option>Female</option>
                             <option>Other</option>
@@ -137,52 +137,52 @@ import { DictationService } from '../services/dictation.service';
               </div>
 
               <!-- Vitals Grid -->
-              <div class="grid grid-cols-6 gap-4">
+              <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
                 <div class="flex flex-col gap-2 p-3 bg-gray-50 rounded-lg border border-gray-100 hover:border-gray-200 transition-colors">
                   <label class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">BP</label>
                   <div class="flex items-baseline gap-1">
                       <input type="text" placeholder="120/80" [value]="state.vitals().bp" (input)="updateVital('bp', $event)" [disabled]="isReviewMode()"
-                            class="w-full text-sm font-bold text-[#1C1C1C] placeholder-gray-300 bg-transparent border-none p-0 focus:ring-0 disabled:text-gray-400">
+                            class="flex-1 min-w-0 text-sm font-bold text-[#1C1C1C] placeholder-gray-300 bg-transparent border-none p-0 focus:ring-0 disabled:text-gray-400">
                   </div>
                 </div>
                 <div class="flex flex-col gap-2 p-3 bg-gray-50 rounded-lg border border-gray-100 hover:border-gray-200 transition-colors">
                   <label class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">HR</label>
                   <div class="flex items-baseline gap-1">
                       <input type="text" placeholder="--" [value]="state.vitals().hr" (input)="updateVital('hr', $event)" [disabled]="isReviewMode()"
-                            class="w-full text-sm font-bold text-[#1C1C1C] placeholder-gray-300 bg-transparent border-none p-0 focus:ring-0 disabled:text-gray-400">
-                      <span class="text-[9px] text-gray-400 font-medium">BPM</span>
+                            class="flex-1 min-w-0 text-sm font-bold text-[#1C1C1C] placeholder-gray-300 bg-transparent border-none p-0 focus:ring-0 disabled:text-gray-400">
+                      <span class="text-[9px] text-gray-400 font-medium shrink-0">BPM</span>
                   </div>
                 </div>
                 <div class="flex flex-col gap-2 p-3 bg-gray-50 rounded-lg border border-gray-100 hover:border-gray-200 transition-colors">
                   <label class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">SpO2</label>
                   <div class="flex items-baseline gap-1">
                       <input type="text" placeholder="--" [value]="state.vitals().spO2" (input)="updateVital('spO2', $event)" [disabled]="isReviewMode()"
-                            class="w-full text-sm font-bold text-[#1C1C1C] placeholder-gray-300 bg-transparent border-none p-0 focus:ring-0 disabled:text-gray-400">
-                      <span class="text-[9px] text-gray-400 font-medium">%</span>
+                            class="flex-1 min-w-0 text-sm font-bold text-[#1C1C1C] placeholder-gray-300 bg-transparent border-none p-0 focus:ring-0 disabled:text-gray-400">
+                      <span class="text-[9px] text-gray-400 font-medium shrink-0">%</span>
                   </div>
                 </div>
                 <div class="flex flex-col gap-2 p-3 bg-gray-50 rounded-lg border border-gray-100 hover:border-gray-200 transition-colors">
                   <label class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Temp</label>
                   <div class="flex items-baseline gap-1">
                       <input type="text" placeholder="--" [value]="state.vitals().temp" (input)="updateVital('temp', $event)" [disabled]="isReviewMode()"
-                            class="w-full text-sm font-bold text-[#1C1C1C] placeholder-gray-300 bg-transparent border-none p-0 focus:ring-0 disabled:text-gray-400">
-                      <span class="text-[9px] text-gray-400 font-medium">°F</span>
+                            class="flex-1 min-w-0 text-sm font-bold text-[#1C1C1C] placeholder-gray-300 bg-transparent border-none p-0 focus:ring-0 disabled:text-gray-400">
+                      <span class="text-[9px] text-gray-400 font-medium shrink-0">°F</span>
                   </div>
                 </div>
                 <div class="flex flex-col gap-2 p-3 bg-gray-50 rounded-lg border border-gray-100 hover:border-gray-200 transition-colors">
                   <label class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Weight</label>
                   <div class="flex items-baseline gap-1">
                       <input type="text" placeholder="--" [value]="state.vitals().weight" (input)="updateVital('weight', $event)" [disabled]="isReviewMode()"
-                            class="w-full text-sm font-bold text-[#1C1C1C] placeholder-gray-300 bg-transparent border-none p-0 focus:ring-0 disabled:text-gray-400">
-                      <span class="text-[9px] text-gray-400 font-medium">LBS</span>
+                            class="flex-1 min-w-0 text-sm font-bold text-[#1C1C1C] placeholder-gray-300 bg-transparent border-none p-0 focus:ring-0 disabled:text-gray-400">
+                      <span class="text-[9px] text-gray-400 font-medium shrink-0">LBS</span>
                   </div>
                 </div>
                 <div class="flex flex-col gap-2 p-3 bg-gray-50 rounded-lg border border-gray-100 hover:border-gray-200 transition-colors">
                   <label class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Height</label>
                   <div class="flex items-baseline gap-1">
                       <input type="text" placeholder="--/--" [value]="state.vitals().height" (input)="updateVital('height', $event)" [disabled]="isReviewMode()"
-                            class="w-full text-sm font-bold text-[#1C1C1C] placeholder-gray-300 bg-transparent border-none p-0 focus:ring-0 disabled:text-gray-400">
-                      <span class="text-[9px] text-gray-400 font-medium">FT</span>
+                            class="flex-1 min-w-0 text-sm font-bold text-[#1C1C1C] placeholder-gray-300 bg-transparent border-none p-0 focus:ring-0 disabled:text-gray-400">
+                      <span class="text-[9px] text-gray-400 font-medium shrink-0">FT</span>
                   </div>
                 </div>
               </div>
