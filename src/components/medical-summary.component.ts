@@ -104,9 +104,28 @@ Chart.register(...registerables);
 
                 <!-- Patient Trends Chart -->
                 <section>
-                    <h2 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 font-sans">Pain Severity Trends</h2>
-                    <div class="w-full h-64 bg-white border border-gray-100 rounded-lg p-4">
-                        <canvas #trendChart></canvas>
+                    <h2 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 font-sans">Health Trends Dashboard</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="w-full h-48 bg-white border border-gray-100 rounded-lg p-4 flex flex-col">
+                            <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Pain Severity</h3>
+                            <div class="relative flex-1 min-h-0"><canvas #painChart></canvas></div>
+                        </div>
+                        <div class="w-full h-48 bg-white border border-gray-100 rounded-lg p-4 flex flex-col">
+                            <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Blood Pressure</h3>
+                            <div class="relative flex-1 min-h-0"><canvas #bpChart></canvas></div>
+                        </div>
+                        <div class="w-full h-48 bg-white border border-gray-100 rounded-lg p-4 flex flex-col">
+                            <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Heart Rate</h3>
+                            <div class="relative flex-1 min-h-0"><canvas #hrChart></canvas></div>
+                        </div>
+                        <div class="w-full h-48 bg-white border border-gray-100 rounded-lg p-4 flex flex-col">
+                            <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">SpO2</h3>
+                            <div class="relative flex-1 min-h-0"><canvas #spo2Chart></canvas></div>
+                        </div>
+                        <div class="w-full h-48 bg-white border border-gray-100 rounded-lg p-4 flex flex-col md:col-span-2">
+                            <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Temperature</h3>
+                            <div class="relative flex-1 min-h-0"><canvas #tempChart></canvas></div>
+                        </div>
                     </div>
                 </section>
 
@@ -178,8 +197,19 @@ export class MedicalChartSummaryComponent implements AfterViewInit {
   patientManager = inject(PatientManagementService);
   today = new Date();
 
-  @ViewChild('trendChart') trendChartRef!: ElementRef<HTMLCanvasElement>;
-  private chartInstance: Chart | null = null;
+  @ViewChild('painChart') painChartRef!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('bpChart') bpChartRef!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('hrChart') hrChartRef!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('spo2Chart') spo2ChartRef!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('tempChart') tempChartRef!: ElementRef<HTMLCanvasElement>;
+
+  private charts: { [key: string]: Chart | null } = {
+    pain: null,
+    bp: null,
+    hr: null,
+    spo2: null,
+    temp: null
+  };
 
   patient = computed(() => {
     const id = this.patientManager.selectedPatientId();
@@ -192,17 +222,17 @@ export class MedicalChartSummaryComponent implements AfterViewInit {
   bpData = computed(() => {
     const bpString = this.state.vitals().bp;
     if (!bpString || !bpString.includes('/')) return { systolic: 0, diastolic: 0, valid: false, systolicWidth: 0, diastolicWidth: 0 };
-    
+
     const [systolic, diastolic] = bpString.split('/').map(s => parseInt(s.trim(), 10));
     const valid = !isNaN(systolic) && !isNaN(diastolic);
-    
+
     // Max value on graph for scaling
     const maxSystolic = 200;
     const maxDiastolic = 150;
 
-    return { 
-      systolic, 
-      diastolic, 
+    return {
+      systolic,
+      diastolic,
       valid,
       systolicWidth: (systolic / maxSystolic) * 100,
       diastolicWidth: (diastolic / maxDiastolic) * 100
@@ -235,25 +265,35 @@ export class MedicalChartSummaryComponent implements AfterViewInit {
   }
 
   private renderChart() {
-    if (!this.trendChartRef) return;
-    
-    const ctx = this.trendChartRef.nativeElement.getContext('2d');
-    if (!ctx) return;
-
-    if (this.chartInstance) {
-      this.chartInstance.destroy();
-    }
-
     const p = this.patient();
     if (!p) return;
 
-    // Extract pain trends from history
+    Object.values(this.charts).forEach(chart => {
+      if (chart) chart.destroy();
+    });
+
     const dates: string[] = [];
     const painLevels: number[] = [];
+    const systolicLevels: (number | null)[] = [];
+    const diastolicLevels: (number | null)[] = [];
+    const hrLevels: (number | null)[] = [];
+    const spo2Levels: (number | null)[] = [];
+    const tempLevels: (number | null)[] = [];
 
-    // Sort history by date ascending for the chart
+    const parseBp = (bp: string | undefined): [number | null, number | null] => {
+      if (!bp || !bp.includes('/')) return [null, null];
+      const parts = bp.split('/');
+      return [parseInt(parts[0], 10) || null, parseInt(parts[1], 10) || null];
+    };
+
+    const parseNum = (val: string | undefined): number | null => {
+      if (!val) return null;
+      const num = parseFloat(val);
+      return isNaN(num) ? null : num;
+    };
+
     const sortedHistory = [...p.history].sort((a, b) => a.date.localeCompare(b.date));
-    
+
     sortedHistory.forEach(entry => {
       if (entry.type === 'Visit' || entry.type === 'ChartArchived') {
         let maxPain = 0;
@@ -266,10 +306,24 @@ export class MedicalChartSummaryComponent implements AfterViewInit {
         }
         dates.push(entry.date);
         painLevels.push(maxPain);
+
+        if (entry.state && entry.state.vitals) {
+          const [sys, dia] = parseBp(entry.state.vitals.bp);
+          systolicLevels.push(sys);
+          diastolicLevels.push(dia);
+          hrLevels.push(parseNum(entry.state.vitals.hr));
+          spo2Levels.push(parseNum(entry.state.vitals.spO2));
+          tempLevels.push(parseNum(entry.state.vitals.temp));
+        } else {
+          systolicLevels.push(null);
+          diastolicLevels.push(null);
+          hrLevels.push(null);
+          spo2Levels.push(null);
+          tempLevels.push(null);
+        }
       }
     });
 
-    // Add current state if not already in history
     let currentMaxPain = 0;
     const currentIssues = this.state.issues();
     Object.values(currentIssues).flat().forEach(issue => {
@@ -277,53 +331,93 @@ export class MedicalChartSummaryComponent implements AfterViewInit {
         currentMaxPain = issue.painLevel;
       }
     });
+
     dates.push('Current');
     painLevels.push(currentMaxPain);
 
-    this.chartInstance = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: dates,
-        datasets: [{
-          label: 'Max Pain Severity',
-          data: painLevels,
-          borderColor: '#689F38',
-          backgroundColor: 'rgba(104, 159, 56, 0.1)',
-          borderWidth: 2,
-          pointBackgroundColor: '#1C1C1C',
-          pointBorderColor: '#fff',
-          pointBorderWidth: 2,
-          pointRadius: 4,
-          fill: true,
-          tension: 0.3
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          y: {
-            beginAtZero: true,
-            max: 10,
-            ticks: { stepSize: 2 }
-          }
-        },
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              label: (context) => `Pain Level: ${context.parsed.y}/10`
+    const [currSys, currDia] = parseBp(this.state.vitals().bp);
+    systolicLevels.push(currSys);
+    diastolicLevels.push(currDia);
+    hrLevels.push(parseNum(this.state.vitals().hr));
+    spo2Levels.push(parseNum(this.state.vitals().spO2));
+    tempLevels.push(parseNum(this.state.vitals().temp));
+
+    const createChart = (ref: ElementRef<HTMLCanvasElement>, label: string, data: (number | null)[], color: string, dataset2?: any, yOpts?: any) => {
+      if (!ref || !ref.nativeElement) return null;
+      const ctx = ref.nativeElement.getContext('2d');
+      if (!ctx) return null;
+
+      const datasets = [{
+        label,
+        data,
+        borderColor: color,
+        backgroundColor: color.replace(')', ', 0.1)').replace('rgb', 'rgba'),
+        borderWidth: 2,
+        pointBackgroundColor: '#1C1C1C',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2,
+        pointRadius: 4,
+        fill: true,
+        tension: 0.3,
+        spanGaps: true
+      }];
+
+      if (dataset2) {
+        datasets.push({
+          ...dataset2,
+          spanGaps: true
+        });
+      }
+
+      return new Chart(ctx, {
+        type: 'line',
+        data: { labels: dates, datasets },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: false,
+              ...yOpts
+            }
+          },
+          plugins: {
+            legend: { display: !!dataset2 },
+            tooltip: {
+              callbacks: {
+                label: (context) => `${context.dataset.label}: ${context.parsed.y}`
+              }
             }
           }
         }
-      }
-    });
+      });
+    };
+
+    setTimeout(() => {
+      this.charts['pain'] = createChart(this.painChartRef, 'Max Pain', painLevels, '#689F38', undefined, { max: 10, beginAtZero: true, ticks: { stepSize: 2 } });
+      this.charts['bp'] = createChart(this.bpChartRef, 'Systolic', systolicLevels, '#EF4444', {
+        label: 'Diastolic',
+        data: diastolicLevels,
+        borderColor: '#3B82F6',
+        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+        borderWidth: 2,
+        pointBackgroundColor: '#1C1C1C',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2,
+        pointRadius: 4,
+        fill: true,
+        tension: 0.3
+      });
+      this.charts['hr'] = createChart(this.hrChartRef, 'Heart Rate (bpm)', hrLevels, '#F59E0B');
+      this.charts['spo2'] = createChart(this.spo2ChartRef, 'SpO2 (%)', spo2Levels, '#8B5CF6');
+      this.charts['temp'] = createChart(this.tempChartRef, 'Temperature (°F)', tempLevels, '#10B981');
+    }, 0);
   }
 
   finalizeChart() {
     const patientId = this.patientManager.selectedPatientId();
     if (!patientId) return;
-    
+
     const chartState: PatientState = this.state.getCurrentState();
 
     const historyEntry: HistoryEntry = {
@@ -332,7 +426,7 @@ export class MedicalChartSummaryComponent implements AfterViewInit {
       summary: 'Medical chart finalized and archived for this visit.',
       state: chartState,
     };
-    
+
     this.patientManager.addHistoryEntry(patientId, historyEntry);
   }
 
@@ -345,10 +439,10 @@ export class MedicalChartSummaryComponent implements AfterViewInit {
     if (draftItems.length === 0) return;
 
     const currentPlan = this.state.activeCarePlan() || '';
-    
+
     const newContent = draftItems.map(item => `- ${item}`).join('\n');
-    
-    const updatedPlan = currentPlan 
+
+    const updatedPlan = currentPlan
       ? `${currentPlan}\n\n### Added ${new Date().toLocaleDateString()}\n${newContent}`
       : `### Care Plan\n${newContent}`;
 
