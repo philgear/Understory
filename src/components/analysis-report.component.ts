@@ -51,24 +51,56 @@ interface ParsedTranscriptEntry extends TranscriptEntry {
   },
   styles: [`
     /* Premium Inter Typography Styles for Care Plan Content */
-    .rams-typography h1, 
-    .rams-typography h2, 
+    .rams-typography h1 {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #111827;
+      margin-top: 2.5rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 2px solid #E5E7EB;
+      padding-bottom: 0.75rem;
+    }
+
+    .rams-typography h2 {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: #374151;
+      margin-top: 2rem;
+      margin-bottom: 1.25rem;
+      border-bottom: 1px solid #E5E7EB;
+      padding-bottom: 0.5rem;
+    }
+
     .rams-typography h3 {
       font-family: 'Inter', sans-serif;
-      font-size: 9px;
+      font-size: 10px;
       text-transform: uppercase;
       letter-spacing: 0.1em;
       font-weight: 700;
-      color: #9CA3AF;
+      color: #6B7280;
       margin-top: 2rem;
       margin-bottom: 1rem;
       border-bottom: 1px solid #E5E7EB;
       padding-bottom: 0.5rem;
     }
+
+    .rams-typography h4,
+    .rams-typography h5,
+    .rams-typography h6 {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: #1F2937;
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+    }
     
     .rams-typography h1:first-child,
     .rams-typography h2:first-child,
-    .rams-typography h3:first-child {
+    .rams-typography h3:first-child,
+    .rams-typography h4:first-child {
       margin-top: 0;
     }
 
