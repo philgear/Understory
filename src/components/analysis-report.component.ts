@@ -26,48 +26,55 @@ interface ParsedTranscriptEntry extends TranscriptEntry {
     'class': 'block h-full flex flex-col overflow-hidden relative'
   },
   styles: [`
-    /* Global Typography Styles for Report Content */
+    /* Premium Inter Typography Styles for Care Plan Content */
     .rams-typography h1, 
     .rams-typography h2, 
     .rams-typography h3 {
       font-family: 'Inter', sans-serif;
-      font-size: 0.7rem;
+      font-size: 0.8rem;
       text-transform: uppercase;
-      letter-spacing: 0.15em;
-      font-weight: 700;
-      color: #AAAAAA;
+      letter-spacing: 0.12em;
+      font-weight: 600;
+      color: #374151; /* gray-700 */
       margin-top: 2rem;
-      margin-bottom: 0.75rem;
-      border-bottom: 1px solid #EEEEEE;
-      padding-bottom: 0.25rem;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid #E5E7EB; /* gray-200 */
+      padding-bottom: 0.5rem;
     }
     
     .rams-typography h1:first-child,
-    .rams-typography h2:first-child {
+    .rams-typography h2:first-child,
+    .rams-typography h3:first-child {
       margin-top: 0;
     }
 
     .rams-typography p,
-    .rams-typography li {
-      font-family: 'Cinzel', serif;
-      font-size: 1rem;
+    .rams-typography li,
+    .rams-typography td,
+    .rams-typography th {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
       font-weight: 400;
-      line-height: 1.7;
-      margin-bottom: 1.25rem;
-      color: #444444;
-      cursor: pointer;
-      border-radius: 3px;
-      transition: background-color 0.2s ease-in-out;
-    }
-    .rams-typography p:hover,
-    .rams-typography li:hover {
-      background-color: #F1F8E9;
+      line-height: 1.75;
+      color: #374151; /* gray-700 */
     }
 
+    .rams-typography p {
+      margin-bottom: 1.25rem;
+      padding: 0.25rem 0;
+      border-radius: 4px;
+      transition: background-color 0.2s ease-in-out;
+      cursor: pointer;
+    }
+    
+    .rams-typography p:hover,
+    .rams-typography li:hover {
+      background-color: #F3F4F6; /* gray-100 */
+    }
 
     .rams-typography strong {
       font-weight: 600;
-      color: #1C1C1C;
+      color: #111827; /* gray-900 */
     }
 
     .rams-typography ul {
@@ -78,31 +85,68 @@ interface ParsedTranscriptEntry extends TranscriptEntry {
 
     .rams-typography li {
       margin-bottom: 0.5rem;
-      padding-left: 1.25rem;
+      padding: 0.25rem 0.25rem 0.25rem 1.5rem;
       position: relative;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background-color 0.2s ease-in-out;
     }
 
     .rams-typography li::before {
       content: '';
-      width: 4px;
-      height: 4px;
-      background: #689F38;
+      width: 5px;
+      height: 5px;
+      background: #4B5563; /* gray-600 */
+      border-radius: 50%;
       position: absolute;
-      left: 0;
-      top: 0.8em;
+      left: 0.5rem;
+      top: 1em;
     }
     
     .rams-typography blockquote {
-      border-left: 2px solid #EEEEEE;
-      padding-left: 1rem;
-      font-style: italic;
-      color: #777777;
+      border-left: 3px solid #689F38; /* brand green */
+      padding: 0.75rem 1.25rem;
+      background-color: #F8FAF8;
+      font-style: normal;
+      font-weight: 500;
+      color: #4B5563; /* gray-600 */
       margin: 1.5rem 0;
+      border-radius: 0 4px 4px 0;
+    }
+
+    .rams-typography table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin: 1.5rem 0;
+      border-radius: 8px;
+      border: 1px solid #E5E7EB;
+      overflow: hidden;
+    }
+
+    .rams-typography th {
+      background-color: #F9FAFB;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid #E5E7EB;
+      text-align: left;
+    }
+
+    .rams-typography td {
+      padding: 0.875rem 1rem;
+      border-bottom: 1px solid #F3F4F6;
+    }
+
+    .rams-typography tr:last-child td {
+      border-bottom: none;
     }
 
     /* Task Bracketing Styles */
     .rams-typography .bracket-removed {
-      opacity: 0.35 !important;
+      opacity: 0.4 !important;
       text-decoration: line-through !important;
       background-color: transparent !important;
       border-left: 3px solid transparent !important;
@@ -116,7 +160,11 @@ interface ParsedTranscriptEntry extends TranscriptEntry {
     /* Ensure padding is consistent despite border addition */
     .rams-typography p.bracket-added,
     .rams-typography p.bracket-removed {
-       padding-left: 0.5rem;
+       padding-left: 0.75rem;
+    }
+    .rams-typography li.bracket-added,
+    .rams-typography li.bracket-removed {
+       padding-left: 1.75rem;
     }
     
     .rams-typography .bracket-removed,

@@ -326,6 +326,13 @@ export class MedicalChartSummaryComponent implements AfterViewInit {
 
     const createChart = (ref: ElementRef<HTMLCanvasElement>, label: string, data: (number | null)[], color: string, dataset2?: any, yOpts?: any) => {
       if (!ref || !ref.nativeElement) return null;
+
+      // Destroy existing chart if present to prevent "Canvas is already in use" error
+      const existingChart = Chart.getChart(ref.nativeElement);
+      if (existingChart) {
+        existingChart.destroy();
+      }
+
       const ctx = ref.nativeElement.getContext('2d');
       if (!ctx) return null;
 
