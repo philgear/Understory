@@ -17,7 +17,6 @@
     "isolatedModules": true,
     "moduleDetection": "force",
     "allowJs": true,
-    "jsx": "react-jsx",
     "paths": {
       "@/*": [
         "./*"
@@ -25,7 +24,7 @@
     }
   },
   "files": [
-    "./index.tsx",
+    "./main.ts",
     "./src/globals.d.ts"
   ],
   "angularCompilerOptions": {

@@ -14,19 +14,21 @@ export type AnalysisLens = 'Standard' | 'Differential Diagnosis' | 'Key Question
 export class GeminiService {
   private ai: GoogleGenAI;
   private chat: Chat | null = null;
-  
+
   readonly isLoading = signal<boolean>(false);
   readonly error = signal<string | null>(null);
 
   // Store analysis reports for each lens
   readonly analysisResults = signal<Partial<Record<AnalysisLens, string>>>({});
-  
+
   // For live agent chat
   readonly transcript = signal<TranscriptEntry[]>([]);
 
   constructor() {
     // The API key is assumed to be available in the execution environment's process.env
-    this.ai = new GoogleGenAI({apiKey: process.env.GEMINI_API_KEY!});
+    const env = typeof process !== 'undefined' ? process.env : {} as any;
+    const apiKey = env?.GEMINI_API_KEY || 'waiting-for-key';
+    this.ai = new GoogleGenAI({ apiKey: apiKey });
   }
 
   /**
@@ -40,7 +42,7 @@ export class GeminiService {
     this.transcript.set([]);
     this.chat = null;
   }
-  
+
   /**
    * Loads a previously generated analysis report into the state for viewing.
    */
@@ -68,33 +70,33 @@ export class GeminiService {
     };
 
     try {
-        // Execute requests sequentially to avoid rate limits or parallel execution issues
-        for (const lens of lenses) {
-            const systemInstruction = systemInstructions[lens];
-            try {
-                const response: GenerateContentResponse = await this.ai.models.generateContent({
-                    model: 'gemini-2.5-flash',
-                    contents: patientData,
-                    config: {
-                        systemInstruction: systemInstruction,
-                    }
-                });
-                newReport[lens] = response.text;
-            } catch (e) {
-                console.error(`Error generating report for lens: ${lens}`, e);
-                newReport[lens] = `### Error\nAn error occurred while generating the analysis for this section. Please try again.`;
+      // Execute requests sequentially to avoid rate limits or parallel execution issues
+      for (const lens of lenses) {
+        const systemInstruction = systemInstructions[lens];
+        try {
+          const response: GenerateContentResponse = await this.ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: patientData,
+            config: {
+              systemInstruction: systemInstruction,
             }
+          });
+          newReport[lens] = response.text;
+        } catch (e) {
+          console.error(`Error generating report for lens: ${lens}`, e);
+          newReport[lens] = `### Error\nAn error occurred while generating the analysis for this section. Please try again.`;
         }
+      }
 
-        this.analysisResults.set(newReport);
-        return newReport;
+      this.analysisResults.set(newReport);
+      return newReport;
 
     } catch (e: any) {
-        const errorMessage = String(e?.message ?? e);
-        this.error.set(errorMessage || "A top-level error occurred while communicating with the analysis service.");
-        return {};
+      const errorMessage = String(e?.message ?? e);
+      this.error.set(errorMessage || "A top-level error occurred while communicating with the analysis service.");
+      return {};
     } finally {
-        this.isLoading.set(false);
+      this.isLoading.set(false);
     }
   }
 
@@ -104,7 +106,7 @@ export class GeminiService {
   startChatSession(patientData: string) {
     this.transcript.set([]);
     const systemInstruction = `You are a friendly and professional medical AI assistant named "Aura". You are speaking with a doctor. You have already reviewed the following patient's file: \n\n${patientData}\n\nYour role is to answer the doctor's questions concisely, provide differential diagnoses, suggest relevant tests, or research medical topics in real-time. Keep your answers brief and to the point. Be ready to elaborate when asked.`;
-    
+
     this.chat = this.ai.chats.create({
       model: 'gemini-2.5-flash',
       config: {
@@ -146,7 +148,7 @@ export class GeminiService {
     this.isLoading.set(true);
     this.error.set(null);
     this.transcript.update(t => [...t, { role: 'user', text: message }]);
-    
+
     if (!this.chat) {
       const errorMsg = "Chat session not initialized.";
       this.error.set(errorMsg);
@@ -158,7 +160,7 @@ export class GeminiService {
     try {
       const response: GenerateContentResponse = await this.chat.sendMessage({ message });
       const responseText = response.text;
-      
+
       this.transcript.update(t => [...t, { role: 'model', text: responseText }]);
       return responseText;
 

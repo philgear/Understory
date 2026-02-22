@@ -8,6 +8,7 @@ export interface BodyPartIssue {
   painLevel: number; // 1-10
   description: string;
   symptoms: string[];
+  recommendation?: string;
 }
 
 export interface PatientVitals {
@@ -50,7 +51,7 @@ export class PatientStateService {
 
 
   // --- Computed State ---
-  readonly hasIssues = computed(() => 
+  readonly hasIssues = computed(() =>
     Object.keys(this.issues()).length > 0 || this.patientGoals().length > 0
   );
 
@@ -59,7 +60,7 @@ export class PatientStateService {
     const issues = this.issues()[partId];
     return !!issues && issues.length > 0;
   }
-  
+
   // Helper to check if a part has a note with a pain level > 0
   hasPainfulIssue(partId: string): boolean {
     const issues = this.issues()[partId];
@@ -69,7 +70,7 @@ export class PatientStateService {
   // --- Actions ---
   selectPart(partId: string | null) {
     this.selectedPartId.set(partId);
-     if (!partId) {
+    if (!partId) {
       this.selectedNoteId.set(null); // Deselect note when part is deselected
     }
   }
@@ -133,7 +134,7 @@ export class PatientStateService {
       [field]: value
     }));
   }
-  
+
   updateActiveCarePlan(plan: string | null) {
     this.activeCarePlan.set(plan);
   }
@@ -166,14 +167,14 @@ export class PatientStateService {
     this.requestedResearchQuery.set(query);
     this.toggleResearchFrame(true);
   }
-  
+
   setViewingPastVisit(visit: HistoryEntry | null) {
     this.viewingPastVisit.set(visit);
   }
 
 
   // --- State Management for Multi-Patient ---
-  
+
   /** Clears all patient data to represent a clean slate. */
   clearState() {
     this.selectedPartId.set(null);
@@ -223,9 +224,9 @@ export class PatientStateService {
     const issues = this.issues();
     const vitals = this.vitals();
     const carePlan = this.activeCarePlan();
-    
+
     // 1. Current Issues
-    const partsText = Object.values(issues).flat().map((i: BodyPartIssue) => 
+    const partsText = Object.values(issues).flat().map((i: BodyPartIssue) =>
       `- Body Part: ${i.name}, Pain Level: ${i.painLevel}/10, Description: ${i.description}`
     ).join('\n');
 
@@ -238,17 +239,17 @@ export class PatientStateService {
     - Weight: ${vitals.weight || 'N/A'}
     - Height: ${vitals.height || 'N/A'}
     `;
-    
+
     // 3. Historical Context (Last 3 visits and recent notes)
     const recentHistory = patientHistory
-        .filter(h => h.type === 'Visit' || h.type === 'NoteCreated' || h.type === 'BookmarkAdded')
-        .slice(0, 5) // Limit to last 5 relevant entries to keep context manageable
-        .map(h => {
-            if (h.type === 'Visit') return `- Visit (${h.date}): ${h.summary}`;
-            if (h.type === 'NoteCreated') return `- Note (${h.date}): ${h.summary}`;
-            if (h.type === 'BookmarkAdded') return `- Bookmark (${h.date}): ${h.summary}`;
-            return '';
-        }).join('\n');
+      .filter(h => h.type === 'Visit' || h.type === 'NoteCreated' || h.type === 'BookmarkAdded')
+      .slice(0, 5) // Limit to last 5 relevant entries to keep context manageable
+      .map(h => {
+        if (h.type === 'Visit') return `- Visit (${h.date}): ${h.summary}`;
+        if (h.type === 'NoteCreated') return `- Note (${h.date}): ${h.summary}`;
+        if (h.type === 'BookmarkAdded') return `- Bookmark (${h.date}): ${h.summary}`;
+        return '';
+      }).join('\n');
 
     let prompt = `
     Patient Goals/Chief Complaint: ${this.patientGoals()}

@@ -23,7 +23,8 @@ export class VeoService {
     if (typeof window.aistudio?.hasSelectedApiKey === 'function') {
       return await window.aistudio.hasSelectedApiKey();
     }
-    return !!process.env.GEMINI_API_KEY;
+    const envKey = typeof process !== 'undefined' && process.env ? process.env.GEMINI_API_KEY : '';
+    return !!envKey;
   }
 
   async selectApiKey(): Promise<void> {
@@ -40,19 +41,20 @@ export class VeoService {
       error: null
     });
 
-    const apiKey = process.env.GEMINI_API_KEY || (process.env as any).API_KEY;
+    const env = typeof process !== 'undefined' ? process.env : {} as any;
+    const apiKey = env?.GEMINI_API_KEY || env?.API_KEY;
     if (!apiKey) {
       this.state.update(s => ({ ...s, isGenerating: false, error: 'API Key not found. Please select an API key.' }));
       return;
     }
 
     const ai = new GoogleGenAI({ apiKey });
-    
+
     const prompt = `A highly detailed medical 3D model of a human ${gender.toLowerCase()} body, ${type.toLowerCase()} view ${type === 'Internal' ? 'showing skeleton and major organs' : 'showing skin and surface anatomy'}, rotating 360 degrees smoothly on a pure white background. Clinical, professional medical visualization style. High resolution, 1080p.`;
 
     try {
       this.state.update(s => ({ ...s, progress: 'Requesting video generation (this may take a few minutes)...' }));
-      
+
       let operation = await ai.models.generateVideos({
         model: 'veo-3.1-fast-generate-preview',
         prompt: prompt,
@@ -76,10 +78,10 @@ export class VeoService {
       }
 
       const downloadLink = operation.response?.generatedVideos?.[0]?.video?.uri || (operation as any).result?.generatedVideos?.[0]?.video?.uri;
-      
+
       if (downloadLink) {
         this.state.update(s => ({ ...s, progress: 'Downloading video...' }));
-        
+
         // Fetch the video with the API key header
         const videoResponse = await fetch(downloadLink, {
           headers: {
@@ -94,11 +96,11 @@ export class VeoService {
         const blob = await videoResponse.blob();
         const objectUrl = URL.createObjectURL(blob);
 
-        this.state.update(s => ({ 
-          ...s, 
-          isGenerating: false, 
+        this.state.update(s => ({
+          ...s,
+          isGenerating: false,
           progress: 'Generation complete!',
-          videoUrl: objectUrl 
+          videoUrl: objectUrl
         }));
       } else {
         console.error('Veo Operation Result:', operation);
