@@ -1,0 +1,55 @@
+{
+  "hash": "2c2b27b3",
+  "configHash": "e4f958c5",
+  "lockfileHash": "b9bea0c4",
+  "browserHash": "a01627bc",
+  "optimized": {
+    "@angular/common": {
+      "src": "../../../../../../node_modules/@angular/common/fesm2022/common.mjs",
+      "file": "@angular_common.js",
+      "fileHash": "e17bafa2",
+      "needsInterop": false
+    },
+    "@angular/core": {
+      "src": "../../../../../../node_modules/@angular/core/fesm2022/core.mjs",
+      "file": "@angular_core.js",
+      "fileHash": "61ef8e1e",
+      "needsInterop": false
+    },
+    "@angular/platform-browser": {
+      "src": "../../../../../../node_modules/@angular/platform-browser/fesm2022/platform-browser.mjs",
+      "file": "@angular_platform-browser.js",
+      "fileHash": "f59cf880",
+      "needsInterop": false
+    },
+    "@google/genai": {
+      "src": "../../../../../../node_modules/@google/genai/dist/web/index.mjs",
+      "file": "@google_genai.js",
+      "fileHash": "cca8f3f3",
+      "needsInterop": false
+    },
+    "chart.js": {
+      "src": "../../../../../../node_modules/chart.js/dist/chart.js",
+      "file": "chart__js.js",
+      "fileHash": "b78ca41b",
+      "needsInterop": false
+    },
+    "marked": {
+      "src": "../../../../../../node_modules/marked/lib/marked.esm.js",
+      "file": "marked.js",
+      "fileHash": "191ffdfb",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-JFF6U3UR": {
+      "file": "chunk-JFF6U3UR.js"
+    },
+    "chunk-TKVEC5AY": {
+      "file": "chunk-TKVEC5AY.js"
+    },
+    "chunk-46DXP6YY": {
+      "file": "chunk-46DXP6YY.js"
+    }
+  }
+}

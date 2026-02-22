@@ -81,22 +81,67 @@ const MOCK_PATIENTS: Patient[] = [
         summary: 'Care Plan Generated',
         report: {
           'Care Plan Overview': `### Executive Care Strategy
-Based on Eleanor's persistent cervicogenic headaches and shoulder tension, the primary goal is a multimodal approach combining physical therapy, ergonomic adjustments, and targeted pain management.
-- **Priority 1:** Relieve acute tension in the right trapezius and cervical spine.
-- **Priority 2:** Address root ergonomic and postural causes.
-- **Priority 3:** Implement long-term monitoring and stress management.`,
-          'Clinical Interventions': `### Recommended Interventions
-1.  **Physical Therapy:** 6 weeks of targeted PT focusing on cervical stabilization, deep neck flexor strengthening, and scapular retraction.
-2.  **Pharmacotherapy:** Short-term use of NSAIDs (e.g., Naproxen 500mg BID) during acute flare-ups. Consider muscle relaxants (e.g., Cyclobenzaprine 5mg at bedtime) for 7 days if tension disrupts sleep.
-3.  **Ergonomic Assessment:** Full evaluation of her workstation, specifically monitor height, chair support, and keyboard placement.`,
-          'Monitoring & Follow-up': `### Track & Review
-- **Pain Diary:** Have Eleanor keep a daily log of headache intensity, onset time, and triggers to isolate patterns.
-- **Follow-up:** Schedule a brief telehealth check-in in 2 weeks to assess the efficacy of the NSAIDs and physical therapy initiation. Full in-person follow-up in 6 weeks.
-- **Red Flags:** Advise patient to seek immediate care if headaches are accompanied by neurological symptoms (numbness, tingling in arms, visual changes) or if the pain becomes sudden and severe.`,
-          'Patient Education': `### Educational Directives
-- **Postural Awareness:** Instruct on the "chin tuck" exercise to perform hourly during computer use.
-- **Heat/Cold Therapy:** Use alternating heat and cold packs on the right trapezius for 15 minutes, 2-3 times a day.
-- **Stress Management:** Discuss the correlation between stress and muscle tension; recommend a baseline practice of mindful breathing (e.g., 4-7-8 method) during work breaks.`
+**STATUS: HIGH PRIORITY INTERVENTION**
+
+<hr/>
+
+#### Clinical Rationale
+Analysis of Eleanor's biometric trends indicates a direct correlation between sustained shoulder tension and headache onset. Vitals remain within normal parameters (BP: 130/85), though a 12% increase in heart rate is noted during peak pain episodes.
+
+- **Pathology:** Cervicogenic origin confirmed via segmental testing.
+- **Biometrics:** Stable BP suggests pain-induced sympathetic drive.
+
+#### Prioritized Objectives
+1. **Acute Tension Relief:** Targeted myofascial release of right trapezius and levator scapulae.
+2. **Cervical Stabilization:** Address C2-C3 mobility restrictions via Grade II manual therapy.
+3. **Ergonomic Drift:** Correct forward head posture (FHP) through workstation optimization.`,
+          'Clinical Interventions': `### Clinical Interventions
+**TARGETED THERAPEUTIC ROADMAP**
+
+<hr/>
+
+#### Phase 01: Acute Normalization
+- **Manual Therapy:** Grade II Cervical Mobilization. Focus on C2-C3 segments to restore arthrokinematics.
+- **Neuromuscular:** Dry Needling (RA). Active trigger point release in the upper trapezius.
+
+#### Phase 02: Structural Re-education
+- Implement **Deep Neck Flexor (DNF)** training protocol. Initial focus on isometric chin tucks with biofeedback monitoring to ensure recruitment of longus colli over superficial musculature.
+
+#### Clinical Outcome Projection
+> **70% Pain Reduction | 15° ROM Increase**
+> *Expected stabilization of C-spine within 4-6 weeks of adherence.*`,
+          'Monitoring & Follow-up': `### Track & Review Protocol
+**OBSERVATION & ESCALATION**
+
+<hr/>
+
+| Parameter | Frequency | Threshold / Goal | Action |
+| :--- | :---: | :--- | :--- |
+| **Pain Level (VAS)**| Daily | < 3/10 | Maintain NSAIDs PRN |
+| **Cervical ROM**    | Weekly | > 45° rotation | Advance to Phase 02 PT |
+| **Headache Freq.**  | Weekly | < 2 episodes/wk | Continue current plan |
+
+#### Red Flag Escalation
+**IMMEDIATE REVIEW REQUIRED IF:**
+- Onset of radicular symptoms (numbness/tingling in right UE).
+- Sudden, severe "thunderclap" headache.
+- Loss of cervical motor control.`,
+          'Patient Education': `### Patient Directives
+**LIFESTYLE & ACTIVITY MODIFICATIONS**
+
+<hr/>
+
+#### 1. Postural Awareness
+- **Action:** Anchor "chin tuck" posture to frequent environmental triggers (e.g., every time you send an email).
+- **Rationale:** Reduces chronic loading on the suboccipital muscles.
+
+#### 2. Thermal Modulation
+- **Action:** 15 mins alternating Heat/Cold therapy on the right shoulder, 3x daily.
+- **Rationale:** Heat promotes vasodilation for healing; cold interrupts the pain-spasm cycle.
+
+#### 3. Autonomic Regulation
+- **Action:** Integrate 4-7-8 breathing technique during peak stress hours.
+- **Rationale:** Mitigates the sympathetic nervous system's amplification of perceived pain.`
         }
       },
       { type: 'BookmarkAdded', date: '2024.06.15', summary: 'Cervicogenic Headaches', bookmark: { title: 'Cervicogenic Headaches', url: 'https://pubmed.ncbi.nlm.nih.gov/?term=cervicogenic+headache' } },
