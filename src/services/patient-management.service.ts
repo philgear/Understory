@@ -81,7 +81,7 @@ const MOCK_PATIENTS: Patient[] = [
         summary: 'Care Plan Generated',
         report: {
           'Care Plan Overview': `### Executive Care Strategy
-**STATUS: HIGH PRIORITY INTERVENTION**
+**STATUS:** HIGH PRIORITY INTERVENTION
 
 <hr/>
 

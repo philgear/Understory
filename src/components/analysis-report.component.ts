@@ -91,8 +91,8 @@ interface ParsedTranscriptEntry extends TranscriptEntry {
     .rams-typography h6 {
       font-family: 'Inter', sans-serif;
       font-size: 0.875rem;
-      font-weight: 700;
-      color: #1F2937;
+      font-weight: 800;
+      color: #000000;
       margin-top: 1.5rem;
       margin-bottom: 0.75rem;
     }
@@ -110,9 +110,9 @@ interface ParsedTranscriptEntry extends TranscriptEntry {
     .rams-typography th {
       font-family: 'Inter', sans-serif;
       font-size: 0.875rem;
-      font-weight: 700;
+      font-weight: 600;
       line-height: 1.5;
-      color: #1C1C1C;
+      color: #333333;
     }
 
     .rams-typography p {
@@ -129,8 +129,8 @@ interface ParsedTranscriptEntry extends TranscriptEntry {
     }
 
     .rams-typography strong {
-      font-weight: 600;
-      color: #111827; /* gray-900 */
+      font-weight: 800;
+      color: #000000;
     }
 
     .rams-typography ul {
