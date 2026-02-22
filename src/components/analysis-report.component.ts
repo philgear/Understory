@@ -21,7 +21,7 @@ interface ParsedTranscriptEntry extends TranscriptEntry {
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  encapsulation: ViewEncapsulation.None, 
+  encapsulation: ViewEncapsulation.None,
   host: {
     'class': 'block h-full flex flex-col overflow-hidden relative'
   },
@@ -99,16 +99,40 @@ interface ParsedTranscriptEntry extends TranscriptEntry {
       color: #777777;
       margin: 1.5rem 0;
     }
+
+    /* Task Bracketing Styles */
+    .rams-typography .bracket-removed {
+      opacity: 0.35 !important;
+      text-decoration: line-through !important;
+      background-color: transparent !important;
+      border-left: 3px solid transparent !important;
+    }
+    
+    .rams-typography .bracket-added {
+      background-color: #E8F5E9 !important;
+      border-left: 3px solid #689F38 !important;
+    }
+    
+    /* Ensure padding is consistent despite border addition */
+    .rams-typography p.bracket-added,
+    .rams-typography p.bracket-removed {
+       padding-left: 0.5rem;
+    }
+    
+    .rams-typography .bracket-removed,
+    .rams-typography .bracket-added {
+      transition: all 0.2s ease-in-out;
+    }
   `],
   template: `
     <!-- Report Header -->
     <div class="p-8 pb-4 flex justify-between items-end bg-white shrink-0 z-10 border-b border-[#EEEEEE] no-print">
       <div>
         <h2 class="text-sm font-bold text-[#1C1C1C] uppercase tracking-widest">
-            AI-Powered Analysis
+            Care Plan Recommendation Engine
         </h2>
         <p class="text-xs text-gray-400 mt-1">
-            Research & Live Consultation Module
+            AI-Guided Strategy & Voice Assistant
         </p>
       </div>
       
@@ -127,7 +151,7 @@ interface ParsedTranscriptEntry extends TranscriptEntry {
             }
           <button (click)="generate()" [disabled]="!state.hasIssues()"
             class="group flex items-center gap-2 px-4 py-2 bg-[#1C1C1C] text-white text-xs font-bold uppercase tracking-widest hover:bg-[#558B2F] disabled:opacity-20 disabled:hover:bg-[#1C1C1C] transition-colors">
-            @if (hasAnyReport()) { <span>Update</span> } @else { <span>Process</span> }
+            @if (hasAnyReport()) { <span>Refresh Recommendations</span> } @else { <span>Generate Care Plan</span> }
             <svg class="w-3 h-3 text-gray-400 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="square" stroke-linejoin="miter" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
           </button>
         </div>
@@ -138,41 +162,41 @@ interface ParsedTranscriptEntry extends TranscriptEntry {
     @if (hasAnyReport()) {
       <div class="px-8 py-3 border-b border-[#EEEEEE] no-print bg-white/50 backdrop-blur-sm">
         <div class="flex items-center gap-1 border-b border-gray-200">
-            <button (click)="changeLens('Standard')"
+            <button (click)="changeLens('Care Plan Overview')"
                     class="px-4 py-2 text-xs font-medium border-b-2 -mb-px transition-colors"
-                    [class.border-[#1C1C1C]]="activeLens() === 'Standard'"
-                    [class.text-[#1C1C1C]]="activeLens() === 'Standard'"
-                    [class.text-gray-500]="activeLens() !== 'Standard'"
-                    [class.border-transparent]="activeLens() !== 'Standard'"
-                    [class.hover:bg-gray-100]="activeLens() !== 'Standard'">
+                    [class.border-[#1C1C1C]]="activeLens() === 'Care Plan Overview'"
+                    [class.text-[#1C1C1C]]="activeLens() === 'Care Plan Overview'"
+                    [class.text-gray-500]="activeLens() !== 'Care Plan Overview'"
+                    [class.border-transparent]="activeLens() !== 'Care Plan Overview'"
+                    [class.hover:bg-gray-100]="activeLens() !== 'Care Plan Overview'">
               Overview
             </button>
-            <button (click)="changeLens('Differential Diagnosis')"
+            <button (click)="changeLens('Clinical Interventions')"
                     class="px-4 py-2 text-xs font-medium border-b-2 -mb-px transition-colors"
-                    [class.border-[#1C1C1C]]="activeLens() === 'Differential Diagnosis'"
-                    [class.text-[#1C1C1C]]="activeLens() === 'Differential Diagnosis'"
-                    [class.text-gray-500]="activeLens() !== 'Differential Diagnosis'"
-                    [class.border-transparent]="activeLens() !== 'Differential Diagnosis'"
-                    [class.hover:bg-gray-100]="activeLens() !== 'Differential Diagnosis'">
-              Differential Diagnosis
+                    [class.border-[#1C1C1C]]="activeLens() === 'Clinical Interventions'"
+                    [class.text-[#1C1C1C]]="activeLens() === 'Clinical Interventions'"
+                    [class.text-gray-500]="activeLens() !== 'Clinical Interventions'"
+                    [class.border-transparent]="activeLens() !== 'Clinical Interventions'"
+                    [class.hover:bg-gray-100]="activeLens() !== 'Clinical Interventions'">
+              Interventions
             </button>
-            <button (click)="changeLens('Key Questions')"
+            <button (click)="changeLens('Monitoring & Follow-up')"
                     class="px-4 py-2 text-xs font-medium border-b-2 -mb-px transition-colors"
-                    [class.border-[#1C1C1C]]="activeLens() === 'Key Questions'"
-                    [class.text-[#1C1C1C]]="activeLens() === 'Key Questions'"
-                    [class.text-gray-500]="activeLens() !== 'Key Questions'"
-                    [class.border-transparent]="activeLens() !== 'Key Questions'"
-                    [class.hover:bg-gray-100]="activeLens() !== 'Key Questions'">
-              Key Questions
+                    [class.border-[#1C1C1C]]="activeLens() === 'Monitoring & Follow-up'"
+                    [class.text-[#1C1C1C]]="activeLens() === 'Monitoring & Follow-up'"
+                    [class.text-gray-500]="activeLens() !== 'Monitoring & Follow-up'"
+                    [class.border-transparent]="activeLens() !== 'Monitoring & Follow-up'"
+                    [class.hover:bg-gray-100]="activeLens() !== 'Monitoring & Follow-up'">
+              Monitoring
             </button>
-            <button (click)="changeLens('Lifestyle Factors')"
+            <button (click)="changeLens('Patient Education')"
                     class="px-4 py-2 text-xs font-medium border-b-2 -mb-px transition-colors"
-                    [class.border-[#1C1C1C]]="activeLens() === 'Lifestyle Factors'"
-                    [class.text-[#1C1C1C]]="activeLens() === 'Lifestyle Factors'"
-                    [class.text-gray-500]="activeLens() !== 'Lifestyle Factors'"
-                    [class.border-transparent]="activeLens() !== 'Lifestyle Factors'"
-                    [class.hover:bg-gray-100]="activeLens() !== 'Lifestyle Factors'">
-              Lifestyle Factors
+                    [class.border-[#1C1C1C]]="activeLens() === 'Patient Education'"
+                    [class.text-[#1C1C1C]]="activeLens() === 'Patient Education'"
+                    [class.text-gray-500]="activeLens() !== 'Patient Education'"
+                    [class.border-transparent]="activeLens() !== 'Patient Education'"
+                    [class.hover:bg-gray-100]="activeLens() !== 'Patient Education'">
+              Education
             </button>
         </div>
       </div>
@@ -182,24 +206,11 @@ interface ParsedTranscriptEntry extends TranscriptEntry {
     <div #contentArea
          (mouseover)="handleContentMouseOver($event)" 
          (mouseleave)="handleContentMouseLeave()"
+         (dblclick)="handleContentDoubleClick($event)"
          class="flex-1 overflow-y-auto p-8 min-h-0 relative bg-[#F9FAFB]">
          
-         <!-- TASK BRACKET: Analysis Engine -->
-         <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden min-h-full transition-all duration-300 hover:shadow-md">
-            <!-- Bracket Header -->
-            <div class="bg-gray-50/50 px-6 py-4 border-b border-gray-100 flex justify-between items-center">
-              <div class="flex items-center gap-2">
-                  <div class="w-1.5 h-4 bg-[#4527A0] rounded-full"></div>
-                  <span class="text-[10px] font-bold uppercase tracking-widest text-gray-500">Analysis Engine</span>
-              </div>
-              <div class="flex items-center gap-1.5 px-2 py-1 bg-purple-50 rounded-full border border-purple-100">
-                  <div class="w-1.5 h-1.5 rounded-full bg-purple-500 animate-pulse"></div>
-                  <span class="text-[10px] font-medium text-purple-700 uppercase tracking-wide">Processing</span>
-              </div>
-            </div>
-
-            <!-- Bracket Body -->
-            <div class="p-6">
+         <!-- Analysis Engine Body -->
+         <div class="p-6 min-h-full">
               @if (gemini.isLoading()) {
                 <div class="h-64 flex flex-col items-center justify-center opacity-50 no-print">
                   <div class="w-8 h-8 border-2 border-[#EEEEEE] border-t-[#1C1C1C] rounded-full animate-spin mb-4"></div>
@@ -238,7 +249,6 @@ interface ParsedTranscriptEntry extends TranscriptEntry {
                   <p class="text-xs text-gray-400 font-medium uppercase tracking-widest">Waiting for input data...</p>
                 </div>
               }
-            </div>
          </div>
 
         <!-- Interactive Toolbar -->
@@ -438,9 +448,9 @@ export class AnalysisReportComponent implements OnDestroy {
   gemini = inject(GeminiService);
   state = inject(PatientStateService);
   patientManager = inject(PatientManagementService);
-  
+
   // --- Analysis State ---
-  activeLens = signal<AnalysisLens>('Standard');
+  activeLens = signal<AnalysisLens>('Care Plan Overview');
 
   // --- Hover Toolbar State ---
   hoveredElement = signal<HTMLElement | null>(null);
@@ -451,10 +461,10 @@ export class AnalysisReportComponent implements OnDestroy {
   agentState = signal<AgentState>('idle');
   permissionError = signal<string | null>(null);
   messageText = signal<string>('');
-  
+
   // --- Panel State ---
   panelMode = signal<'selection' | 'chat' | 'dictation'>('selection');
-  
+
   private recognition: any;
   private preferredVoice = signal<SpeechSynthesisVoice | undefined>(undefined);
   private hasStartedChat = false;
@@ -465,7 +475,7 @@ export class AnalysisReportComponent implements OnDestroy {
   private boundStopDrag = this.stopDrag.bind(this);
   private initialDragY: number = 0;
   private initialChatHeight: number = 0;
-  
+
   // --- Dictation State ---
   dictationText = signal('');
   isDictating = signal(false);
@@ -476,7 +486,7 @@ export class AnalysisReportComponent implements OnDestroy {
 
   hasAnyReport = computed(() => Object.keys(this.gemini.analysisResults()).length > 0);
   activeReport = computed(() => this.gemini.analysisResults()[this.activeLens()]);
-  
+
   reportSections = computed<ReportSection[] | null>(() => {
     const raw = this.activeReport();
     if (!raw) return null;
@@ -489,7 +499,7 @@ export class AnalysisReportComponent implements OnDestroy {
         const lines = part.split('\n');
         const headingMarkdown = lines[0];
         const contentMarkdown = lines.slice(1).join('\n');
-        
+
         sections.push({
           raw: part,
           heading: marked.parse(headingMarkdown) as string,
@@ -498,36 +508,36 @@ export class AnalysisReportComponent implements OnDestroy {
       }
       return sections;
     } catch (e) {
-        console.error('Markdown parse error', e);
-        return [{ raw: raw, heading: '<h3>Error</h3>', contentHtml: `<p>Could not parse report.</p>` }];
+      console.error('Markdown parse error', e);
+      return [{ raw: raw, heading: '<h3>Error</h3>', contentHtml: `<p>Could not parse report.</p>` }];
     }
   });
 
   parsedTranscript = computed<ParsedTranscriptEntry[]>(() => {
     const transcript = this.gemini.transcript();
     try {
-        return transcript.map(entry => {
-            if (entry.role === 'model') {
-                return { ...entry, htmlContent: this.renderInteractiveContent(entry.text) };
-            }
-            return entry;
-        });
+      return transcript.map(entry => {
+        if (entry.role === 'model') {
+          return { ...entry, htmlContent: this.renderInteractiveContent(entry.text) };
+        }
+        return entry;
+      });
     } catch (e) {
-        console.error('Transcript parse error', e);
-        return transcript;
+      console.error('Transcript parse error', e);
+      return transcript;
     }
   });
-  
+
   constructor() {
     this.initializeSpeechRecognition();
     this.loadVoices();
     speechSynthesis.onvoiceschanged = () => this.loadVoices();
-    
+
     // Auto-scroll effect
     effect(() => {
       // This effect depends on the parsedTranscript signal.
       // It will run whenever the transcript changes.
-      this.parsedTranscript(); 
+      this.parsedTranscript();
       this.scrollToBottom();
     });
 
@@ -552,24 +562,47 @@ export class AnalysisReportComponent implements OnDestroy {
   }
 
   // --- NEW HOVER & TOOLBAR LOGIC ---
+  handleContentDoubleClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    const element = target.closest<HTMLElement>('p, li');
+
+    if (element && element.innerText.trim()) {
+      const currentState = element.dataset['bracketState'] || 'normal';
+
+      element.classList.remove('bracket-removed', 'bracket-added');
+
+      if (currentState === 'normal') {
+        element.dataset['bracketState'] = 'removed';
+        element.classList.add('bracket-removed');
+      } else if (currentState === 'removed') {
+        element.dataset['bracketState'] = 'added';
+        element.classList.add('bracket-added');
+      } else {
+        element.dataset['bracketState'] = 'normal';
+      }
+
+      window.getSelection()?.removeAllRanges();
+    }
+  }
+
   handleContentMouseOver(event: MouseEvent) {
     clearTimeout(this.leaveTimeout);
     const target = event.target as HTMLElement;
     const element = target.closest<HTMLElement>('p, li');
-    
-    if (element && element.innerText.trim()) {
-        const container = (event.currentTarget as HTMLElement);
-        if (this.hoveredElement() !== element) {
-            this.hoveredElement.set(element);
-            const rect = element.getBoundingClientRect();
-            const containerRect = container.getBoundingClientRect();
-            const toolbarWidth = 32; // w-7 is 28px + padding
 
-            this.toolbarPosition.set({
-                top: `${rect.bottom - containerRect.top + container.scrollTop + 5}px`,
-                left: `${rect.right - containerRect.left - toolbarWidth}px`
-            });
-        }
+    if (element && element.innerText.trim()) {
+      const container = (event.currentTarget as HTMLElement);
+      if (this.hoveredElement() !== element) {
+        this.hoveredElement.set(element);
+        const rect = element.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect();
+        const toolbarWidth = 32; // w-7 is 28px + padding
+
+        this.toolbarPosition.set({
+          top: `${rect.bottom - containerRect.top + container.scrollTop + 5}px`,
+          left: `${rect.right - containerRect.left - toolbarWidth}px`
+        });
+      }
     }
   }
 
@@ -588,7 +621,7 @@ export class AnalysisReportComponent implements OnDestroy {
       this.hoveredElement.set(null);
     }, 200);
   }
-  
+
   // --- TOOLBAR ACTIONS ---
   addToCarePlan() {
     const element = this.hoveredElement();
@@ -602,30 +635,34 @@ export class AnalysisReportComponent implements OnDestroy {
       }, 500);
     }
   }
-  
+
   researchSelection() {
     const element = this.hoveredElement();
     if (element && element.innerText.trim()) {
-        this.state.requestResearchSearch(element.innerText.trim());
+      this.state.requestResearchSearch(element.innerText.trim());
     }
   }
-  
+
   sendToSpark() {
     const element = this.hoveredElement();
     if (element && element.innerText.trim()) {
-        const text = element.innerText.trim();
-        const url = `https://spark.philgear.dev/#/care?text=${encodeURIComponent(text)}`;
-        window.open(url, '_blank');
+      const text = element.innerText.trim();
+      const url = `https://spark.philgear.dev/#/care?text=${encodeURIComponent(text)}`;
+      window.open(url, '_blank');
     }
   }
-  
+
   dismissSelection() {
     const element = this.hoveredElement();
     if (element) {
-      element.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-      element.style.opacity = '0.3';
-      element.style.textDecoration = 'line-through';
-      element.style.pointerEvents = 'none';
+      element.dataset['bracketState'] = 'removed';
+      element.classList.remove('bracket-added');
+      element.classList.add('bracket-removed');
+
+      // Cleanup any legacy inline styles if present
+      element.style.opacity = '';
+      element.style.textDecoration = '';
+      element.style.pointerEvents = '';
     }
   }
 
@@ -638,14 +675,14 @@ export class AnalysisReportComponent implements OnDestroy {
     const reportData = await this.gemini.generateComprehensiveReport(this.state.getAllDataForPrompt(history));
 
     if (patientId && Object.keys(reportData).length > 0) {
-        const historyEntry: HistoryEntry = {
-            type: 'AnalysisRun',
-            date: new Date().toISOString().split('T')[0].replace(/-/g, '.'),
-            summary: 'Comprehensive AI analysis generated.',
-            report: reportData
-        };
-        this.patientManager.addHistoryEntry(patientId, historyEntry);
-        this.activeLens.set('Standard');
+      const historyEntry: HistoryEntry = {
+        type: 'AnalysisRun',
+        date: new Date().toISOString().split('T')[0].replace(/-/g, '.'),
+        summary: 'Comprehensive AI analysis generated.',
+        report: reportData
+      };
+      this.patientManager.addHistoryEntry(patientId, historyEntry);
+      this.activeLens.set('Care Plan Overview');
     }
   }
 
@@ -656,14 +693,14 @@ export class AnalysisReportComponent implements OnDestroy {
   printReport() { window.print(); }
 
   // --- Live Consult Actions ---
-  openVoicePanel() { 
+  openVoicePanel() {
     this.state.toggleLiveAgent(true);
     // If we haven't started a chat yet, show the selection screen.
     // If we have, we probably want to return to where we were (or default to chat).
     if (!this.hasStartedChat) {
-        this.panelMode.set('selection');
+      this.panelMode.set('selection');
     } else {
-        this.panelMode.set('chat');
+      this.panelMode.set('chat');
     }
   }
 
@@ -676,7 +713,7 @@ export class AnalysisReportComponent implements OnDestroy {
 
       this.gemini.startChatSession(this.state.getAllDataForPrompt(history));
       this.gemini.getInitialGreeting().then(greeting => {
-          this.speak(greeting);
+        this.speak(greeting);
       });
       this.hasStartedChat = true;
     }
@@ -686,42 +723,42 @@ export class AnalysisReportComponent implements OnDestroy {
     this.panelMode.set('dictation');
   }
 
-  endLiveConsult() { 
-      this.state.toggleLiveAgent(false); 
-      this.stopDictation(); // Ensure dictation stops if panel closes
+  endLiveConsult() {
+    this.state.toggleLiveAgent(false);
+    this.stopDictation(); // Ensure dictation stops if panel closes
   }
 
   // --- Dictation Logic (Embedded) ---
   toggleDictation() {
-      if (this.isDictating()) {
-          this.stopDictation();
-      } else {
-          this.startDictation();
-      }
+    if (this.isDictating()) {
+      this.stopDictation();
+    } else {
+      this.startDictation();
+    }
   }
 
   startDictation() {
-      if (!this.recognition) return;
-      try {
-          this.recognition.start();
-          this.isDictating.set(true);
-      } catch (e) {
-          console.error('Failed to start dictation', e);
-      }
+    if (!this.recognition) return;
+    try {
+      this.recognition.start();
+      this.isDictating.set(true);
+    } catch (e) {
+      console.error('Failed to start dictation', e);
+    }
   }
 
   stopDictation() {
-      if (!this.recognition) return;
-      this.recognition.stop();
-      this.isDictating.set(false);
+    if (!this.recognition) return;
+    this.recognition.stop();
+    this.isDictating.set(false);
   }
 
   clearDictation() {
-      this.dictationText.set('');
+    this.dictationText.set('');
   }
 
   copyDictation() {
-      navigator.clipboard.writeText(this.dictationText());
+    navigator.clipboard.writeText(this.dictationText());
   }
 
   insertSectionIntoChat(sectionMarkdown: string) {
@@ -730,11 +767,11 @@ export class AnalysisReportComponent implements OnDestroy {
     this.messageText.set(`Regarding this section:\n\n> ${sectionMarkdown.replace(/\n/g, '\n> ')}\n\n`);
     // Need to wait for view to update if we just switched modes
     setTimeout(() => {
-        const input = document.querySelector<HTMLTextAreaElement>('#chatInput');
-        input?.focus();
+      const input = document.querySelector<HTMLTextAreaElement>('#chatInput');
+      input?.focus();
     }, 100);
   }
-  
+
   // --- Drag/Resize Handlers ---
   startDrag(event: MouseEvent): void {
     event.preventDefault();
@@ -766,7 +803,7 @@ export class AnalysisReportComponent implements OnDestroy {
       }
     }, 0);
   }
-  
+
   // --- Speech & Agent Logic ---
   private loadVoices() {
     const availableVoices = speechSynthesis.getVoices();
@@ -774,41 +811,41 @@ export class AnalysisReportComponent implements OnDestroy {
     const professionalFemaleVoice = availableVoices.find(v => v.lang.startsWith('en') && v.name.includes('Google') && v.name.includes('Female')) || availableVoices.find(v => v.lang.startsWith('en') && (v.name.includes('Samantha') || v.name.includes('Victoria') || v.name.includes('Google'))) || availableVoices.find(v => v.lang.startsWith('en-US') && v.name.includes('Female')) || availableVoices.find(v => v.lang.startsWith('en-US') && !v.name.includes('Male'));
     this.preferredVoice.set(professionalFemaleVoice);
   }
-  
+
   private initializeSpeechRecognition() {
     const SpeechRecognitionAPI = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognitionAPI) {
       this.permissionError.set("Speech Recognition API not supported in this browser.");
       return;
     }
-    
+
     this.recognition = new SpeechRecognitionAPI();
     this.recognition.continuous = true;
     this.recognition.lang = 'en-US';
     this.recognition.interimResults = true;
 
-    this.recognition.onstart = () => { 
-        this.permissionError.set(null); 
-        if (this.panelMode() === 'chat') {
-            this.agentState.set('listening'); 
-        } else if (this.panelMode() === 'dictation') {
-            this.isDictating.set(true);
-        }
+    this.recognition.onstart = () => {
+      this.permissionError.set(null);
+      if (this.panelMode() === 'chat') {
+        this.agentState.set('listening');
+      } else if (this.panelMode() === 'dictation') {
+        this.isDictating.set(true);
+      }
     };
-    
-    this.recognition.onend = () => { 
-        if (this.panelMode() === 'chat') {
-            if (this.agentState() === 'listening') this.agentState.set('idle'); 
-        } else if (this.panelMode() === 'dictation') {
-            // If we are still supposed to be dictating, try to restart (handling timeouts)
-            if (this.isDictating()) {
-                try {
-                    this.recognition.start();
-                } catch (e) {
-                    // If start fails (e.g. already started), just ignore
-                }
-            }
+
+    this.recognition.onend = () => {
+      if (this.panelMode() === 'chat') {
+        if (this.agentState() === 'listening') this.agentState.set('idle');
+      } else if (this.panelMode() === 'dictation') {
+        // If we are still supposed to be dictating, try to restart (handling timeouts)
+        if (this.isDictating()) {
+          try {
+            this.recognition.start();
+          } catch (e) {
+            // If start fails (e.g. already started), just ignore
+          }
         }
+      }
     };
 
     this.recognition.onerror = (event: any) => {
@@ -819,21 +856,21 @@ export class AnalysisReportComponent implements OnDestroy {
       } else if (event.error === 'no-speech') {
         // Ignore no-speech errors, let onend handle restart if needed
       } else if (event.error === 'network') {
-         this.permissionError.set('Network error. Please check your connection.');
-         this.isDictating.set(false);
-         this.agentState.set('idle');
+        this.permissionError.set('Network error. Please check your connection.');
+        this.isDictating.set(false);
+        this.agentState.set('idle');
       } else {
-         // For other errors, stop to prevent infinite loops
-         console.error('Speech recognition error:', event.error);
-         this.isDictating.set(false);
-         this.agentState.set('idle');
+        // For other errors, stop to prevent infinite loops
+        console.error('Speech recognition error:', event.error);
+        this.isDictating.set(false);
+        this.agentState.set('idle');
       }
     };
 
     this.recognition.onresult = async (event: any) => {
       let final = '';
       let interim = '';
-      
+
       for (let i = event.resultIndex; i < event.results.length; ++i) {
         if (event.results[i].isFinal) {
           final += event.results[i][0].transcript;
@@ -843,26 +880,26 @@ export class AnalysisReportComponent implements OnDestroy {
       }
 
       if (this.panelMode() === 'chat') {
-          if (final) {
-              this.recognition.stop(); // Stop listening to process
-              this.agentState.set('processing');
-              const responseText = await this.gemini.sendChatMessage(final);
-              this.speak(responseText);
-          }
+        if (final) {
+          this.recognition.stop(); // Stop listening to process
+          this.agentState.set('processing');
+          const responseText = await this.gemini.sendChatMessage(final);
+          this.speak(responseText);
+        }
       } else if (this.panelMode() === 'dictation') {
-          if (final) {
-              const current = this.dictationText();
-              const needsSpace = current.length > 0 && !current.endsWith(' ');
-              this.dictationText.set(current + (needsSpace ? ' ' : '') + final);
-          }
+        if (final) {
+          const current = this.dictationText();
+          const needsSpace = current.length > 0 && !current.endsWith(' ');
+          this.dictationText.set(current + (needsSpace ? ' ' : '') + final);
+        }
       }
     };
   }
-  
+
   async sendMessage(event?: Event) {
     event?.preventDefault();
     if (event instanceof KeyboardEvent && event.shiftKey) {
-        return; // Allow newline on Shift+Enter
+      return; // Allow newline on Shift+Enter
     }
 
     const message = this.messageText().trim();
@@ -895,11 +932,11 @@ export class AnalysisReportComponent implements OnDestroy {
     if (this.preferredVoice()) { utterance.voice = this.preferredVoice()!; }
     utterance.pitch = 1.1;
     utterance.rate = 0.95;
-    
+
     utterance.onstart = () => this.agentState.set('speaking');
     utterance.onend = () => this.agentState.set('idle');
     utterance.onerror = (e) => {
-      if (e.error === 'interrupted') return; 
+      if (e.error === 'interrupted') return;
       console.error('Speech synthesis error', e.error);
       this.agentState.set('idle');
     };

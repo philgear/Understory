@@ -19,14 +19,18 @@
     "@angular/core": "^21.1.0",
     "@angular/platform-browser": "^21.1.0",
     "@google/genai": "^1.42.0",
+    "@tailwindcss/postcss": "^4.2.0",
     "@types/express": "^5.0.6",
+    "autoprefixer": "^10.4.24",
     "chart.js": "^4.5.1",
     "express": "^5.2.1",
     "marked": "^17.0.3",
+    "postcss": "^8.5.6",
     "rxjs": "^7.8.2",
-    "tailwindcss": "latest"
+    "tailwindcss": "^3.4.19"
   },
   "devDependencies": {
+    "@tailwindcss/typography": "^0.5.19",
     "@types/node": "^22.14.0",
     "puppeteer": "^24.37.5",
     "typescript": "^5.9.3",

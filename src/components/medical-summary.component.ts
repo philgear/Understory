@@ -10,28 +10,12 @@ Chart.register(...registerables);
 @Component({
   selector: 'app-medical-summary',
   standalone: true,
-  imports: [CommonModule, DatePipe],
+  imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (patient(); as p) {
-      <div class="p-8 bg-[#F9FAFB] min-h-full">
-        
-        <!-- TASK BRACKET: Patient Overview -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-8 transition-all duration-300 hover:shadow-md">
-          <!-- Bracket Header -->
-          <div class="bg-gray-50/50 px-6 py-4 border-b border-gray-100 flex justify-between items-center">
-            <div class="flex items-center gap-2">
-                <div class="w-1.5 h-4 bg-[#689F38] rounded-full"></div>
-                <span class="text-[10px] font-bold uppercase tracking-widest text-gray-500">Patient Overview</span>
-            </div>
-            <div class="flex items-center gap-1.5 px-2 py-1 bg-green-50 rounded-full border border-green-100">
-                <div class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
-                <span class="text-[10px] font-medium text-green-700 uppercase tracking-wide">Live Summary</span>
-            </div>
-          </div>
+      <div class="p-6 font-serif text-gray-800 h-full flex flex-col">
 
-          <!-- Bracket Body -->
-          <div class="p-6 font-serif text-gray-800">
             <!-- Chart Header -->
             <div class="flex justify-between items-start pb-4 border-b border-gray-100">
               <div>
@@ -181,12 +165,10 @@ Chart.register(...registerables);
                     <div class="p-5 bg-gray-50 border border-gray-200 rounded-xl prose prose-sm max-w-none prose-p:font-serif" [innerHTML]="html"></div>
                   </section>
                 }
-            </div>
-          </div>
-        </div>
       </div>
+    </div>
     } @else {
-        <div class="p-8 text-center text-gray-400 bg-[#F9FAFB] h-full flex items-center justify-center">
+        <div class="p-8 text-center text-gray-400 h-full flex items-center justify-center">
             <p class="text-sm font-medium uppercase tracking-widest">No patient selected.</p>
         </div>
     }
