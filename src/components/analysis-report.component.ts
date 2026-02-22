@@ -4,14 +4,38 @@ import { GeminiService, TranscriptEntry, AnalysisLens } from '../services/gemini
 import { PatientStateService } from '../services/patient-state.service';
 import { PatientManagementService, HistoryEntry } from '../services/patient-management.service';
 import { marked } from 'marked';
+import { DictationService } from '../services/dictation.service';
 
 declare var webkitSpeechRecognition: any;
 type AgentState = 'idle' | 'listening' | 'processing' | 'speaking';
+
+export interface CarePlanNodeItem {
+  id: string;
+  html: string;
+  bracketState: 'normal' | 'added' | 'removed';
+  note: string;
+  showNote: boolean;
+  isDictating?: boolean;
+}
+
+export interface CarePlanNode {
+  id: string;
+  type: 'raw' | 'paragraph' | 'list';
+  rawHtml?: string;
+  ordered?: boolean;
+  items?: CarePlanNodeItem[];
+  bracketState: 'normal' | 'added' | 'removed';
+  note: string;
+  showNote: boolean;
+  isDictating?: boolean;
+}
+
 interface ReportSection {
   raw: string;
   heading: string;
-  contentHtml: string;
+  nodes: CarePlanNode[];
 }
+
 interface ParsedTranscriptEntry extends TranscriptEntry {
   htmlContent?: string;
 }
@@ -31,14 +55,14 @@ interface ParsedTranscriptEntry extends TranscriptEntry {
     .rams-typography h2, 
     .rams-typography h3 {
       font-family: 'Inter', sans-serif;
-      font-size: 0.8rem;
+      font-size: 9px;
       text-transform: uppercase;
-      letter-spacing: 0.12em;
-      font-weight: 600;
-      color: #374151; /* gray-700 */
+      letter-spacing: 0.1em;
+      font-weight: 700;
+      color: #9CA3AF;
       margin-top: 2rem;
       margin-bottom: 1rem;
-      border-bottom: 1px solid #E5E7EB; /* gray-200 */
+      border-bottom: 1px solid #E5E7EB;
       padding-bottom: 0.5rem;
     }
     
@@ -53,10 +77,10 @@ interface ParsedTranscriptEntry extends TranscriptEntry {
     .rams-typography td,
     .rams-typography th {
       font-family: 'Inter', sans-serif;
-      font-size: 0.95rem;
-      font-weight: 400;
-      line-height: 1.75;
-      color: #374151; /* gray-700 */
+      font-size: 0.875rem;
+      font-weight: 700;
+      line-height: 1.5;
+      color: #1C1C1C;
     }
 
     .rams-typography p {
@@ -251,12 +275,7 @@ interface ParsedTranscriptEntry extends TranscriptEntry {
     }
 
     <!-- Content Area -->
-    <div #contentArea
-         (mouseover)="handleContentMouseOver($event)" 
-         (mouseleave)="handleContentMouseLeave()"
-         (dblclick)="handleContentDoubleClick($event)"
-         class="flex-1 overflow-y-auto p-8 min-h-0 relative bg-[#F9FAFB]">
-         
+    <div #contentArea class="flex-1 overflow-y-auto p-8 min-h-0 relative bg-[#F9FAFB]">
          <!-- Analysis Engine Body -->
          <div class="p-6 min-h-full">
               @if (gemini.isLoading()) {
@@ -285,11 +304,82 @@ interface ParsedTranscriptEntry extends TranscriptEntry {
                                   <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M10 9h4V6h3l-5-5-5 5h3zm-1 1H6V7l-5 5 5 5v-3h3zm11 3-5 5v-3h-4v3l-5-5 5-5v3h4z"/></svg>
                               </button>
                           }
-                          <div [innerHTML]="section.contentHtml"></div>
+                          
+                          @for(node of section.nodes; track node.id) {
+                            @if (node.type === 'raw') {
+                              <div [innerHTML]="node.rawHtml" class="mb-4"></div>
+                            } @else if (node.type === 'paragraph') {
+                              <div class="relative group/node mb-4">
+                                <p [innerHTML]="node.rawHtml" 
+                                   [class.bracket-removed]="node.bracketState === 'removed'"
+                                   [class.bracket-added]="node.bracketState === 'added'"
+                                   (dblclick)="toggleNodeBracket(node)"></p>
+                                
+                                <div class="absolute -left-10 top-0 opacity-0 group-hover/node:opacity-100 transition-opacity flex flex-col gap-1 z-10 no-print">
+                                   <button (click)="node.showNote = true" class="w-7 h-7 bg-white rounded-md shadow-sm border border-gray-200 flex items-center justify-center text-gray-400 hover:text-[#689F38] hover:bg-gray-50 transition-colors" title="Add Note">
+                                      <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                   </button>
+                                </div>
+
+                                @if (node.showNote || node.note) {
+                                  <div class="mt-2 relative no-print">
+                                    <textarea [value]="node.note" (input)="updateNodeNote(node, $event)" rows="3" class="w-full bg-[#F9FAFB] border border-gray-200 rounded-lg p-3 text-sm text-[#1C1C1C] focus:bg-white focus:border-[#689F38] focus:ring-1 focus:ring-[#689F38] transition-all placeholder-gray-400 resize-none font-sans" placeholder="Add your clinical note here..."></textarea>
+                                    <div class="absolute bottom-2 right-2 flex items-center gap-1.5">
+                                      <button (click)="copyNote(node.note)" [disabled]="!node.note" class="w-6 h-6 rounded-md flex items-center justify-center bg-white border border-gray-200 text-gray-500 hover:text-[#1C1C1C] transition-colors disabled:opacity-50">
+                                         <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                                      </button>
+                                      <button (click)="openNodeDictation(node)" [disabled]="!!dictation.permissionError()"
+                                              class="w-6 h-6 rounded-md flex items-center justify-center border transition-all shadow-sm"
+                                              [class.bg-red-50]="node.isDictating" [class.border-red-200]="node.isDictating" [class.text-red-600]="node.isDictating" [class.animate-pulse]="node.isDictating"
+                                              [class.bg-white]="!node.isDictating" [class.border-gray-200]="!node.isDictating" [class.text-gray-500]="!node.isDictating" [class.hover:bg-gray-50]="!node.isDictating"
+                                              title="Dictate Note">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+                                      </button>
+                                    </div>
+                                  </div>
+                                }
+                              </div>
+                            } @else if (node.type === 'list') {
+                              <ul [class.list-decimal]="node.ordered" [class.list-disc]="!node.ordered" class="pl-4 mb-6">
+                                @for(item of node.items; track item.id) {
+                                  <li class="relative group/item mb-2"
+                                      [class.bracket-removed]="item.bracketState === 'removed'"
+                                      [class.bracket-added]="item.bracketState === 'added'"
+                                      (dblclick)="toggleNodeBracket(item)">
+                                    <span [innerHTML]="item.html" class="block"></span>
+
+                                    <div class="absolute -left-10 top-0 opacity-0 group-hover/item:opacity-100 transition-opacity flex flex-col gap-1 z-10 no-print">
+                                       <button (click)="item.showNote = true" class="w-7 h-7 bg-white rounded-md shadow-sm border border-gray-200 flex items-center justify-center text-gray-400 hover:text-[#689F38] hover:bg-gray-50 transition-colors" title="Add Note">
+                                          <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                       </button>
+                                    </div>
+
+                                    @if (item.showNote || item.note) {
+                                      <div class="mt-2 mb-4 relative ml-2 no-print">
+                                        <textarea [value]="item.note" (input)="updateNodeNote(item, $event)" rows="2" class="w-full bg-[#F9FAFB] border border-gray-200 rounded-lg p-3 text-sm text-[#1C1C1C] focus:bg-white focus:border-[#689F38] focus:ring-1 focus:ring-[#689F38] transition-all placeholder-gray-400 resize-none font-sans" placeholder="Clinical note regarding this intervention..."></textarea>
+                                        <div class="absolute bottom-2 right-2 flex items-center gap-1.5">
+                                          <button (click)="copyNote(item.note)" [disabled]="!item.note" class="w-6 h-6 rounded-md flex items-center justify-center bg-white border border-gray-200 text-gray-500 hover:text-[#1C1C1C] transition-colors disabled:opacity-50">
+                                             <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                                          </button>
+                                          <button (click)="openNodeDictation(item)" [disabled]="!!dictation.permissionError()"
+                                                  class="w-6 h-6 rounded-md flex items-center justify-center border transition-all shadow-sm"
+                                                  [class.bg-red-50]="item.isDictating" [class.border-red-200]="item.isDictating" [class.text-red-600]="item.isDictating" [class.animate-pulse]="item.isDictating"
+                                                  [class.bg-white]="!item.isDictating" [class.border-gray-200]="!item.isDictating" [class.text-gray-500]="!item.isDictating" [class.hover:bg-gray-50]="!item.isDictating"
+                                                  title="Dictate Note">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+                                          </button>
+                                        </div>
+                                      </div>
+                                    }
+                                  </li>
+                                }
+                              </ul>
+                            }
+                          }
                       </div>
                     }
                 </div>
-                <div class="mt-12 pt-4 border-t border-[#EEEEEE] text-[10px] text-gray-300 uppercase tracking-widest">
+                <div class="mt-12 pt-4 border-t border-[#EEEEEE] text-[10px] text-gray-300 uppercase tracking-widest no-print">
                   AI Generated Content. Physician Review Required.
                 </div>
               } @else if (!gemini.isLoading() && !hasAnyReport()) {
@@ -298,33 +388,6 @@ interface ParsedTranscriptEntry extends TranscriptEntry {
                 </div>
               }
          </div>
-
-        <!-- Interactive Toolbar -->
-        @if (hoveredElement() && toolbarPosition(); as pos) {
-          <div #toolbar 
-                (mouseover)="onToolbarEnter()" 
-                (mouseleave)="onToolbarLeave()"
-                class="absolute flex flex-col items-center gap-1 bg-white border border-gray-200 rounded-md shadow-lg p-1 z-30 transition-all duration-150 ease-out"
-                [style.top]="pos.top"
-                [style.left]="pos.left">
-              <button (click)="addToCarePlan()" title="Add to Care Plan Draft" class="w-7 h-7 flex items-center justify-center rounded-sm text-gray-500 hover:bg-gray-100 hover:text-green-600 transition-colors">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"/></svg>
-              </button>
-              <button (click)="researchSelection()" title="Research Selection" class="w-7 h-7 flex items-center justify-center rounded-sm text-gray-500 hover:bg-gray-100 hover:text-blue-600 transition-colors">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5S14 7.01 14 9.5S11.99 14 9.5 14"/></svg>
-              </button>
-              <button (click)="sendToSpark()" title="Send to Spark" class="w-7 h-7 flex items-center justify-center rounded-sm text-gray-500 hover:bg-gray-100 hover:text-purple-600 transition-colors">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3z"/></svg>
-              </button>
-              <div class="h-px w-full bg-gray-200 my-0.5"></div>
-              <button (click)="printReport()" title="Print Report" class="w-7 h-7 flex items-center justify-center rounded-sm text-gray-500 hover:bg-gray-100 hover:text-gray-800 transition-colors">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M18 7H6q-.825 0-1.412-.587T4 5q0-.825.588-1.413T6 3h12q.825 0 1.413.587T20 5q0 .825-.587 1.413T18 7M5 10h14q.425 0 .713.288T20 11v6q0 .425-.288.713T19 18h-2v3H7v-3H5q-.425 0-.712-.288T4 17v-6q0-.425.288-.712T5 10m2 8h8v-5H7z"/></svg>
-              </button>
-              <button (click)="dismissSelection()" title="Dismiss" class="w-7 h-7 flex items-center justify-center rounded-sm text-gray-500 hover:bg-gray-100 hover:text-red-600 transition-colors">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 7c2.76 0 5 2.24 5 5s-2.24 5-5 5s-5-2.24-5-5s2.24-5 5-5m0-2C7 5 3.27 7.94 2 12c1.27 4.06 5 7 10 7s8.73-2.94 10-7c-1.27-4.06-5-7-10-7m0 9.5c.95 0 1.8-.32 2.48-1.02l-3.5-3.5C10.32 10.7 11.05 11.5 12 11.5m6.06-3.56L16.65 6.5l-2.83 2.83c-.42-.1-.86-.17-1.32-.17c-2.21 0-4 1.79-4 4c0 .46.07.9.17 1.32l-2.83 2.83l-1.41-1.41l10-10l1.41 1.41z"/></svg>
-              </button>
-          </div>
-        }
     </div>
 
     <!-- Live Consult / Voice Assistant Section -->
@@ -496,6 +559,7 @@ export class AnalysisReportComponent implements OnDestroy {
   gemini = inject(GeminiService);
   state = inject(PatientStateService);
   patientManager = inject(PatientManagementService);
+  dictation = inject(DictationService);
 
   // --- Analysis State ---
   activeLens = signal<AnalysisLens>('Care Plan Overview');
@@ -540,24 +604,57 @@ export class AnalysisReportComponent implements OnDestroy {
     if (!raw) return null;
     try {
       const sections: ReportSection[] = [];
-      // Split by lines that start with a markdown heading
+      let globalNodeId = 0;
       const parts = raw.split(/\n(?=#{1,3}\s)/);
       for (const part of parts) {
-        // Find the first line, which is the heading
+        if (!part.trim()) continue;
         const lines = part.split('\n');
-        const headingMarkdown = lines[0];
-        const contentMarkdown = lines.slice(1).join('\n');
+        const headingMarkdown = lines.find(l => l.trim().startsWith('#')) || lines[0] || '';
+        const contentMarkdown = part === headingMarkdown ? '' : part.substring(part.indexOf(headingMarkdown) + headingMarkdown.length);
+
+        const tokens = marked.lexer(contentMarkdown);
+        const nodes: CarePlanNode[] = [];
+
+        for (const token of tokens) {
+          if (token.type === 'paragraph') {
+            nodes.push({
+              id: `node-${globalNodeId++}`,
+              type: 'paragraph',
+              rawHtml: marked.parseInline(token.text) as string,
+              bracketState: 'normal', note: '', showNote: false
+            });
+          } else if (token.type === 'list') {
+            nodes.push({
+              id: `node-${globalNodeId++}`,
+              type: 'list',
+              ordered: token.ordered || false,
+              items: token.items.map(item => ({
+                id: `item-${globalNodeId++}`,
+                html: marked.parseInline(item.text) as string,
+                bracketState: 'normal', note: '', showNote: false
+              })),
+              bracketState: 'normal', note: '', showNote: false
+            });
+          } else {
+            nodes.push({
+              id: `node-${globalNodeId++}`,
+              type: 'raw',
+              rawHtml: marked.parse(token.raw) as string,
+              bracketState: 'normal', note: '', showNote: false
+            });
+          }
+        }
 
         sections.push({
           raw: part,
           heading: marked.parse(headingMarkdown) as string,
-          contentHtml: this.renderInteractiveContent(contentMarkdown),
+          nodes
         });
       }
       return sections;
     } catch (e) {
       console.error('Markdown parse error', e);
-      return [{ raw: raw, heading: '<h3>Error</h3>', contentHtml: `<p>Could not parse report.</p>` }];
+      return [{ raw: raw, heading: '<h3>Error</h3>', nodes: [{ id: 'err', type: 'raw', rawHtml: '<p>Could not parse report.</p>', bracketState: 'normal', note: '', showNote: false }] }];
     }
   });
 
@@ -609,109 +706,57 @@ export class AnalysisReportComponent implements OnDestroy {
     return marked.parse(markdown) as string;
   }
 
-  // --- NEW HOVER & TOOLBAR LOGIC ---
-  handleContentDoubleClick(event: MouseEvent) {
-    const target = event.target as HTMLElement;
-    const element = target.closest<HTMLElement>('p, li');
+  // --- NODE RENDERER ACTIONS ---
+  toggleNodeBracket(node: CarePlanNode | CarePlanNodeItem) {
+    if (node.bracketState === 'normal') {
+      node.bracketState = 'removed';
+    } else if (node.bracketState === 'removed') {
+      node.bracketState = 'added';
+    } else {
+      node.bracketState = 'normal';
+    }
+    window.getSelection()?.removeAllRanges();
+  }
 
-    if (element && element.innerText.trim()) {
-      const currentState = element.dataset['bracketState'] || 'normal';
+  updateNodeNote(node: CarePlanNode | CarePlanNodeItem, event: Event) {
+    node.note = (event.target as HTMLTextAreaElement).value;
+  }
 
-      element.classList.remove('bracket-removed', 'bracket-added');
+  copyNote(text: string) {
+    if (text) {
+      navigator.clipboard.writeText(text);
+    }
+  }
 
-      if (currentState === 'normal') {
-        element.dataset['bracketState'] = 'removed';
-        element.classList.add('bracket-removed');
-      } else if (currentState === 'removed') {
-        element.dataset['bracketState'] = 'added';
-        element.classList.add('bracket-added');
-      } else {
-        element.dataset['bracketState'] = 'normal';
+  activeDictationNode = signal<CarePlanNode | CarePlanNodeItem | null>(null);
+
+  openNodeDictation(node: CarePlanNode | CarePlanNodeItem) {
+    if (this.dictation.isListening() && this.activeDictationNode() === node) {
+      this.dictation.stopRecognition();
+      node.isDictating = false;
+      this.activeDictationNode.set(null);
+      return;
+    }
+
+    if (this.dictation.isListening()) {
+      this.dictation.stopRecognition();
+      const prev = this.activeDictationNode();
+      if (prev) prev.isDictating = false;
+    }
+
+    node.isDictating = true;
+    this.activeDictationNode.set(node);
+
+    const initialText = node.note || '';
+    let baseText = initialText ? initialText + (initialText.endsWith(' ') ? '' : ' ') : '';
+
+    this.dictation.registerResultHandler((text, isFinal) => {
+      if (this.activeDictationNode() === node) {
+        node.note = baseText + text;
       }
+    });
 
-      window.getSelection()?.removeAllRanges();
-    }
-  }
-
-  handleContentMouseOver(event: MouseEvent) {
-    clearTimeout(this.leaveTimeout);
-    const target = event.target as HTMLElement;
-    const element = target.closest<HTMLElement>('p, li');
-
-    if (element && element.innerText.trim()) {
-      const container = (event.currentTarget as HTMLElement);
-      if (this.hoveredElement() !== element) {
-        this.hoveredElement.set(element);
-        const rect = element.getBoundingClientRect();
-        const containerRect = container.getBoundingClientRect();
-        const toolbarWidth = 32; // w-7 is 28px + padding
-
-        this.toolbarPosition.set({
-          top: `${rect.bottom - containerRect.top + container.scrollTop + 5}px`,
-          left: `${rect.right - containerRect.left - toolbarWidth}px`
-        });
-      }
-    }
-  }
-
-  handleContentMouseLeave() {
-    this.leaveTimeout = setTimeout(() => {
-      this.hoveredElement.set(null);
-    }, 200);
-  }
-
-  onToolbarEnter() {
-    clearTimeout(this.leaveTimeout);
-  }
-
-  onToolbarLeave() {
-    this.leaveTimeout = setTimeout(() => {
-      this.hoveredElement.set(null);
-    }, 200);
-  }
-
-  // --- TOOLBAR ACTIONS ---
-  addToCarePlan() {
-    const element = this.hoveredElement();
-    if (element && element.innerText.trim()) {
-      this.state.addDraftCarePlanItem(element.innerText.trim());
-      // Visual feedback
-      element.style.transition = 'background-color 0.5s ease';
-      element.style.backgroundColor = '#DCEDC8';
-      setTimeout(() => {
-        element.style.backgroundColor = '';
-      }, 500);
-    }
-  }
-
-  researchSelection() {
-    const element = this.hoveredElement();
-    if (element && element.innerText.trim()) {
-      this.state.requestResearchSearch(element.innerText.trim());
-    }
-  }
-
-  sendToSpark() {
-    const element = this.hoveredElement();
-    if (element && element.innerText.trim()) {
-      const text = element.innerText.trim();
-      const url = `https://spark.philgear.dev/#/care?text=${encodeURIComponent(text)}`;
-      window.open(url, '_blank');
-    }
-  }
-
-  dismissSelection() {
-    const element = this.hoveredElement();
-    if (element) {
-      element.dataset['bracketState'] = 'removed';
-      element.classList.remove('bracket-added');
-      element.classList.add('bracket-removed');
-
-      // Cleanup any legacy inline styles if present
-      element.style.opacity = '';
-      element.style.textDecoration = '';
-      element.style.pointerEvents = '';
-    }
+    this.dictation.startRecognition();
   }
 
   // --- Report Actions ---
