@@ -23,7 +23,7 @@ import { PatientManagementService } from '../services/patient-management.service
           
           <div class="bg-gray-50 px-4 py-2 border-b border-gray-100 flex items-center justify-between shrink-0">
              <span class="text-[10px] font-bold uppercase tracking-widest text-gray-500">Active Roster</span>
-             <span class="text-[10px] font-bold text-gray-400">{{ patientManagement.patients().length }}</span>
+             <span class="text-[10px] font-bold text-gray-500">{{ patientManagement.patients().length }}</span>
           </div>
 
           <div class="py-1 overflow-y-auto flex-1">
@@ -50,7 +50,7 @@ import { PatientManagementService } from '../services/patient-management.service
           </div>
           
           <div class="border-t border-gray-100 bg-white shrink-0">
-             <button (click)="createNewPatient()" class="w-full text-left px-4 py-3 text-xs font-bold uppercase tracking-widest text-[#689F38] hover:bg-[#F1F8E9] hover:text-[#558B2F] transition-colors flex items-center gap-2 justify-center">
+             <button (click)="createNewPatient()" class="w-full text-left px-4 py-3 text-xs font-bold uppercase tracking-widest text-[#416B1F] hover:bg-[#F1F8E9] hover:text-[#558B2F] transition-colors flex items-center gap-2 justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"/></svg>
                 New Patient
              </button>

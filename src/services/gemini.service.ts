@@ -82,8 +82,11 @@ export class GeminiService {
             }
           });
           newReport[lens] = response.text;
-        } catch (e) {
+        } catch (e: any) {
           console.error(`Error generating report for lens: ${lens}`, e);
+          if (e.message && e.message.includes('API key not valid')) {
+            throw new Error("Invalid API Key Provided. Please select a valid Gemini API Key.");
+          }
           newReport[lens] = `### Error\nAn error occurred while generating the analysis for this section. Please try again.`;
         }
       }

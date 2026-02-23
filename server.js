@@ -1,4 +1,5 @@
 import express from 'express';
+import compression from 'compression';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import fs from 'fs';
@@ -26,6 +27,9 @@ if (fs.existsSync(distFolder)) {
   // List root directory to see where we are
   console.log(`[SERVER] Contents of ${rootDir}:`, fs.readdirSync(rootDir));
 }
+
+// Enable standard text compression for static assets
+app.use(compression());
 
 // Health check endpoint
 app.get('/health', (req, res) => {

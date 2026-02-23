@@ -19,6 +19,9 @@
             "browser": "main.ts",
             "index": "index.html",
             "tsConfig": "tsconfig.json",
+            "assets": [
+              "src/robots.txt"
+            ],
             "styles": [
               "src/styles.css"
             ],
@@ -28,7 +31,8 @@
           },
           "configurations": {
             "production": {
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "sourceMap": true
             },
             "development": {
               "optimization": false,

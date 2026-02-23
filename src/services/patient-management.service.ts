@@ -1,4 +1,4 @@
-import { Injectable, inject, signal, effect, WritableSignal, computed } from '@angular/core';
+import { Injectable, inject, signal, effect, WritableSignal, computed, untracked } from '@angular/core';
 import { PatientStateService, PatientState, BodyPartIssue } from './patient-state.service';
 import { GeminiService, AnalysisLens } from './gemini.service';
 
@@ -55,7 +55,7 @@ export interface Patient extends PatientState {
   id: string;
   name: string;
   age: number;
-  gender: 'Male' | 'Female' | 'Other';
+  gender: 'Male' | 'Female' | 'Non-binary' | 'Other';
   lastVisit: string;
   preexistingConditions: string[];
   history: HistoryEntry[];
@@ -69,9 +69,9 @@ export type { BodyPartIssue };
 const MOCK_PATIENTS: Patient[] = [
   {
     id: 'p001',
-    name: 'Eleanor Vance',
+    name: 'Alex Vance',
     age: 45,
-    gender: 'Female',
+    gender: 'Non-binary',
     lastVisit: '2024.06.15',
     preexistingConditions: ['Migraines', 'Cervical Spondylosis'],
     patientGoals: 'Follow-up on persistent cervicogenic headaches and associated right shoulder tension.',
@@ -181,9 +181,9 @@ Analysis of Eleanor's biometric trends indicates a direct correlation between su
   },
   {
     id: 'p002',
-    name: 'Marcus Holloway',
+    name: 'Jordan Holloway',
     age: 38,
-    gender: 'Male',
+    gender: 'Female',
     lastVisit: '2024.05.20',
     preexistingConditions: ['History of Sciatica'],
     patientGoals: 'Evaluation of recurrent lumbar strain, exacerbated by recent improper lifting.',
@@ -217,9 +217,9 @@ Analysis of Eleanor's biometric trends indicates a direct correlation between su
   },
   {
     id: 'p003',
-    name: 'Anya Petrova',
+    name: 'Sam Petrova',
     age: 29,
-    gender: 'Female',
+    gender: 'Male',
     lastVisit: '2024.07.01',
     preexistingConditions: ['IBS (unconfirmed)'],
     patientGoals: 'Seeking consultation for chronic postprandial bloating, abdominal cramping, and general gastrointestinal discomfort.',
@@ -257,7 +257,9 @@ export class PatientManagementService {
       const patientId = this.selectedPatientId();
 
       if (patientId) {
-        const patient = this.patients().find(p => p.id === patientId);
+        // Important: Use untracked here so we only run this effect when the *selected patient ID* changes,
+        // NOT every time the patients array updates (which happens on every keystroke due to auto-save).
+        const patient = untracked(() => this.patients().find(p => p.id === patientId));
         if (patient) {
           // Load the selected patient's data into the main state service
           this.patientState.loadState(patient);
@@ -356,6 +358,30 @@ export class PatientManagementService {
           return { ...p, history: updatedHistory, lastVisit: entry.date };
         }
 
+        return { ...p, history: updatedHistory };
+      })
+    );
+  }
+
+  /** Updates an existing entry in a patient's history, or adds it if it doesn't exist. */
+  updateHistoryEntry(patientId: string, entry: HistoryEntry, matchFn: (e: HistoryEntry) => boolean) {
+    this.patients.update(patients =>
+      patients.map(p => {
+        if (p.id !== patientId) return p;
+
+        const index = p.history.findIndex(matchFn);
+        if (index === -1) {
+          // Add if not found
+          const updatedHistory = [entry, ...p.history];
+          if (entry.type === 'Visit') {
+            return { ...p, history: updatedHistory, lastVisit: entry.date };
+          }
+          return { ...p, history: updatedHistory };
+        }
+
+        // Update existing
+        const updatedHistory = [...p.history];
+        updatedHistory[index] = entry;
         return { ...p, history: updatedHistory };
       })
     );

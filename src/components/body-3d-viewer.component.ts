@@ -12,8 +12,8 @@ import { PatientStateService } from '../services/patient-state.service';
     template: `
     <div #canvasContainer class="w-full h-full relative cursor-grab active:cursor-grabbing">
       <div class="absolute bottom-2 left-2 flex flex-col gap-1 pointer-events-none">
-        <span class="text-[8px] font-bold text-gray-400 uppercase tracking-tighter">Left Click: Select Part</span>
-        <span class="text-[8px] font-bold text-gray-400 uppercase tracking-tighter">Right Click: Orbit</span>
+        <span class="text-[8px] font-bold text-gray-500 uppercase tracking-tighter">Left Click: Select Part</span>
+        <span class="text-[8px] font-bold text-gray-500 uppercase tracking-tighter">Right Click: Orbit</span>
       </div>
     </div>
   `,

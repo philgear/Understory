@@ -36,7 +36,7 @@ import { DictationService } from '../services/dictation.service';
                 </p>
               </div>
             </div>
-            <button (click)="cancel()" class="text-gray-400 hover:text-gray-600 transition-colors">
+            <button (click)="cancel()" class="text-gray-500 hover:text-gray-600 transition-colors">
               <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
           </div>
@@ -44,6 +44,9 @@ import { DictationService } from '../services/dictation.service';
           <!-- Content -->
           <div class="p-6 relative">
             <textarea 
+              id="dictationText"
+              name="dictationText"
+              aria-label="Dictation text"
               #textInput
               [value]="currentText()"
               (input)="updateText($event)"
@@ -52,7 +55,7 @@ import { DictationService } from '../services/dictation.service';
             ></textarea>
             
             @if (interimText()) {
-              <div class="absolute bottom-8 left-8 right-8 text-gray-400 text-sm italic truncate pointer-events-none">
+              <div class="absolute bottom-8 left-8 right-8 text-gray-500 text-sm italic truncate pointer-events-none">
                 {{ interimText() }}...
               </div>
             }
@@ -130,7 +133,7 @@ export class DictationModalComponent implements OnDestroy {
     // Reset text when modal opens
     effect(() => {
       if (this.dictation.isModalOpen()) {
-        this.currentText.set(this.dictation.initialText()); 
+        this.currentText.set(this.dictation.initialText());
         this.interimText.set('');
         this.dictation.startRecognition();
       }

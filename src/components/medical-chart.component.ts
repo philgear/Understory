@@ -41,7 +41,7 @@ import { DictationService } from '../services/dictation.service';
             <div class="w-1.5 h-4 bg-teal-600 rounded-full"></div>
             <span class="text-[10px] font-bold uppercase tracking-widest text-gray-500">3D Body Viewer</span>
           </div>
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-400 transition-transform duration-200" [class.rotate-180]="!isViewerExpanded()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-500 transition-transform duration-200" [class.rotate-180]="!isViewerExpanded()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
         </div>
 
         @if(isViewerExpanded()) {
@@ -49,7 +49,7 @@ import { DictationService } from '../services/dictation.service';
             @defer (on viewport) {
               <app-body-viewer></app-body-viewer>
             } @placeholder {
-              <div class="h-full w-full flex items-center justify-center text-gray-400 bg-gray-50/50">
+              <div class="h-full w-full flex items-center justify-center text-gray-500 bg-gray-50/50">
                 <div class="flex flex-col items-center gap-3">
                   <div class="w-6 h-6 border-2 border-gray-200 border-t-[#689F38] rounded-full animate-spin"></div>
                   <span class="text-[10px] uppercase tracking-widest font-bold">Loading 3D Viewer...</span>
@@ -66,7 +66,7 @@ import { DictationService } from '../services/dictation.service';
           <div class="flex items-center gap-4 flex-wrap">
               <div class="flex items-center gap-2">
                 <div class="w-1 h-4 bg-[#1C1C1C]"></div>
-                <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.15em]">Patient History</h3>
+                <h3 class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.15em]">Patient History</h3>
               </div>
               
               @if(historyBodyParts().length > 0) {
@@ -100,7 +100,7 @@ import { DictationService } from '../services/dictation.service';
               }
           </div>
           <div class="flex items-center gap-3">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-400 transition-transform duration-200" [class.rotate-180]="!isHistoryExpanded()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-500 transition-transform duration-200" [class.rotate-180]="!isHistoryExpanded()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
           </div>
         </div>
         

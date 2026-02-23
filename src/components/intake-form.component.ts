@@ -24,7 +24,7 @@ interface NoteTimelineItem extends BodyPartIssue {
             <div class="w-2 h-2 rounded-full bg-[#689F38]"></div>
             <span class="text-xs font-bold uppercase tracking-widest text-gray-500">Assessment Panel</span>
           </div>
-          <button (click)="close()" class="text-gray-400 hover:text-[#1C1C1C] transition-colors p-1 rounded-md hover:bg-gray-100">
+          <button (click)="close()" class="text-gray-500 hover:text-[#1C1C1C] transition-colors p-1 rounded-md hover:bg-gray-100">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
               <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -42,7 +42,7 @@ interface NoteTimelineItem extends BodyPartIssue {
               <!-- Bracket Header -->
               <div class="bg-gray-50/50 px-6 py-4 border-b border-gray-100 flex justify-between items-start">
                 <div>
-                  <span class="text-[10px] font-bold uppercase tracking-widest text-[#689F38] block mb-1">
+                  <span class="text-[10px] font-bold uppercase tracking-widest text-[#416B1F] block mb-1">
                     {{ note.isCurrent ? 'Active Input' : 'Historical Record' }}
                   </span>
                   <h2 class="text-xl font-medium text-[#1C1C1C]">{{ state.selectedPartName() }}</h2>
@@ -63,15 +63,15 @@ interface NoteTimelineItem extends BodyPartIssue {
               <div class="p-6 space-y-8">
                 
                 <!-- 1. Pain Level Section -->
-                <div class="space-y-3">
-                  <div class="flex justify-between items-end">
-                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                <div class="mb-8">
+                  <div class="flex justify-between items-end mb-4">
+                    <label for="painRange" class="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
                         Pain Severity
                     </label>
                     <div class="flex items-baseline gap-1">
                         <span class="text-3xl font-light text-[#1C1C1C]">{{ formState().painLevel }}</span>
-                        <span class="text-sm font-medium text-gray-400">/10</span>
+                        <span class="text-sm font-medium text-gray-500">/10</span>
                     </div>
                   </div>
                   
@@ -85,6 +85,8 @@ interface NoteTimelineItem extends BodyPartIssue {
                          [style.width.%]="formState().painLevel * 10"></div>
                     
                     <input 
+                      id="painRange"
+                      name="painRange"
                       type="range" 
                       min="0" max="10" step="1" 
                       [value]="formState().painLevel"
@@ -99,7 +101,7 @@ interface NoteTimelineItem extends BodyPartIssue {
                          <div class="w-1.5 h-1.5 bg-[#1C1C1C] rounded-full"></div>
                     </div>
                   </div>
-                  <div class="flex justify-between text-[10px] text-gray-400 font-medium uppercase tracking-wider px-1">
+                  <div class="flex justify-between text-[10px] text-gray-500 font-medium uppercase tracking-wider px-1">
                     <span>None</span>
                     <span>Moderate</span>
                     <span>Severe</span>
@@ -108,12 +110,14 @@ interface NoteTimelineItem extends BodyPartIssue {
 
                 <!-- 2. Notes Section -->
                 <div class="space-y-3">
-                  <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                  <label for="observationsText" class="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                     Integrative Observations
                   </label>
                   <div class="relative group">
                     <textarea 
+                      id="observationsText"
+                      name="observationsText"
                       #notesInput
                       rows="5"
                       [value]="formState().description"
@@ -129,7 +133,7 @@ interface NoteTimelineItem extends BodyPartIssue {
                               class="w-7 h-7 rounded-md flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed transition-all bg-white border border-gray-200 hover:bg-gray-50 hover:border-gray-300 shadow-sm"
                               title="Copy notes">
                           @if(justCopied()) {
-                              <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-green-600" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                              <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-green-700" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
                           } @else {
                               <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-gray-500" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
                           }
@@ -163,12 +167,12 @@ interface NoteTimelineItem extends BodyPartIssue {
                 <!-- 3. Recommendations Section -->
                 <div class="space-y-3">
                   <div class="flex justify-between items-center">
-                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                    <label for="recommendationsText" class="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
                       <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
                       Recommendations
                     </label>
                     @if (formState().recommendation && note.isCurrent) {
-                      <button (click)="addToCarePlan()" class="text-[10px] font-bold uppercase tracking-widest text-[#689F38] hover:text-[#558B2F] flex items-center gap-1 transition-colors">
+                      <button (click)="addToCarePlan()" class="text-[10px] font-bold uppercase tracking-widest text-[#416B1F] hover:text-[#558B2F] flex items-center gap-1 transition-colors">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M12 5v14M5 12h14"/></svg>
                         Add to Care Plan
                       </button>
@@ -176,6 +180,8 @@ interface NoteTimelineItem extends BodyPartIssue {
                   </div>
                   <div class="relative group">
                     <textarea 
+                      id="recommendationsText"
+                      name="recommendationsText"
                       #recInput
                       rows="3"
                       [value]="formState().recommendation"
@@ -190,7 +196,7 @@ interface NoteTimelineItem extends BodyPartIssue {
                               class="w-7 h-7 rounded-md flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed transition-all bg-white border border-gray-200 hover:bg-gray-50 hover:border-gray-300 shadow-sm"
                               title="Copy recommendation">
                           @if(justCopiedRec()) {
-                              <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-green-600" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                              <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-green-700" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
                           } @else {
                               <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-gray-500" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
                           }
@@ -221,13 +227,13 @@ interface NoteTimelineItem extends BodyPartIssue {
                 <button 
                   (click)="deleteNote(note)" 
                   [disabled]="!note.isCurrent"
-                  class="text-xs font-bold text-gray-400 hover:text-red-600 uppercase tracking-widest flex items-center gap-2 disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
+                  class="text-xs font-bold text-gray-500 hover:text-red-600 uppercase tracking-widest flex items-center gap-2 disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
                   <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                   Delete
                 </button>
                 <button (click)="updateEntry()"
                         [disabled]="!isDirty()"
-                        class="px-5 py-2.5 bg-[#1C1C1C] text-white text-xs font-bold uppercase tracking-widest rounded-lg hover:bg-[#689F38] hover:shadow-lg hover:-translate-y-0.5 transition-all disabled:bg-gray-200 disabled:text-gray-400 disabled:shadow-none disabled:translate-y-0 disabled:cursor-not-allowed flex items-center gap-2">
+                        class="px-5 py-2.5 bg-[#1C1C1C] text-white text-xs font-bold uppercase tracking-widest rounded-lg hover:bg-[#689F38] hover:shadow-lg hover:-translate-y-0.5 transition-all disabled:bg-gray-200 disabled:text-gray-500 disabled:shadow-none disabled:translate-y-0 disabled:cursor-not-allowed flex items-center gap-2">
                   <span>{{ isDirty() ? 'Save Changes' : 'Saved' }}</span>
                   @if (!isDirty()) {
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
@@ -259,10 +265,14 @@ interface NoteTimelineItem extends BodyPartIssue {
                                }
                              </ul>
                            }
-                           <div class="mt-3 flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
-                              <button (click)="adoptInsight(node)" class="text-[10px] font-medium text-purple-600 hover:text-purple-700 bg-white px-2 py-1 rounded border border-purple-200 shadow-sm flex items-center gap-1">
+                           <div class="mt-3 flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <button (click)="adoptInsight(node, 'desc')" class="text-[10px] font-medium text-purple-600 hover:text-purple-700 bg-white px-2 py-1 rounded border border-purple-200 shadow-sm flex items-center gap-1">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg>
-                                Adopt into Assessment
+                                Adopt as Note
+                              </button>
+                              <button (click)="adoptInsight(node, 'rec')" class="text-[10px] font-medium text-purple-600 hover:text-purple-700 bg-white px-2 py-1 rounded border border-purple-200 shadow-sm flex items-center gap-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg>
+                                Adopt as Recommendation
                               </button>
                            </div>
                         </div>
@@ -274,11 +284,11 @@ interface NoteTimelineItem extends BodyPartIssue {
                 <!-- CONTEXT: History Timeline -->
                 <div class="mt-12 pl-2">
                     <div class="flex justify-between items-center mb-6">
-                        <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                        <h3 class="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg>
                             History & Context
                         </h3>
-                        <button (click)="addNewNote()" [disabled]="!canAddNote()" class="text-[10px] font-bold text-[#689F38] hover:text-[#558B2F] uppercase tracking-widest transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1">
+                        <button (click)="addNewNote()" [disabled]="!canAddNote()" class="text-[10px] font-bold text-[#416B1F] hover:text-[#558B2F] uppercase tracking-widest transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1">
                           <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M12 5v14M5 12h14"/></svg>
                           New Note
                         </button>
@@ -308,8 +318,8 @@ interface NoteTimelineItem extends BodyPartIssue {
                                 
                                 <div class="flex justify-between items-start mb-1">
                                     <span class="text-[10px] font-bold uppercase tracking-widest"
-                                       [class.text-[#689F38]]="timelineNote.isCurrent"
-                                       [class.text-gray-400]="!timelineNote.isCurrent">
+                                       [class.text-[#416B1F]]="timelineNote.isCurrent"
+                                       [class.text-gray-500]="!timelineNote.isCurrent">
                                         {{ timelineNote.date }}
                                     </span>
                                     <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-gray-100 text-gray-600">
@@ -322,7 +332,7 @@ interface NoteTimelineItem extends BodyPartIssue {
                             </button>
                         </div>
                     } @empty {
-                        <div class="pl-8 text-xs text-gray-400 italic py-4">No prior history for this body part.</div>
+                        <div class="pl-8 text-xs text-gray-500 italic py-4">No prior history for this body part.</div>
                     }
                 </div>
             </div>
@@ -340,7 +350,7 @@ interface NoteTimelineItem extends BodyPartIssue {
            <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4 text-gray-300">
              <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
            </div>
-           <p class="text-xs font-bold uppercase tracking-widest text-gray-400">Select a body part to begin assessment</p>
+           <p class="text-xs font-bold uppercase tracking-widest text-gray-500">Select a body part to begin assessment</p>
         </div>
       }
     </div>
@@ -649,29 +659,26 @@ export class IntakeFormComponent implements OnDestroy {
 
     const patientId = this.patientManager.selectedPatientId();
     if (patientId) {
-      const patient = this.patientManager.patients().find(p => p.id === patientId);
-      const historyExists = patient?.history.some(h =>
-        h.type === 'NoteCreated' && h.noteId === note.noteId
-      );
-
-      if (!historyExists) {
-        const description = this.localDescription().trim();
-        const pain = this.localPainLevel();
-        let summary = `Note for ${note.name}`;
-        if (description) {
-          summary += `: "${description.substring(0, 40).replace(/\n/g, ' ')}..."`;
-        }
-        summary += ` (Pain: ${pain}/10)`;
-
-        const historyEntry: HistoryEntry = {
-          type: 'NoteCreated',
-          date: new Date().toISOString().split('T')[0].replace(/-/g, '.'),
-          summary: summary,
-          partId: note.id,
-          noteId: note.noteId,
-        };
-        this.patientManager.addHistoryEntry(patientId, historyEntry);
+      const description = this.localDescription().trim();
+      const pain = this.localPainLevel();
+      let summary = `Note for ${note.name}`;
+      if (description) {
+        summary += `: "${description.substring(0, 40).replace(/\n/g, ' ')}..."`;
       }
+      summary += ` (Pain: ${pain}/10)`;
+
+      const historyEntry: HistoryEntry = {
+        type: 'NoteCreated',
+        date: new Date().toISOString().split('T')[0].replace(/-/g, '.'),
+        summary: summary,
+        partId: note.id,
+        noteId: note.noteId,
+      };
+      this.patientManager.updateHistoryEntry(
+        patientId,
+        historyEntry,
+        (e) => e.type === 'NoteCreated' && e.noteId === note.noteId
+      );
     }
 
     this.state.updateIssue(note.id, {
@@ -794,7 +801,7 @@ export class IntakeFormComponent implements OnDestroy {
     });
   }
 
-  adoptInsight(node: any) {
+  adoptInsight(node: any, target: 'desc' | 'rec' = 'desc') {
     let text = '';
     if (node.type === 'paragraph') {
       text = node.rawHtml.replace(/<[^>]*>/g, '').trim();
@@ -802,8 +809,13 @@ export class IntakeFormComponent implements OnDestroy {
       text = node.items.map((it: any) => '• ' + it.html.replace(/<[^>]*>/g, '').trim()).join('\n');
     }
 
-    const currentText = this.localDescription();
-    this.localDescription.set(currentText ? currentText + '\n\n' + text : text);
+    if (target === 'desc') {
+      const currentText = this.localDescription();
+      this.localDescription.set(currentText ? currentText + '\n\n' + text : text);
+    } else {
+      const currentText = this.localRecommendation();
+      this.localRecommendation.set(currentText ? currentText + '\n\n' + text : text);
+    }
   }
 }
 

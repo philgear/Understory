@@ -20,9 +20,9 @@ interface NotesByPart {
       <div class="h-14 border-b border-[#EEEEEE] flex items-center justify-between px-6 bg-white shrink-0">
         <div class="flex flex-col">
            <span class="text-xs font-bold uppercase tracking-widest text-gray-500">Visit Review</span>
-           <span class="text-xs text-gray-400">Read-only view of notes from {{ visit().date }}</span>
+           <span class="text-xs text-gray-500">Read-only view of notes from {{ visit().date }}</span>
         </div>
-        <button (click)="close()" class="text-gray-400 hover:text-[#1C1C1C] transition-colors">
+        <button (click)="close()" class="text-gray-500 hover:text-[#1C1C1C] transition-colors">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
           </svg>
@@ -52,7 +52,7 @@ interface NotesByPart {
                     </div>
                 </div>
             } @empty {
-                <div class="text-center text-xs text-gray-400 py-8">
+                <div class="text-center text-xs text-gray-500 py-8">
                     <p>No specific notes were recorded for this visit.</p>
                 </div>
             }

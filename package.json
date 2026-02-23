@@ -1,14 +1,35 @@
 {
   "name": "understory",
+  "version": "0.1.0",
+  "description": "Insight beneath the surface. Real-time medical Care Plan Strategy and Live AI Consult engine powered by Google Gemini.",
+  "author": "Phil Gear",
+  "keywords": [
+    "ai",
+    "healthcare",
+    "gemini",
+    "angular",
+    "care-plan",
+    "voice-assistant",
+    "medical-intake"
+  ],
+  "license": "MIT",
   "private": true,
-  "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/philgear/understory.git"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "type": "module",
   "scripts": {
     "dev": "ng serve",
     "build": "ng build",
     "lint": "tsc --noEmit",
     "preview": "ng serve --configuration=production",
-    "start": "node server.js"
+    "start": "node server.js",
+    "changelog": "echo \"Remember to update CHANGELOG.md before running npm run release\"",
+    "release": "npm run changelog && npm version patch -m \"chore(release): %s\""
   },
   "dependencies": {
     "@angular/build": "^21.1.0",
@@ -24,6 +45,7 @@
     "@types/three": "^0.183.1",
     "autoprefixer": "^10.4.24",
     "chart.js": "^4.5.1",
+    "compression": "^1.8.1",
     "express": "^5.2.1",
     "marked": "^17.0.3",
     "postcss": "^8.5.6",

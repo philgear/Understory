@@ -27,11 +27,18 @@ export interface ClinicalNote {
   date: string;
 }
 
+export interface ChecklistItem {
+  id: string;
+  text: string;
+  completed: boolean;
+}
+
 export interface PatientState {
   issues: Record<string, BodyPartIssue[]>;
   patientGoals: string;
   vitals: PatientVitals;
   clinicalNotes?: ClinicalNote[];
+  checklist?: ChecklistItem[];
 }
 
 export const BODY_PART_NAMES: Record<string, string> = {
@@ -51,6 +58,54 @@ export const BODY_PART_NAMES: Record<string, string> = {
   'l_thigh': 'Left Thigh',
   'l_shin': 'Left Lower Leg',
   'l_foot': 'Left Foot'
+};
+
+export const BODY_PART_MAPPING: Record<string, string> = {
+  'head': 'head',
+  'head and neck': 'head',
+  'neck': 'head',
+
+  'chest': 'chest',
+  'chest and upper torso': 'chest',
+  'upper torso': 'chest',
+
+  'abdomen': 'abdomen',
+  'stomach': 'abdomen',
+  'abdomen and stomach': 'abdomen',
+
+  'pelvis': 'pelvis',
+  'hips': 'pelvis',
+  'pelvis and hips': 'pelvis',
+
+  'right shoulder': 'r_shoulder',
+  'right arm': 'r_arm',
+
+  'right hand': 'r_hand',
+  'right wrist': 'r_hand',
+  'right hand and wrist': 'r_hand',
+
+  'left shoulder': 'l_shoulder',
+  'left arm': 'l_arm',
+
+  'left hand': 'l_hand',
+  'left wrist': 'l_hand',
+  'left hand and wrist': 'l_hand',
+
+  'right thigh': 'r_thigh',
+  'right upper leg': 'r_thigh',
+
+  'right shin': 'r_shin',
+  'right lower leg': 'r_shin',
+
+  'right foot': 'r_foot',
+
+  'left thigh': 'l_thigh',
+  'left upper leg': 'l_thigh',
+
+  'left shin': 'l_shin',
+  'left lower leg': 'l_shin',
+
+  'left foot': 'l_foot'
 };
 
 @Injectable({
@@ -77,6 +132,7 @@ export class PatientStateService {
     bp: '', hr: '', temp: '', spO2: '', weight: '', height: ''
   });
   readonly clinicalNotes = signal<ClinicalNote[]>([]);
+  readonly checklist = signal<ChecklistItem[]>([]);
   readonly activeCarePlan = signal<string | null>(null);
   readonly draftCarePlanItems = signal<string[]>([]); // Array of discrete recommendation items for the generative plan
 
@@ -201,6 +257,20 @@ export class PatientStateService {
     });
   }
 
+  addChecklistItem(item: ChecklistItem) {
+    this.checklist.update(items => [...items, item]);
+  }
+
+  toggleChecklistItem(id: string) {
+    this.checklist.update(items => items.map(item =>
+      item.id === id ? { ...item, completed: !item.completed } : item
+    ));
+  }
+
+  removeChecklistItem(id: string) {
+    this.checklist.update(items => items.filter(item => item.id !== id));
+  }
+
   removeDraftCarePlanItem(itemToRemove: string) {
     this.draftCarePlanItems.update(items => items.filter(item => item !== itemToRemove));
   }
@@ -239,6 +309,7 @@ export class PatientStateService {
     this.patientGoals.set('');
     this.vitals.set({ bp: '', hr: '', temp: '', spO2: '', weight: '', height: '' });
     this.clinicalNotes.set([]);
+    this.checklist.set([]);
     this.activeCarePlan.set(null);
     this.draftCarePlanItems.set([]);
     this.requestedResearchUrl.set(null);
@@ -253,6 +324,7 @@ export class PatientStateService {
     this.issues.set({});
     this.patientGoals.set('');
     this.draftCarePlanItems.set([]);
+    // Do not clear clinicalNotes or checklist here
   }
 
   /** Loads the state of a specific patient. */
@@ -262,6 +334,7 @@ export class PatientStateService {
     this.patientGoals.set(state.patientGoals);
     this.vitals.set(state.vitals);
     this.clinicalNotes.set(state.clinicalNotes || []);
+    this.checklist.set(state.checklist || []);
     this.viewingPastVisit.set(null); // Ensure we're not in review mode when loading a patient.
   }
 
@@ -272,6 +345,7 @@ export class PatientStateService {
       patientGoals: this.patientGoals(),
       vitals: this.vitals(),
       clinicalNotes: this.clinicalNotes(),
+      checklist: this.checklist(),
     };
   }
 

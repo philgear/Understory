@@ -21,7 +21,7 @@ import { GeminiService } from '../services/gemini.service';
       <!-- Header / Drag Handle -->
       <div (mousedown)="startDrag($event)" class="h-10 px-4 flex items-center justify-between bg-gray-100 border-b border-gray-200 shrink-0 cursor-move select-none">
         <h3 class="text-xs font-bold uppercase tracking-widest text-gray-600">Research Frame</h3>
-        <button (click)="close()" class="p-1 rounded-full text-gray-400 hover:bg-gray-300 hover:text-gray-800 transition-colors">
+        <button (click)="close()" class="p-1 rounded-full text-gray-500 hover:bg-gray-300 hover:text-gray-800 transition-colors">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 10.586 16.95 5.636a1 1 0 1 1 1.414 1.414L13.414 12l4.95 4.95a1 1 0 0 1-1.414 1.414L12 13.414l-4.95 4.95a1 1 0 0 1-1.414-1.414L10.586 12 5.636 7.05a1 1 0 0 1 1.414-1.414L12 10.586z"/></svg>
         </button>
       </div>
@@ -48,6 +48,9 @@ import { GeminiService } from '../services/gemini.service';
           </div>
           <!-- Search Input -->
           <input 
+            id="searchQuery"
+            name="searchQuery"
+            aria-label="Search term"
             type="text"
             #searchInput
             [value]="searchText()"
@@ -56,10 +59,10 @@ import { GeminiService } from '../services/gemini.service';
             class="flex-1 w-full text-xs bg-white border border-gray-200 focus:border-gray-400 focus:ring-0 transition-colors px-2 py-1"
             placeholder="Research patient complaint...">
           <!-- Actions -->
-          <button (click)="search()" class="p-2 text-gray-400 hover:text-gray-800 transition-colors">
+          <button (click)="search()" class="p-2 text-gray-500 hover:text-gray-800 transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5S14 7.01 14 9.5S11.99 14 9.5 14"/></svg>
           </button>
-          <button (click)="addBookmark()" title="Bookmark current page" class="p-2 text-gray-400 hover:text-yellow-500 transition-colors">
+          <button (click)="addBookmark()" title="Bookmark current page" class="p-2 text-gray-500 hover:text-yellow-500 transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="m12 15.4 3.75 2.6-1-4.35L18 11l-4.45-.4L12 6.5 10.45 10.6 6 11l3.25 2.65-1 4.35z"/></svg>
           </button>
         </div>
@@ -88,7 +91,7 @@ import { GeminiService } from '../services/gemini.service';
         @if (sanitizedUrl(); as url) {
           <iframe #iframeEl [src]="url" class="w-full h-full border-none"></iframe>
         } @else {
-          <div class="w-full h-full flex items-center justify-center text-center text-gray-400 p-4">
+          <div class="w-full h-full flex items-center justify-center text-center text-gray-500 p-4">
              <p class="text-xs">Search results and bookmarked pages will appear here.</p>
           </div>
         }
@@ -107,17 +110,17 @@ export class ResearchFrameComponent {
   private sanitizer: DomSanitizer = inject(DomSanitizer);
   patientManager = inject(PatientManagementService);
   patientState = inject(PatientStateService);
-  
+
   searchEngine = signal<'google' | 'pubmed'>('google');
   searchText = signal<string>('');
-  
+
   private currentUrl = signal<string | null>(null);
   sanitizedUrl = signal<SafeResourceUrl | null>(null);
 
   // --- Window State ---
   position = signal({ x: 150, y: 100 });
   size = signal({ width: 800, height: 600 });
-  
+
   private dragging = false;
   private resizing = false;
   private initialMousePos = { x: 0, y: 0 };
@@ -134,7 +137,7 @@ export class ResearchFrameComponent {
     if (!id) return null;
     return this.patientManager.patients().find(p => p.id === id);
   });
-  
+
   bookmarks = computed(() => this.selectedPatient()?.bookmarks || []);
 
   constructor() {
@@ -148,7 +151,7 @@ export class ResearchFrameComponent {
         }
       });
     });
-    
+
     // Effect to handle requests to load a specific URL from outside (e.g., history)
     effect(() => {
       const url = this.patientState.requestedResearchUrl();
@@ -161,17 +164,17 @@ export class ResearchFrameComponent {
 
     // Effect to handle search requests from outside (e.g., analysis report)
     effect(() => {
-        const query = this.patientState.requestedResearchQuery();
-        if (query) {
-            this.searchText.set(query);
-            this.search();
-            this.patientState.requestedResearchQuery.set(null);
-        }
+      const query = this.patientState.requestedResearchQuery();
+      if (query) {
+        this.searchText.set(query);
+        this.search();
+        this.patientState.requestedResearchQuery.set(null);
+      }
     });
-    
+
     // Load default page if no other request is pending at initialization
     if (!this.patientState.requestedResearchUrl() && !this.patientState.requestedResearchQuery()) {
-        this.loadUrl('https://spark.philgear.dev/#/care');
+      this.loadUrl('https://spark.philgear.dev/#/care');
     }
   }
 
@@ -203,7 +206,7 @@ export class ResearchFrameComponent {
     this.dragging = false;
     document.removeEventListener('mousemove', this.boundDoDrag);
   }
-  
+
   startResize(event: MouseEvent) {
     event.preventDefault();
     this.resizing = true;
@@ -212,7 +215,7 @@ export class ResearchFrameComponent {
     document.addEventListener('mousemove', this.boundDoResize);
     document.addEventListener('mouseup', this.boundStopResize, { once: true });
   }
-  
+
   private doResize(event: MouseEvent) {
     if (!this.resizing) return;
     const deltaX = event.clientX - this.initialMousePos.x;
@@ -251,18 +254,18 @@ export class ResearchFrameComponent {
   addBookmark() {
     const url = this.currentUrl();
     if (!url) return;
-    
+
     try {
       const urlObject = new URL(url);
       let title = urlObject.hostname.replace(/^www\./, '');
       const path = urlObject.pathname.substring(1).split('/')[0];
       if (path) title += `/${path}`;
-      
+
       const existing = this.bookmarks().find(b => b.url === url);
       if (existing) return;
 
       this.patientManager.addBookmark({ title, url });
-    } catch(e) {
+    } catch (e) {
       console.error("Invalid URL for bookmark", e);
     }
   }

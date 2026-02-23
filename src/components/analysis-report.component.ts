@@ -235,16 +235,24 @@ interface ParsedTranscriptEntry extends TranscriptEntry {
     <!-- Report Header -->
     <div class="p-8 pb-4 flex justify-between items-end bg-white shrink-0 z-10 border-b border-[#EEEEEE] no-print">
       <div>
-        <h2 class="text-sm font-bold text-[#1C1C1C] uppercase tracking-widest">
-            Care Plan Recommendation Engine
-        </h2>
-        <p class="text-xs text-gray-400 mt-1">
+        <div class="flex items-center gap-3">
+            <h2 class="text-sm font-bold text-[#1C1C1C] uppercase tracking-widest">
+                Care Plan Recommendation Engine
+            </h2>
+            @if (hasAnyReport()) {
+                <div class="flex items-center gap-1.5 px-2 py-0.5 bg-gray-100 rounded border border-gray-200 no-print">
+                    <div class="w-1.5 h-1.5 rounded-full bg-green-500"></div>
+                    <span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest">Last Refresh: {{ lastRefreshDate() | date:'shortTime' }}</span>
+                </div>
+            }
+        </div>
+        <p class="text-xs text-gray-500 mt-1">
             AI-Guided Strategy & Voice Assistant
         </p>
       </div>
       
       @if (!gemini.isLoading()) {
-        <div class="flex items-center gap-2">
+         <div class="flex items-center gap-2">
            @if (state.isLiveAgentActive()) {
               <button (click)="endLiveConsult()" class="group flex items-center gap-2 px-4 py-2 border border-red-300 text-red-700 text-xs font-bold uppercase tracking-widest hover:bg-red-50 disabled:opacity-20 transition-colors">
                  <span>Close Assistant</span>
@@ -259,7 +267,7 @@ interface ParsedTranscriptEntry extends TranscriptEntry {
             <button (click)="generate()" [disabled]="!state.hasIssues()"
             class="group flex items-center gap-2 px-4 py-2 bg-[#1C1C1C] text-white text-xs font-bold uppercase tracking-widest hover:bg-[#558B2F] disabled:opacity-20 disabled:hover:bg-[#1C1C1C] transition-colors">
             @if (hasAnyReport()) { <span>Refresh Recommendations</span> } @else { <span>Generate Care Plan</span> }
-            <svg class="w-3 h-3 text-gray-400 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="square" stroke-linejoin="miter" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+            <svg class="w-3 h-3 text-gray-500 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="square" stroke-linejoin="miter" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
           </button>
           
         </div>
@@ -335,7 +343,7 @@ interface ParsedTranscriptEntry extends TranscriptEntry {
                           <div [innerHTML]="section.heading"></div>
                            @if (state.isLiveAgentActive()) {
                               <button (click)="insertSectionIntoChat(section.raw)"
-                                      class="absolute -left-8 top-8 opacity-0 group-hover/section:opacity-100 transition-opacity text-gray-300 hover:text-[#689F38]"
+                                      class="absolute -left-8 top-8 opacity-0 group-hover/section:opacity-100 transition-opacity text-gray-300 hover:text-[#416B1F]"
                                       title="Insert section into chat">
                                   <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M10 9h4V6h3l-5-5-5 5h3zm-1 1H6V7l-5 5 5 5v-3h3zm11 3-5 5v-3h-4v3l-5-5 5-5v3h4z"/></svg>
                               </button>
@@ -352,25 +360,33 @@ interface ParsedTranscriptEntry extends TranscriptEntry {
                                     (dblclick)="handleNodeDoubleClick(node)"></p>
                                 
                                 <div class="absolute -left-10 top-0 opacity-0 group-hover/node:opacity-100 transition-opacity flex flex-col gap-1 z-10 no-print">
-                                   <button (click)="toggleNodeBracket(node)" class="w-7 h-7 bg-white rounded-md shadow-sm border border-gray-200 flex items-center justify-center text-gray-400 hover:text-[#689F38] hover:bg-gray-50 transition-colors" title="Finalize Action">
+                                   <button (click)="toggleNodeBracket(node)" class="w-7 h-7 bg-white rounded-md shadow-sm border border-gray-200 flex items-center justify-center text-gray-500 hover:text-[#416B1F] hover:bg-gray-50 transition-colors" title="Finalize Action">
                                       <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
                                    </button>
-                                   <button (click)="node.showNote = true" class="w-7 h-7 bg-white rounded-md shadow-sm border border-gray-200 flex items-center justify-center text-gray-400 hover:text-[#1C1C1C] hover:bg-gray-50 transition-colors" title="Add Note">
+                                   <button (click)="node.showNote = true" class="w-7 h-7 bg-white rounded-md shadow-sm border border-gray-200 flex items-center justify-center text-gray-500 hover:text-[#1C1C1C] hover:bg-gray-50 transition-colors" title="Add Note">
                                       <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                                    </button>
-                                   <button (click)="pasteToNode(node)" class="w-7 h-7 bg-white rounded-md shadow-sm border border-gray-200 flex items-center justify-center text-gray-400 hover:text-[#1C1C1C] hover:bg-gray-50 transition-colors" title="Paste Note">
+                                   <button (click)="pasteToNode(node)" class="w-7 h-7 bg-white rounded-md shadow-sm border border-gray-200 flex items-center justify-center text-gray-500 hover:text-[#1C1C1C] hover:bg-gray-50 transition-colors" title="Paste Note">
                                       <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
                                    </button>
                                 </div>
 
                                 @if (node.showNote || node.note) {
                                   <div class="mt-2 relative no-print">
-                                    <textarea [value]="node.note" (input)="updateNodeNote(node, $event)" rows="3" class="w-full bg-[#F9FAFB] border border-gray-200 rounded-lg p-3 text-sm text-[#1C1C1C] focus:bg-white focus:border-[#689F38] focus:ring-1 focus:ring-[#689F38] transition-all placeholder-gray-400 resize-none font-sans" placeholder="Add your integrative observation here..."></textarea>
+                                    <textarea 
+                                      id="note-{{node.key}}"
+                                      name="note-{{node.key}}"
+                                      aria-label="Add observation note"
+                                      [value]="node.note" 
+                                      (input)="updateNodeNote(node, $event)" 
+                                      rows="3" 
+                                      class="w-full bg-[#F9FAFB] border border-gray-200 rounded-lg p-3 text-sm text-[#1C1C1C] focus:bg-white focus:border-[#689F38] focus:ring-1 focus:ring-[#689F38] transition-all placeholder-gray-400 resize-none font-sans" 
+                                      placeholder="Add your integrative observation here..."></textarea>
                                     
                                     <!-- Clinical Suggestions -->
                                     <div class="flex flex-wrap gap-1.5 mt-2 mb-8">
                                       @for (sugg of protocolInsights; track sugg) {
-                                        <button (click)="insertSuggestion(node, sugg)" class="px-2 py-1 bg-white border border-gray-100 rounded text-[9px] font-bold text-gray-400 uppercase tracking-tighter hover:border-[#689F38] hover:text-[#689F38] transition-all">
+                                        <button (click)="insertSuggestion(node, sugg)" class="px-2 py-1 bg-white border border-gray-100 rounded text-[9px] font-bold text-gray-500 uppercase tracking-tighter hover:border-[#689F38] hover:text-[#416B1F] transition-all">
                                           + {{ sugg }}
                                         </button>
                                       }
@@ -379,8 +395,8 @@ interface ParsedTranscriptEntry extends TranscriptEntry {
                                         <div class="absolute bottom-2 left-3 flex items-center gap-1.5 no-print">
                                           @if (nodeSaveStatuses()[node.key]; as status) {
                                             <span class="text-[9px] font-bold uppercase tracking-widest transition-opacity duration-300"
-                                                  [class.text-gray-400]="status === 'saving'"
-                                                  [class.text-[#689F38]]="status === 'saved'">
+                                                  [class.text-gray-500]="status === 'saving'"
+                                                  [class.text-[#416B1F]]="status === 'saved'">
                                               {{ status === 'saving' ? 'Saving...' : 'Saved ✔' }}
                                             </span>
                                           }
@@ -414,25 +430,33 @@ interface ParsedTranscriptEntry extends TranscriptEntry {
                                     <span [innerHTML]="item.html" class="block"></span>
 
                                     <div class="absolute -left-10 top-0 opacity-0 group-hover/item:opacity-100 transition-opacity flex flex-col gap-1 z-10 no-print">
-                                       <button (click)="toggleNodeBracket(item)" class="w-7 h-7 bg-white rounded-md shadow-sm border border-gray-200 flex items-center justify-center text-gray-400 hover:text-[#689F38] hover:bg-gray-50 transition-colors" title="Finalize Action">
+                                       <button (click)="toggleNodeBracket(item)" class="w-7 h-7 bg-white rounded-md shadow-sm border border-gray-200 flex items-center justify-center text-gray-500 hover:text-[#416B1F] hover:bg-gray-50 transition-colors" title="Finalize Action">
                                           <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
                                        </button>
-                                       <button (click)="item.showNote = true" class="w-7 h-7 bg-white rounded-md shadow-sm border border-gray-200 flex items-center justify-center text-gray-400 hover:text-[#1C1C1C] hover:bg-gray-50 transition-colors" title="Add Note">
+                                       <button (click)="item.showNote = true" class="w-7 h-7 bg-white rounded-md shadow-sm border border-gray-200 flex items-center justify-center text-gray-500 hover:text-[#1C1C1C] hover:bg-gray-50 transition-colors" title="Add Note">
                                           <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                                        </button>
-                                       <button (click)="pasteToNode(item)" class="w-7 h-7 bg-white rounded-md shadow-sm border border-gray-200 flex items-center justify-center text-gray-400 hover:text-[#1C1C1C] hover:bg-gray-50 transition-colors" title="Paste Note">
+                                       <button (click)="pasteToNode(item)" class="w-7 h-7 bg-white rounded-md shadow-sm border border-gray-200 flex items-center justify-center text-gray-500 hover:text-[#1C1C1C] hover:bg-gray-50 transition-colors" title="Paste Note">
                                           <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
                                        </button>
                                     </div>
 
                                     @if (item.showNote || item.note) {
                                       <div class="mt-2 mb-4 relative ml-2 no-print">
-                                        <textarea [value]="item.note" (input)="updateNodeNote(item, $event)" rows="2" class="w-full bg-[#F9FAFB] border border-gray-200 rounded-lg p-3 text-sm text-[#1C1C1C] focus:bg-white focus:border-[#689F38] focus:ring-1 focus:ring-[#689F38] transition-all placeholder-gray-400 resize-none font-sans" placeholder="Clinical note regarding this intervention..."></textarea>
+                                        <textarea 
+                                          id="intervention-note-{{item.key}}"
+                                          name="intervention-note-{{item.key}}"
+                                          aria-label="Add intervention clinical note"
+                                          [value]="item.note" 
+                                          (input)="updateNodeNote(item, $event)" 
+                                          rows="2" 
+                                          class="w-full bg-[#F9FAFB] border border-gray-200 rounded-lg p-3 text-sm text-[#1C1C1C] focus:bg-white focus:border-[#689F38] focus:ring-1 focus:ring-[#689F38] transition-all placeholder-gray-400 resize-none font-sans" 
+                                          placeholder="Clinical note regarding this intervention..."></textarea>
                                         
                                         <!-- Clinical Suggestions -->
                                         <div class="flex flex-wrap gap-1.5 mt-2 mb-8">
                                           @for (sugg of protocolInsights; track sugg) {
-                                            <button (click)="insertSuggestion(item, sugg)" class="px-2 py-1 bg-white border border-gray-100 rounded text-[9px] font-bold text-gray-400 uppercase tracking-tighter hover:border-[#689F38] hover:text-[#689F38] transition-all">
+                                            <button (click)="insertSuggestion(item, sugg)" class="px-2 py-1 bg-white border border-gray-100 rounded text-[9px] font-bold text-gray-500 uppercase tracking-tighter hover:border-[#689F38] hover:text-[#416B1F] transition-all">
                                               + {{ sugg }}
                                             </button>
                                           }
@@ -441,8 +465,8 @@ interface ParsedTranscriptEntry extends TranscriptEntry {
                                         <div class="absolute bottom-2 left-3 flex items-center gap-1.5 no-print">
                                           @if (nodeSaveStatuses()[item.key]; as status) {
                                             <span class="text-[9px] font-bold uppercase tracking-widest transition-opacity duration-300"
-                                                  [class.text-gray-400]="status === 'saving'"
-                                                  [class.text-[#689F38]]="status === 'saved'">
+                                                  [class.text-gray-500]="status === 'saving'"
+                                                  [class.text-[#416B1F]]="status === 'saved'">
                                               {{ status === 'saving' ? 'Saving...' : 'Saved ✔' }}
                                             </span>
                                           }
@@ -478,7 +502,7 @@ interface ParsedTranscriptEntry extends TranscriptEntry {
                 </div>
               } @else if (!gemini.isLoading() && !hasAnyReport()) {
                 <div class="h-64 border border-dashed border-gray-200 rounded-lg flex items-center justify-center no-print">
-                  <p class="text-xs text-gray-400 font-medium uppercase tracking-widest">Waiting for input data...</p>
+                  <p class="text-xs text-gray-500 font-medium uppercase tracking-widest">Waiting for input data...</p>
                 </div>
               }
          </div>
@@ -521,6 +545,8 @@ export class AnalysisReportComponent implements OnDestroy, AfterViewInit {
   hoveredElement = signal<HTMLElement | null>(null);
   toolbarPosition = signal<{ top: string; left: string } | null>(null);
   private leaveTimeout: any;
+
+  lastRefreshDate = signal<string | null>(null);
 
   protocolInsights = [
     'Follow up in 72 hours if no improvement.',
@@ -650,6 +676,14 @@ export class AnalysisReportComponent implements OnDestroy, AfterViewInit {
     effect(() => {
       const patient = this.patientManager.selectedPatient();
       if (patient) {
+        const latestAnalysis = patient.history.filter(e => e.type === 'AnalysisRun' || e.type === 'FinalizedCarePlan').pop();
+
+        if (latestAnalysis) {
+          untracked(() => {
+            this.lastRefreshDate.set(latestAnalysis.date); // Use string date
+          });
+        }
+
         const latestFinalized = patient.history.find(e => e.type === 'FinalizedCarePlan');
         if (latestFinalized && latestFinalized.type === 'FinalizedCarePlan') {
           untracked(() => {
@@ -916,6 +950,15 @@ export class AnalysisReportComponent implements OnDestroy, AfterViewInit {
   printReport() { window.print(); }
 
   // --- Live Consult Actions ---
+
+  openVoicePanel() {
+    this.state.toggleLiveAgent(true);
+  }
+
+  endLiveConsult() {
+    this.state.toggleLiveAgent(false);
+  }
+
   insertSectionIntoChat(sectionMarkdown: string) {
     this.state.toggleLiveAgent(true); // Ensure panel is open
     // Need to wait for view to update if we just switched modes

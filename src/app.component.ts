@@ -54,7 +54,7 @@ import { VoiceAssistantComponent } from './components/voice-assistant.component'
           <button (click)="selectKey()" class="px-10 py-4 bg-[#1C1C1C] text-white text-xs font-bold uppercase tracking-widest hover:bg-black transition-all shadow-xl">
             Select API Key
           </button>
-          <a href="https://ai.google.dev/gemini-api/docs/billing" target="_blank" class="mt-6 text-[10px] text-gray-400 uppercase tracking-widest hover:text-gray-600 transition-colors">
+          <a href="https://ai.google.dev/gemini-api/docs/billing" target="_blank" class="mt-6 text-[10px] text-gray-500 uppercase tracking-widest hover:text-gray-600 transition-colors">
             Billing Documentation
           </a>
         </div>
@@ -84,9 +84,12 @@ import { VoiceAssistantComponent } from './components/voice-assistant.component'
             <div class="text-xs text-gray-500 font-medium mr-4">INTAKE MODULE 01</div>
 
             <!-- System Status Indicator -->
-            <div class="flex items-center gap-2 px-3 py-1.5 bg-gray-900/50 rounded-full border border-gray-800 hover:border-gray-700 transition-all cursor-help group relative no-print" title="System Diagnostic">
-              <div class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.6)]"></div>
-              <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">System Ready</span>
+            <div class="flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-full border border-gray-200 hover:border-gray-300 transition-all cursor-help group relative no-print">
+            <div class="relative flex h-2 w-2">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+            </div>
+            <span class="text-[9px] font-bold text-gray-600 uppercase tracking-widest">System Ready</span>
               
               <!-- Tooltip -->
               <div class="absolute top-full left-0 mt-2 w-64 bg-gray-900 border border-gray-800 p-4 rounded-xl shadow-2xl opacity-0 group-hover:opacity-100 transition-opacity z-50 pointer-events-none text-left">
@@ -128,48 +131,34 @@ import { VoiceAssistantComponent } from './components/voice-assistant.component'
             </button>
             <div class="flex items-center gap-6 text-xs font-medium text-gray-500 pl-4">
               <span>{{ today | date:'yyyy.MM.dd' }}</span>
-              <span class="text-[#689F38]">REQ. DR. SMITH</span>
+              <span class="text-[#416B1F]">REQ. DR. SMITH</span>
             </div>
           </div>
         </nav>
 
         <!-- Main Grid Layout -->
-        <div #mainContainer class="flex-1 flex overflow-hidden relative bg-[#F9FAFB] p-6 gap-6">
+        <div #mainContainer class="flex-1 flex flex-col md:flex-row overflow-y-auto md:overflow-hidden relative bg-[#F9FAFB] p-2 md:p-6 gap-3 md:gap-6">
 
-          <!-- NEW Column: Intake Form (Left of 3D Body Viewer) -->
-          @if (state.selectedPartId()) {
-             <div class="w-[400px] shrink-0 flex flex-col h-full z-20 transition-all duration-300 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                <app-intake-form class="flex-1 min-h-0 overflow-y-auto block layout-fix"></app-intake-form>
-             </div>
-          }
+
           
           <!-- Column 1: Patient Medical Chart -->
-          <div class="relative h-full bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden"
-               [class.flex-1]="isAnalysisCollapsed()"
+          <div class="relative w-full md:h-full bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col md:block flex-shrink-0"
+               [class.md:flex-1]="isAnalysisCollapsed()"
                [class.transition-all]="!isDragging()"
                [class.duration-500]="!isDragging()"
                [class.ease-[cubic-bezier(0.68,-0.55,0.265,1.55)]]="!isDragging()"
-               [style.width.px]="isChartCollapsed() ? 0 : (isAnalysisCollapsed() ? null : inputPanelWidth())"
+               [style.--panel-width.px]="isChartCollapsed() ? 0 : (isAnalysisCollapsed() ? null : inputPanelWidth())"
+               [class.md:w-[var(--panel-width)]]="!isAnalysisCollapsed()"
+               style="min-height: 60vh; md:min-height: 0;"
                [class.hidden]="isChartCollapsed()">
-               <div class="h-full w-full overflow-hidden">
-                    @defer (on viewport) {
-                      <app-medical-chart class="no-print h-full block overflow-y-auto" 
-                           [style.width.px]="inputPanelWidth()">
-                      </app-medical-chart>
-                    } @placeholder {
-                      <div class="h-full w-full flex items-center justify-center text-gray-400 bg-gray-50/50">
-                        <div class="flex flex-col items-center gap-3">
-                          <div class="w-6 h-6 border-2 border-gray-200 border-t-[#689F38] rounded-full animate-spin"></div>
-                          <span class="text-[10px] uppercase tracking-widest font-bold">Loading Chart...</span>
-                        </div>
-                      </div>
-                    }
+               <div class="h-full w-full overflow-hidden flex-1 flex flex-col">
+                      <app-medical-chart class="no-print h-full block overflow-y-auto w-full"></app-medical-chart>
                  </div>
             </div>
 
             <!-- RESIZER V -->
-            <div title="Drag to resize, Double-click to maximize chart" class="w-2 shrink-0 flex items-center justify-center cursor-col-resize z-20 no-print group relative"
-                 [class.hidden]="isChartCollapsed() || isAnalysisCollapsed()"
+            <div title="Drag to resize, Double-click to maximize chart" class="hidden md:flex w-2 shrink-0 items-center justify-center cursor-col-resize z-20 no-print group relative"
+                 [class.md:hidden]="isChartCollapsed() || isAnalysisCollapsed()"
                  (mousedown)="startColumnDrag($event)"
                  (dblclick)="maximizeChart()">
                 
@@ -185,14 +174,14 @@ import { VoiceAssistantComponent } from './components/voice-assistant.component'
                    <!-- Panel Management -->
                    <div class="flex flex-col gap-1 border-b border-gray-100 pb-1.5 mb-0.5">
                       <button (click)="$event.stopPropagation(); toggleChart()" [class.bg-black]="!isChartCollapsed()" [class.text-white]="!isChartCollapsed()"
-                              title="Toggle Medical Chart" class="p-2 hover:bg-gray-100 rounded-full text-gray-400 hover:text-black transition-colors">
+                              title="Toggle Medical Chart" class="p-2 hover:bg-gray-100 rounded-full text-gray-500 hover:text-black transition-colors">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><polyline points="14 2 14 8 20 8"></polyline><path d="M16 13H8"></path><path d="M16 17H8"></path><path d="M10 9H8"></path><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path></svg>
                       </button>
                       <button (click)="$event.stopPropagation(); toggleAnalysis()" [class.bg-black]="!isAnalysisCollapsed()" [class.text-white]="!isAnalysisCollapsed()"
-                              title="Toggle Analysis Panel" class="p-2 hover:bg-gray-100 rounded-full text-gray-400 hover:text-black transition-colors">
+                              title="Toggle Analysis Panel" class="p-2 hover:bg-gray-100 rounded-full text-gray-500 hover:text-black transition-colors">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
                       </button>
-                      <button (click)="$event.stopPropagation(); maximizeChart()" class="p-2 hover:bg-gray-100 rounded-full text-gray-400 hover:text-black transition-colors" title="Maximize Chart">
+                      <button (click)="$event.stopPropagation(); maximizeChart()" class="p-2 hover:bg-gray-100 rounded-full text-gray-500 hover:text-black transition-colors" title="Maximize Chart">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><path d="m15 18-6-6 6-6"></path></svg>
                       </button>
                    </div>
@@ -225,7 +214,7 @@ import { VoiceAssistantComponent } from './components/voice-assistant.component'
 
             <!-- Column 2 (Middle): Task Flow & Intake Bracket -->
             @if (state.selectedPartId() && !state.isLiveAgentActive()) {
-               <div class="shrink-0 w-[400px] flex flex-col gap-6 h-full z-20 transition-all duration-300">
+               <div class="shrink-0 w-full md:w-[400px] flex flex-col gap-3 md:gap-6 h-full z-20 transition-all duration-300">
                   <div class="flex-1 min-h-0 overflow-hidden rounded-xl shadow-sm border border-gray-200">
                     <app-intake-form></app-intake-form>
                   </div>
@@ -236,61 +225,56 @@ import { VoiceAssistantComponent } from './components/voice-assistant.component'
             }
 
             <!-- Column 3 (Right Area): Split View -->
-            <div class="flex-1 flex flex-col overflow-hidden relative gap-6" [class.hidden]="isAnalysisCollapsed()">
+            <div class="flex-1 flex overflow-y-auto md:overflow-hidden relative gap-3 md:gap-6 flex-col" 
+                 [class.hidden]="isAnalysisCollapsed()">
              
-               <!-- NEW: Top Half (Current Right Column Content) -->
-               <div class="flex-1 min-h-0 flex flex-col relative gap-6 overflow-hidden">
-                 <!-- Top Section: Context Depending on Selection -->
+                 <!-- Section 1: Medical Summary -->
                  <div class="shrink-0 overflow-hidden flex flex-col bg-white rounded-xl shadow-sm border border-gray-200 transition-all duration-300 hover:shadow-md"
                       [style.height.px]="topSectionHeight()">
-                     <div class="flex-1 w-full h-full overflow-hidden">
+                     <div class="flex-1 w-full h-full overflow-hidden min-h-[50vh] md:min-h-0 min-w-0">
                          <app-medical-summary class="block h-full overflow-y-auto"></app-medical-summary>
                      </div>
                  </div>
 
-                 <!-- RESIZER H1 (Top-Middle) -->
-                 <div title="Drag to resize top panel" class="shrink-0 h-4 flex items-center justify-center cursor-row-resize z-20 no-print group relative"
+                 <!-- RESIZER 1: Row Resizer -->
+                 <div title="Drag to resize" class="shrink-0 hidden md:flex items-center justify-center z-20 no-print group relative h-4 cursor-row-resize"
                       (mousedown)="startTopRowDrag($event)">
-                   <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-4 bg-transparent group-hover:bg-gray-100 transition-colors rounded-full z-0"></div>
-                   <div class="absolute inset-0 bg-gray-100 group-hover:bg-gray-200 transition-colors rounded"></div>
-                   <div class="w-12 h-1.5 rounded-full bg-gray-200 group-hover:bg-gray-300 transition-colors relative z-10"></div>
-                   <div class="absolute right-0 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2 bg-white shadow-sm border border-gray-200 rounded-md p-1">
-                      <button (click)="$event.stopPropagation(); maximizeSummary()" title="Maximize Summary" class="p-1 hover:bg-gray-100 rounded text-gray-500">
-                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-3 h-3"><path d="M5 15l7-7 7 7"></path></svg>
-                      </button>
-                      <button (click)="$event.stopPropagation(); resetRowHeights()" title="Reset Layout" class="p-1 hover:bg-gray-100 rounded text-gray-500">
-                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-3 h-3"><path d="M19 9l-7 7-7-7"></path></svg>
-                      </button>
-                   </div>
-                 </div>
-
-                 <!-- Bottom Section: Analysis Intake -->
-                 <div class="flex-1 min-h-0 flex flex-col bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-md">
-                    <div class="h-full w-full overflow-hidden">
-                        <app-analysis-container></app-analysis-container>
-                        <!-- We moved the intake form to Column 2 -->
-                    </div>
-                 </div>
-               </div>
-
-               @if (state.isLiveAgentActive()) {
-                 <!-- RESIZER V2 (Content/Voice) -->
-                 <div title="Drag to resize voice panel" class="shrink-0 h-4 flex items-center justify-center cursor-row-resize z-20 no-print group relative"
-                      (mousedown)="startVoiceDrag($event)">
-                   <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-4 bg-transparent group-hover:bg-gray-100 transition-colors rounded-full z-0"></div>
-                   <div class="absolute inset-0 bg-gray-100 group-hover:bg-gray-200 transition-colors rounded"></div>
-                   <div class="w-12 h-1.5 rounded-full bg-gray-200 group-hover:bg-gray-300 transition-colors relative z-10"></div>
-                 </div>
-
-                 <!-- Bottom Half (Voice Assistant) -->
-                 <div class="shrink-0 overflow-hidden flex flex-col bg-white rounded-xl shadow-sm border border-gray-200 transition-all duration-300 hover:shadow-md"
-                      [style.height.px]="voiceHeight()">
-                     <div class="flex-1 w-full h-full overflow-hidden">
-                         <app-voice-assistant class="block h-full overflow-y-auto"></app-voice-assistant>
+                     
+                     <div class="absolute bg-transparent group-hover:bg-gray-100 transition-colors rounded-full z-0 inset-x-0 top-1/2 -translate-y-1/2 h-4"></div>
+                     <div class="absolute inset-0 bg-gray-100 group-hover:bg-gray-200 transition-colors rounded"></div>
+                     <div class="rounded-full bg-gray-200 group-hover:bg-gray-300 transition-colors relative z-10 w-12 h-1.5"></div>
+                     
+                     <div class="absolute opacity-0 group-hover:opacity-100 transition-opacity flex gap-2 bg-white shadow-sm border border-gray-200 rounded-md p-1 right-0 top-1/2 -translate-y-1/2 flex-row">
+                        <button (click)="$event.stopPropagation(); maximizeSummary()" title="Maximize Summary" class="p-1 hover:bg-gray-100 rounded text-gray-500">
+                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-3 h-3"><path d="M5 15l7-7 7 7"></path></svg>
+                        </button>
+                        <button (click)="$event.stopPropagation(); resetRowHeights()" title="Reset Layout" class="p-1 hover:bg-gray-100 rounded text-gray-500">
+                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-3 h-3"><path d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
                      </div>
                  </div>
-               }
 
+                 <!-- Section 2: Analysis Intake Container -->
+                 <div class="overflow-hidden flex flex-col bg-white rounded-xl shadow-sm border border-gray-200 transition-all duration-300 hover:shadow-md flex-1 min-h-[50vh] md:min-h-0"
+                      [style.height.px]="analysisSectionHeight() || null">
+                     <app-analysis-container class="block h-full min-h-0 min-w-0"></app-analysis-container>
+                 </div>
+            </div>
+
+            <!-- RESIZER V (Main Resizer 2 for Voice Assistant) -->
+            <div title="Drag to resize voice panel" class="hidden md:flex w-2 shrink-0 items-center justify-center cursor-col-resize z-20 no-print group relative"
+                 [class.hidden]="!state.isLiveAgentActive()"
+                 (mousedown)="startVoiceColDrag($event)">
+                <div class="absolute inset-y-0 left-1/2 -translate-x-1/2 w-4 bg-transparent group-hover:bg-gray-100 transition-colors rounded-full z-0"></div>
+                <div class="absolute inset-0 bg-gray-100 group-hover:bg-gray-200 transition-colors rounded"></div>
+                <div class="h-12 w-1.5 rounded-full bg-gray-200 group-hover:bg-gray-300 transition-colors relative z-10"></div>
+            </div>
+
+            <!-- Column 4 (Voice Assistant) -->
+            <div class="flex flex-col bg-white rounded-xl shadow-sm border border-gray-200 transition-all duration-300 hover:shadow-md shrink-0 h-full min-w-[300px]"
+                 [style.width.px]="voiceColWidth()"
+                 [class.hidden]="!state.isLiveAgentActive()">
+                 <app-voice-assistant class="block h-full overflow-y-auto w-full"></app-voice-assistant>
             </div>
 
         </div>
@@ -327,27 +311,55 @@ export class AppComponent {
   private initialTopRowDragY = 0;
   private initialTopSectionHeight = 0;
 
-  // Voice Panel Resizing (Top Row)
-  voiceHeight = signal<number>(0);
-  isDraggingVoice = signal<boolean>(false);
-  private initialVoiceDragY = 0;
-  private initialVoiceHeight = 0;
+  // Right Area Horizontal Resizing (Summary Column)
+  summaryColWidth = signal<number>(0);
+  isDraggingSummaryCol = signal<boolean>(false);
+  private initialSummaryDragX = 0;
+  private initialSummaryWidth = 0;
+
+  // Right Area Horizontal Resizing (Analysis Column)
+  analysisColWidth = signal<number>(0);
+  isDraggingAnalysisCol = signal<boolean>(false);
+  private initialAnalysisDragX = 0;
+  private initialAnalysisWidth = 0;
+
+  // New Voice Column Resizing
+  voiceColWidth = signal<number>(0);
+  isDraggingVoiceCol = signal<boolean>(false);
+  private initialVoiceDragX = 0;
+  private initialVoiceWidth = 0;
+
+  // Right Area Vertical Resizing (Analysis Column Row)
+  analysisSectionHeight = signal<number>(0);
+  isDraggingAnalysisRow = signal<boolean>(false);
+  private initialAnalysisRowDragY = 0;
+  private initialAnalysisHeight = 0;
 
   isViewingVisitDetails = computed(() => {
     const pastVisit = this.state.viewingPastVisit();
     // Show details view only when a visit is being reviewed AND no specific part has been selected yet.
-    return !!pastVisit && (pastVisit.type === 'Visit' || pastVisit.type === 'ChartArchived') && !this.state.selectedPartId();
+    return pastVisit && (pastVisit.type === 'Visit' || pastVisit.type === 'ChartArchived') && !this.state.selectedPartId();
   });
 
-  isDragging = computed(() => this.isDraggingColumn() || this.isDraggingTopRow() || this.isDraggingVoice());
+  isDragging = computed(() => this.isDraggingColumn() || this.isDraggingTopRow() || this.isDraggingSummaryCol() || this.isDraggingAnalysisCol() || this.isDraggingAnalysisRow());
 
   private boundDoColumnDrag = this.doColumnDrag.bind(this);
   private boundStopColumnDrag = this.stopColumnDrag.bind(this);
 
   private boundDoTopRowDrag = this.doTopRowDrag.bind(this);
   private boundStopTopRowDrag = this.stopTopRowDrag.bind(this);
-  private boundDoVoiceDrag = this.doVoiceDrag.bind(this);
-  private boundStopVoiceDrag = this.stopVoiceDrag.bind(this);
+
+  private boundDoSummaryColDrag = this.doSummaryColDrag.bind(this);
+  private boundStopSummaryColDrag = this.stopSummaryColDrag.bind(this);
+
+  private boundDoAnalysisColDrag = this.doAnalysisColDrag.bind(this);
+  private boundStopAnalysisColDrag = this.stopAnalysisColDrag.bind(this);
+
+  private boundDoAnalysisRowDrag = this.doAnalysisRowDrag.bind(this);
+  private boundStopAnalysisRowDrag = this.stopAnalysisRowDrag.bind(this);
+
+  private boundDoVoiceColDrag = this.doVoiceColDrag.bind(this);
+  private boundStopVoiceColDrag = this.stopVoiceColDrag.bind(this);
 
   constructor() {
     afterNextRender(async () => {
@@ -359,7 +371,10 @@ export class AppComponent {
       const containerHeight = containerEl.offsetHeight;
       this.inputPanelWidth.set(containerWidth * 0.5);
       this.topSectionHeight.set(containerHeight * 0.4);
-      this.voiceHeight.set(containerHeight * 0.2); // New default
+      this.summaryColWidth.set(300);
+      this.analysisColWidth.set(containerWidth * 0.4);
+      this.analysisSectionHeight.set(containerHeight * 0.3);
+      this.voiceColWidth.set(350);
 
       this.checkApiKey();
     });
@@ -495,7 +510,9 @@ export class AppComponent {
   resetRowHeights(): void {
     const containerHeight = this.mainContainer()?.nativeElement.offsetHeight ?? window.innerHeight;
     this.topSectionHeight.set(containerHeight * 0.40);
-    this.voiceHeight.set(containerHeight * 0.20);
+    const containerWidth = this.mainContainer()?.nativeElement.offsetWidth ?? window.innerWidth;
+    this.summaryColWidth.set(300);
+    this.analysisColWidth.set(containerWidth * 0.40);
   }
 
   maximizeReport(): void {
@@ -507,40 +524,134 @@ export class AppComponent {
     this.topSectionHeight.set(containerHeight - 300); // give mostly to summary
   }
 
-  // --- Voice Panel Resizing Logic ---
-  startVoiceDrag(event: MouseEvent): void {
+  // --- 3-Column Split Resizing Logic ---
+  startSummaryColDrag(event: MouseEvent): void {
     event.preventDefault();
-    this.isDraggingVoice.set(true);
-    this.initialVoiceDragY = event.clientY;
-    this.initialVoiceHeight = this.voiceHeight();
+    this.isDraggingSummaryCol.set(true);
+    this.initialSummaryDragX = event.clientX;
+    this.initialSummaryWidth = this.summaryColWidth();
 
-    document.body.style.cursor = 'row-resize';
-    document.addEventListener('mousemove', this.boundDoVoiceDrag);
-    document.addEventListener('mouseup', this.boundStopVoiceDrag, { once: true });
+    document.body.style.cursor = 'col-resize';
+    document.addEventListener('mousemove', this.boundDoSummaryColDrag);
+    document.addEventListener('mouseup', this.boundStopSummaryColDrag, { once: true });
   }
 
-  private doVoiceDrag(event: MouseEvent): void {
-    if (!this.isDraggingVoice()) return;
+  private doSummaryColDrag(event: MouseEvent): void {
+    if (!this.isDraggingSummaryCol()) return;
 
-    // Since the panel is at the bottom, moving the mouse UP (negative deltaY) should INCREASE its height
-    const deltaY = event.clientY - this.initialVoiceDragY;
-    const newHeight = this.initialVoiceHeight - deltaY;
+    const deltaX = event.clientX - this.initialSummaryDragX;
+    const newWidth = this.initialSummaryWidth + deltaX;
 
+    const minWidth = 200;
+    const maxWidth = 800; // Hard max, realistically flex-1 absorbs the rest
+
+    const computedNewWidth = Math.max(minWidth, Math.min(newWidth, maxWidth));
+    this.summaryColWidth.set(computedNewWidth);
+  }
+
+  private stopSummaryColDrag(): void {
+    this.isDraggingSummaryCol.set(false);
+    document.body.style.cursor = '';
+    document.removeEventListener('mousemove', this.boundDoSummaryColDrag);
+  }
+
+  startAnalysisColDrag(event: MouseEvent): void {
+    event.preventDefault();
+    this.isDraggingAnalysisCol.set(true);
+    this.initialAnalysisDragX = event.clientX;
+    this.initialAnalysisWidth = this.analysisColWidth();
+
+    document.body.style.cursor = 'col-resize';
+    document.addEventListener('mousemove', this.boundDoAnalysisColDrag);
+    document.addEventListener('mouseup', this.boundStopAnalysisColDrag, { once: true });
+  }
+
+  private doAnalysisColDrag(event: MouseEvent): void {
+    if (!this.isDraggingAnalysisCol()) return;
+
+    const deltaX = event.clientX - this.initialAnalysisDragX;
+    const newWidth = this.initialAnalysisWidth + deltaX;
+
+    const minWidth = 200;
+    const maxWidth = 800;
+
+    const computedNewWidth = Math.max(minWidth, Math.min(newWidth, maxWidth));
+    this.analysisColWidth.set(computedNewWidth);
+  }
+
+  private stopAnalysisColDrag(): void {
+    this.isDraggingAnalysisCol.set(false);
+    document.body.style.cursor = '';
+    document.removeEventListener('mousemove', this.boundDoAnalysisColDrag);
+  }
+
+  startAnalysisRowDrag(event: MouseEvent): void {
+    event.preventDefault();
+    this.isDraggingAnalysisRow.set(true);
+    this.initialAnalysisRowDragY = event.clientY;
+    this.initialAnalysisHeight = this.analysisSectionHeight() || (this.mainContainer()?.nativeElement.offsetHeight ?? window.innerHeight) * 0.5;
+
+    document.body.style.cursor = 'row-resize';
+    document.addEventListener('mousemove', this.boundDoAnalysisRowDrag);
+    document.addEventListener('mouseup', this.boundStopAnalysisRowDrag, { once: true });
+  }
+
+  private doAnalysisRowDrag(event: MouseEvent): void {
+    if (!this.isDraggingAnalysisRow()) return;
+
+    const deltaY = event.clientY - this.initialAnalysisRowDragY;
+
+    // Find Analysis column parent height
     const containerEl = document.querySelector('.flex-col.gap-6') as HTMLElement;
     const containerHeight = containerEl ? containerEl.offsetHeight : (this.mainContainer()?.nativeElement.offsetHeight ?? window.innerHeight);
 
-    const minVoiceHeight = 100;
-    const minOtherHeight = 300; // Leave space for summary and analysis
-    const resizerHeight = 8;
-    const maxVoiceHeight = containerHeight - minOtherHeight - resizerHeight;
+    const newHeight = this.initialAnalysisHeight + deltaY;
+    const minTopHeight = 200;
+    const minBottomHeight = 200;
+    const resizerHeight = 16;
 
-    const computedNewHeight = Math.max(minVoiceHeight, Math.min(newHeight, maxVoiceHeight));
-    this.voiceHeight.set(computedNewHeight);
+    const maxTopHeight = containerHeight - minBottomHeight - resizerHeight;
+
+    const computedNewHeight = Math.max(minTopHeight, Math.min(newHeight, maxTopHeight));
+    this.analysisSectionHeight.set(computedNewHeight);
   }
 
-  private stopVoiceDrag(): void {
-    this.isDraggingVoice.set(false);
+  private stopAnalysisRowDrag(): void {
+    this.isDraggingAnalysisRow.set(false);
     document.body.style.cursor = '';
-    document.removeEventListener('mousemove', this.boundDoVoiceDrag);
+    document.removeEventListener('mousemove', this.boundDoAnalysisRowDrag);
+  }
+
+  // --- Voice Column Resizing Logic ---
+  startVoiceColDrag(event: MouseEvent): void {
+    event.preventDefault();
+    this.isDraggingVoiceCol.set(true);
+    this.initialVoiceDragX = event.clientX;
+    this.initialVoiceWidth = this.voiceColWidth();
+
+    document.body.style.cursor = 'col-resize';
+    document.addEventListener('mousemove', this.boundDoVoiceColDrag);
+    document.addEventListener('mouseup', this.boundStopVoiceColDrag, { once: true });
+  }
+
+  private doVoiceColDrag(event: MouseEvent): void {
+    if (!this.isDraggingVoiceCol()) return;
+
+    // We drag FROM the left side of the right column, so pulling Left (negative delta) INCREASES width
+    const deltaX = event.clientX - this.initialVoiceDragX;
+    const newWidth = this.initialVoiceWidth - deltaX;
+
+    const minWidth = 300;
+    const maxWidth = 800;
+
+    const computedNewWidth = Math.max(minWidth, Math.min(newWidth, maxWidth));
+    this.voiceColWidth.set(computedNewWidth);
+  }
+
+  private stopVoiceColDrag(): void {
+    this.isDraggingVoiceCol.set(false);
+    document.body.style.cursor = '';
+    document.removeEventListener('mousemove', this.boundDoVoiceColDrag);
   }
 }
+

@@ -5,6 +5,7 @@
 ![License: MIT](https://img.shields.io/badge/License-MIT-orange.svg)
 ![Angular](https://img.shields.io/badge/Angular-v20%2B-DD0031?logo=angular)
 ![Status](https://img.shields.io/badge/status-active-brightgreen)
+![Version](https://img.shields.io/badge/version-0.1.0-blue)
 
 > **Note:** This application was created for the purposes of entering the Gemini Live Agent Challenge hackathon.
 
@@ -94,6 +95,17 @@ To run this project in a local development environment, you would typically foll
     ```bash
     npm start
     ```
+
+## Versioning & Changelog
+
+This project adheres to [Semantic Versioning](https://semver.org/).
+
+Before committing new features or patches, document your changes in the [CHANGELOG.md](CHANGELOG.md).
+Once documented, you can automatically bump the package version and generate the Git release tag via:
+
+```bash
+npm run release
+```
 
 ## Impact Statement
 

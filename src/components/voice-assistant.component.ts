@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject, signal, computed, viewChild, ElementRef, OnDestroy, effect } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal, computed, viewChild, ElementRef, OnDestroy, effect, untracked } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PatientStateService } from '../services/patient-state.service';
 import { GeminiService } from '../services/gemini.service';
@@ -13,45 +13,50 @@ import { marked } from 'marked';
         <div class="h-full bg-white z-10 flex flex-col no-print border border-gray-200 rounded-xl shadow-sm overflow-hidden">
             
             <!-- Panel Header / Tabs -->
-            <div class="flex items-center justify-between px-6 py-2 border-b border-gray-100 bg-gray-50 h-14 shrink-0">
+            <div class="flex items-center justify-between px-6 py-2 border-b border-gray-100 bg-white shadow-[0_4px_10px_-10px_rgba(0,0,0,0.1)] h-14 shrink-0 z-20 relative">
                 <div class="flex items-center gap-4">
                     <button (click)="panelMode.set('selection')" 
-                            class="text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-gray-800 transition-colors flex items-center gap-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                            class="text-[10px] font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors flex items-center gap-1.5 focus:outline-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
                         Home
                     </button>
                     @if (panelMode() !== 'selection') {
                         <span class="text-gray-300">/</span>
-                        <span class="text-[10px] font-bold uppercase tracking-widest text-[#1C1C1C]">
-                            {{ panelMode() === 'chat' ? 'Live Consult' : 'Dictation' }}
-                        </span>
+                        <div class="flex items-center gap-2">
+                           @if (panelMode() === 'chat') {
+                              <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+                           }
+                           <span class="text-[10px] font-bold uppercase tracking-widest text-[#1C1C1C]">
+                               {{ panelMode() === 'chat' ? 'Live Consult' : 'Dictation' }}
+                           </span>
+                        </div>
                     }
                 </div>
-                <button (click)="endLiveConsult()" class="text-gray-400 hover:text-red-500 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                <button (click)="endLiveConsult()" class="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all focus:outline-none" title="Close Voice Assistant">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                 </button>
             </div>
 
             <!-- MODE: SELECTION -->
             @if (panelMode() === 'selection') {
-                <div class="flex-1 flex flex-col items-center justify-center gap-6 p-8 bg-gray-50/50 overflow-y-auto w-full">
-                    <button (click)="activateChat()" class="group relative w-full max-w-[280px] bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md hover:border-[#1C1C1C] transition-all p-6 flex flex-col items-center justify-center text-center gap-4">
-                        <div class="w-16 h-16 rounded-full bg-[#F1F8E9] flex items-center justify-center text-[#558B2F] group-hover:scale-110 transition-transform">
+                <div class="flex-1 flex flex-col items-center justify-center gap-6 p-8 bg-[#F9FAFB] overflow-y-auto w-full">
+                    <button (click)="activateChat()" class="group relative w-full max-w-[280px] bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-[0_8px_30px_-10px_rgba(0,0,0,0.1)] hover:border-blue-200 transition-all duration-300 p-6 flex flex-col items-center justify-center text-center gap-4 focus:outline-none">
+                        <div class="w-16 h-16 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-500 group-hover:scale-110 transition-transform duration-300 shadow-sm">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
                         </div>
                         <div>
-                            <h3 class="font-bold text-[#1C1C1C] uppercase tracking-wider text-sm mb-1">Live Consult</h3>
-                            <p class="text-xs text-gray-500 leading-relaxed">Discuss patient data, ask questions, and explore diagnoses with AI.</p>
+                            <h3 class="font-bold text-[#1C1C1C] text-sm mb-1.5">Live Consult</h3>
+                            <p class="text-xs text-gray-500 leading-relaxed font-medium">Discuss patient data, ask questions, and explore diagnoses with AI.</p>
                         </div>
                     </button>
 
-                    <button (click)="activateDictation()" class="group relative w-full max-w-[280px] bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md hover:border-[#1C1C1C] transition-all p-6 flex flex-col items-center justify-center text-center gap-4">
-                        <div class="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 group-hover:scale-110 transition-transform">
+                    <button (click)="activateDictation()" class="group relative w-full max-w-[280px] bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-[0_8px_30px_-10px_rgba(0,0,0,0.1)] hover:border-emerald-200 transition-all duration-300 p-6 flex flex-col items-center justify-center text-center gap-4 focus:outline-none">
+                        <div class="w-16 h-16 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 group-hover:scale-110 transition-transform duration-300 shadow-sm">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
                         </div>
                         <div>
-                            <h3 class="font-bold text-[#1C1C1C] uppercase tracking-wider text-sm mb-1">Dictation Tool</h3>
-                            <p class="text-xs text-gray-500 leading-relaxed">Transcribe voice notes to clipboard for use in reports or care plans.</p>
+                            <h3 class="font-bold text-[#1C1C1C] text-sm mb-1.5">Dictation Tool</h3>
+                            <p class="text-xs text-gray-500 leading-relaxed font-medium">Transcribe voice notes to clipboard for use in reports or care plans.</p>
                         </div>
                     </button>
                 </div>
@@ -60,61 +65,109 @@ import { marked } from 'marked';
             <!-- MODE: CHAT -->
             @if (panelMode() === 'chat') {
                 <!-- Transcript -->
-                <div #transcriptContainer class="flex-1 overflow-y-auto p-8 space-y-6">
+                <div #transcriptContainer class="flex-1 overflow-y-auto p-6 space-y-6 bg-gradient-to-b from-gray-50/50 to-white relative scroll-smooth">
+                     @if (parsedTranscript().length === 0) {
+                        <div class="h-full flex flex-col items-center justify-center text-center px-4 fade-in">
+                            <div class="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center text-blue-500 mb-4 shadow-sm border border-blue-100">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                            </div>
+                            <h3 class="font-bold text-gray-800 text-sm mb-1">Live Consult Active</h3>
+                            <p class="text-xs text-gray-500 max-w-[220px] leading-relaxed">I'm ready to discuss the patient's record. What would you like to know?</p>
+                        </div>
+                     }
                      @for (entry of parsedTranscript(); track $index) {
-                      <div class="flex gap-4 max-w-[85%]" [class.ml-auto]="entry.role === 'user'" [class.flex-row-reverse]="entry.role === 'user'">
-                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
-                             [class.bg-[#F1F8E9]]="entry.role === 'model'"
-                             [class.text-[#558B2F]]="entry.role === 'model'"
-                             [class.bg-[#4527A0]]="entry.role === 'user'"
+                      <div class="group flex gap-3 max-w-[90%]" [class.ml-auto]="entry.role === 'user'" [class.flex-row-reverse]="entry.role === 'user'">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 shadow-sm border"
+                             [class.bg-white]="entry.role === 'model'"
+                             [class.border-gray-200]="entry.role === 'model'"
+                             [class.text-[#416B1F]]="entry.role === 'model'"
+                             [class.bg-[#1C1C1C]]="entry.role === 'user'"
+                             [class.border-[#1C1C1C]]="entry.role === 'user'"
                              [class.text-white]="entry.role === 'user'">
                              {{ entry.role === 'model' ? 'AI' : 'DR' }}
                         </div>
                         @if (entry.role === 'model') {
-                            <div class="p-4 rounded-lg bg-[#F8F8F8] text-[#1C1C1C] rams-typography text-sm" [innerHTML]="entry.htmlContent"></div>
+                            <div class="flex flex-col gap-1.5 w-full">
+                                <div class="p-4 rounded-2xl rounded-tl-sm bg-white border border-gray-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] text-[#1C1C1C] rams-typography text-sm leading-relaxed" [innerHTML]="entry.htmlContent"></div>
+                                <div class="flex items-center gap-1.5 pl-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                    <button (click)="actionCopy(entry.text)" class="p-1.5 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-md transition-colors" title="Copy Message">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                                    </button>
+                                    <button (click)="actionDictate(entry.text)" class="p-1.5 text-gray-400 hover:text-purple-500 hover:bg-purple-50 rounded-md transition-colors" title="Speak Aloud">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                                    </button>
+                                    <button (click)="actionInsert(entry.text)" class="p-1.5 text-gray-400 hover:text-emerald-500 hover:bg-emerald-50 rounded-md transition-colors flex items-center gap-1" title="Insert into Clinical Notes">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                                        <span class="text-[9px] font-bold uppercase tracking-wider">Insert</span>
+                                    </button>
+                                </div>
+                            </div>
                         } @else {
-                            <div class="p-4 rounded-lg text-sm font-light leading-relaxed bg-[#4527A0] text-white/90">
+                            <div class="px-5 py-3.5 rounded-2xl rounded-tr-sm text-sm font-medium leading-relaxed bg-[#1C1C1C] text-white shadow-sm">
                               <p>{{ entry.text }}</p>
                             </div>
                         }
                       </div>
                     }
+                    @if (agentState() === 'processing') {
+                      <div class="flex gap-3 max-w-[85%] animate-pulse">
+                        <div class="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center text-[10px] font-bold shrink-0 shadow-sm text-[#416B1F]">
+                             AI
+                        </div>
+                        <div class="p-4 rounded-2xl rounded-tl-sm bg-white border border-gray-100 shadow-sm flex items-center gap-2 h-[52px]">
+                           <span class="w-1.5 h-1.5 rounded-full bg-gray-400 animate-bounce" style="animation-delay: 0ms"></span>
+                           <span class="w-1.5 h-1.5 rounded-full bg-gray-400 animate-bounce" style="animation-delay: 150ms"></span>
+                           <span class="w-1.5 h-1.5 rounded-full bg-gray-400 animate-bounce" style="animation-delay: 300ms"></span>
+                        </div>
+                      </div>
+                    }
                 </div>
 
                 <!-- Controls -->
-                <div class="shrink-0 p-4 border-t border-[#EEEEEE] flex flex-col items-center justify-center gap-4 bg-white">
+                <div class="shrink-0 p-4 border-t border-gray-100 bg-white shadow-[0_-10px_30px_-15px_rgba(0,0,0,0.05)] flex flex-col gap-3 relative z-10 transition-all">
                     @if (permissionError(); as error) {
-                      <div class="p-2 mb-2 bg-red-50 border border-red-200 text-center w-full">
-                        <p class="font-bold text-red-700 text-xs">Microphone Access Issue</p>
-                        <p class="text-xs text-red-600/80 mt-1">{{ error }}</p>
+                      <div class="p-3 mb-1 bg-red-50 border border-red-100 rounded-lg text-center w-full shadow-sm">
+                        <div class="flex items-center justify-center gap-2 mb-1">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                          <p class="font-bold text-red-700 text-xs tracking-wide">Microphone Access Issue</p>
+                        </div>
+                        <p class="text-[11px] text-red-600/80">{{ error }}</p>
                       </div>
                     }
-                    <form (submit)="sendMessage()" class="w-full flex items-center gap-2">
+                    <form (submit)="sendMessage()" class="w-full flex items-end gap-2 bg-[#F9FAFB] border border-gray-200 rounded-2xl p-2 focus-within:border-gray-300 focus-within:bg-white focus-within:shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] transition-all duration-300">
+                        <button type="button" (click)="toggleListening()" [disabled]="agentState() !== 'idle' || !!permissionError()"
+                                class="w-10 h-10 flex items-center justify-center hover:bg-white rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all shrink-0"
+                                [class.bg-red-50]="agentState() === 'listening'"
+                                [class.text-red-500]="agentState() === 'listening'"
+                                [class.animate-pulse]="agentState() === 'listening'"
+                                [class.text-gray-400]="agentState() === 'idle'"
+                                [class.hover:text-gray-700]="agentState() === 'idle'">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14q-1.25 0-2.125-.875T9 11V5q0-1.25.875-2.125T12 2q1.25 0 2.125.875T15 5v6q0 1.25-.875 2.125T12 14m-1 7v-3.075q-2.6-.35-4.3-2.325T5 11h2q0 2.075 1.463 3.537T12 16q2.075 0 3.538-1.463T17 11h2q0 2.225-1.7 4.2T13 17.925V21z"/></svg>
+                        </button>
+
                         <textarea
+                          id="chatInputArea"
+                          name="chatInputArea"
+                          aria-label="Follow-up question"
                           #chatInput
                           rows="1"
                           [value]="messageText()"
                           (input)="messageText.set($event.target.value)"
                           (keydown.enter)="sendMessage($event)"
-                          placeholder="Ask a follow-up question..."
+                          placeholder="Ask a question..."
                           [disabled]="agentState() !== 'idle'"
-                          class="flex-1 bg-white border border-[#EEEEEE] p-3 text-sm text-[#1C1C1C] focus:border-[#1C1C1C] focus:ring-0 transition-colors placeholder-gray-400 resize-none disabled:bg-gray-50 rounded-lg"
+                          class="flex-1 max-h-[120px] bg-transparent border-none p-2.5 text-sm text-[#1C1C1C] focus:ring-0 placeholder-gray-400 resize-none disabled:opacity-50 min-h-[44px]"
+                          style="scrollbar-width: none;"
                         ></textarea>
 
                         <button type="submit" [disabled]="!messageText().trim() || agentState() !== 'idle'"
-                                class="w-12 h-12 flex items-center justify-center bg-[#1C1C1C] hover:bg-[#689F38] disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors text-white shrink-0 rounded-lg shadow-sm">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M3 20v-6l8-2-8-2V4l19 8z"/></svg>
-                        </button>
-                        <button type="button" (click)="toggleListening()" [disabled]="agentState() !== 'idle' || !!permissionError()"
-                                class="w-12 h-12 flex items-center justify-center border border-[#EEEEEE] hover:border-[#1C1C1C] disabled:opacity-50 disabled:cursor-not-allowed transition-colors shrink-0 rounded-lg shadow-sm"
-                                [class.bg-[#689F38]]="agentState() === 'listening'"
-                                [class.border-[#689F38]]="agentState() === 'listening'">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5"
-                                 [class.text-white]="agentState() === 'listening'"
-                                 [class.text-gray-500]="agentState() === 'idle'"
-                                 viewBox="0 0 24 24" fill="currentColor"><path d="M12 14q-1.25 0-2.125-.875T9 11V5q0-1.25.875-2.125T12 2q1.25 0 2.125.875T15 5v6q0 1.25-.875 2.125T12 14m-1 7v-3.075q-2.6-.35-4.3-2.325T5 11h2q0 2.075 1.463 3.537T12 16q2.075 0 3.538-1.463T17 11h2q0 2.225-1.7 4.2T13 17.925V21z"/></svg>
+                                class="w-10 h-10 flex items-center justify-center bg-[#1C1C1C] hover:bg-[#333333] disabled:bg-gray-200 disabled:text-gray-400 text-white transition-all shrink-0 rounded-xl shadow-sm disabled:shadow-none mb-0.5 mr-0.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                         </button>
                     </form>
+                    <div class="text-center mt-0.5">
+                        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Medical Voice AI Assistant</span>
+                    </div>
                 </div>
             }
 
@@ -123,6 +176,9 @@ import { marked } from 'marked';
                 <div class="flex-1 flex flex-col p-6 bg-gray-50/30 overflow-hidden w-full">
                     <div class="flex-1 bg-white border border-gray-200 rounded-lg shadow-sm p-4 relative flex flex-col min-h-0">
                         <textarea 
+                            id="voiceDictationText"
+                            name="voiceDictationText"
+                            aria-label="Dictation text"
                             [value]="dictationText()"
                             (input)="dictationText.set($event.target.value)"
                             class="flex-1 w-full resize-none outline-none text-sm leading-relaxed text-gray-800 placeholder-gray-300"
@@ -156,7 +212,7 @@ import { marked } from 'marked';
                                     <span>Record</span>
                                 }
                             </button>
-                            <button (click)="clearDictation()" [disabled]="!dictationText()" class="px-4 py-2.5 rounded-lg border border-gray-200 bg-white text-[10px] font-bold text-gray-400 hover:text-red-500 hover:bg-red-50 hover:border-red-100 uppercase tracking-widest disabled:opacity-30 disabled:hover:bg-white disabled:hover:border-gray-200 transition-colors shadow-sm">
+                            <button (click)="clearDictation()" [disabled]="!dictationText()" class="px-4 py-2.5 rounded-lg border border-gray-200 bg-white text-[10px] font-bold text-gray-500 hover:text-red-500 hover:bg-red-50 hover:border-red-100 uppercase tracking-widest disabled:opacity-30 disabled:hover:bg-white disabled:hover:border-gray-200 transition-colors shadow-sm">
                                 Clear
                             </button>
                         </div>
@@ -195,6 +251,26 @@ export class VoiceAssistantComponent implements OnDestroy {
         }));
     });
 
+    // --- Action Bar Logic ---
+    actionCopy(text: string) {
+        navigator.clipboard.writeText(text);
+    }
+
+    actionDictate(text: string) {
+        this.speak(text);
+    }
+
+    actionInsert(text: string) {
+        const cleanText = text.replace(/[*_~`#]/g, '');
+        const newNote = {
+            id: 'note_' + Date.now().toString(),
+            text: cleanText,
+            sourceLens: 'Overview',
+            date: new Date().toISOString()
+        };
+        this.state.addClinicalNote(newNote);
+    }
+
     // --- Dictation State ---
     dictationText = signal('');
     isDictating = signal(false);
@@ -204,10 +280,19 @@ export class VoiceAssistantComponent implements OnDestroy {
             const input = this.state.liveAgentInput();
             if (input) {
                 this.messageText.set(input);
-                // We don't want to clear it here if it causes infinite loops, 
-                // but setting messageText is fine.
             }
-        });
+        }, { allowSignalWrites: true });
+
+        effect(() => {
+            const isActive = this.state.isLiveAgentActive();
+            untracked(() => {
+                if (isActive && this.panelMode() !== 'chat') {
+                    this.panelMode.set('chat');
+                } else if (!isActive && this.panelMode() === 'chat') {
+                    this.panelMode.set('selection');
+                }
+            });
+        }, { allowSignalWrites: true });
 
         // Only init if in browser
         if (typeof window !== 'undefined') {

@@ -73,7 +73,7 @@ const ICONS: Record<string, string> = {
                         [class.border-gray-100]="true">
                   <div class="flex justify-between items-start gap-4">
                     <div class="flex-1">
-                      <p class="text-[9px] font-bold text-gray-400 uppercase tracking-[0.15em]">{{ entry.date }}</p>
+                      <p class="text-[9px] font-bold text-gray-500 uppercase tracking-[0.15em]">{{ entry.date }}</p>
                       <p class="text-sm text-[#1C1C1C] mt-1 leading-relaxed font-light">{{ entry.summary }}</p>
                     </div>
                   </div>
@@ -90,7 +90,7 @@ const ICONS: Record<string, string> = {
                         [class.border-y]="true"
                         [class.border-r]="true"
                         [class.border-gray-100]="true">
-                    <p class="text-[9px] font-bold text-gray-400 uppercase tracking-[0.15em]">{{ entry.date }}</p>
+                    <p class="text-[9px] font-bold text-gray-500 uppercase tracking-[0.15em]">{{ entry.date }}</p>
                     <p class="text-sm text-[#1C1C1C] mt-1 leading-relaxed font-light">{{ entry.summary }}</p>
                 </button>
               }
@@ -105,7 +105,7 @@ const ICONS: Record<string, string> = {
               @case ('BookmarkAdded') {
                  <div class="p-4 bg-white border border-gray-100 border-l-4 border-l-yellow-400 rounded flex gap-3 items-start">
                   <div class="flex-1">
-                    <p class="text-[9px] font-bold text-yellow-600 uppercase tracking-[0.15em]">{{ entry.date }}</p>
+                    <p class="text-[9px] font-bold text-yellow-700 uppercase tracking-[0.15em]">{{ entry.date }}</p>
                     <p class="text-sm text-gray-800 mt-1 leading-relaxed truncate font-light">Bookmarked: "{{ entry.summary }}"</p>
                     <button (click)="openBookmark.emit(entry.bookmark.url)" 
                             class="mt-3 text-[10px] font-bold text-gray-500 bg-gray-50 border border-gray-100 px-3 py-1 rounded hover:bg-gray-100 hover:border-gray-200 transition-all uppercase tracking-widest">
@@ -146,8 +146,8 @@ const ICONS: Record<string, string> = {
                         [class.border-gray-100]="true">
                   <div>
                     <div class="flex items-center gap-2 mb-1.5">
-                        <span class="px-1.5 py-0.5 rounded text-[8px] font-bold bg-green-50 text-green-600 uppercase tracking-[0.1em] border border-green-100">AI Report</span>
-                        <p class="text-[9px] font-bold text-gray-400 uppercase tracking-[0.15em]">{{ entry.date }}</p>
+                        <span class="px-1.5 py-0.5 rounded text-[8px] font-bold bg-green-50 text-green-700 uppercase tracking-[0.1em] border border-green-100">AI Report</span>
+                        <p class="text-[9px] font-bold text-gray-500 uppercase tracking-[0.15em]">{{ entry.date }}</p>
                     </div>
                     <p class="text-sm text-gray-800 mt-1 leading-relaxed font-light">{{ entry.summary }}</p>
                   </div>
@@ -167,7 +167,7 @@ const ICONS: Record<string, string> = {
                   <div>
                     <div class="flex items-center gap-2 mb-1.5">
                         <span class="px-1.5 py-0.5 rounded text-[8px] font-bold bg-blue-50 text-blue-600 uppercase tracking-[0.1em] border border-blue-100">Care Plan</span>
-                        <p class="text-[9px] font-bold text-gray-400 uppercase tracking-[0.15em]">{{ entry.date }}</p>
+                        <p class="text-[9px] font-bold text-gray-500 uppercase tracking-[0.15em]">{{ entry.date }}</p>
                     </div>
                     <p class="text-sm text-[#1C1C1C] mt-1 leading-relaxed font-bold">{{ entry.summary }}</p>
                   </div>
