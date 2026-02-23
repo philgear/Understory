@@ -21,6 +21,9 @@
             "tsConfig": "tsconfig.json",
             "styles": [
               "src/styles.css"
+            ],
+            "allowedCommonJsDependencies": [
+              "p-retry"
             ]
           },
           "configurations": {

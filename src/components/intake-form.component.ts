@@ -1,10 +1,10 @@
-import { Component, ChangeDetectionStrategy, inject, computed, signal, OnDestroy, effect } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, computed, signal, OnDestroy, effect, untracked } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PatientStateService, BodyPartIssue } from '../services/patient-state.service';
-import { PatientManagementService, HistoryEntry } from '../services/patient-management.service';
 import { marked } from 'marked';
 import { DictationService } from '../services/dictation.service';
-
+import { GeminiService } from '../services/gemini.service';
+import { PatientStateService, BodyPartIssue, BODY_PART_NAMES } from '../services/patient-state.service';
+import { PatientManagementService, HistoryEntry } from '../services/patient-management.service';
 
 interface NoteTimelineItem extends BodyPartIssue {
   date: string;
@@ -13,7 +13,6 @@ interface NoteTimelineItem extends BodyPartIssue {
 
 @Component({
   selector: 'app-intake-form',
-  standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -32,12 +31,13 @@ interface NoteTimelineItem extends BodyPartIssue {
           </button>
         </div>
 
-        @if (viewedNote(); as note) {
-          <div class="flex-1 overflow-y-auto p-6">
+        <div class="flex-1 flex overflow-hidden">
+          <div class="flex-1 overflow-y-auto p-6 bg-[#F9FAFB]">
             
-            <!-- TASK BRACKET: Active Assessment Card -->
-            <!-- This visual container 'brackets' the current task, separating it from history -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-8 transition-all duration-300 hover:shadow-md">
+            @if (viewedNote(); as note) {
+              <!-- TASK BRACKET: Active Assessment Card -->
+              <!-- This visual container 'brackets' the current task, separating it from history -->
+              <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-8 transition-all duration-300 hover:shadow-md">
               
               <!-- Bracket Header -->
               <div class="bg-gray-50/50 px-6 py-4 border-b border-gray-100 flex justify-between items-start">
@@ -45,7 +45,7 @@ interface NoteTimelineItem extends BodyPartIssue {
                   <span class="text-[10px] font-bold uppercase tracking-widest text-[#689F38] block mb-1">
                     {{ note.isCurrent ? 'Active Input' : 'Historical Record' }}
                   </span>
-                  <h2 class="text-xl font-medium text-[#1C1C1C]">{{ note.name }}</h2>
+                  <h2 class="text-xl font-medium text-[#1C1C1C]">{{ state.selectedPartName() }}</h2>
                 </div>
                 @if (note.isCurrent) {
                     <div class="flex items-center gap-1.5 px-2 py-1 bg-green-50 rounded-full border border-green-100">
@@ -110,7 +110,7 @@ interface NoteTimelineItem extends BodyPartIssue {
                 <div class="space-y-3">
                   <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                    Clinical Notes
+                    Integrative Observations
                   </label>
                   <div class="relative group">
                     <textarea 
@@ -236,24 +236,59 @@ interface NoteTimelineItem extends BodyPartIssue {
               </div>
             </div>
 
-            <!-- CONTEXT: History Timeline -->
-            <div class="pl-2">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg>
-                        History & Context
-                    </h3>
-                    <button (click)="addNewNote()" [disabled]="!canAddNote()" class="text-[10px] font-bold text-[#689F38] hover:text-[#558B2F] uppercase tracking-widest transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M12 5v14M5 12h14"/></svg>
-                      New Note
-                    </button>
-                </div>
-                
-                <div class="relative pl-2">
-                    <!-- Vertical Timeline Line -->
-                    <div class="absolute left-[11px] top-2 bottom-2 w-px bg-gray-200"></div>
+                <!-- AI INSIGHTS SECTION (Node Format Alignment) -->
+                @if (aiInsights().length > 0) {
+                  <div class="mt-8 space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                    <div class="flex items-center gap-2 px-2">
+                       <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-purple-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v8l6-6M12 22v-8l-6 6M2 12h8l-6-6M22 12h-8l6 6"/></svg>
+                       <span class="text-[10px] font-bold uppercase tracking-widest text-purple-600">AI Draft Insights</span>
+                    </div>
 
-                    @for (timelineNote of noteTimeline(); track $index) {
+                    <div class="space-y-px">
+                      @for (node of aiInsights(); track node.id) {
+                        <div class="bg-purple-50/30 border border-purple-100/50 rounded-lg p-4 transition-all hover:bg-purple-50/50 group mb-3">
+                           @if (node.type === 'paragraph') {
+                             <div class="text-sm text-gray-700 leading-relaxed prose prose-sm max-w-none" [innerHTML]="node.rawHtml"></div>
+                           } @else if (node.type === 'list') {
+                             <ul class="space-y-2">
+                               @for (item of node.items; track item.id) {
+                                 <li class="flex gap-2 text-sm text-gray-700">
+                                   <span class="text-purple-300 select-none">•</span>
+                                   <div [innerHTML]="item.html"></div>
+                                 </li>
+                               }
+                             </ul>
+                           }
+                           <div class="mt-3 flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+                              <button (click)="adoptInsight(node)" class="text-[10px] font-medium text-purple-600 hover:text-purple-700 bg-white px-2 py-1 rounded border border-purple-200 shadow-sm flex items-center gap-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg>
+                                Adopt into Assessment
+                              </button>
+                           </div>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                }
+
+                <!-- CONTEXT: History Timeline -->
+                <div class="mt-12 pl-2">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg>
+                            History & Context
+                        </h3>
+                        <button (click)="addNewNote()" [disabled]="!canAddNote()" class="text-[10px] font-bold text-[#689F38] hover:text-[#558B2F] uppercase tracking-widest transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M12 5v14M5 12h14"/></svg>
+                          New Note
+                        </button>
+                    </div>
+                    
+                    <div class="relative pl-2">
+                        <!-- Vertical Timeline Line -->
+                        <div class="absolute left-[11px] top-2 bottom-2 w-px bg-gray-200"></div>
+
+                        @for (timelineNote of noteTimeline(); track $index) {
                         <div class="relative pl-8 pb-6 group">
                             <!-- Node on the timeline -->
                             <div class="absolute left-[7px] top-2.5 w-2.5 h-2.5 rounded-full border-2 bg-white z-10 transition-colors"
@@ -292,12 +327,13 @@ interface NoteTimelineItem extends BodyPartIssue {
                 </div>
             </div>
 
-          </div>
         } @else {
            <div class="flex-1 flex flex-col items-center justify-center p-8 text-center opacity-40">
               <p class="text-xs font-bold uppercase tracking-widest text-gray-500">Select a note to edit.</p>
            </div>
         }
+          </div>
+        </div>
 
       } @else {
         <div class="flex-1 flex flex-col items-center justify-center p-8 text-center opacity-40">
@@ -312,7 +348,7 @@ interface NoteTimelineItem extends BodyPartIssue {
 })
 export class IntakeFormComponent implements OnDestroy {
   state = inject(PatientStateService);
-  patientManager = inject(PatientManagementService);
+  private patientManager = inject(PatientManagementService);
   dictation = inject(DictationService);
 
   justCopied = signal(false);
@@ -411,6 +447,50 @@ export class IntakeFormComponent implements OnDestroy {
     return this.patientManager.patients().find(p => p.id === selectedId)?.history || [];
   });
 
+  private gemini = inject(GeminiService);
+
+  aiInsights = computed(() => {
+    const report = this.gemini.analysisResults()['Care Plan Overview'];
+    if (!report) return [];
+
+    const partName = this.state.selectedPartId() ? this.state.selectedPartName() : '';
+    if (!partName) return [];
+
+    try {
+      const tokens = marked.lexer(report);
+      const relevantNodes: any[] = [];
+      const partWords = partName.toLowerCase().split(' ');
+
+      tokens.forEach(token => {
+        const text = (token as any).text || token.raw || '';
+        const lowercaseText = text.toLowerCase();
+
+        // Find if the body part name exists in this token
+        if (partWords.some(word => lowercaseText.includes(word))) {
+          if (token.type === 'paragraph') {
+            relevantNodes.push({
+              id: `ai-${Math.random()}`,
+              type: 'paragraph',
+              rawHtml: marked.parseInline(token.text)
+            });
+          } else if (token.type === 'list') {
+            relevantNodes.push({
+              id: `ai-${Math.random()}`,
+              type: 'list',
+              items: token.items.map((it: any) => ({
+                id: `ai-item-${Math.random()}`,
+                html: marked.parseInline(it.text)
+              }))
+            });
+          }
+        }
+      });
+      return relevantNodes;
+    } catch (e) {
+      return [];
+    }
+  });
+
   constructor() {
     // Sync local state when the selected issue changes from the global state
     effect(() => {
@@ -418,6 +498,27 @@ export class IntakeFormComponent implements OnDestroy {
       this.localPainLevel.set(note?.painLevel ?? 0);
       this.localDescription.set(note?.description ?? '');
       this.localRecommendation.set(note?.recommendation ?? '');
+    });
+
+    // Auto-select or auto-create note when a part is selected
+    effect(() => {
+      const partId = this.state.selectedPartId();
+      const currentNoteId = this.state.selectedNoteId();
+
+      if (partId && !currentNoteId) {
+        untracked(() => {
+          const timeline = this.noteTimeline();
+          const currentVisitNote = timeline.find(n => n.isCurrent);
+          if (currentVisitNote) {
+            this.state.selectNote(currentVisitNote.noteId);
+          } else {
+            // If it's a new part for this visit, and we are not viewing a past visit, auto-create
+            if (!this.state.viewingPastVisit()) {
+              this.addNewNote();
+            }
+          }
+        });
+      }
     });
   }
 
@@ -691,6 +792,18 @@ export class IntakeFormComponent implements OnDestroy {
     }).catch(err => {
       console.error('Failed to copy text: ', err);
     });
+  }
+
+  adoptInsight(node: any) {
+    let text = '';
+    if (node.type === 'paragraph') {
+      text = node.rawHtml.replace(/<[^>]*>/g, '').trim();
+    } else if (node.type === 'list') {
+      text = node.items.map((it: any) => '• ' + it.html.replace(/<[^>]*>/g, '').trim()).join('\n');
+    }
+
+    const currentText = this.localDescription();
+    this.localDescription.set(currentText ? currentText + '\n\n' + text : text);
   }
 }
 

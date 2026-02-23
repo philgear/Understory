@@ -7,7 +7,7 @@ import {
   getDOM,
   parseCookieValue,
   setRootDomAdapter
-} from "./chunk-JFF6U3UR.js";
+} from "./chunk-6E6XQ23X.js";
 import {
   APP_BOOTSTRAP_LISTENER,
   APP_ID,
@@ -28,7 +28,6 @@ import {
   Injector,
   NgModule,
   NgZone,
-  Observable,
   Optional,
   PLATFORM_ID,
   PLATFORM_INITIALIZER,
@@ -58,11 +57,8 @@ import {
   bypassSanitizationTrustStyle,
   bypassSanitizationTrustUrl,
   computed,
-  concatMap,
   createPlatformFactory,
   encapsulateResourceError,
-  filter,
-  finalize,
   formatRuntimeError,
   forwardRef,
   inject,
@@ -70,8 +66,6 @@ import {
   linkedSignal,
   makeEnvironmentProviders,
   makeStateKey,
-  map,
-  of,
   performanceMarkFeature,
   platformCore,
   provideStabilityDebugging,
@@ -79,7 +73,6 @@ import {
   setClassMetadata,
   setDocument,
   signal,
-  switchMap,
   truncateMiddle,
   unwrapSafeValue,
   withDomHydration,
@@ -90,7 +83,16 @@ import {
   ɵɵdefineInjector,
   ɵɵdefineNgModule,
   ɵɵinject
-} from "./chunk-TKVEC5AY.js";
+} from "./chunk-YKEZMC2V.js";
+import {
+  Observable,
+  concatMap,
+  filter,
+  finalize,
+  map,
+  of,
+  switchMap
+} from "./chunk-3KKC7HMJ.js";
 import {
   __objRest,
   __spreadProps,

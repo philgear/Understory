@@ -1,10 +1,11 @@
-import { Component, ChangeDetectionStrategy, inject, computed, ViewEncapsulation, signal, OnDestroy, effect, viewChild, ElementRef, untracked, afterNextRender, Renderer2 } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, computed, ViewEncapsulation, signal, OnDestroy, effect, viewChild, ElementRef, untracked, afterNextRender, Renderer2, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GeminiService, TranscriptEntry, AnalysisLens } from '../services/gemini.service';
 import { PatientStateService } from '../services/patient-state.service';
 import { PatientManagementService, HistoryEntry } from '../services/patient-management.service';
 import { marked } from 'marked';
 import { DictationService } from '../services/dictation.service';
+import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 
 declare var webkitSpeechRecognition: any;
 type AgentState = 'idle' | 'listening' | 'processing' | 'speaking';
@@ -16,6 +17,7 @@ export interface CarePlanNodeItem {
   note: string;
   showNote: boolean;
   isDictating?: boolean;
+  key: string;
 }
 
 export interface CarePlanNode {
@@ -28,6 +30,7 @@ export interface CarePlanNode {
   note: string;
   showNote: boolean;
   isDictating?: boolean;
+  key: string;
 }
 
 interface ReportSection {
@@ -253,11 +256,12 @@ interface ParsedTranscriptEntry extends TranscriptEntry {
                 <span>Voice Assistant</span>
               </button>
             }
-          <button (click)="generate()" [disabled]="!state.hasIssues()"
+            <button (click)="generate()" [disabled]="!state.hasIssues()"
             class="group flex items-center gap-2 px-4 py-2 bg-[#1C1C1C] text-white text-xs font-bold uppercase tracking-widest hover:bg-[#558B2F] disabled:opacity-20 disabled:hover:bg-[#1C1C1C] transition-colors">
             @if (hasAnyReport()) { <span>Refresh Recommendations</span> } @else { <span>Generate Care Plan</span> }
             <svg class="w-3 h-3 text-gray-400 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="square" stroke-linejoin="miter" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
           </button>
+          
         </div>
       }
     </div>
@@ -275,13 +279,13 @@ interface ParsedTranscriptEntry extends TranscriptEntry {
                     [class.hover:bg-gray-100]="activeLens() !== 'Care Plan Overview'">
               Overview
             </button>
-            <button (click)="changeLens('Clinical Interventions')"
+            <button (click)="changeLens('Functional Protocols')"
                     class="px-4 py-2 text-xs font-medium border-b-2 -mb-px transition-colors"
-                    [class.border-[#1C1C1C]]="activeLens() === 'Clinical Interventions'"
-                    [class.text-[#1C1C1C]]="activeLens() === 'Clinical Interventions'"
-                    [class.text-gray-500]="activeLens() !== 'Clinical Interventions'"
-                    [class.border-transparent]="activeLens() !== 'Clinical Interventions'"
-                    [class.hover:bg-gray-100]="activeLens() !== 'Clinical Interventions'">
+                    [class.border-[#1C1C1C]]="activeLens() === 'Functional Protocols'"
+                    [class.text-[#1C1C1C]]="activeLens() === 'Functional Protocols'"
+                    [class.text-gray-500]="activeLens() !== 'Functional Protocols'"
+                    [class.border-transparent]="activeLens() !== 'Functional Protocols'"
+                    [class.hover:bg-gray-100]="activeLens() !== 'Functional Protocols'">
               Interventions
             </button>
             <button (click)="changeLens('Monitoring & Follow-up')"
@@ -345,31 +349,60 @@ interface ParsedTranscriptEntry extends TranscriptEntry {
                                 <p [innerHTML]="node.rawHtml" 
                                    [class.bracket-removed]="node.bracketState === 'removed'"
                                    [class.bracket-added]="node.bracketState === 'added'"
-                                   (dblclick)="toggleNodeBracket(node)"></p>
+                                    (dblclick)="handleNodeDoubleClick(node)"></p>
                                 
                                 <div class="absolute -left-10 top-0 opacity-0 group-hover/node:opacity-100 transition-opacity flex flex-col gap-1 z-10 no-print">
-                                   <button (click)="node.showNote = true" class="w-7 h-7 bg-white rounded-md shadow-sm border border-gray-200 flex items-center justify-center text-gray-400 hover:text-[#689F38] hover:bg-gray-50 transition-colors" title="Add Note">
+                                   <button (click)="toggleNodeBracket(node)" class="w-7 h-7 bg-white rounded-md shadow-sm border border-gray-200 flex items-center justify-center text-gray-400 hover:text-[#689F38] hover:bg-gray-50 transition-colors" title="Finalize Action">
+                                      <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                                   </button>
+                                   <button (click)="node.showNote = true" class="w-7 h-7 bg-white rounded-md shadow-sm border border-gray-200 flex items-center justify-center text-gray-400 hover:text-[#1C1C1C] hover:bg-gray-50 transition-colors" title="Add Note">
                                       <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                   </button>
+                                   <button (click)="pasteToNode(node)" class="w-7 h-7 bg-white rounded-md shadow-sm border border-gray-200 flex items-center justify-center text-gray-400 hover:text-[#1C1C1C] hover:bg-gray-50 transition-colors" title="Paste Note">
+                                      <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
                                    </button>
                                 </div>
 
                                 @if (node.showNote || node.note) {
                                   <div class="mt-2 relative no-print">
-                                    <textarea [value]="node.note" (input)="updateNodeNote(node, $event)" rows="3" class="w-full bg-[#F9FAFB] border border-gray-200 rounded-lg p-3 text-sm text-[#1C1C1C] focus:bg-white focus:border-[#689F38] focus:ring-1 focus:ring-[#689F38] transition-all placeholder-gray-400 resize-none font-sans" placeholder="Add your clinical note here..."></textarea>
-                                    <div class="absolute bottom-2 right-2 flex items-center gap-1.5">
-                                      <button (click)="copyNote(node.note)" [disabled]="!node.note" class="w-6 h-6 rounded-md flex items-center justify-center bg-white border border-gray-200 text-gray-500 hover:text-[#1C1C1C] transition-colors disabled:opacity-50">
-                                         <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                                      </button>
-                                      <button (click)="openNodeDictation(node)" [disabled]="!!dictation.permissionError()"
-                                              class="w-6 h-6 rounded-md flex items-center justify-center border transition-all shadow-sm"
-                                              [class.bg-red-50]="node.isDictating" [class.border-red-200]="node.isDictating" [class.text-red-600]="node.isDictating" [class.animate-pulse]="node.isDictating"
-                                              [class.bg-white]="!node.isDictating" [class.border-gray-200]="!node.isDictating" [class.text-gray-500]="!node.isDictating" [class.hover:bg-gray-50]="!node.isDictating"
-                                              title="Dictate Note">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
-                                      </button>
+                                    <textarea [value]="node.note" (input)="updateNodeNote(node, $event)" rows="3" class="w-full bg-[#F9FAFB] border border-gray-200 rounded-lg p-3 text-sm text-[#1C1C1C] focus:bg-white focus:border-[#689F38] focus:ring-1 focus:ring-[#689F38] transition-all placeholder-gray-400 resize-none font-sans" placeholder="Add your integrative observation here..."></textarea>
+                                    
+                                    <!-- Clinical Suggestions -->
+                                    <div class="flex flex-wrap gap-1.5 mt-2 mb-8">
+                                      @for (sugg of protocolInsights; track sugg) {
+                                        <button (click)="insertSuggestion(node, sugg)" class="px-2 py-1 bg-white border border-gray-100 rounded text-[9px] font-bold text-gray-400 uppercase tracking-tighter hover:border-[#689F38] hover:text-[#689F38] transition-all">
+                                          + {{ sugg }}
+                                        </button>
+                                      }
                                     </div>
-                                  </div>
-                                }
+
+                                        <div class="absolute bottom-2 left-3 flex items-center gap-1.5 no-print">
+                                          @if (nodeSaveStatuses()[node.key]; as status) {
+                                            <span class="text-[9px] font-bold uppercase tracking-widest transition-opacity duration-300"
+                                                  [class.text-gray-400]="status === 'saving'"
+                                                  [class.text-[#689F38]]="status === 'saved'">
+                                              {{ status === 'saving' ? 'Saving...' : 'Saved ✔' }}
+                                            </span>
+                                          }
+                                        </div>
+
+                                        <div class="absolute bottom-2 right-2 flex items-center gap-1.5">
+                                          <button (click)="copyNote(node.note)" [disabled]="!node.note" class="w-6 h-6 rounded-md flex items-center justify-center bg-white border border-gray-200 text-gray-500 hover:text-[#1C1C1C] transition-colors disabled:opacity-50" title="Copy">
+                                             <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                                          </button>
+                                          <button (click)="pasteToNode(node)" class="w-6 h-6 rounded-md flex items-center justify-center bg-white border border-gray-200 text-gray-500 hover:text-[#1C1C1C] transition-colors disabled:opacity-50" title="Paste">
+                                             <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+                                          </button>
+                                          <button (click)="openNodeDictation(node)" [disabled]="!!dictation.permissionError()"
+                                                  class="w-6 h-6 rounded-md flex items-center justify-center border transition-all shadow-sm"
+                                                  [class.bg-red-50]="node.isDictating" [class.border-red-200]="node.isDictating" [class.text-red-600]="node.isDictating" [class.animate-pulse]="node.isDictating"
+                                                  [class.bg-white]="!node.isDictating" [class.border-gray-200]="!node.isDictating" [class.text-gray-500]="!node.isDictating" [class.hover:bg-gray-50]="!node.isDictating"
+                                                  title="Dictate Note">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+                                          </button>
+                                        </div>
+                                      </div>
+                                    }
                               </div>
                             } @else if (node.type === 'list') {
                               <ul [class.list-decimal]="node.ordered" [class.list-disc]="!node.ordered" class="pl-4 mb-6">
@@ -377,21 +410,50 @@ interface ParsedTranscriptEntry extends TranscriptEntry {
                                   <li class="relative group/item mb-2"
                                       [class.bracket-removed]="item.bracketState === 'removed'"
                                       [class.bracket-added]="item.bracketState === 'added'"
-                                      (dblclick)="toggleNodeBracket(item)">
+                                      (dblclick)="handleNodeDoubleClick(item)">
                                     <span [innerHTML]="item.html" class="block"></span>
 
                                     <div class="absolute -left-10 top-0 opacity-0 group-hover/item:opacity-100 transition-opacity flex flex-col gap-1 z-10 no-print">
-                                       <button (click)="item.showNote = true" class="w-7 h-7 bg-white rounded-md shadow-sm border border-gray-200 flex items-center justify-center text-gray-400 hover:text-[#689F38] hover:bg-gray-50 transition-colors" title="Add Note">
+                                       <button (click)="toggleNodeBracket(item)" class="w-7 h-7 bg-white rounded-md shadow-sm border border-gray-200 flex items-center justify-center text-gray-400 hover:text-[#689F38] hover:bg-gray-50 transition-colors" title="Finalize Action">
+                                          <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                                       </button>
+                                       <button (click)="item.showNote = true" class="w-7 h-7 bg-white rounded-md shadow-sm border border-gray-200 flex items-center justify-center text-gray-400 hover:text-[#1C1C1C] hover:bg-gray-50 transition-colors" title="Add Note">
                                           <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                       </button>
+                                       <button (click)="pasteToNode(item)" class="w-7 h-7 bg-white rounded-md shadow-sm border border-gray-200 flex items-center justify-center text-gray-400 hover:text-[#1C1C1C] hover:bg-gray-50 transition-colors" title="Paste Note">
+                                          <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
                                        </button>
                                     </div>
 
                                     @if (item.showNote || item.note) {
                                       <div class="mt-2 mb-4 relative ml-2 no-print">
                                         <textarea [value]="item.note" (input)="updateNodeNote(item, $event)" rows="2" class="w-full bg-[#F9FAFB] border border-gray-200 rounded-lg p-3 text-sm text-[#1C1C1C] focus:bg-white focus:border-[#689F38] focus:ring-1 focus:ring-[#689F38] transition-all placeholder-gray-400 resize-none font-sans" placeholder="Clinical note regarding this intervention..."></textarea>
+                                        
+                                        <!-- Clinical Suggestions -->
+                                        <div class="flex flex-wrap gap-1.5 mt-2 mb-8">
+                                          @for (sugg of protocolInsights; track sugg) {
+                                            <button (click)="insertSuggestion(item, sugg)" class="px-2 py-1 bg-white border border-gray-100 rounded text-[9px] font-bold text-gray-400 uppercase tracking-tighter hover:border-[#689F38] hover:text-[#689F38] transition-all">
+                                              + {{ sugg }}
+                                            </button>
+                                          }
+                                        </div>
+
+                                        <div class="absolute bottom-2 left-3 flex items-center gap-1.5 no-print">
+                                          @if (nodeSaveStatuses()[item.key]; as status) {
+                                            <span class="text-[9px] font-bold uppercase tracking-widest transition-opacity duration-300"
+                                                  [class.text-gray-400]="status === 'saving'"
+                                                  [class.text-[#689F38]]="status === 'saved'">
+                                              {{ status === 'saving' ? 'Saving...' : 'Saved ✔' }}
+                                            </span>
+                                          }
+                                        </div>
+
                                         <div class="absolute bottom-2 right-2 flex items-center gap-1.5">
-                                          <button (click)="copyNote(item.note)" [disabled]="!item.note" class="w-6 h-6 rounded-md flex items-center justify-center bg-white border border-gray-200 text-gray-500 hover:text-[#1C1C1C] transition-colors disabled:opacity-50">
+                                          <button (click)="copyNote(item.note)" [disabled]="!item.note" class="w-6 h-6 rounded-md flex items-center justify-center bg-white border border-gray-200 text-gray-500 hover:text-[#1C1C1C] transition-colors disabled:opacity-50" title="Copy">
                                              <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                                          </button>
+                                          <button (click)="pasteToNode(item)" class="w-6 h-6 rounded-md flex items-center justify-center bg-white border border-gray-200 text-gray-500 hover:text-[#1C1C1C] transition-colors disabled:opacity-50" title="Paste">
+                                             <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
                                           </button>
                                           <button (click)="openNodeDictation(item)" [disabled]="!!dictation.permissionError()"
                                                   class="w-6 h-6 rounded-md flex items-center justify-center border transition-all shadow-sm"
@@ -422,176 +484,35 @@ interface ParsedTranscriptEntry extends TranscriptEntry {
          </div>
     </div>
 
-    <!-- Live Consult / Voice Assistant Section -->
-    @if (state.isLiveAgentActive()) {
-        <!-- Draggable Resizer -->
-        <div (mousedown)="startDrag($event)" class="shrink-0 h-2 bg-gray-100 hover:bg-gray-200 transition-colors cursor-row-resize z-20 no-print"></div>
 
-        <div class="shrink-0 bg-white z-10 no-print flex flex-col" [style.height.px]="chatHeight()">
-            
-            <!-- Panel Header / Tabs -->
-            <div class="flex items-center justify-between px-6 py-2 border-b border-gray-100 bg-gray-50">
-                <div class="flex items-center gap-4">
-                    <button (click)="panelMode.set('selection')" 
-                            class="text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-gray-800 transition-colors flex items-center gap-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-                        Home
-                    </button>
-                    @if (panelMode() !== 'selection') {
-                        <span class="text-gray-300">/</span>
-                        <span class="text-[10px] font-bold uppercase tracking-widest text-[#1C1C1C]">
-                            {{ panelMode() === 'chat' ? 'Live Consult' : 'Dictation' }}
-                        </span>
-                    }
-                </div>
-                <button (click)="endLiveConsult()" class="text-gray-400 hover:text-red-500 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </button>
-            </div>
-
-            <!-- MODE: SELECTION -->
-            @if (panelMode() === 'selection') {
-                <div class="flex-1 flex items-center justify-center gap-8 p-8 bg-gray-50/50">
-                    <button (click)="activateChat()" class="group relative w-64 h-48 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md hover:border-[#1C1C1C] transition-all p-6 flex flex-col items-center justify-center text-center gap-4">
-                        <div class="w-16 h-16 rounded-full bg-[#F1F8E9] flex items-center justify-center text-[#558B2F] group-hover:scale-110 transition-transform">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-[#1C1C1C] uppercase tracking-wider text-sm mb-1">Live Consult</h3>
-                            <p class="text-xs text-gray-500 leading-relaxed">Discuss patient data, ask questions, and explore diagnoses with AI.</p>
-                        </div>
-                    </button>
-
-                    <button (click)="activateDictation()" class="group relative w-64 h-48 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md hover:border-[#1C1C1C] transition-all p-6 flex flex-col items-center justify-center text-center gap-4">
-                        <div class="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 group-hover:scale-110 transition-transform">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-[#1C1C1C] uppercase tracking-wider text-sm mb-1">Dictation Tool</h3>
-                            <p class="text-xs text-gray-500 leading-relaxed">Transcribe voice notes to clipboard for use in reports or care plans.</p>
-                        </div>
-                    </button>
-                </div>
-            }
-
-            <!-- MODE: CHAT -->
-            @if (panelMode() === 'chat') {
-                <!-- Transcript -->
-                <div #transcriptContainer class="flex-1 overflow-y-auto p-8 space-y-6">
-                     @for (entry of parsedTranscript(); track $index) {
-                      <div class="flex gap-4 max-w-[85%]" [class.ml-auto]="entry.role === 'user'" [class.flex-row-reverse]="entry.role === 'user'">
-                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
-                             [class.bg-[#F1F8E9]]="entry.role === 'model'"
-                             [class.text-[#558B2F]]="entry.role === 'model'"
-                             [class.bg-[#4527A0]]="entry.role === 'user'"
-                             [class.text-white]="entry.role === 'user'">
-                             {{ entry.role === 'model' ? 'AI' : 'DR' }}
-                        </div>
-                        @if (entry.role === 'model') {
-                            <div class="p-4 rounded-lg bg-[#F8F8F8] text-[#1C1C1C] rams-typography" [innerHTML]="entry.htmlContent"></div>
-                        } @else {
-                            <div class="p-4 rounded-lg text-sm font-light leading-relaxed bg-[#4527A0] text-white/90">
-                              <p>{{ entry.text }}</p>
-                            </div>
-                        }
-                      </div>
-                    }
-                </div>
-
-                <!-- Controls -->
-                <div class="shrink-0 p-6 border-t border-[#EEEEEE] flex flex-col items-center justify-center gap-4">
-                    @if (permissionError(); as error) {
-                      <div class="p-2 mb-2 bg-red-50 border border-red-200 text-center max-w-md w-full">
-                        <p class="font-bold text-red-700 text-xs">Microphone Access Issue</p>
-                        <p class="text-xs text-red-600/80 mt-1">{{ error }}</p>
-                      </div>
-                    }
-                    <form (submit)="sendMessage()" class="w-full max-w-2xl flex items-center gap-2">
-                        <textarea
-                          #chatInput
-                          rows="1"
-                          [value]="messageText()"
-                          (input)="messageText.set($event.target.value)"
-                          (keydown.enter)="sendMessage($event)"
-                          placeholder="Ask a follow-up question..."
-                          [disabled]="agentState() !== 'idle'"
-                          class="flex-1 bg-white border border-[#EEEEEE] p-3 text-sm text-[#1C1C1C] focus:border-[#1C1C1C] focus:ring-0 transition-colors placeholder-gray-400 resize-none disabled:bg-gray-50"
-                        ></textarea>
-
-                        <button type="submit" [disabled]="!messageText().trim() || agentState() !== 'idle'"
-                                class="w-12 h-12 flex items-center justify-center bg-[#1C1C1C] hover:bg-[#689F38] disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors text-white shrink-0">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M3 20v-6l8-2-8-2V4l19 8z"/></svg>
-                        </button>
-                        <button type="button" (click)="toggleListening()" [disabled]="agentState() !== 'idle' || !!permissionError()"
-                                class="w-12 h-12 flex items-center justify-center border border-[#EEEEEE] hover:border-[#1C1C1C] disabled:opacity-50 disabled:cursor-not-allowed transition-colors shrink-0"
-                                [class.bg-[#689F38]]="agentState() === 'listening'"
-                                [class.border-[#689F38]]="agentState() === 'listening'">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5"
-                                 [class.text-white]="agentState() === 'listening'"
-                                 [class.text-gray-500]="agentState() === 'idle'"
-                                 viewBox="0 0 24 24" fill="currentColor"><path d="M12 14q-1.25 0-2.125-.875T9 11V5q0-1.25.875-2.125T12 2q1.25 0 2.125.875T15 5v6q0 1.25-.875 2.125T12 14m-1 7v-3.075q-2.6-.35-4.3-2.325T5 11h2q0 2.075 1.463 3.537T12 16q2.075 0 3.538-1.463T17 11h2q0 2.225-1.7 4.2T13 17.925V21z"/></svg>
-                        </button>
-                    </form>
-                </div>
-            }
-
-            <!-- MODE: DICTATION -->
-            @if (panelMode() === 'dictation') {
-                <div class="flex-1 flex flex-col p-8 bg-gray-50/30">
-                    <div class="flex-1 bg-white border border-gray-200 rounded-lg shadow-sm p-6 relative flex flex-col">
-                        <textarea 
-                            [value]="dictationText()"
-                            (input)="dictationText.set($event.target.value)"
-                            class="flex-1 w-full resize-none outline-none text-lg leading-relaxed text-gray-800 placeholder-gray-300"
-                            placeholder="Start dictating..."></textarea>
-                        
-                        @if (isDictating()) {
-                            <div class="absolute bottom-6 right-6 flex gap-1">
-                                <span class="w-2 h-2 bg-red-500 rounded-full animate-bounce" style="animation-delay: 0ms"></span>
-                                <span class="w-2 h-2 bg-red-500 rounded-full animate-bounce" style="animation-delay: 150ms"></span>
-                                <span class="w-2 h-2 bg-red-500 rounded-full animate-bounce" style="animation-delay: 300ms"></span>
-                            </div>
-                        }
-                    </div>
-                    
-                    <div class="shrink-0 pt-6 flex items-center justify-between">
-                        <div class="flex items-center gap-4">
-                            <button (click)="toggleDictation()" 
-                                    class="flex items-center gap-3 px-6 py-3 rounded-full font-bold uppercase tracking-widest text-xs transition-all shadow-sm"
-                                    [class.bg-red-600]="isDictating()"
-                                    [class.text-white]="isDictating()"
-                                    [class.hover:bg-red-700]="isDictating()"
-                                    [class.bg-[#1C1C1C]]="!isDictating()"
-                                    [class.text-white]="!isDictating()"
-                                    [class.hover:bg-gray-800]="!isDictating()">
-                                @if (isDictating()) {
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-                                    <span>Pause Recording</span>
-                                } @else {
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
-                                    <span>Start Recording</span>
-                                }
-                            </button>
-                            <button (click)="clearDictation()" [disabled]="!dictationText()" class="text-xs font-bold text-gray-400 hover:text-red-500 uppercase tracking-wider disabled:opacity-30 transition-colors">
-                                Clear
-                            </button>
-                        </div>
-                        <button (click)="copyDictation()" [disabled]="!dictationText()" class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-md text-xs font-bold uppercase tracking-wider text-gray-600 hover:bg-gray-100 hover:text-black disabled:opacity-30 transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
-                            Copy Text
-                        </button>
-                    </div>
-                </div>
-            }
-        </div>
-    }
   `
 })
-export class AnalysisReportComponent implements OnDestroy {
+export class AnalysisReportComponent implements OnDestroy, AfterViewInit {
   gemini = inject(GeminiService);
   state = inject(PatientStateService);
   patientManager = inject(PatientManagementService);
   dictation = inject(DictationService);
+
+  private resizeObserver: ResizeObserver | null = null;
+  private carePlanObserver: MutationObserver | null = null;
+
+  ngAfterViewInit() {
+    this.setupCarePlanObserver();
+  }
+
+  private setupCarePlanObserver() {
+    const el = this.contentArea()?.nativeElement;
+    if (!el) return;
+
+    this.carePlanObserver = new MutationObserver(() => {
+      // Only auto-scroll if we are generating
+      if (this.gemini.isLoading()) {
+        el.scrollTop = el.scrollHeight;
+      }
+    });
+
+    this.carePlanObserver.observe(el, { childList: true, subtree: true, characterData: true });
+  }
 
   // --- Analysis State ---
   activeLens = signal<AnalysisLens>('Care Plan Overview');
@@ -601,35 +522,19 @@ export class AnalysisReportComponent implements OnDestroy {
   toolbarPosition = signal<{ top: string; left: string } | null>(null);
   private leaveTimeout: any;
 
-  // --- Agent State ---
-  agentState = signal<AgentState>('idle');
-  permissionError = signal<string | null>(null);
-  messageText = signal<string>('');
-
-  // --- Panel State ---
-  panelMode = signal<'selection' | 'chat' | 'dictation'>('selection');
-
-  private recognition: any;
-  private preferredVoice = signal<SpeechSynthesisVoice | undefined>(undefined);
-  private hasStartedChat = false;
-
-  // --- Resizable Chat State ---
-  chatHeight = signal<number>(350); // Increased default height
-  private boundDoDrag = this.doDrag.bind(this);
-  private boundStopDrag = this.stopDrag.bind(this);
-  private initialDragY: number = 0;
-  private initialChatHeight: number = 0;
-
-  // --- Dictation State ---
-  dictationText = signal('');
-  isDictating = signal(false);
-
-  // --- Auto-scroll State ---
-  transcriptContainer = viewChild<ElementRef<HTMLDivElement>>('transcriptContainer');
-  contentArea = viewChild<ElementRef<HTMLDivElement>>('contentArea');
+  protocolInsights = [
+    'Follow up in 72 hours if no improvement.',
+    'Monitor BP and heart rate twice daily.',
+    'Continue current medication as prescribed.',
+    'Schedule follow-up with specialist.',
+    'Patient education provided regarding diet.',
+    'Increase fluid intake to 2L/day.',
+    'Watch for signs of infection.'
+  ];
 
   hasAnyReport = computed(() => Object.keys(this.gemini.analysisResults()).length > 0);
   activeReport = computed(() => this.gemini.analysisResults()[this.activeLens()]);
+  contentArea = viewChild<ElementRef<HTMLDivElement>>('contentArea');
 
   reportSections = computed<ReportSection[] | null>(() => {
     const raw = this.activeReport();
@@ -648,31 +553,50 @@ export class AnalysisReportComponent implements OnDestroy {
         const nodes: CarePlanNode[] = [];
 
         for (const token of tokens) {
+          const key = (token as any).text || token.raw || `node-${globalNodeId}`;
+          const annotation = (this.lensAnnotations()[this.activeLens()] || {})[key] || { note: '', bracketState: 'normal' };
+
           if (token.type === 'paragraph') {
             nodes.push({
               id: `node-${globalNodeId++}`,
+              key,
               type: 'paragraph',
               rawHtml: marked.parseInline(token.text) as string,
-              bracketState: 'normal', note: '', showNote: false
+              bracketState: annotation.bracketState,
+              note: annotation.note,
+              showNote: !!annotation.note
             });
           } else if (token.type === 'list') {
             nodes.push({
               id: `node-${globalNodeId++}`,
+              key,
               type: 'list',
               ordered: token.ordered || false,
-              items: token.items.map(item => ({
-                id: `item-${globalNodeId++}`,
-                html: marked.parseInline(item.text) as string,
-                bracketState: 'normal', note: '', showNote: false
-              })),
-              bracketState: 'normal', note: '', showNote: false
+              items: token.items.map(item => {
+                const itemKey = item.text;
+                const itemAnnotation = (this.lensAnnotations()[this.activeLens()] || {})[itemKey] || { note: '', bracketState: 'normal' };
+                return {
+                  id: `item-${globalNodeId++}`,
+                  key: itemKey,
+                  html: marked.parseInline(item.text) as string,
+                  bracketState: itemAnnotation.bracketState,
+                  note: itemAnnotation.note,
+                  showNote: !!itemAnnotation.note
+                };
+              }),
+              bracketState: annotation.bracketState,
+              note: annotation.note,
+              showNote: !!annotation.note
             });
           } else {
             nodes.push({
               id: `node-${globalNodeId++}`,
+              key,
               type: 'raw',
               rawHtml: marked.parse(token.raw) as string,
-              bracketState: 'normal', note: '', showNote: false
+              bracketState: annotation.bracketState,
+              note: annotation.note,
+              showNote: !!annotation.note
             });
           }
         }
@@ -686,7 +610,7 @@ export class AnalysisReportComponent implements OnDestroy {
       return sections;
     } catch (e) {
       console.error('Markdown parse error', e);
-      return [{ raw: raw, heading: '<h3>Error</h3>', nodes: [{ id: 'err', type: 'raw', rawHtml: '<p>Could not parse report.</p>', bracketState: 'normal', note: '', showNote: false }] }];
+      return [{ raw: raw, heading: '<h3>Error</h3>', nodes: [{ id: 'err', key: 'err', type: 'raw', rawHtml: '<p>Could not parse report.</p>', bracketState: 'normal', note: '', showNote: false }] }];
     }
   });
 
@@ -705,17 +629,38 @@ export class AnalysisReportComponent implements OnDestroy {
     }
   });
 
-  constructor() {
-    this.initializeSpeechRecognition();
-    this.loadVoices();
-    speechSynthesis.onvoiceschanged = () => this.loadVoices();
+  readonly lensAnnotations = signal<Record<string, Record<string, { note: string, bracketState: 'normal' | 'added' | 'removed' }>>>({});
 
-    // Auto-scroll effect
+  // Track save status per node
+  readonly nodeSaveStatuses = signal<Record<string, 'idle' | 'saving' | 'saved'>>({});
+
+  private autoSaveSubject = new Subject<void>();
+
+  constructor() {
+    // Auto-scroll effect for transcript
     effect(() => {
       // This effect depends on the parsedTranscript signal.
       // It will run whenever the transcript changes.
       this.parsedTranscript();
-      this.scrollToBottom();
+    });
+
+    // Removed the effect-based auto-scroll for care plan content area, handled in ngAfterViewInit instead
+
+    // Auto-load annotations effect
+    effect(() => {
+      const patient = this.patientManager.selectedPatient();
+      if (patient) {
+        const latestFinalized = patient.history.find(e => e.type === 'FinalizedCarePlan');
+        if (latestFinalized && latestFinalized.type === 'FinalizedCarePlan') {
+          untracked(() => {
+            this.lensAnnotations.set(latestFinalized.annotations || {});
+          });
+        } else {
+          untracked(() => {
+            this.lensAnnotations.set({});
+          });
+        }
+      }
     });
 
     // New effect to handle analysis updates requested from other components
@@ -727,11 +672,64 @@ export class AnalysisReportComponent implements OnDestroy {
         });
       }
     });
+
+    // Auto-save debouncing
+    this.autoSaveSubject.pipe(
+      debounceTime(1000)
+    ).subscribe(() => {
+      this.persistToHistory();
+    });
   }
 
   ngOnDestroy() {
-    if (speechSynthesis.speaking) speechSynthesis.cancel();
-    if (this.recognition && this.agentState() === 'listening') this.recognition.stop();
+    this.carePlanObserver?.disconnect();
+    this.flushAutoSave();
+  }
+
+  private triggerAutoSave(nodeKey: string) {
+    // Set individual node to saving
+    this.nodeSaveStatuses.update(prev => ({ ...prev, [nodeKey]: 'saving' }));
+    this.autoSaveSubject.next();
+  }
+
+  private flushAutoSave() {
+    this.autoSaveSubject.next();
+    this.persistToHistory();
+  }
+
+  private persistToHistory() {
+    const patientId = this.patientManager.selectedPatientId();
+    if (!patientId) return;
+
+    const historyEntry: HistoryEntry = {
+      type: 'FinalizedCarePlan',
+      date: new Date().toISOString().split('T')[0].replace(/-/g, '.'),
+      summary: 'Integrative Care Plan updated (auto-saved).',
+      report: this.gemini.analysisResults(),
+      annotations: this.lensAnnotations()
+    };
+
+    this.patientManager.addHistoryEntry(patientId, historyEntry);
+
+    // Update all 'saving' statuses to 'saved'
+    this.nodeSaveStatuses.update(prev => {
+      const next = { ...prev };
+      Object.keys(next).forEach(key => {
+        if (next[key] === 'saving') next[key] = 'saved';
+      });
+      return next;
+    });
+
+    // Clear 'saved' status after a few seconds
+    setTimeout(() => {
+      this.nodeSaveStatuses.update(prev => {
+        const next = { ...prev };
+        Object.keys(next).forEach(key => {
+          if (next[key] === 'saved') delete next[key];
+        });
+        return next;
+      });
+    }, 3000);
   }
 
   private renderInteractiveContent(markdown: string): string {
@@ -739,25 +737,101 @@ export class AnalysisReportComponent implements OnDestroy {
   }
 
   // --- NODE RENDERER ACTIONS ---
-  toggleNodeBracket(node: CarePlanNode | CarePlanNodeItem) {
-    if (node.bracketState === 'normal') {
-      node.bracketState = 'removed';
-    } else if (node.bracketState === 'removed') {
-      node.bracketState = 'added';
+  handleNodeDoubleClick(node: CarePlanNode | CarePlanNodeItem) {
+    // If note is not shown, show it
+    if (!node.showNote) {
+      node.showNote = true;
     } else {
-      node.bracketState = 'normal';
+      // If already shown, maybe toggle bracket instead or just focus
+      // Let's keep bracket toggling as a fallback if the user wants it, 
+      // but the priority now is "inserting a new note"
+      // We'll toggle brackets with Alt+Click or separate buttons if needed, 
+      // but for now let's make double-click show/focus note.
     }
     window.getSelection()?.removeAllRanges();
   }
 
+  toggleNodeBracket(node: CarePlanNode | CarePlanNodeItem) {
+    if (node.bracketState === 'normal') {
+      node.bracketState = 'added';
+    } else if (node.bracketState === 'added') {
+      node.bracketState = 'removed';
+    } else {
+      node.bracketState = 'normal';
+    }
+    this.updateAnnotation(node.key, { bracketState: node.bracketState });
+    this.syncNodeToTaskFlow(node);
+    window.getSelection()?.removeAllRanges();
+  }
+
+  private syncNodeToTaskFlow(node: CarePlanNode | CarePlanNodeItem) {
+    // If it's not bracketed 'added' and has no note, remove it.
+    if (node.bracketState !== 'added' && !node.note) {
+      this.state.removeClinicalNote(node.key);
+      return;
+    }
+
+    // Strip HTML tags for clean display
+    const rawText = ('html' in node) ? node.html : node.rawHtml;
+    const cleanText = rawText ? rawText.replace(/<[^>]*>/g, '') : '';
+
+    let fullText = cleanText;
+    if (node.note) {
+      fullText += `\n\nObservation: ${node.note}`;
+    }
+
+    // Remove existing to replace
+    this.state.removeClinicalNote(node.key);
+
+    this.state.addClinicalNote({
+      id: node.key,
+      text: fullText,
+      sourceLens: this.activeLens(),
+      date: new Date().toISOString()
+    });
+  }
+
   updateNodeNote(node: CarePlanNode | CarePlanNodeItem, event: Event) {
     node.note = (event.target as HTMLTextAreaElement).value;
+    this.updateAnnotation(node.key, { note: node.note });
+    this.syncNodeToTaskFlow(node);
   }
 
   copyNote(text: string) {
     if (text) {
       navigator.clipboard.writeText(text);
     }
+  }
+
+  async pasteToNode(node: CarePlanNode | CarePlanNodeItem) {
+    try {
+      const text = await navigator.clipboard.readText();
+      if (text) {
+        node.note = (node.note || '') + (node.note ? ' ' : '') + text;
+        node.showNote = true;
+        this.updateAnnotation(node.key, { note: node.note });
+        this.syncNodeToTaskFlow(node);
+      }
+    } catch (err) {
+      console.error('Failed to read clipboard', err);
+    }
+  }
+
+  insertSuggestion(node: CarePlanNode | CarePlanNodeItem, suggestion: string) {
+    node.note = (node.note || '') + (node.note ? ' ' : '') + suggestion;
+    node.showNote = true;
+    this.updateAnnotation(node.key, { note: node.note });
+    this.syncNodeToTaskFlow(node);
+  }
+
+  private updateAnnotation(key: string, data: Partial<{ note: string, bracketState: any }>) {
+    this.lensAnnotations.update(all => {
+      const currentLens = this.activeLens();
+      const lensData = { ...(all[currentLens] || {}) };
+      lensData[key] = { ...(lensData[key] || { note: '', bracketState: 'normal' }), ...data };
+      return { ...all, [currentLens]: lensData };
+    });
+    this.triggerAutoSave(key);
   }
 
   activeDictationNode = signal<CarePlanNode | CarePlanNodeItem | null>(null);
@@ -785,6 +859,10 @@ export class AnalysisReportComponent implements OnDestroy {
     this.dictation.registerResultHandler((text, isFinal) => {
       if (this.activeDictationNode() === node) {
         node.note = baseText + text;
+        this.updateAnnotation(node.key, { note: node.note });
+        if (isFinal) {
+          this.syncNodeToTaskFlow(node);
+        }
       }
     });
 
@@ -812,259 +890,39 @@ export class AnalysisReportComponent implements OnDestroy {
   }
 
   changeLens(lens: AnalysisLens) {
+    this.flushAutoSave();
     this.activeLens.set(lens);
+  }
+
+  finalizeCarePlan() {
+    const patientId = this.patientManager.selectedPatientId();
+    if (!patientId) return;
+
+    const historyEntry: HistoryEntry = {
+      type: 'FinalizedCarePlan',
+      date: new Date().toISOString().split('T')[0].replace(/-/g, '.'),
+      summary: 'Integrative Care Plan finalized and saved to chart.',
+      report: this.gemini.analysisResults(),
+      annotations: this.lensAnnotations()
+    };
+
+    this.patientManager.addHistoryEntry(patientId, historyEntry);
+
+    // Briefly change tab to show it's saved? 
+    // For now we'll just log and rely on the history update
+    console.log('Care plan finalized and saved to chart.');
   }
 
   printReport() { window.print(); }
 
   // --- Live Consult Actions ---
-  openVoicePanel() {
-    this.state.toggleLiveAgent(true);
-    // If we haven't started a chat yet, show the selection screen.
-    // If we have, we probably want to return to where we were (or default to chat).
-    if (!this.hasStartedChat) {
-      this.panelMode.set('selection');
-    } else {
-      this.panelMode.set('chat');
-    }
-  }
-
-  activateChat() {
-    this.panelMode.set('chat');
-    if (!this.hasStartedChat) {
-      const patientId = this.patientManager.selectedPatientId();
-      const patient = patientId ? this.patientManager.patients().find(p => p.id === patientId) : null;
-      const history = patient?.history || [];
-
-      this.gemini.startChatSession(this.state.getAllDataForPrompt(history));
-      this.gemini.getInitialGreeting().then(greeting => {
-        this.speak(greeting);
-      });
-      this.hasStartedChat = true;
-    }
-  }
-
-  activateDictation() {
-    this.panelMode.set('dictation');
-  }
-
-  endLiveConsult() {
-    this.state.toggleLiveAgent(false);
-    this.stopDictation(); // Ensure dictation stops if panel closes
-  }
-
-  // --- Dictation Logic (Embedded) ---
-  toggleDictation() {
-    if (this.isDictating()) {
-      this.stopDictation();
-    } else {
-      this.startDictation();
-    }
-  }
-
-  startDictation() {
-    if (!this.recognition) return;
-    try {
-      this.recognition.start();
-      this.isDictating.set(true);
-    } catch (e) {
-      console.error('Failed to start dictation', e);
-    }
-  }
-
-  stopDictation() {
-    if (!this.recognition) return;
-    this.recognition.stop();
-    this.isDictating.set(false);
-  }
-
-  clearDictation() {
-    this.dictationText.set('');
-  }
-
-  copyDictation() {
-    navigator.clipboard.writeText(this.dictationText());
-  }
-
   insertSectionIntoChat(sectionMarkdown: string) {
-    this.openVoicePanel(); // Ensure panel is open
-    this.activateChat();   // Ensure we are in chat mode
-    this.messageText.set(`Regarding this section:\n\n> ${sectionMarkdown.replace(/\n/g, '\n> ')}\n\n`);
+    this.state.toggleLiveAgent(true); // Ensure panel is open
     // Need to wait for view to update if we just switched modes
     setTimeout(() => {
+      this.state.liveAgentInput.set(`Regarding this section:\n\n> ${sectionMarkdown.replace(/\n/g, '\n> ')}\n\n`);
       const input = document.querySelector<HTMLTextAreaElement>('#chatInput');
       input?.focus();
     }, 100);
-  }
-
-  // --- Drag/Resize Handlers ---
-  startDrag(event: MouseEvent): void {
-    event.preventDefault();
-    this.initialDragY = event.clientY;
-    this.initialChatHeight = this.chatHeight();
-    document.addEventListener('mousemove', this.boundDoDrag);
-    document.addEventListener('mouseup', this.boundStopDrag);
-  }
-
-  private doDrag(event: MouseEvent): void {
-    const deltaY = event.clientY - this.initialDragY;
-    const newHeight = this.initialChatHeight - deltaY;
-    const maxHeight = window.innerHeight * 0.8;
-    this.chatHeight.set(Math.max(120, Math.min(newHeight, maxHeight)));
-  }
-
-  private stopDrag(): void {
-    document.removeEventListener('mousemove', this.boundDoDrag);
-    document.removeEventListener('mouseup', this.boundStopDrag);
-  }
-
-  // --- Auto-scroll Handler ---
-  private scrollToBottom(): void {
-    // Use a timeout to allow Angular to render the new transcript item in the DOM
-    setTimeout(() => {
-      const container = this.transcriptContainer()?.nativeElement;
-      if (container) {
-        container.scrollTop = container.scrollHeight;
-      }
-    }, 0);
-  }
-
-  // --- Speech & Agent Logic ---
-  private loadVoices() {
-    const availableVoices = speechSynthesis.getVoices();
-    if (availableVoices.length === 0) return;
-    const professionalFemaleVoice = availableVoices.find(v => v.lang.startsWith('en') && v.name.includes('Google') && v.name.includes('Female')) || availableVoices.find(v => v.lang.startsWith('en') && (v.name.includes('Samantha') || v.name.includes('Victoria') || v.name.includes('Google'))) || availableVoices.find(v => v.lang.startsWith('en-US') && v.name.includes('Female')) || availableVoices.find(v => v.lang.startsWith('en-US') && !v.name.includes('Male'));
-    this.preferredVoice.set(professionalFemaleVoice);
-  }
-
-  private initializeSpeechRecognition() {
-    const SpeechRecognitionAPI = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (!SpeechRecognitionAPI) {
-      this.permissionError.set("Speech Recognition API not supported in this browser.");
-      return;
-    }
-
-    this.recognition = new SpeechRecognitionAPI();
-    this.recognition.continuous = true;
-    this.recognition.lang = 'en-US';
-    this.recognition.interimResults = true;
-
-    this.recognition.onstart = () => {
-      this.permissionError.set(null);
-      if (this.panelMode() === 'chat') {
-        this.agentState.set('listening');
-      } else if (this.panelMode() === 'dictation') {
-        this.isDictating.set(true);
-      }
-    };
-
-    this.recognition.onend = () => {
-      if (this.panelMode() === 'chat') {
-        if (this.agentState() === 'listening') this.agentState.set('idle');
-      } else if (this.panelMode() === 'dictation') {
-        // If we are still supposed to be dictating, try to restart (handling timeouts)
-        if (this.isDictating()) {
-          try {
-            this.recognition.start();
-          } catch (e) {
-            // If start fails (e.g. already started), just ignore
-          }
-        }
-      }
-    };
-
-    this.recognition.onerror = (event: any) => {
-      if (event.error === 'not-allowed') {
-        this.permissionError.set('Microphone permission was denied. Please allow microphone access in your browser settings.');
-        this.isDictating.set(false);
-        this.agentState.set('idle');
-      } else if (event.error === 'no-speech') {
-        // Ignore no-speech errors, let onend handle restart if needed
-      } else if (event.error === 'network') {
-        this.permissionError.set('Network error. Please check your connection.');
-        this.isDictating.set(false);
-        this.agentState.set('idle');
-      } else {
-        // For other errors, stop to prevent infinite loops
-        console.error('Speech recognition error:', event.error);
-        this.isDictating.set(false);
-        this.agentState.set('idle');
-      }
-    };
-
-    this.recognition.onresult = async (event: any) => {
-      let final = '';
-      let interim = '';
-
-      for (let i = event.resultIndex; i < event.results.length; ++i) {
-        if (event.results[i].isFinal) {
-          final += event.results[i][0].transcript;
-        } else {
-          interim += event.results[i][0].transcript;
-        }
-      }
-
-      if (this.panelMode() === 'chat') {
-        if (final) {
-          this.recognition.stop(); // Stop listening to process
-          this.agentState.set('processing');
-          const responseText = await this.gemini.sendChatMessage(final);
-          this.speak(responseText);
-        }
-      } else if (this.panelMode() === 'dictation') {
-        if (final) {
-          const current = this.dictationText();
-          const needsSpace = current.length > 0 && !current.endsWith(' ');
-          this.dictationText.set(current + (needsSpace ? ' ' : '') + final);
-        }
-      }
-    };
-  }
-
-  async sendMessage(event?: Event) {
-    event?.preventDefault();
-    if (event instanceof KeyboardEvent && event.shiftKey) {
-      return; // Allow newline on Shift+Enter
-    }
-
-    const message = this.messageText().trim();
-    if (!message || this.agentState() !== 'idle') return;
-
-    this.messageText.set('');
-    this.agentState.set('processing');
-    const responseText = await this.gemini.sendChatMessage(message);
-    this.speak(responseText);
-  }
-
-  toggleListening() {
-    if (!this.recognition || this.permissionError() || this.agentState() !== 'idle') return;
-    if (this.agentState() === 'idle') {
-      this.recognition.start();
-    } else if (this.agentState() === 'listening') {
-      this.recognition.stop();
-    }
-  }
-
-  speak(text: string) {
-    if (!('speechSynthesis' in window)) {
-      console.error('Speech Synthesis not supported.');
-      this.agentState.set('idle');
-      return;
-    }
-    if (speechSynthesis.speaking) speechSynthesis.cancel();
-
-    const utterance = new SpeechSynthesisUtterance(text);
-    if (this.preferredVoice()) { utterance.voice = this.preferredVoice()!; }
-    utterance.pitch = 1.1;
-    utterance.rate = 0.95;
-
-    utterance.onstart = () => this.agentState.set('speaking');
-    utterance.onend = () => this.agentState.set('idle');
-    utterance.onerror = (e) => {
-      if (e.error === 'interrupted') return;
-      console.error('Speech synthesis error', e.error);
-      this.agentState.set('idle');
-    };
-    speechSynthesis.speak(utterance);
   }
 }

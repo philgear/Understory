@@ -20,11 +20,38 @@ export interface PatientVitals {
   height: string;
 }
 
+export interface ClinicalNote {
+  id: string;
+  text: string;
+  sourceLens: string;
+  date: string;
+}
+
 export interface PatientState {
   issues: Record<string, BodyPartIssue[]>;
   patientGoals: string;
   vitals: PatientVitals;
+  clinicalNotes?: ClinicalNote[];
 }
+
+export const BODY_PART_NAMES: Record<string, string> = {
+  'head': 'Head & Neck',
+  'chest': 'Chest & Upper Torso',
+  'abdomen': 'Abdomen & Stomach',
+  'pelvis': 'Pelvis & Hips',
+  'r_shoulder': 'Right Shoulder',
+  'r_arm': 'Right Arm',
+  'r_hand': 'Right Hand & Wrist',
+  'l_shoulder': 'Left Shoulder',
+  'l_arm': 'Left Arm',
+  'l_hand': 'Left Hand & Wrist',
+  'r_thigh': 'Right Thigh',
+  'r_shin': 'Right Lower Leg',
+  'r_foot': 'Right Foot',
+  'l_thigh': 'Left Thigh',
+  'l_shin': 'Left Lower Leg',
+  'l_foot': 'Left Foot'
+};
 
 @Injectable({
   providedIn: 'root'
@@ -34,11 +61,14 @@ export class PatientStateService {
   readonly selectedPartId = signal<string | null>(null);
   readonly selectedNoteId = signal<string | null>(null);
   readonly isLiveAgentActive = signal<boolean>(false);
+  readonly liveAgentInput = signal<string>('');
   readonly isResearchFrameVisible = signal<boolean>(false);
   readonly analysisUpdateRequest = signal(0);
   readonly requestedResearchUrl = signal<string | null>(null);
   readonly requestedResearchQuery = signal<string | null>(null);
   readonly viewingPastVisit = signal<HistoryEntry | null>(null);
+  readonly bodyViewerMode = signal<'3d' | '2d'>('3d');
+  readonly isInternalView = signal<boolean>(false);
 
   // --- Patient Data State ---
   readonly issues = signal<Record<string, BodyPartIssue[]>>({});
@@ -46,14 +76,25 @@ export class PatientStateService {
   readonly vitals = signal<PatientVitals>({
     bp: '', hr: '', temp: '', spO2: '', weight: '', height: ''
   });
+  readonly clinicalNotes = signal<ClinicalNote[]>([]);
   readonly activeCarePlan = signal<string | null>(null);
-  readonly draftCarePlanItems = signal<string[]>([]);
+  readonly draftCarePlanItems = signal<string[]>([]); // Array of discrete recommendation items for the generative plan
 
+  // A trigger to force the UI to expand the analysis panel when an item is selected/clicked
+  readonly uiExpandTrigger = signal<number>(0);
+
+  constructor() { }
 
   // --- Computed State ---
   readonly hasIssues = computed(() =>
     Object.keys(this.issues()).length > 0 || this.patientGoals().length > 0
   );
+
+  readonly selectedPartName = computed(() => {
+    const id = this.selectedPartId();
+    if (!id) return null;
+    return BODY_PART_NAMES[id] || id;
+  });
 
   // Helper to check if a part has any notes
   hasIssue(partId: string): boolean {
@@ -68,8 +109,13 @@ export class PatientStateService {
   }
 
   // --- Actions ---
+  triggerUiExpand() {
+    this.uiExpandTrigger.set(Date.now());
+  }
+
   selectPart(partId: string | null) {
     this.selectedPartId.set(partId);
+    this.triggerUiExpand();
     if (!partId) {
       this.selectedNoteId.set(null); // Deselect note when part is deselected
     }
@@ -140,6 +186,14 @@ export class PatientStateService {
   }
 
   // --- Care Plan Drafting Actions ---
+  addClinicalNote(note: ClinicalNote) {
+    this.clinicalNotes.update(notes => [...notes, note]);
+  }
+
+  removeClinicalNote(id: string) {
+    this.clinicalNotes.update(notes => notes.filter(n => n.id !== id));
+  }
+
   addDraftCarePlanItem(item: string) {
     this.draftCarePlanItems.update(items => {
       if (items.includes(item)) return items;
@@ -184,6 +238,7 @@ export class PatientStateService {
     this.issues.set({});
     this.patientGoals.set('');
     this.vitals.set({ bp: '', hr: '', temp: '', spO2: '', weight: '', height: '' });
+    this.clinicalNotes.set([]);
     this.activeCarePlan.set(null);
     this.draftCarePlanItems.set([]);
     this.requestedResearchUrl.set(null);
@@ -206,6 +261,7 @@ export class PatientStateService {
     this.issues.set(state.issues);
     this.patientGoals.set(state.patientGoals);
     this.vitals.set(state.vitals);
+    this.clinicalNotes.set(state.clinicalNotes || []);
     this.viewingPastVisit.set(null); // Ensure we're not in review mode when loading a patient.
   }
 
@@ -215,6 +271,7 @@ export class PatientStateService {
       issues: this.issues(),
       patientGoals: this.patientGoals(),
       vitals: this.vitals(),
+      clinicalNotes: this.clinicalNotes(),
     };
   }
 

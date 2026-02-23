@@ -33,29 +33,25 @@ const ICONS: Record<string, string> = {
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-   <div class="relative">
+   <div class="relative font-sans">
       <!-- The vertical line running through all entries -->
-      <div class="absolute left-3 top-2 h-full w-0.5 bg-gray-200"></div>
+      <div class="absolute left-3 top-2 h-full w-px bg-gray-100"></div>
 
       @for (entry of history(); track (entry.date + entry.summary + $index); let isLast = $last) {
-        <div class="relative pl-10" [class.pb-8]="!isLast">
+        <div class="relative pl-10" [class.pb-6]="!isLast">
           
           <!-- Icon Node on the timeline -->
-          <div class="absolute left-3 top-2 -translate-x-1/2 w-6 h-6 rounded-full bg-white flex items-center justify-center border-2"
-               [class.border-gray-400]="entry.type === 'Visit' || entry.type === 'ChartArchived'"
-               [class.border-blue-400]="entry.type === 'CarePlanUpdate'"
-               [class.border-yellow-400]="entry.type === 'BookmarkAdded'"
-               [class.border-purple-400]="entry.type === 'NoteCreated'"
-               [class.border-red-400]="entry.type === 'NoteDeleted'"
-               [class.border-green-400]="entry.type === 'AnalysisRun'">
+          <div class="absolute left-3 top-2 -translate-x-1/2 w-6 h-6 rounded-full bg-white flex items-center justify-center border"
+               [class.border-gray-300]="entry.type === 'Visit' || entry.type === 'ChartArchived'"
+               [class.border-gray-200]="entry.type !== 'Visit' && entry.type !== 'ChartArchived'">
             <svg xmlns="http://www.w3.org/2000/svg" 
-                 class="w-4 h-4"
-                 [class.text-gray-600]="entry.type === 'Visit' || entry.type === 'ChartArchived'"
-                 [class.text-blue-600]="entry.type === 'CarePlanUpdate'"
-                 [class.text-yellow-600]="entry.type === 'BookmarkAdded'"
-                 [class.text-purple-600]="entry.type === 'NoteCreated'"
-                 [class.text-red-600]="entry.type === 'NoteDeleted'"
-                 [class.text-green-600]="entry.type === 'AnalysisRun'"
+                 class="w-3.5 h-3.5"
+                 [class.text-[#1C1C1C]]="entry.type === 'Visit' || entry.type === 'ChartArchived'"
+                 [class.text-blue-500]="entry.type === 'CarePlanUpdate' || entry.type === 'FinalizedCarePlan'"
+                 [class.text-yellow-500]="entry.type === 'BookmarkAdded'"
+                 [class.text-purple-500]="entry.type === 'NoteCreated'"
+                 [class.text-red-500]="entry.type === 'NoteDeleted'"
+                 [class.text-green-500]="entry.type === 'AnalysisRun'"
                  viewBox="0 0 24 24" fill="currentColor">
               <g [innerHTML]="getSafeIconHtml(entry)"></g>
             </svg>
@@ -66,88 +62,114 @@ const ICONS: Record<string, string> = {
             @switch (entry.type) {
               @case ('Visit') {
                 <button (click)="review.emit(entry)"
-                        class="w-full text-left p-4 rounded-sm transition-colors duration-200"
-                        [class.bg-yellow-50/60]="activeVisit() === entry"
-                        [class.border-yellow-300]="activeVisit() === entry"
-                        [class.bg-gray-50/70]="activeVisit() !== entry"
-                        [class.hover:bg-gray-100]="activeVisit() !== entry"
-                        [class.border-gray-200/80]="activeVisit() !== entry"
-                        [class.border]="true">
+                        class="w-full text-left p-4 rounded transition-colors duration-200 border-l-4"
+                        [class.bg-white]="activeVisit() === entry"
+                        [class.border-l-[#1C1C1C]]="activeVisit() === entry"
+                        [class.bg-white]="activeVisit() !== entry"
+                        [class.hover:bg-gray-50]="activeVisit() !== entry"
+                        [class.border-l-gray-100]="activeVisit() !== entry"
+                        [class.border-y]="true"
+                        [class.border-r]="true"
+                        [class.border-gray-100]="true">
                   <div class="flex justify-between items-start gap-4">
                     <div class="flex-1">
-                      <p class="text-xs font-bold text-gray-500">{{ entry.date }}</p>
-                      <p class="text-sm text-[#1C1C1C] mt-1 leading-relaxed">{{ entry.summary }}</p>
+                      <p class="text-[9px] font-bold text-gray-400 uppercase tracking-[0.15em]">{{ entry.date }}</p>
+                      <p class="text-sm text-[#1C1C1C] mt-1 leading-relaxed font-light">{{ entry.summary }}</p>
                     </div>
                   </div>
                 </button>
               }
               @case ('ChartArchived') {
                 <button (click)="review.emit(entry)"
-                        class="w-full text-left p-4 rounded-sm transition-colors duration-200"
-                        [class.bg-yellow-50/60]="activeVisit() === entry"
-                        [class.border-yellow-300]="activeVisit() === entry"
-                        [class.bg-gray-50/70]="activeVisit() !== entry"
-                        [class.hover:bg-gray-100]="activeVisit() !== entry"
-                        [class.border-gray-200/80]="activeVisit() !== entry"
-                        [class.border]="true">
-                    <p class="text-xs font-bold text-gray-500">{{ entry.date }}</p>
-                    <p class="text-sm text-[#1C1C1C] mt-1 leading-relaxed">{{ entry.summary }}</p>
+                        class="w-full text-left p-4 rounded transition-colors duration-200 border-l-4"
+                        [class.bg-white]="activeVisit() === entry"
+                        [class.border-l-[#1C1C1C]]="activeVisit() === entry"
+                        [class.bg-white]="activeVisit() !== entry"
+                        [class.hover:bg-gray-50]="activeVisit() !== entry"
+                        [class.border-l-gray-100]="activeVisit() !== entry"
+                        [class.border-y]="true"
+                        [class.border-r]="true"
+                        [class.border-gray-100]="true">
+                    <p class="text-[9px] font-bold text-gray-400 uppercase tracking-[0.15em]">{{ entry.date }}</p>
+                    <p class="text-sm text-[#1C1C1C] mt-1 leading-relaxed font-light">{{ entry.summary }}</p>
                 </button>
               }
               @case ('CarePlanUpdate') {
-                <div class="p-4 bg-blue-50 border border-blue-200/80 rounded-sm">
+                <div class="p-4 bg-white border border-gray-100 border-l-4 border-l-blue-400 rounded">
                   <div>
-                    <p class="text-xs font-bold text-blue-700">{{ entry.date }}</p>
-                    <p class="text-sm text-blue-900 mt-1 leading-relaxed whitespace-pre-wrap font-mono text-[11px]">{{ entry.summary }}</p>
+                    <p class="text-[9px] font-bold text-blue-500 uppercase tracking-[0.15em]">{{ entry.date }}</p>
+                    <p class="text-sm text-gray-800 mt-1 leading-relaxed whitespace-pre-wrap font-mono text-[11px] opacity-80">{{ entry.summary }}</p>
                   </div>
                 </div>
               }
               @case ('BookmarkAdded') {
-                 <div class="p-4 bg-yellow-50 border border-yellow-200/80 rounded-sm flex gap-3 items-start">
+                 <div class="p-4 bg-white border border-gray-100 border-l-4 border-l-yellow-400 rounded flex gap-3 items-start">
                   <div class="flex-1">
-                    <p class="text-xs font-bold text-yellow-700">{{ entry.date }}</p>
-                    <p class="text-sm text-yellow-900 mt-1 leading-relaxed truncate">Bookmarked: "{{ entry.summary }}"</p>
+                    <p class="text-[9px] font-bold text-yellow-600 uppercase tracking-[0.15em]">{{ entry.date }}</p>
+                    <p class="text-sm text-gray-800 mt-1 leading-relaxed truncate font-light">Bookmarked: "{{ entry.summary }}"</p>
                     <button (click)="openBookmark.emit(entry.bookmark.url)" 
-                            class="mt-2 text-[11px] font-bold text-gray-600 bg-white/80 border border-gray-300 px-2 py-0.5 rounded-md hover:bg-gray-50 hover:border-gray-400 transition-colors">
+                            class="mt-3 text-[10px] font-bold text-gray-500 bg-gray-50 border border-gray-100 px-3 py-1 rounded hover:bg-gray-100 hover:border-gray-200 transition-all uppercase tracking-widest">
                       Open
                     </button>
                   </div>
                 </div>
               }
               @case ('NoteCreated') {
-                <div class="group relative p-4 bg-purple-50 hover:bg-purple-100 border border-purple-200/80 rounded-sm transition-colors">
+                <div class="group relative p-4 bg-white border border-gray-100 border-l-4 border-l-purple-400 rounded transition-colors hover:bg-gray-50/50">
                   <button (click)="reviewNote.emit(entry)" class="w-full text-left">
-                    <p class="text-xs font-bold text-purple-700">{{ entry.date }}</p>
-                    <p class="text-sm text-purple-900 mt-1 leading-relaxed">{{ entry.summary }}</p>
+                    <p class="text-[9px] font-bold text-purple-500 uppercase tracking-[0.15em]">{{ entry.date }}</p>
+                    <p class="text-sm text-gray-800 mt-1 leading-relaxed font-light">{{ entry.summary }}</p>
                   </button>
                   <button (click)="deleteNote.emit(entry)"
-                          class="absolute top-2 right-2 p-1 rounded-full text-purple-400 bg-purple-100/50 hover:bg-red-100 hover:text-red-600 transition-colors opacity-0 group-hover:opacity-100"
+                          class="absolute top-2 right-2 p-1 rounded-full text-gray-300 hover:text-red-600 transition-colors opacity-0 group-hover:opacity-100"
                           title="Delete this note entry">
                       <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="currentColor"><path d="M12 10.586 16.95 5.636a1 1 0 1 1 1.414 1.414L13.414 12l4.95 4.95a1 1 0 0 1-1.414 1.414L12 13.414l-4.95 4.95a1 1 0 0 1-1.414-1.414L10.586 12 5.636 7.05a1 1 0 0 1 1.414-1.414L12 10.586z"/></svg>
                   </button>
                 </div>
               }
                @case ('NoteDeleted') {
-                <div class="p-4 bg-red-50 border border-red-200/80 rounded-sm">
-                  <p class="text-xs font-bold text-red-700">{{ entry.date }}</p>
-                  <p class="text-sm text-red-900 mt-1 leading-relaxed italic">{{ entry.summary }}</p>
+                <div class="p-4 bg-white border border-gray-100 border-l-4 border-l-red-400 rounded">
+                  <p class="text-[9px] font-bold text-red-500 uppercase tracking-[0.15em]">{{ entry.date }}</p>
+                  <p class="text-sm text-gray-500 mt-1 leading-relaxed italic font-light">{{ entry.summary }}</p>
                 </div>
               }
               @case ('AnalysisRun') {
                 <button (click)="reviewAnalysis.emit(entry)"
-                        class="w-full text-left p-4 rounded-sm transition-colors duration-200"
-                        [class.bg-yellow-50/60]="activeVisit() === entry"
-                        [class.border-yellow-300]="activeVisit() === entry"
-                        [class.bg-green-50/70]="activeVisit() !== entry"
-                        [class.hover:bg-green-100]="activeVisit() !== entry"
-                        [class.border-green-200/80]="activeVisit() !== entry"
-                        [class.border]="true">
+                        class="w-full text-left p-4 rounded transition-colors duration-200 border-l-4"
+                        [class.bg-white]="activeVisit() === entry"
+                        [class.border-l-[#1C1C1C]]="activeVisit() === entry"
+                        [class.bg-white]="activeVisit() !== entry"
+                        [class.hover:bg-gray-50]="activeVisit() !== entry"
+                        [class.border-l-green-400]="activeVisit() !== entry"
+                        [class.border-y]="true"
+                        [class.border-r]="true"
+                        [class.border-gray-100]="true">
                   <div>
-                    <div class="flex items-center gap-2 mb-1">
-                        <span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-green-100 text-green-700 uppercase tracking-wider border border-green-200">AI Report</span>
-                        <p class="text-xs font-bold text-green-700">{{ entry.date }}</p>
+                    <div class="flex items-center gap-2 mb-1.5">
+                        <span class="px-1.5 py-0.5 rounded text-[8px] font-bold bg-green-50 text-green-600 uppercase tracking-[0.1em] border border-green-100">AI Report</span>
+                        <p class="text-[9px] font-bold text-gray-400 uppercase tracking-[0.15em]">{{ entry.date }}</p>
                     </div>
-                    <p class="text-sm text-green-900 mt-1 leading-relaxed">{{ entry.summary }}</p>
+                    <p class="text-sm text-gray-800 mt-1 leading-relaxed font-light">{{ entry.summary }}</p>
+                  </div>
+                </button>
+              }
+              @case ('FinalizedCarePlan') {
+                <button (click)="reviewAnalysis.emit(entry)"
+                        class="w-full text-left p-4 rounded transition-colors duration-200 border-l-4"
+                        [class.bg-white]="activeVisit() === entry"
+                        [class.border-l-[#1C1C1C]]="activeVisit() === entry"
+                        [class.bg-white]="activeVisit() !== entry"
+                        [class.hover:bg-gray-50]="activeVisit() !== entry"
+                        [class.border-l-blue-400]="activeVisit() !== entry"
+                        [class.border-y]="true"
+                        [class.border-r]="true"
+                        [class.border-gray-100]="true">
+                  <div>
+                    <div class="flex items-center gap-2 mb-1.5">
+                        <span class="px-1.5 py-0.5 rounded text-[8px] font-bold bg-blue-50 text-blue-600 uppercase tracking-[0.1em] border border-blue-100">Care Plan</span>
+                        <p class="text-[9px] font-bold text-gray-400 uppercase tracking-[0.15em]">{{ entry.date }}</p>
+                    </div>
+                    <p class="text-sm text-[#1C1C1C] mt-1 leading-relaxed font-bold">{{ entry.summary }}</p>
                   </div>
                 </button>
               }
@@ -167,7 +189,7 @@ export class PatientHistoryTimelineComponent {
   reviewNote = output<HistoryEntry>();
   deleteNote = output<HistoryEntry>();
   openBookmark = output<string>();
-  
+
   private sanitizer: DomSanitizer = inject(DomSanitizer);
 
   getSafeIconHtml(entry: HistoryEntry): SafeHtml {
@@ -189,6 +211,8 @@ export class PatientHistoryTimelineComponent {
         return ICONS['ANALYSIS'];
       case 'ChartArchived':
         return ICONS['CHART_ARCHIVED'];
+      case 'FinalizedCarePlan':
+        return ICONS['CARE_PLAN'];
       case 'Visit':
         const issues = entry.state?.issues ?? {};
         // FIX: The original logic was incorrect as it treated an array of issues as a single object.
@@ -202,7 +226,7 @@ export class PatientHistoryTimelineComponent {
         const primaryIssue = allIssues.reduce((max, current) =>
           current.painLevel > max.painLevel ? current : max
         );
-        
+
         const id = primaryIssue.id.split('_')[0]; // e.g., 'r_shoulder' -> 'r'
         switch (id) {
           case 'head': return ICONS['HEAD'];
@@ -213,13 +237,13 @@ export class PatientHistoryTimelineComponent {
           case 'l':
             const part = primaryIssue.id.split('_')[1];
             switch (part) {
-                case 'shoulder': return ICONS['SHOULDER'];
-                case 'arm': return ICONS['ARM'];
-                case 'hand': return ICONS['HAND'];
-                case 'thigh': return ICONS['THIGH'];
-                case 'shin': return ICONS['SHIN'];
-                case 'foot': return ICONS['FOOT'];
-                default: return ICONS['VISIT'];
+              case 'shoulder': return ICONS['SHOULDER'];
+              case 'arm': return ICONS['ARM'];
+              case 'hand': return ICONS['HAND'];
+              case 'thigh': return ICONS['THIGH'];
+              case 'shin': return ICONS['SHIN'];
+              case 'foot': return ICONS['FOOT'];
+              default: return ICONS['VISIT'];
             }
           default:
             return ICONS['VISIT'];

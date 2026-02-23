@@ -36,10 +36,10 @@ app.get('/health', (req, res) => {
 app.use(express.static(distFolder));
 
 // Fallback to index.html
-app.get('*', (req, res) => {
+app.use((req, res) => {
   console.log(`[SERVER] Request: ${req.url}`);
   const indexPath = join(distFolder, 'index.html');
-  
+
   if (fs.existsSync(indexPath)) {
     res.sendFile(indexPath);
   } else {

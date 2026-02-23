@@ -6,7 +6,7 @@ export interface TranscriptEntry {
   text: string;
 }
 
-export type AnalysisLens = 'Care Plan Overview' | 'Clinical Interventions' | 'Monitoring & Follow-up' | 'Patient Education';
+export type AnalysisLens = 'Care Plan Overview' | 'Functional Protocols' | 'Monitoring & Follow-up' | 'Patient Education';
 
 @Injectable({
   providedIn: 'root'
@@ -59,14 +59,14 @@ export class GeminiService {
     this.error.set(null);
     this.analysisResults.set({});
 
-    const lenses: AnalysisLens[] = ['Care Plan Overview', 'Clinical Interventions', 'Monitoring & Follow-up', 'Patient Education'];
+    const lenses: AnalysisLens[] = ['Care Plan Overview', 'Functional Protocols', 'Monitoring & Follow-up', 'Patient Education'];
     const newReport: Partial<Record<AnalysisLens, string>> = {};
 
     const systemInstructions: Record<AnalysisLens, string> = {
       'Care Plan Overview': `You are a world-class care plan recommendation engine. Analyze the provided finalized patient overview and generate a cohesive, actionable Care Plan Overview. Adopt a strict Medical Chart style (e.g., SOAP note characteristics, objective clinical tone, succinct language). Do NOT provide a definitive medical diagnosis. Structure the report beautifully using rich MDX format (Markdown with extended syntax, semantic headers, and structured data blocks). For key-value pairs, ALWAYS format as "**Label:** Value" (bolding the label only, not the value). Focus on synthesizing the current state into an Assessment and overarching prioritized Plan.`,
-      'Clinical Interventions': `You are an expert clinical strategist AI. Analyze the patient overview and recommend specific, evidence-based clinical interventions using a strict Medical Chart style. Format the response cleanly in MDX format (e.g., utilizing tables, blockquotes, or structured lists). For key-value pairs, ALWAYS format as "**Label:** Value" (bolding the label only). Group recommendations by category (Labs, Imaging, Pharmacology, Specialist Referrals, Therapeutics) with brief, objective clinical rationales for each. Keep it highly concise for quick physician review.`,
+      'Functional Protocols': `You are an expert functional strategist AI. Analyze the patient overview and recommend specific, evidence-based integrative interventions using a strict Medical Chart style. Format the response cleanly in MDX format (e.g., utilizing tables, blockquotes, or structured lists). For key-value pairs, ALWAYS format as "**Label:** Value" (bolding the label only). Group recommendations by category (Labs, Imaging, Pharmacology, Specialist Referrals, Therapeutics) with brief, objective physiological rationales for each. Keep it highly concise for quick physician review.`,
       'Monitoring & Follow-up': `You are a care coordination AI. Generate a structured timeline and criteria for monitoring progress and scheduling follow-ups. Use a strict Medical Chart style and highly structured MDX formatting. For key-value pairs, ALWAYS format as "**Label:** Value" (bolding the label only). Clearly specify tracking parameters for vitals, symptoms, or markers over the next timeframe, and explicitly outline "Red Flag" conditions requiring immediate attention.`,
-      'Patient Education': `You are a clinical patient education AI. Draft structured, easy-to-understand educational points tailored to the patient's specific conditions. Maintain a structured Medical Chart style (organized, precise) but use a tone accessible to the patient. Use rich MDX formatting with clear headers, nested bullet points, emphasized instructions, and actionable strategies (diet, stress, sleep, physical activity) for the physician to share directly. For key-value pairs, ALWAYS format as "**Label:** Value" (bolding the label only).`
+      'Patient Education': `You are an integrative patient education AI. Draft structured, easy-to-understand educational points tailored to the patient's specific conditions. Maintain a structured Medical Chart style (organized, precise) but use a tone accessible to the patient. Use rich MDX formatting with clear headers, nested bullet points, emphasized instructions, and actionable strategies (diet, stress, sleep, physical activity) for the physician to share directly. For key-value pairs, ALWAYS format as "**Label:** Value" (bolding the label only).`
     };
 
     try {
@@ -105,7 +105,7 @@ export class GeminiService {
    */
   startChatSession(patientData: string) {
     this.transcript.set([]);
-    const systemInstruction = `You are a collaborative care plan co-pilot named "Aura". You are assisting a doctor in refining a strategy for their patient. You have already reviewed the finalized patient overview and the current recommendations: \n\n${patientData}\n\nYour role is to help the doctor iterate on the care plan, explore clinical interventions, structure follow-ups, or answer specific questions about the patient's data. Keep your answers brief, actionable, and focused on strategic care. Be ready to elaborate when asked.`;
+    const systemInstruction = `You are a collaborative care plan co-pilot named "Aura". You are assisting a doctor in refining a strategy for their patient. You have already reviewed the finalized patient overview and the current recommendations: \n\n${patientData}\n\nYour role is to help the doctor iterate on the care plan, explore functional protocols, structure follow-ups, or answer specific questions about the patient's data. Keep your answers brief, actionable, and focused on strategic holistic care. Be ready to elaborate when asked.`;
 
     this.chat = this.ai.chats.create({
       model: 'gemini-2.5-flash',

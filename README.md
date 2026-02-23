@@ -8,6 +8,8 @@
 
 > **Note:** This application was created for the purposes of entering the Gemini Live Agent Challenge hackathon.
 
+![Understory Dashboard](docs/images/understory_dashboard.png)
+
 Understory streamlines patient intake with an interactive body map and AI-powered insights. It empowers doctors with rapid data visualization and analysis for proactive care decisions.
 
 This tool aims to accelerate the data-gathering process, allowing physicians to quickly visualize patient issues and leverage generative AI to explore potential connections and research avenues before ever speaking to the patient.
@@ -16,14 +18,10 @@ This tool aims to accelerate the data-gathering process, allowing physicians to 
 
 ---
 
-## Key Features
-
-- **Interactive Body Map:** A clean, SVG-based human model for doctors to quickly select and log areas of concern.
-- **Voice Dictation:** Integrated speech-to-text functionality allows physicians to dictate notes directly into the patient chart and intake forms, streamlining documentation.
-- **Dynamic Intake Forms:** Context-aware forms appear for selected body parts to log pain levels and symptoms.
-- **AI-Powered Analysis:** With a single click, generate a detailed integrative care report based on all entered patient data, using the Gemini API.
-- **Live AI Consult:** A voice-enabled, conversational overlay where doctors can speak directly with an AI assistant to ask follow-up questions about the patient's case.
-- **Generative 3D Visualization:** Uses Google Veo to generate 3D-style rotating medical visualizations of the patient's body type.
+- **Care Plan Recommendation Engine:** Evolved clinical analysis that synthesizes structured strategies for patient care, organized by diagnostic lenses (Overview, Interventions, Monitoring, Education).
+- **Interactive Task Bracketing:** Rapidly markup generated care plans using a double-click state machine (Normal, Added, Removed) to vet and customize AI recommendations.
+- **Localized Auto-Save:** Real-time persistence of clinical notes and bracket states with visual "Saving..." and "Saved ✔" status indicators.
+- **Live AI Consult:** A voice-enabled, conversational "Live Consult" co-pilot (powered by Aura) that collaborates with clinicians to refine strategy in real-time.
 - **Real-time & Responsive:** Built with Angular signals for a reactive UI that updates instantly as data is entered.
 - **Modern UI/UX:** A minimalist, professional interface designed for clinical environments, built with Tailwind CSS.
 
@@ -47,16 +45,13 @@ graph TD
         
         Analysis -->|Reads| State
         Analysis -->|Calls| GeminiSvc[Gemini Service]
-        BodyMap -->|Calls| VeoSvc[Veo Service]
     end
     
     subgraph "Google Cloud / AI Studio"
         GeminiSvc -->|Generate Content| Flash[Gemini 2.5 Flash]
-        VeoSvc -->|Generate Video| Veo[Veo 3.1]
     end
     
     Flash -->|Returns JSON/Text| GeminiSvc
-    Veo -->|Returns Video URI| VeoSvc
 ```
 
 ## Powered By
@@ -64,7 +59,6 @@ graph TD
 This project leverages the following Google technologies:
 
 -   [**Google Gemini API**](https://ai.google.dev/) - The core intelligence engine for patient analysis and report generation.
--   [**Google Veo**](https://deepmind.google/technologies/veo/) - Generative video model used to create 3D-style rotating medical visualizations from text prompts.
 -   [**Angular**](https://angular.dev/) - The web framework used for the reactive, signal-based user interface.
 -   [**Google AI Studio**](https://aistudio.google.com/) - The development platform used to build and prototype this agent.
 
@@ -74,7 +68,6 @@ This project leverages the following Google technologies:
 - **Styling:** Tailwind CSS
 - **AI Integration:** 
   - `gemini-2.5-flash` (Analysis & Chat)
-  - `veo-3.1-fast-generate-preview` (3D Body Rotation Videos)
 - **Speech:** Web Speech API (SpeechRecognition & SpeechSynthesis)
 
 ## Getting Started
@@ -101,6 +94,24 @@ To run this project in a local development environment, you would typically foll
     ```bash
     npm start
     ```
+
+## Impact Statement
+
+### Societal Impact Statement: Understory & AI-Augmented Clinical Strategy
+
+**Overview**  
+Understory is designed to transform the initial clinical encounter by shifting the burden of data synthesis from the physician to an AI-augmented workflow. By evolving generic medical analysis into a "Care Plan Recommendation Engine," the platform aims to reclaim clinical time for direct patient interaction, ultimately strengthening the doctor-patient relationship through increased presence and empathy.
+
+**Societal and Ethical Implications**  
+- **Autonomy and Dignity**: The platform prioritizes physician autonomy by acting as a "Live Consult" co-pilot rather than an automated decision-maker. Interactive "Task Bracketing" ensures that every medical recommendation is manually vetted and adjusted by a human clinician, preserving the dignity of personalized medical professional judgment.
+- **Fairness and Community Well-being**: By streamlining complex data ingestion—vitals, history, and chief complaint—Understory reduces the cognitive load on healthcare providers. This has the longitudinal potential to reduce physician burnout, leading to more stable medical communities and more equitable access to high-quality care.
+- **Risks and Mitigations**: A primary risk is "automation bias," where a provider might over-rely on AI-generated interventions. We mitigate this through localized auto-saving and explicit manual override triggers (added/removed states), forcing active engagement with the generated content.
+
+**Environmental Impact**  
+By facilitating rapid, data-driven synthesis in a paperless environment, Understory promotes resource efficiency within clinics. The use of efficient, quantized models (like Gemini Pro Flash) ensures that the computational footprint of these high-fidelity clinical insights remains optimized for sustainable growth.
+
+**Uncertainties**  
+The long-term impact on clinical outcomes depends on continued human-centric design. While initial results show significant time savings, the ultimate efficacy of AI-augmented strategy requires ongoing longitudinal assessment of diagnostic accuracy and provider-patient satisfaction.
 
 ## License
 

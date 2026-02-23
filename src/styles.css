@@ -1,3 +1,37 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@keyframes wobble {
+
+    0%,
+    100% {
+        border-radius: 9999px;
+        transform: scaleX(1);
+    }
+
+    25% {
+        border-radius: 40% 60% 50% 50% / 50% 50% 60% 40%;
+        transform: scaleX(1.1);
+    }
+
+    50% {
+        border-radius: 60% 40% 40% 60% / 60% 40% 60% 40%;
+        transform: scaleX(0.95);
+    }
+
+    75% {
+        border-radius: 50% 50% 60% 40% / 40% 60% 40% 60%;
+        transform: scaleX(1.05);
+    }
+}
+
+.water-handle {
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.water-handle:hover {
+    animation: wobble 2s infinite ease-in-out !important;
+    background-color: #1C1C1C !important;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}

@@ -1,4 +1,4 @@
-import { Injectable, inject, signal, effect, WritableSignal } from '@angular/core';
+import { Injectable, inject, signal, effect, WritableSignal, computed } from '@angular/core';
 import { PatientStateService, PatientState, BodyPartIssue } from './patient-state.service';
 import { GeminiService, AnalysisLens } from './gemini.service';
 
@@ -41,8 +41,14 @@ export type HistoryEntry = {
 } | {
   type: 'AnalysisRun';
   date: string;
-  summary: string; // e.g. "AI analysis generated"
+  summary: string;
   report: Partial<Record<AnalysisLens, string>>;
+} | {
+  type: 'FinalizedCarePlan';
+  date: string;
+  summary: string;
+  report: Partial<Record<AnalysisLens, string>>;
+  annotations: Record<string, Record<string, { note: string, bracketState: 'normal' | 'added' | 'removed' }>>;
 };
 
 export interface Patient extends PatientState {
@@ -85,7 +91,7 @@ const MOCK_PATIENTS: Patient[] = [
 
 <hr/>
 
-#### Clinical Rationale
+#### Functional Rationale
 Analysis of Eleanor's biometric trends indicates a direct correlation between sustained shoulder tension and headache onset. Vitals remain within normal parameters (BP: 130/85), though a 12% increase in heart rate is noted during peak pain episodes.
 
 - **Pathology:** Cervicogenic origin confirmed via segmental testing.
@@ -95,7 +101,7 @@ Analysis of Eleanor's biometric trends indicates a direct correlation between su
 1. **Acute Tension Relief:** Targeted myofascial release of right trapezius and levator scapulae.
 2. **Cervical Stabilization:** Address C2-C3 mobility restrictions via Grade II manual therapy.
 3. **Ergonomic Drift:** Correct forward head posture (FHP) through workstation optimization.`,
-          'Clinical Interventions': `### Clinical Interventions
+          'Functional Protocols': `### Functional Protocols
 **TARGETED THERAPEUTIC ROADMAP**
 
 <hr/>
@@ -107,7 +113,7 @@ Analysis of Eleanor's biometric trends indicates a direct correlation between su
 #### Phase 02: Structural Re-education
 - Implement **Deep Neck Flexor (DNF)** training protocol. Initial focus on isometric chin tucks with biofeedback monitoring to ensure recruitment of longus colli over superficial musculature.
 
-#### Clinical Outcome Projection
+#### Wholistic Trajectory
 > **70% Pain Reduction | 15° ROM Increase**
 > *Expected stabilization of C-spine within 4-6 weeks of adherence.*`,
           'Monitoring & Follow-up': `### Track & Review Protocol
@@ -239,6 +245,10 @@ export class PatientManagementService {
 
   readonly patients = signal<Patient[]>(MOCK_PATIENTS);
   readonly selectedPatientId: WritableSignal<string | null> = signal(MOCK_PATIENTS[0]?.id || null);
+  readonly selectedPatient = computed(() => {
+    const id = this.selectedPatientId();
+    return id ? this.patients().find(p => p.id === id) : null;
+  });
 
   constructor() {
     // This effect runs whenever the selected patient changes.
@@ -256,9 +266,13 @@ export class PatientManagementService {
           // Reset the AI analysis first, then load the existing one if we have it
           this.geminiService.resetAIState();
 
-          const latestAnalysis = patient.history.find(entry => entry.type === 'AnalysisRun');
-          if (latestAnalysis && latestAnalysis.type === 'AnalysisRun') {
-            this.geminiService.loadArchivedAnalysis(latestAnalysis.report);
+          const latestAnalysis = patient.history.find(entry => entry.type === 'AnalysisRun' || entry.type === 'FinalizedCarePlan');
+          if (latestAnalysis) {
+            if (latestAnalysis.type === 'AnalysisRun') {
+              this.geminiService.loadArchivedAnalysis(latestAnalysis.report);
+            } else if (latestAnalysis.type === 'FinalizedCarePlan') {
+              this.geminiService.loadArchivedAnalysis(latestAnalysis.report);
+            }
           }
         }
       } else {
@@ -266,7 +280,7 @@ export class PatientManagementService {
         this.patientState.clearState();
         this.geminiService.resetAIState();
       }
-    }, { allowSignalWrites: true });
+    }); // Warning: direct signal writes in effects are discouraged but sometimes necessary for orchestration 
   }
 
   private findAndLoadActiveCarePlan(history: HistoryEntry[]) {
