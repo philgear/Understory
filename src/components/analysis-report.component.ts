@@ -242,7 +242,7 @@ interface ParsedTranscriptEntry extends TranscriptEntry {
             @if (hasAnyReport()) {
                 <div class="flex items-center gap-1.5 px-2 py-0.5 bg-gray-100 rounded border border-gray-200 no-print">
                     <div class="w-1.5 h-1.5 rounded-full bg-green-500"></div>
-                    <span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest">Last Refresh: {{ lastRefreshDate() | date:'shortTime' }}</span>
+                    <span class="text-[9px] font-bold text-gray-600 uppercase tracking-widest">Last Refresh: {{ lastRefreshDate() | date:'shortTime' }}</span>
                 </div>
             }
         </div>
