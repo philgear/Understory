@@ -84,6 +84,7 @@ interface NoteTimelineItem extends BodyPartIssue {
                     <div class="absolute h-1.5 bg-gradient-to-r from-green-500 via-yellow-500 to-red-600 rounded-full transition-all duration-150 ease-out"
                          [style.width.%]="formState().painLevel * 10"></div>
                     
+                    <label for="painRange" class="sr-only">Pain Level</label>
                     <input 
                       id="painRange"
                       name="painRange"

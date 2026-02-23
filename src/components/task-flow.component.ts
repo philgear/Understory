@@ -49,13 +49,15 @@ import { PatientStateService } from '../services/patient-state.service';
                     <div class="flex items-start gap-3 bg-white border border-gray-200 rounded-lg p-3 shadow-sm group hover:border-gray-300 transition-colors">
                       <input 
                         type="checkbox" 
+                        [id]="'task-' + task.id"
+                        [name]="'task-' + task.id"
                         [checked]="task.completed"
                         (change)="toggleTask(task.id)"
                         class="mt-1 w-4 h-4 text-[#416B1F] bg-gray-100 border-gray-300 rounded focus:ring-[#416B1F] flex-shrink-0 cursor-pointer"
                       >
-                      <span class="text-sm text-[#1C1C1C] flex-1" [class.line-through]="task.completed" [class.opacity-50]="task.completed">
+                      <label [for]="'task-' + task.id" class="text-sm text-[#1C1C1C] flex-1 cursor-pointer" [class.line-through]="task.completed" [class.opacity-50]="task.completed">
                         {{ task.text }}
-                      </span>
+                      </label>
                       <button (click)="removeTask(task.id)" class="text-gray-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" title="Remove Task">
                          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                       </button>
@@ -99,7 +101,10 @@ import { PatientStateService } from '../services/patient-state.service';
 
       <!-- Add Item Input -->
       <div class="p-4 bg-white border-t border-gray-100 shrink-0 flex flex-col gap-3">
+        <label for="taskInputText" class="sr-only">New task or note</label>
         <textarea 
+            id="taskInputText"
+            name="taskInputText"
             #itemInput
             (keydown.enter)="handleEnter($event, itemInput)"
             placeholder="Type a clinical note or task... (Shift+Enter for new line)" 

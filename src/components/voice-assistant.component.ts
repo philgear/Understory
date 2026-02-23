@@ -145,6 +145,7 @@ import { marked } from 'marked';
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14q-1.25 0-2.125-.875T9 11V5q0-1.25.875-2.125T12 2q1.25 0 2.125.875T15 5v6q0 1.25-.875 2.125T12 14m-1 7v-3.075q-2.6-.35-4.3-2.325T5 11h2q0 2.075 1.463 3.537T12 16q2.075 0 3.538-1.463T17 11h2q0 2.225-1.7 4.2T13 17.925V21z"/></svg>
                         </button>
 
+                        <label for="chatInputArea" class="sr-only">Ask a question</label>
                         <textarea
                           id="chatInputArea"
                           name="chatInputArea"
@@ -175,6 +176,7 @@ import { marked } from 'marked';
             @if (panelMode() === 'dictation') {
                 <div class="flex-1 flex flex-col p-6 bg-gray-50/30 overflow-hidden w-full">
                     <div class="flex-1 bg-white border border-gray-200 rounded-lg shadow-sm p-4 relative flex flex-col min-h-0">
+                        <label for="voiceDictationText" class="sr-only">Dictate your notes</label>
                         <textarea 
                             id="voiceDictationText"
                             name="voiceDictationText"
