@@ -3,26 +3,21 @@
 @tailwind utilities;
 
 @keyframes wobble {
-
     0%,
     100% {
-        border-radius: 9999px;
-        transform: scaleX(1);
+        transform: scaleX(1) rotate(0deg);
     }
 
     25% {
-        border-radius: 40% 60% 50% 50% / 50% 50% 60% 40%;
-        transform: scaleX(1.1);
+        transform: scaleX(1.1) rotate(5deg);
     }
 
     50% {
-        border-radius: 60% 40% 40% 60% / 60% 40% 60% 40%;
-        transform: scaleX(0.95);
+        transform: scaleX(0.95) rotate(-5deg);
     }
 
     75% {
-        border-radius: 50% 50% 60% 40% / 40% 60% 40% 60%;
-        transform: scaleX(1.05);
+        transform: scaleX(1.05) rotate(2deg);
     }
 }
 

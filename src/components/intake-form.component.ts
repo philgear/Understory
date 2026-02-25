@@ -506,12 +506,15 @@ export class IntakeFormComponent implements OnDestroy {
     // Sync local state when the selected issue changes from the global state
     effect(() => {
       const note = this.viewedNote();
-      this.localPainLevel.set(note?.painLevel ?? 0);
-      this.localDescription.set(note?.description ?? '');
-      this.localRecommendation.set(note?.recommendation ?? '');
+      // Use untracked for local signal writes to prevent infinite loops from local state changes.
+      untracked(() => {
+        this.localPainLevel.set(note?.painLevel ?? 0);
+        this.localDescription.set(note?.description ?? '');
+        this.localRecommendation.set(note?.recommendation ?? '');
+      });
     });
 
-    // Auto-select or auto-create note when a part is selected
+    // Auto-select note when a part is selected (auto-create is moved to body-viewer where the click happens)
     effect(() => {
       const partId = this.state.selectedPartId();
       const currentNoteId = this.state.selectedNoteId();
@@ -522,11 +525,6 @@ export class IntakeFormComponent implements OnDestroy {
           const currentVisitNote = timeline.find(n => n.isCurrent);
           if (currentVisitNote) {
             this.state.selectNote(currentVisitNote.noteId);
-          } else {
-            // If it's a new part for this visit, and we are not viewing a past visit, auto-create
-            if (!this.state.viewingPastVisit()) {
-              this.addNewNote();
-            }
           }
         });
       }

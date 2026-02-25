@@ -234,22 +234,7 @@ interface ParsedTranscriptEntry extends TranscriptEntry {
   template: `
     <!-- Report Header -->
     <div class="p-8 pb-4 flex justify-between items-end bg-white shrink-0 z-10 border-b border-[#EEEEEE] no-print">
-      <div>
-        <div class="flex items-center gap-3">
-            <h2 class="text-sm font-bold text-[#1C1C1C] uppercase tracking-widest">
-                Care Plan Recommendation Engine
-            </h2>
-            @if (hasAnyReport()) {
-                <div class="flex items-center gap-1.5 px-2 py-0.5 bg-gray-100 rounded border border-gray-200 no-print">
-                    <div class="w-1.5 h-1.5 rounded-full bg-green-500"></div>
-                    <span class="text-[9px] font-bold text-gray-600 uppercase tracking-widest">Last Refresh: {{ lastRefreshDate() | date:'shortTime' }}</span>
-                </div>
-            }
-        </div>
-        <p class="text-xs text-gray-500 mt-1">
-            AI-Guided Strategy & Voice Assistant
-        </p>
-      </div>
+      <div class="flex-1"></div>
       
       @if (!gemini.isLoading()) {
          <div class="flex items-center gap-2">
@@ -497,8 +482,26 @@ interface ParsedTranscriptEntry extends TranscriptEntry {
                       </div>
                     }
                 </div>
-                <div class="mt-12 pt-4 border-t border-[#EEEEEE] text-[10px] text-gray-300 uppercase tracking-widest no-print">
-                  AI Generated Content. Physician Review Required.
+                <div class="mt-12 pt-8 flex items-end justify-between border-t border-[#EEEEEE] no-print">
+                  <div>
+                    <div class="flex items-center gap-3">
+                        <h2 class="text-sm font-bold text-[#1C1C1C] uppercase tracking-widest">
+                            Care Plan Recommendation Engine
+                        </h2>
+                        @if (hasAnyReport()) {
+                            <div class="flex items-center gap-1.5 px-2 py-0.5 bg-white rounded border border-gray-200 shadow-sm no-print">
+                                <div class="w-1.5 h-1.5 rounded-full bg-green-500"></div>
+                                <span class="text-[9px] font-bold text-gray-600 uppercase tracking-widest">Last Refresh: {{ lastRefreshDate() | date:'shortTime' }}</span>
+                            </div>
+                        }
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1">
+                        AI-Guided Strategy & Voice Assistant
+                    </p>
+                  </div>
+                  <div class="text-[10px] text-gray-400 uppercase tracking-widest">
+                    AI Generated Content. Physician Review Required.
+                  </div>
                 </div>
               } @else if (!gemini.isLoading() && !hasAnyReport()) {
                 <div class="h-64 border border-dashed border-gray-200 rounded-lg flex items-center justify-center no-print">

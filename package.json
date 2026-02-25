@@ -26,7 +26,7 @@
     "dev": "ng serve",
     "build": "ng build",
     "lint": "tsc --noEmit",
-    "preview": "ng serve --configuration=production",
+    "preview": "npm run build && node server.js",
     "start": "node server.js",
     "changelog": "echo \"Remember to update CHANGELOG.md before running npm run release\"",
     "release": "npm run changelog && npm version patch -m \"chore(release): %s\""

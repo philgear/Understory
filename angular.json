@@ -20,7 +20,16 @@
             "index": "index.html",
             "tsConfig": "tsconfig.json",
             "assets": [
-              "src/robots.txt"
+              {
+                "glob": "robots.txt",
+                "input": "src",
+                "output": "/"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/.well-known",
+                "output": "/.well-known"
+              }
             ],
             "styles": [
               "src/styles.css"
@@ -32,7 +41,8 @@
           "configurations": {
             "production": {
               "outputHashing": "all",
-              "sourceMap": true
+              "sourceMap": false,
+              "optimization": true
             },
             "development": {
               "optimization": false,

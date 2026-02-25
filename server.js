@@ -1,5 +1,4 @@
 import express from 'express';
-import compression from 'compression';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import fs from 'fs';
@@ -8,7 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 4200;
 
 // Use process.cwd() to ensure we are looking in the right place
 const rootDir = process.cwd();
@@ -28,28 +27,31 @@ if (fs.existsSync(distFolder)) {
   console.log(`[SERVER] Contents of ${rootDir}:`, fs.readdirSync(rootDir));
 }
 
-// Enable standard text compression for static assets
-app.use(compression());
+// Add security headers
+app.use((req, res, next) => {
+  res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+  res.setHeader('X-Frame-Options', 'DENY');
+  next();
+});
+
 
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.status(200).send('OK');
 });
 
-// Serve static files
-app.use(express.static(distFolder));
+// Serve static files via Express directly to avoid generic filesystem deadlocks
+app.use(express.static(distFolder, { maxAge: '1y' }));
 
-// Fallback to index.html
-app.use((req, res) => {
-  console.log(`[SERVER] Request: ${req.url}`);
+// Fallback to index.html for Angular routing
+app.get(/(.*)/, (req, res) => {
+  console.log(`[SERVER] Fallback routing for: ${req.url}`);
   const indexPath = join(distFolder, 'index.html');
-
-  if (fs.existsSync(indexPath)) {
-    res.sendFile(indexPath);
-  } else {
-    console.error(`[SERVER] ERROR: index.html not found at ${indexPath}`);
-    res.status(404).send('Not Found');
-  }
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  res.sendFile(indexPath);
 });
 
 app.listen(port, '0.0.0.0', () => {

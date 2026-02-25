@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject, signal, effect, OnDestroy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal, effect, OnDestroy, untracked } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DictationService } from '../services/dictation.service';
 
@@ -133,8 +133,10 @@ export class DictationModalComponent implements OnDestroy {
     // Reset text when modal opens
     effect(() => {
       if (this.dictation.isModalOpen()) {
-        this.currentText.set(this.dictation.initialText());
-        this.interimText.set('');
+        untracked(() => {
+          this.currentText.set(this.dictation.initialText());
+          this.interimText.set('');
+        });
         this.dictation.startRecognition();
       }
     });

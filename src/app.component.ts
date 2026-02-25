@@ -60,7 +60,7 @@ import { VoiceAssistantComponent } from './components/voice-assistant.component'
         </div>
       }
 
-      <div class="flex-1 flex flex-col min-w-0 relative group/main"> <!-- Main Content -->
+      <main class="flex-1 flex flex-col min-w-0 relative group/main"> <!-- Main Content -->
         <!-- Navbar: Pure utility, no decoration -->
         <nav class="h-14 border-b border-[#EEEEEE] flex items-center justify-between px-6 shrink-0 bg-white z-20 no-print">
           <div class="flex items-center gap-4">
@@ -86,7 +86,7 @@ import { VoiceAssistantComponent } from './components/voice-assistant.component'
             <!-- System Status Indicator -->
             <div class="flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-full border border-gray-200 hover:border-gray-300 transition-all cursor-help group relative no-print">
             <div class="relative flex h-2 w-2">
-              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" style="will-change: transform, opacity;"></span>
               <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
             </div>
             <span class="text-[9px] font-bold text-gray-600 uppercase tracking-widest">System Ready</span>
@@ -152,8 +152,12 @@ import { VoiceAssistantComponent } from './components/voice-assistant.component'
                style="min-height: 60vh; md:min-height: 0;"
                [class.hidden]="isChartCollapsed()">
                <div class="h-full w-full overflow-hidden flex-1 flex flex-col">
-                      <app-medical-chart class="no-print h-full block overflow-y-auto w-full"></app-medical-chart>
-                 </div>
+                 @defer {
+                   <app-medical-chart class="no-print h-full block overflow-y-auto w-full"></app-medical-chart>
+                 } @placeholder {
+                   <div class="w-full h-full flex items-center justify-center animate-pulse bg-gray-100"></div>
+                 }
+               </div>
             </div>
 
             <!-- RESIZER V -->
@@ -194,10 +198,14 @@ import { VoiceAssistantComponent } from './components/voice-assistant.component'
             @if (state.selectedPartId() && !state.isLiveAgentActive()) {
                <div class="shrink-0 w-full md:w-[400px] flex flex-col gap-3 md:gap-6 h-full z-20 transition-all duration-300">
                   <div class="flex-1 min-h-0 overflow-hidden rounded-xl shadow-sm border border-gray-200">
-                    <app-intake-form></app-intake-form>
+                    @defer {
+                      <app-intake-form></app-intake-form>
+                    }
                   </div>
                   <div class="flex-1 min-h-0 overflow-hidden rounded-xl shadow-sm border border-gray-200">
-                    <app-task-flow></app-task-flow>
+                    @defer {
+                      <app-task-flow></app-task-flow>
+                    }
                   </div>
                </div>
             }
@@ -210,7 +218,11 @@ import { VoiceAssistantComponent } from './components/voice-assistant.component'
                  <div class="shrink-0 overflow-hidden flex flex-col bg-white rounded-xl shadow-sm border border-gray-200 transition-all duration-300 hover:shadow-md"
                       [style.height.px]="topSectionHeight()">
                      <div class="flex-1 w-full h-full overflow-hidden min-h-[50vh] md:min-h-0 min-w-0">
-                         <app-medical-summary class="block h-full overflow-y-auto"></app-medical-summary>
+                         @defer {
+                           <app-medical-summary class="block h-full overflow-y-auto"></app-medical-summary>
+                         } @placeholder {
+                           <div class="w-full h-full flex items-center justify-center animate-pulse bg-gray-50"></div>
+                         }
                      </div>
                  </div>
 
@@ -235,7 +247,11 @@ import { VoiceAssistantComponent } from './components/voice-assistant.component'
                  <!-- Section 2: Analysis Intake Container -->
                  <div class="overflow-hidden flex flex-col bg-white rounded-xl shadow-sm border border-gray-200 transition-all duration-300 hover:shadow-md flex-1 min-h-[50vh] md:min-h-0"
                       [style.height.px]="analysisSectionHeight() || null">
-                     <app-analysis-container class="block h-full min-h-0 min-w-0"></app-analysis-container>
+                     @defer {
+                       <app-analysis-container class="block h-full min-h-0 min-w-0"></app-analysis-container>
+                     } @placeholder {
+                       <div class="w-full h-full flex items-center justify-center animate-pulse bg-gray-50"></div>
+                     }
                  </div>
             </div>
 
@@ -252,7 +268,9 @@ import { VoiceAssistantComponent } from './components/voice-assistant.component'
             <div class="flex flex-col bg-white rounded-xl shadow-sm border border-gray-200 transition-all duration-300 hover:shadow-md shrink-0 h-full min-w-[300px]"
                  [style.width.px]="voiceColWidth()"
                  [class.hidden]="!state.isLiveAgentActive()">
-                 <app-voice-assistant class="block h-full overflow-y-auto w-full"></app-voice-assistant>
+                 @defer (when state.isLiveAgentActive()) {
+                   <app-voice-assistant class="block h-full overflow-y-auto w-full"></app-voice-assistant>
+                 }
             </div>
 
         </div>
@@ -260,7 +278,7 @@ import { VoiceAssistantComponent } from './components/voice-assistant.component'
         @if(state.isResearchFrameVisible()) {
             <app-research-frame></app-research-frame>
         }
-      </div>
+      </main>
     </div>
   `,
   styles: [`
@@ -354,7 +372,7 @@ export class AppComponent {
       this.analysisSectionHeight.set(containerHeight * 0.3);
       this.voiceColWidth.set(350);
 
-      this.checkApiKey();
+      // this.checkApiKey();
     });
 
     // Auto-expand analysis when a part is selected or clicked

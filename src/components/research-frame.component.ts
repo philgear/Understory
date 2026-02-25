@@ -157,8 +157,10 @@ export class ResearchFrameComponent {
       const url = this.patientState.requestedResearchUrl();
       if (url) {
         this.loadUrl(url);
-        // Reset the signal after consuming it
-        this.patientState.requestedResearchUrl.set(null);
+        untracked(() => {
+          // Reset the signal after consuming it
+          this.patientState.requestedResearchUrl.set(null);
+        });
       }
     });
 
@@ -166,9 +168,11 @@ export class ResearchFrameComponent {
     effect(() => {
       const query = this.patientState.requestedResearchQuery();
       if (query) {
-        this.searchText.set(query);
-        this.search();
-        this.patientState.requestedResearchQuery.set(null);
+        untracked(() => {
+          this.searchText.set(query);
+          this.search();
+          this.patientState.requestedResearchQuery.set(null);
+        });
       }
     });
 
