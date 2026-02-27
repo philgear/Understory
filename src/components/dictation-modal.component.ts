@@ -2,10 +2,13 @@ import { Component, ChangeDetectionStrategy, inject, signal, effect, OnDestroy, 
 import { CommonModule } from '@angular/common';
 import { DictationService } from '../services/dictation.service';
 
+import { UnderstoryButtonComponent } from './shared/understory-button.component';
+import { UnderstoryInputComponent } from './shared/understory-input.component';
+
 @Component({
   selector: 'app-dictation-modal',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, UnderstoryButtonComponent, UnderstoryInputComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (dictation.isModalOpen()) {
@@ -36,23 +39,24 @@ import { DictationService } from '../services/dictation.service';
                 </p>
               </div>
             </div>
-            <button (click)="cancel()" class="text-gray-500 hover:text-gray-600 transition-colors">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-            </button>
+            <understory-button 
+              variant="ghost" 
+              size="sm"
+              (click)="cancel()" 
+              icon="M18 6L6 18M6 6l12 12">
+            </understory-button>
           </div>
 
           <!-- Content -->
           <div class="p-6 relative">
-            <textarea 
-              id="dictationText"
-              name="dictationText"
-              aria-label="Dictation text"
-              #textInput
+            <understory-input
+              type="textarea"
               [value]="currentText()"
-              (input)="updateText($event)"
-              class="w-full h-64 p-4 bg-gray-50 border border-gray-200 rounded-md focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none resize-none text-base leading-relaxed text-gray-800 placeholder-gray-400"
+              (valueChange)="updateTextManual($event)"
+              [rows]="10"
               placeholder="Start speaking or type here..."
-            ></textarea>
+              class="w-full">
+            </understory-input>
             
             @if (interimText()) {
               <div class="absolute bottom-8 left-8 right-8 text-gray-500 text-sm italic truncate pointer-events-none">
@@ -72,36 +76,31 @@ import { DictationService } from '../services/dictation.service';
           <!-- Footer -->
           <div class="px-6 py-4 border-t border-gray-100 bg-gray-50/50 flex justify-between items-center">
             <div class="flex items-center gap-2">
-               <button (click)="toggleListening()" 
-                       class="px-4 py-2 rounded-md text-xs font-bold uppercase tracking-wider border transition-all flex items-center gap-2"
-                       [class.bg-white]="dictation.isListening()"
-                       [class.border-gray-300]="dictation.isListening()"
-                       [class.text-gray-700]="dictation.isListening()"
-                       [class.hover:bg-gray-50]="dictation.isListening()"
-                       [class.bg-red-600]="!dictation.isListening()"
-                       [class.border-transparent]="!dictation.isListening()"
-                       [class.text-white]="!dictation.isListening()"
-                       [class.hover:bg-red-700]="!dictation.isListening()">
-                  @if (dictation.isListening()) {
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-                    Pause
-                  } @else {
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
-                    Resume
-                  }
-               </button>
+               <understory-button 
+                 (click)="toggleListening()" 
+                 [variant]="dictation.isListening() ? 'secondary' : 'danger'"
+                 size="sm"
+                 [icon]="dictation.isListening() ? 'M6 4h4v16H6V4zm8 0h4v16h-4V4z' : 'M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zM17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z'">
+                 {{ dictation.isListening() ? 'Pause' : 'Resume' }}
+               </understory-button>
                @if (dictation.permissionError(); as error) {
                  <span class="text-xs text-red-600">{{ error }}</span>
                }
             </div>
 
             <div class="flex items-center gap-3">
-              <button (click)="cancel()" class="px-4 py-2 text-xs font-bold text-gray-500 hover:text-gray-800 uppercase tracking-wider transition-colors">
-                Cancel
-              </button>
-              <button (click)="accept()" class="px-6 py-2 bg-[#1C1C1C] text-white text-xs font-bold uppercase tracking-wider rounded-md hover:bg-[#333] transition-colors shadow-sm">
-                Insert Text
-              </button>
+               <understory-button 
+                 variant="ghost" 
+                 size="sm" 
+                 (click)="cancel()">
+                 Cancel
+               </understory-button>
+               <understory-button 
+                 variant="primary" 
+                 size="sm" 
+                 (click)="accept()">
+                 Insert Text
+               </understory-button>
             </div>
           </div>
 
@@ -146,8 +145,8 @@ export class DictationModalComponent implements OnDestroy {
     this.dictation.stopRecognition();
   }
 
-  updateText(event: Event) {
-    this.currentText.set((event.target as HTMLTextAreaElement).value);
+  updateTextManual(text: string) {
+    this.currentText.set(text);
   }
 
   toggleListening() {

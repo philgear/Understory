@@ -1,0 +1,53 @@
+[
+    {
+        "id": "scenario-1",
+        "description": "Hallucinated medication in assessment",
+        "transcript": "Patient presents with chronic back pain. Denies any allergies. Currently taking Ibuprofen 400mg as needed. No history of surgery.",
+        "report": {
+            "title": "Assessment",
+            "content": "Patient has chronic back pain. They are currently managed with Ibuprofen 400mg. History is notable for a prior appendectomy in 2015."
+        },
+        "expected": {
+            "status": "warning",
+            "issues": [
+                {
+                    "severity": "medium",
+                    "claim": "prior appendectomy in 2015",
+                    "message": "Hallucination: The transcript explicitly states 'No history of surgery'."
+                }
+            ]
+        }
+    },
+    {
+        "id": "scenario-2",
+        "description": "Inaccurate frequency of medication",
+        "transcript": "I take my Lisinopril 10mg once every morning. My blood pressure has been stable.",
+        "report": {
+            "title": "Medications",
+            "content": "Lisinopril 10mg twice daily for hypertension."
+        },
+        "expected": {
+            "status": "warning",
+            "issues": [
+                {
+                    "severity": "medium",
+                    "claim": "twice daily",
+                    "message": "Inaccuracy: Transcript says 'once every morning'."
+                }
+            ]
+        }
+    },
+    {
+        "id": "scenario-3",
+        "description": "Perfect verification",
+        "transcript": "Patient feels better today. No fever. Lungs are clear.",
+        "report": {
+            "title": "Physical Exam",
+            "content": "Normal physical findings. Afebrile. Lungs clear to auscultation."
+        },
+        "expected": {
+            "status": "verified",
+            "issues": []
+        }
+    }
+]

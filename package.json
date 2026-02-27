@@ -38,7 +38,9 @@
     "@angular/compiler": "^21.1.0",
     "@angular/compiler-cli": "^21.1.0",
     "@angular/core": "^21.1.0",
+    "@angular/forms": "^21.1.5",
     "@angular/platform-browser": "^21.1.0",
+    "@google-cloud/secret-manager": "^6.1.1",
     "@google/genai": "^1.42.0",
     "@tailwindcss/postcss": "^4.2.0",
     "@types/express": "^5.0.6",
@@ -47,11 +49,13 @@
     "chart.js": "^4.5.1",
     "compression": "^1.8.1",
     "express": "^5.2.1",
+    "jspdf": "^4.2.0",
     "marked": "^17.0.3",
     "postcss": "^8.5.6",
     "rxjs": "^7.8.2",
     "tailwindcss": "^3.4.19",
-    "three": "^0.183.1"
+    "three": "^0.183.1",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.19",

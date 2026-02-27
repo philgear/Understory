@@ -35,7 +35,11 @@
               "src/styles.css"
             ],
             "allowedCommonJsDependencies": [
-              "p-retry"
+              "p-retry",
+              "core-js",
+              "raf",
+              "rgbcolor",
+              "html2canvas"
             ]
           },
           "configurations": {

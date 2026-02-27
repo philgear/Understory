@@ -2,9 +2,13 @@ import { Component, ChangeDetectionStrategy, inject, computed, signal, OnDestroy
 import { CommonModule } from '@angular/common';
 import { marked } from 'marked';
 import { DictationService } from '../services/dictation.service';
-import { GeminiService } from '../services/gemini.service';
+import { ClinicalIntelligenceService } from '../services/clinical-intelligence.service';
 import { PatientStateService, BodyPartIssue, BODY_PART_NAMES } from '../services/patient-state.service';
 import { PatientManagementService, HistoryEntry } from '../services/patient-management.service';
+
+import { UnderstoryButtonComponent } from './shared/understory-button.component';
+import { UnderstoryInputComponent } from './shared/understory-input.component';
+import { UnderstoryBadgeComponent } from './shared/understory-badge.component';
 
 interface NoteTimelineItem extends BodyPartIssue {
   date: string;
@@ -13,7 +17,7 @@ interface NoteTimelineItem extends BodyPartIssue {
 
 @Component({
   selector: 'app-intake-form',
-  imports: [CommonModule],
+  imports: [CommonModule, UnderstoryButtonComponent, UnderstoryInputComponent, UnderstoryBadgeComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="h-full flex flex-col bg-[#F9FAFB]">
@@ -24,11 +28,13 @@ interface NoteTimelineItem extends BodyPartIssue {
             <div class="w-2 h-2 rounded-full bg-[#689F38]"></div>
             <span class="text-xs font-bold uppercase tracking-widest text-gray-500">Assessment Panel</span>
           </div>
-          <button (click)="close()" class="text-gray-500 hover:text-[#1C1C1C] transition-colors p-1 rounded-md hover:bg-gray-100">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
+          <understory-button 
+            variant="ghost" 
+            size="sm" 
+            (click)="close()"
+            ariaLabel="Close Assessment Panel"
+            icon="M6 18L18 6M6 6l12 12">
+          </understory-button>
         </div>
 
         <div class="flex-1 flex overflow-hidden">
@@ -42,20 +48,17 @@ interface NoteTimelineItem extends BodyPartIssue {
               <!-- Bracket Header -->
               <div class="bg-gray-50/50 px-6 py-4 border-b border-gray-100 flex justify-between items-start">
                 <div>
-                  <span class="text-[10px] font-bold uppercase tracking-widest text-[#416B1F] block mb-1">
+                  <span class="text-xs font-bold uppercase tracking-widest text-[#416B1F] block mb-1">
                     {{ note.isCurrent ? 'Active Input' : 'Historical Record' }}
                   </span>
                   <h2 class="text-xl font-medium text-[#1C1C1C]">{{ state.selectedPartName() }}</h2>
                 </div>
                 @if (note.isCurrent) {
-                    <div class="flex items-center gap-1.5 px-2 py-1 bg-green-50 rounded-full border border-green-100">
-                        <div class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
-                        <span class="text-[10px] font-medium text-green-700 uppercase tracking-wide">Live</span>
-                    </div>
+                  <understory-badge label="Live" severity="success" [hasIcon]="true">
+                    <div badge-icon class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
+                  </understory-badge>
                 } @else {
-                    <div class="flex items-center gap-1.5 px-2 py-1 bg-gray-100 rounded-full border border-gray-200">
-                        <span class="text-[10px] font-medium text-gray-500 uppercase tracking-wide">{{ note.date }}</span>
-                    </div>
+                  <understory-badge [label]="note.date" severity="neutral"></understory-badge>
                 }
               </div>
 
@@ -65,7 +68,7 @@ interface NoteTimelineItem extends BodyPartIssue {
                 <!-- 1. Pain Level Section -->
                 <div class="mb-8">
                   <div class="flex justify-between items-end mb-4">
-                    <label for="painRange" class="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
+                    <label for="painRange" class="text-xs font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
                         Pain Severity
                     </label>
@@ -102,7 +105,7 @@ interface NoteTimelineItem extends BodyPartIssue {
                          <div class="w-1.5 h-1.5 bg-[#1C1C1C] rounded-full"></div>
                     </div>
                   </div>
-                  <div class="flex justify-between text-[10px] text-gray-500 font-medium uppercase tracking-wider px-1">
+                  <div class="flex justify-between text-xs text-gray-500 font-medium uppercase tracking-wider px-1">
                     <span>None</span>
                     <span>Moderate</span>
                     <span>Severe</span>
@@ -111,52 +114,39 @@ interface NoteTimelineItem extends BodyPartIssue {
 
                 <!-- 2. Notes Section -->
                 <div class="space-y-3">
-                  <label for="observationsText" class="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                    Integrative Observations
-                  </label>
-                  <div class="relative group">
-                    <textarea 
-                      id="observationsText"
-                      name="observationsText"
-                      #notesInput
-                      rows="5"
+                    <understory-input
+                      type="textarea"
+                      label="Integrative Observations"
                       [value]="formState().description"
-                      (input)="updateDesc($event)"
+                      (valueChange)="updateDescManual($event)"
                       [disabled]="!note.isCurrent"
-                      class="w-full bg-[#F8F9FA] border border-gray-200 rounded-lg p-4 pr-12 text-sm text-[#1C1C1C] focus:bg-white focus:border-[#689F38] focus:ring-1 focus:ring-[#689F38] transition-all placeholder-gray-400 resize-none disabled:text-gray-500 disabled:bg-gray-100"
+                      [rows]="5"
                       [placeholder]="dictation.isListening() ? 'Listening for your notes...' : 'Describe symptoms, triggers, and observations...'"
-                    ></textarea>
-                    
-                    <!-- Floating Actions inside Textarea -->
-                    <div class="absolute bottom-3 right-3 flex items-center gap-1.5">
-                      <button (click)="copyNotesToClipboard()" [disabled]="!formState().description"
-                              class="w-7 h-7 rounded-md flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed transition-all bg-white border border-gray-200 hover:bg-gray-50 hover:border-gray-300 shadow-sm"
-                              title="Copy notes">
-                          @if(justCopied()) {
-                              <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-green-700" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-                          } @else {
-                              <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-gray-500" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
-                          }
-                      </button>
-                      @if (note.isCurrent) {
-                        <button (click)="openDictation()" [disabled]="!!dictation.permissionError()"
-                                class="w-7 h-7 rounded-md flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
-                                [class.bg-red-50]="dictation.isListening()"
-                                [class.border-red-200]="dictation.isListening()"
-                                [class.border]="true"
-                                [class.text-red-600]="dictation.isListening()"
-                                [class.animate-pulse]="dictation.isListening()"
-                                [class.bg-white]="!dictation.isListening()"
-                                [class.border-gray-200]="!dictation.isListening()"
-                                [class.text-gray-500]="!dictation.isListening()"
-                                [class.hover:bg-gray-50]="!dictation.isListening()"
-                                title="Dictate Notes">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
-                        </button>
-                      }
-                    </div>
-                  </div>
+                      icon="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z">
+                      
+                      <div class="flex items-center gap-1.5 mt-2 justify-end">
+                        <understory-button
+                          variant="secondary"
+                          size="sm"
+                          [disabled]="!formState().description"
+                          (click)="copyNotesToClipboard()"
+                          [icon]="justCopied() ? 'M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z' : 'M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z'"
+                          [title]="justCopied() ? 'Copied!' : 'Copy notes'">
+                        </understory-button>
+
+                        @if (note.isCurrent) {
+                          <understory-button
+                            [variant]="dictation.isListening() ? 'danger' : 'secondary'"
+                            size="sm"
+                            [disabled]="!!dictation.permissionError()"
+                            (click)="openDictation()"
+                            [loading]="dictation.isListening()"
+                            icon="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"
+                            title="Dictate Notes">
+                          </understory-button>
+                        }
+                      </div>
+                    </understory-input>
                   @if(dictation.permissionError(); as error) {
                       <div class="flex items-center gap-2 text-red-600 bg-red-50 px-3 py-2 rounded-md border border-red-100">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
@@ -167,79 +157,68 @@ interface NoteTimelineItem extends BodyPartIssue {
 
                 <!-- 3. Recommendations Section -->
                 <div class="space-y-3">
-                  <div class="flex justify-between items-center">
-                    <label for="recommendationsText" class="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
+                  <div class="flex justify-between items-center mb-1">
+                    <label class="text-xs font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
                       <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
                       Recommendations
                     </label>
                     @if (formState().recommendation && note.isCurrent) {
-                      <button (click)="addToCarePlan()" class="text-[10px] font-bold uppercase tracking-widest text-[#416B1F] hover:text-[#558B2F] flex items-center gap-1 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M12 5v14M5 12h14"/></svg>
+                      <understory-button
+                        variant="ghost"
+                        size="xs"
+                        (click)="addToCarePlan()"
+                        icon="M12 5v14M5 12h14">
                         Add to Care Plan
-                      </button>
+                      </understory-button>
                     }
                   </div>
-                  <div class="relative group">
-                    <textarea 
-                      id="recommendationsText"
-                      name="recommendationsText"
-                      #recInput
-                      rows="3"
-                      [value]="formState().recommendation"
-                      (input)="updateRec($event)"
-                      [disabled]="!note.isCurrent"
-                      class="w-full bg-[#F8F9FA] border border-gray-200 rounded-lg p-4 text-sm text-[#1C1C1C] focus:bg-white focus:border-[#689F38] focus:ring-1 focus:ring-[#689F38] transition-all placeholder-gray-400 resize-none disabled:text-gray-500 disabled:bg-gray-100"
-                      placeholder="Suggested treatments, referrals, or next steps..."
-                    ></textarea>
-                    <!-- Floating Actions inside Textarea -->
-                    <div class="absolute bottom-3 right-3 flex items-center gap-1.5">
-                      <button (click)="copyRecToClipboard()" [disabled]="!formState().recommendation"
-                              class="w-7 h-7 rounded-md flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed transition-all bg-white border border-gray-200 hover:bg-gray-50 hover:border-gray-300 shadow-sm"
-                              title="Copy recommendation">
-                          @if(justCopiedRec()) {
-                              <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-green-700" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-                          } @else {
-                              <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-gray-500" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
-                          }
-                      </button>
+                  <understory-input
+                    type="textarea"
+                    [value]="formState().recommendation"
+                    (valueChange)="updateRecManual($event)"
+                    [disabled]="!note.isCurrent"
+                    [rows]="3"
+                    placeholder="Suggested treatments, referrals, or next steps...">
+                    
+                    <div class="flex items-center gap-1.5 mt-2 justify-end">
+                      <understory-button
+                        variant="secondary"
+                        size="sm"
+                        [disabled]="!formState().recommendation"
+                        (click)="copyRecToClipboard()"
+                        [icon]="justCopiedRec() ? 'M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z' : 'M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z'"
+                        [title]="justCopiedRec() ? 'Copied!' : 'Copy recommendation'">
+                      </understory-button>
                       @if (note.isCurrent) {
-                        <button (click)="openRecDictation()" [disabled]="!!dictation.permissionError()"
-                                class="w-7 h-7 rounded-md flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
-                                [class.bg-red-50]="dictation.isListening()"
-                                [class.border-red-200]="dictation.isListening()"
-                                [class.border]="true"
-                                [class.text-red-600]="dictation.isListening()"
-                                [class.animate-pulse]="dictation.isListening()"
-                                [class.bg-white]="!dictation.isListening()"
-                                [class.border-gray-200]="!dictation.isListening()"
-                                [class.text-gray-500]="!dictation.isListening()"
-                                [class.hover:bg-gray-50]="!dictation.isListening()"
+                        <understory-button (click)="openRecDictation()" [disabled]="!!dictation.permissionError()"
+                                variant="secondary"
+                                size="sm"
+                                [loading]="dictation.isListening()"
+                                icon="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"
                                 title="Dictate Recommendation">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
-                        </button>
+                        </understory-button>
                       }
                     </div>
-                  </div>
+                  </understory-input>
                 </div>
               </div>
 
               <!-- Bracket Footer -->
               <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-between items-center">
-                <button 
+                <understory-button 
+                  variant="ghost" 
+                  size="sm"
                   (click)="deleteNote(note)" 
                   [disabled]="!note.isCurrent"
-                  class="text-xs font-bold text-gray-500 hover:text-red-600 uppercase tracking-widest flex items-center gap-2 disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                  icon="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
                   Delete
-                </button>
-                <button (click)="updateEntry()"
-                        [disabled]="!isDirty()"
-                        class="px-5 py-2.5 bg-[#1C1C1C] text-white text-xs font-bold uppercase tracking-widest rounded-lg hover:bg-[#689F38] hover:shadow-lg hover:-translate-y-0.5 transition-all disabled:bg-gray-200 disabled:text-gray-500 disabled:shadow-none disabled:translate-y-0 disabled:cursor-not-allowed flex items-center gap-2">
-                  <span>{{ isDirty() ? 'Save Changes' : 'Saved' }}</span>
-                  @if (!isDirty()) {
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-                  }
-                </button>
+                </understory-button>
+                <understory-button 
+                  (click)="updateEntry()"
+                  [disabled]="!isDirty()"
+                  [trailingIcon]="!isDirty() ? 'M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z' : ''">
+                  {{ isDirty() ? 'Save Changes' : 'Saved' }}
+                </understory-button>
               </div>
             </div>
 
@@ -248,33 +227,38 @@ interface NoteTimelineItem extends BodyPartIssue {
                   <div class="mt-8 space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
                     <div class="flex items-center gap-2 px-2">
                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-purple-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v8l6-6M12 22v-8l-6 6M2 12h8l-6-6M22 12h-8l6 6"/></svg>
-                       <span class="text-[10px] font-bold uppercase tracking-widest text-purple-600">AI Draft Insights</span>
+                       <span class="text-xs font-bold uppercase tracking-widest text-purple-600">AI Draft Insights</span>
                     </div>
 
-                    <div class="space-y-px">
+                    <div class="space-y-px rams-typography">
                       @for (node of aiInsights(); track node.id) {
                         <div class="bg-purple-50/30 border border-purple-100/50 rounded-lg p-4 transition-all hover:bg-purple-50/50 group mb-3">
                            @if (node.type === 'paragraph') {
-                             <div class="text-sm text-gray-700 leading-relaxed prose prose-sm max-w-none" [innerHTML]="node.rawHtml"></div>
+                             <div [innerHTML]="node.rawHtml"></div>
                            } @else if (node.type === 'list') {
-                             <ul class="space-y-2">
+                             <ul>
                                @for (item of node.items; track item.id) {
-                                 <li class="flex gap-2 text-sm text-gray-700">
-                                   <span class="text-purple-300 select-none">•</span>
-                                   <div [innerHTML]="item.html"></div>
-                                 </li>
+                                 <li [innerHTML]="item.html"></li>
                                }
                              </ul>
+                           } @else if (node.type === 'raw') {
+                             <div [innerHTML]="node.rawHtml"></div>
                            }
                            <div class="mt-3 flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                              <button (click)="adoptInsight(node, 'desc')" class="text-[10px] font-medium text-purple-600 hover:text-purple-700 bg-white px-2 py-1 rounded border border-purple-200 shadow-sm flex items-center gap-1">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg>
+                              <understory-button 
+                                variant="secondary" 
+                                size="xs" 
+                                (click)="adoptInsight(node, 'desc')"
+                                icon="M5 12l5 5L20 7">
                                 Adopt as Note
-                              </button>
-                              <button (click)="adoptInsight(node, 'rec')" class="text-[10px] font-medium text-purple-600 hover:text-purple-700 bg-white px-2 py-1 rounded border border-purple-200 shadow-sm flex items-center gap-1">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg>
+                              </understory-button>
+                              <understory-button 
+                                variant="secondary" 
+                                size="xs" 
+                                (click)="adoptInsight(node, 'rec')"
+                                icon="M5 12l5 5L20 7">
                                 Adopt as Recommendation
-                              </button>
+                              </understory-button>
                            </div>
                         </div>
                       }
@@ -285,14 +269,18 @@ interface NoteTimelineItem extends BodyPartIssue {
                 <!-- CONTEXT: History Timeline -->
                 <div class="mt-12 pl-2">
                     <div class="flex justify-between items-center mb-6">
-                        <h3 class="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
+                        <h3 class="text-xs font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg>
                             History & Context
                         </h3>
-                        <button (click)="addNewNote()" [disabled]="!canAddNote()" class="text-[10px] font-bold text-[#416B1F] hover:text-[#558B2F] uppercase tracking-widest transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1">
-                          <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M12 5v14M5 12h14"/></svg>
+                        <understory-button 
+                          variant="ghost" 
+                          size="xs" 
+                          (click)="addNewNote()" 
+                          [disabled]="!canAddNote()"
+                          icon="M12 5v14M5 12h14">
                           New Note
-                        </button>
+                        </understory-button>
                     </div>
                     
                     <div class="relative pl-2">
@@ -318,12 +306,12 @@ interface NoteTimelineItem extends BodyPartIssue {
                                     [class.shadow-sm]="timelineNote.noteId !== state.selectedNoteId()">
                                 
                                 <div class="flex justify-between items-start mb-1">
-                                    <span class="text-[10px] font-bold uppercase tracking-widest"
+                                    <span class="text-xs font-bold uppercase tracking-widest"
                                        [class.text-[#416B1F]]="timelineNote.isCurrent"
                                        [class.text-gray-500]="!timelineNote.isCurrent">
                                         {{ timelineNote.date }}
                                     </span>
-                                    <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-gray-100 text-gray-600">
+                                    <span class="text-xs font-bold px-1.5 py-0.5 rounded bg-gray-100 text-gray-600">
                                         Pain: {{ timelineNote.painLevel }}
                                     </span>
                                 </div>
@@ -458,10 +446,10 @@ export class IntakeFormComponent implements OnDestroy {
     return this.patientManager.patients().find(p => p.id === selectedId)?.history || [];
   });
 
-  private gemini = inject(GeminiService);
+  private intel = inject(ClinicalIntelligenceService);
 
   aiInsights = computed(() => {
-    const report = this.gemini.analysisResults()['Care Plan Overview'];
+    const report = this.intel.analysisResults()['Care Plan Overview'];
     if (!report) return [];
 
     const partName = this.state.selectedPartId() ? this.state.selectedPartName() : '';
@@ -492,6 +480,12 @@ export class IntakeFormComponent implements OnDestroy {
                 id: `ai-item-${Math.random()}`,
                 html: marked.parseInline(it.text)
               }))
+            });
+          } else if (token.type === 'table' || token.type === 'blockquote' || token.type === 'html') {
+            relevantNodes.push({
+              id: `ai-${Math.random()}`,
+              type: 'raw',
+              rawHtml: marked.parse(token.raw)
             });
           }
         }
@@ -563,13 +557,13 @@ export class IntakeFormComponent implements OnDestroy {
       }
 
       // 2. Set description
-      this.localDescription.set(text);
+      this.updateDescManual(text);
     });
   }
 
   openRecDictation() {
     this.dictation.openDictationModal(this.localRecommendation(), (text) => {
-      this.localRecommendation.set(text);
+      this.updateRecManual(text);
     });
   }
 
@@ -719,13 +713,29 @@ export class IntakeFormComponent implements OnDestroy {
   }
 
   updateDesc(event: Event) {
-    const val = (event.target as HTMLTextAreaElement).value;
-    this.localDescription.set(val);
+    const text = (event.target as HTMLTextAreaElement).value;
+    this.updateDescManual(text);
+  }
+
+  updateDescManual(text: string) {
+    this.localDescription.set(text);
+    const currentNote = this.viewedNote();
+    if (currentNote && currentNote.isCurrent) {
+      this.state.updateIssue(currentNote.id, { ...currentNote, description: text });
+    }
   }
 
   updateRec(event: Event) {
-    const val = (event.target as HTMLTextAreaElement).value;
-    this.localRecommendation.set(val);
+    const text = (event.target as HTMLTextAreaElement).value;
+    this.updateRecManual(text);
+  }
+
+  updateRecManual(text: string) {
+    this.localRecommendation.set(text);
+    const currentNote = this.viewedNote();
+    if (currentNote && currentNote.isCurrent) {
+      this.state.updateIssue(currentNote.id, { ...currentNote, recommendation: text });
+    }
   }
 
   addToCarePlan() {

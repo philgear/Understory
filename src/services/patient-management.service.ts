@@ -1,6 +1,6 @@
 import { Injectable, inject, signal, effect, WritableSignal, computed, untracked } from '@angular/core';
 import { PatientStateService, PatientState, BodyPartIssue } from './patient-state.service';
-import { GeminiService, AnalysisLens } from './gemini.service';
+import { ClinicalIntelligenceService, AnalysisLens } from './clinical-intelligence.service';
 
 export interface Bookmark {
   title: string;
@@ -241,7 +241,7 @@ Analysis of Eleanor's biometric trends indicates a direct correlation between su
 })
 export class PatientManagementService {
   private patientState = inject(PatientStateService);
-  private geminiService = inject(GeminiService);
+  private geminiService = inject(ClinicalIntelligenceService);
 
   readonly patients = signal<Patient[]>(MOCK_PATIENTS);
   readonly selectedPatientId: WritableSignal<string | null> = signal(MOCK_PATIENTS[0]?.id || null);
@@ -310,6 +310,12 @@ export class PatientManagementService {
     if (patient) {
       this.patientState.loadState(patient);
       this.geminiService.resetAIState();
+
+      // Reload the latest analysis so the panel isn't empty after exiting review mode
+      const latestAnalysis = patient.history.find(entry => entry.type === 'AnalysisRun' || entry.type === 'FinalizedCarePlan');
+      if (latestAnalysis && (latestAnalysis.type === 'AnalysisRun' || latestAnalysis.type === 'FinalizedCarePlan')) {
+        this.geminiService.loadArchivedAnalysis(latestAnalysis.report);
+      }
     }
   }
 
@@ -335,6 +341,13 @@ export class PatientManagementService {
     // Add to the top of the list for immediate visibility
     this.patients.update(patients => [newPatient, ...patients]);
     this.selectedPatientId.set(newPatientId);
+  }
+
+  /** Imports a pre-built Patient object (from JSON or FHIR import). */
+  importPatient(patient: Patient) {
+    this.saveCurrentPatientState();
+    this.patients.update(patients => [patient, ...patients]);
+    this.selectedPatientId.set(patient.id);
   }
 
   /** Updates the core demographic details of a patient. */
@@ -469,6 +482,17 @@ export class PatientManagementService {
     this.patientState.loadState(visit.state);
     this.geminiService.resetAIState();
     this.patientState.setViewingPastVisit(visit);
+
+    // Load the analysis report associated with this visit's date (if one exists)
+    const patient = this.patients().find(p => p.id === patientId);
+    if (patient) {
+      const associatedAnalysis = patient.history.find(entry =>
+        (entry.type === 'AnalysisRun' || entry.type === 'FinalizedCarePlan') && entry.date === visit.date
+      );
+      if (associatedAnalysis && (associatedAnalysis.type === 'AnalysisRun' || associatedAnalysis.type === 'FinalizedCarePlan')) {
+        this.geminiService.loadArchivedAnalysis(associatedAnalysis.report);
+      }
+    }
 
     // After loading the historical state, select the specific note if requested.
     if (select) {

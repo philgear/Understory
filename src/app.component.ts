@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject, computed, signal, viewChild, ElementRef, afterNextRender, effect, ChangeDetectorRef, untracked } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, computed, signal, viewChild, ElementRef, afterNextRender, effect, ChangeDetectorRef, untracked, OnDestroy, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PatientDropdownComponent } from './components/patient-dropdown.component';
 import { PatientStateService } from './services/patient-state.service';
@@ -11,6 +11,10 @@ import { MedicalChartSummaryComponent } from './components/medical-summary.compo
 import { TaskFlowComponent } from './components/task-flow.component';
 import { IntakeFormComponent } from './components/intake-form.component';
 import { VoiceAssistantComponent } from './components/voice-assistant.component';
+import { AI_CONFIG, AiProviderConfig } from './services/ai-provider.types';
+import { IntelligenceProviderToken } from './services/ai/intelligence.provider.token';
+import { GeminiProvider } from './services/ai/gemini.provider';
+import { ClinicalIntelligenceService } from './services/clinical-intelligence.service';
 
 @Component({
   selector: 'app-root',
@@ -27,6 +31,7 @@ import { VoiceAssistantComponent } from './components/voice-assistant.component'
     IntakeFormComponent,
     VoiceAssistantComponent
   ],
+  providers: [],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     
@@ -54,7 +59,7 @@ import { VoiceAssistantComponent } from './components/voice-assistant.component'
           <button (click)="selectKey()" class="px-10 py-4 bg-[#1C1C1C] text-white text-xs font-bold uppercase tracking-widest hover:bg-black transition-all shadow-xl">
             Select API Key
           </button>
-          <a href="https://ai.google.dev/gemini-api/docs/billing" target="_blank" class="mt-6 text-[10px] text-gray-500 uppercase tracking-widest hover:text-gray-600 transition-colors">
+          <a href="https://ai.google.dev/gemini-api/docs/billing" target="_blank" class="mt-6 text-xs text-gray-500 uppercase tracking-widest hover:text-gray-600 transition-colors">
             Billing Documentation
           </a>
         </div>
@@ -89,30 +94,30 @@ import { VoiceAssistantComponent } from './components/voice-assistant.component'
               <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" style="will-change: transform, opacity;"></span>
               <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
             </div>
-            <span class="text-[9px] font-bold text-gray-600 uppercase tracking-widest">System Ready</span>
+            <span class="text-xs font-bold text-gray-600 uppercase tracking-widest">System Ready</span>
               
               <!-- Tooltip -->
               <div class="absolute top-full left-0 mt-2 w-64 bg-gray-900 border border-gray-800 p-4 rounded-xl shadow-2xl opacity-0 group-hover:opacity-100 transition-opacity z-50 pointer-events-none text-left">
                  <div class="space-y-3">
                     <div class="flex justify-between items-center pb-2 border-b border-gray-800">
-                       <span class="text-[10px] font-bold text-gray-300">CORE STATUS</span>
-                       <span class="text-[10px] font-bold text-green-500 uppercase">Active</span>
+                       <span class="text-xs font-bold text-gray-300">CORE STATUS</span>
+                       <span class="text-xs font-bold text-green-500 uppercase">Active</span>
                     </div>
                     <div class="grid grid-cols-2 gap-4">
                        <div class="space-y-1">
-                          <p class="text-[9px] text-gray-500 font-bold uppercase tracking-tighter">AI Node</p>
+                          <p class="text-xs text-gray-500 font-bold uppercase tracking-tighter">AI Node</p>
                           <p class="text-xs text-white">Stable</p>
                        </div>
                        <div class="space-y-1">
-                          <p class="text-[9px] text-gray-500 font-bold uppercase tracking-tighter">Relay</p>
+                          <p class="text-xs text-gray-500 font-bold uppercase tracking-tighter">Relay</p>
                           <p class="text-xs text-white">84ms</p>
                        </div>
                        <div class="space-y-1">
-                          <p class="text-[9px] text-gray-500 font-bold uppercase tracking-tighter">Sync</p>
+                          <p class="text-xs text-gray-500 font-bold uppercase tracking-tighter">Sync</p>
                           <p class="text-xs text-white">Verified</p>
                        </div>
                        <div class="space-y-1">
-                          <p class="text-[9px] text-gray-500 font-bold uppercase tracking-tighter">Datastore</p>
+                          <p class="text-xs text-gray-500 font-bold uppercase tracking-tighter">Datastore</p>
                           <p class="text-xs text-white">Healthy</p>
                        </div>
                     </div>
@@ -217,7 +222,7 @@ import { VoiceAssistantComponent } from './components/voice-assistant.component'
                  <!-- Section 1: Medical Summary -->
                  <div class="shrink-0 overflow-hidden flex flex-col bg-white rounded-xl shadow-sm border border-gray-200 transition-all duration-300 hover:shadow-md"
                       [style.height.px]="topSectionHeight()">
-                     <div class="flex-1 w-full h-full overflow-hidden min-h-[50vh] md:min-h-0 min-w-0">
+                     <div class="flex-1 w-full h-full overflow-y-auto min-h-[50vh] md:min-h-0 min-w-0">
                          @defer {
                            <app-medical-summary class="block h-full overflow-y-auto"></app-medical-summary>
                          } @placeholder {
@@ -265,7 +270,7 @@ import { VoiceAssistantComponent } from './components/voice-assistant.component'
             </div>
 
             <!-- Column 4 (Voice Assistant) -->
-            <div class="flex flex-col bg-white rounded-xl shadow-sm border border-gray-200 transition-all duration-300 hover:shadow-md shrink-0 h-full min-w-[300px]"
+            <div class="flex flex-col bg-white rounded-xl shadow-sm border border-gray-200 transition-all duration-300 hover:shadow-md shrink-0 max-h-[600px] self-start min-w-[300px]"
                  [style.width.px]="voiceColWidth()"
                  [class.hidden]="!state.isLiveAgentActive()">
                  @defer (when state.isLiveAgentActive()) {
@@ -285,8 +290,9 @@ import { VoiceAssistantComponent } from './components/voice-assistant.component'
     :host { display: block; height: 100%; }
   `]
 })
-export class AppComponent {
+export class AppComponent implements OnDestroy {
   state = inject(PatientStateService);
+  private ngZone = inject(NgZone);
   today = new Date();
   hasApiKey = signal<boolean>(true);
   isChartCollapsed = signal<boolean>(false);
@@ -331,6 +337,14 @@ export class AppComponent {
   private initialAnalysisRowDragY = 0;
   private initialAnalysisHeight = 0;
 
+  // Proportional height tracking for responsive resize
+  private topHeightRatio = 0.4;
+  private analysisHeightRatio = 0.3;
+  private lastContainerHeight = 0;
+  private lastContainerWidth = 0;
+  private boundOnWindowResize: (() => void) | null = null;
+  private resizeDebounceTimer: any = null;
+
   isViewingVisitDetails = computed(() => {
     const pastVisit = this.state.viewingPastVisit();
     // Show details view only when a visit is being reviewed AND no specific part has been selected yet.
@@ -366,13 +380,17 @@ export class AppComponent {
       const containerWidth = containerEl.offsetWidth;
       const containerHeight = containerEl.offsetHeight;
       this.inputPanelWidth.set(containerWidth * 0.5);
-      this.topSectionHeight.set(containerHeight * 0.4);
+      this.topSectionHeight.set(containerHeight * this.topHeightRatio);
       this.summaryColWidth.set(300);
       this.analysisColWidth.set(containerWidth * 0.4);
-      this.analysisSectionHeight.set(containerHeight * 0.3);
+      this.analysisSectionHeight.set(containerHeight * this.analysisHeightRatio);
       this.voiceColWidth.set(350);
 
-      // this.checkApiKey();
+      // Set up window resize listener for responsive layout
+      this.lastContainerHeight = containerHeight;
+      this.lastContainerWidth = containerWidth;
+      this.boundOnWindowResize = this.onWindowResize.bind(this);
+      window.addEventListener('resize', this.boundOnWindowResize);
     });
 
     // Auto-expand analysis when a part is selected or clicked
@@ -386,6 +404,37 @@ export class AppComponent {
         });
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this.boundOnWindowResize) {
+      window.removeEventListener('resize', this.boundOnWindowResize);
+    }
+    if (this.resizeDebounceTimer) {
+      clearTimeout(this.resizeDebounceTimer);
+    }
+  }
+
+  private onWindowResize(): void {
+    if (this.resizeDebounceTimer) {
+      clearTimeout(this.resizeDebounceTimer);
+    }
+    this.resizeDebounceTimer = setTimeout(() => {
+      if (this.isDragging()) return;
+      const containerEl = this.mainContainer()?.nativeElement;
+      if (!containerEl) return;
+
+      const newHeight = containerEl.offsetHeight;
+      const newWidth = containerEl.offsetWidth;
+
+      // Only react if the container size actually changed significantly
+      if (Math.abs(newHeight - this.lastContainerHeight) > 10 || Math.abs(newWidth - this.lastContainerWidth) > 10) {
+        this.lastContainerHeight = newHeight;
+        this.lastContainerWidth = newWidth;
+        this.topSectionHeight.set(newHeight * this.topHeightRatio);
+        this.analysisSectionHeight.set(newHeight * this.analysisHeightRatio);
+      }
+    }, 150);
   }
 
   async checkApiKey() {
@@ -490,6 +539,9 @@ export class AppComponent {
 
     const computedNewHeight = Math.max(minTopHeight, Math.min(newHeight, maxTopHeight));
     this.topSectionHeight.set(computedNewHeight);
+    // Update ratio for responsive resize
+    const ch = this.mainContainer()?.nativeElement.offsetHeight ?? window.innerHeight;
+    this.topHeightRatio = computedNewHeight / ch;
   }
 
   private stopTopRowDrag(): void {
@@ -610,6 +662,9 @@ export class AppComponent {
 
     const computedNewHeight = Math.max(minTopHeight, Math.min(newHeight, maxTopHeight));
     this.analysisSectionHeight.set(computedNewHeight);
+    // Update ratio for responsive resize
+    const totalHeight = this.mainContainer()?.nativeElement.offsetHeight ?? window.innerHeight;
+    this.analysisHeightRatio = computedNewHeight / totalHeight;
   }
 
   private stopAnalysisRowDrag(): void {

@@ -14,7 +14,7 @@ import { Body3DViewerComponent } from './body-3d-viewer.component';
       
       <!-- Tooltip -->
       @if (tooltipVisible()) {
-        <div class="absolute bg-[#1C1C1C] text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-sm pointer-events-none shadow-lg z-50"
+        <div class="absolute bg-[#1C1C1C] text-white text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-sm pointer-events-none shadow-lg z-50"
              [style.left.px]="tooltipX()"
              [style.top.px]="tooltipY()"
              [style.transform]="'translate(-50%, 0)'">

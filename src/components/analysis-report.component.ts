@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy, inject, computed, ViewEncapsulation, signal, OnDestroy, effect, viewChild, ElementRef, untracked, afterNextRender, Renderer2, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { GeminiService, TranscriptEntry, AnalysisLens } from '../services/gemini.service';
+import { ClinicalIntelligenceService, TranscriptEntry, AnalysisLens } from '../services/clinical-intelligence.service';
 import { PatientStateService } from '../services/patient-state.service';
 import { PatientManagementService, HistoryEntry } from '../services/patient-management.service';
 import { marked } from 'marked';
@@ -8,45 +8,20 @@ import { DictationService } from '../services/dictation.service';
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 
 declare var webkitSpeechRecognition: any;
-type AgentState = 'idle' | 'listening' | 'processing' | 'speaking';
-
-export interface CarePlanNodeItem {
-  id: string;
-  html: string;
-  bracketState: 'normal' | 'added' | 'removed';
-  note: string;
-  showNote: boolean;
-  isDictating?: boolean;
-  key: string;
-}
-
-export interface CarePlanNode {
-  id: string;
-  type: 'raw' | 'paragraph' | 'list';
-  rawHtml?: string;
-  ordered?: boolean;
-  items?: CarePlanNodeItem[];
-  bracketState: 'normal' | 'added' | 'removed';
-  note: string;
-  showNote: boolean;
-  isDictating?: boolean;
-  key: string;
-}
-
-interface ReportSection {
-  raw: string;
-  heading: string;
-  nodes: CarePlanNode[];
-}
-
-interface ParsedTranscriptEntry extends TranscriptEntry {
-  htmlContent?: string;
-}
+import { CarePlanNode, CarePlanNodeItem, ReportSection, ParsedTranscriptEntry, NodeAnnotation, LensAnnotations, VerificationIssue } from './analysis-report.types';
+import { CarePlanNodeComponent } from './care-plan-node.component';
+import { UnderstoryCardComponent } from './shared/understory-card.component';
+import { UnderstoryBadgeComponent } from './shared/understory-badge.component';
+import { ClinicalGaugeComponent } from './clinical-gauge.component';
+import { ClinicalIcons } from '../assets/clinical-icons';
+import { ClinicalTrendComponent } from './clinical-trend.component';
+import { AiCacheService } from '../services/ai-cache.service';
+import { UnderstoryButtonComponent } from './shared/understory-button.component';
 
 @Component({
   selector: 'app-analysis-report',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, CarePlanNodeComponent, UnderstoryCardComponent, UnderstoryBadgeComponent, ClinicalGaugeComponent, ClinicalTrendComponent, UnderstoryButtonComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   host: {
@@ -131,6 +106,21 @@ interface ParsedTranscriptEntry extends TranscriptEntry {
       background-color: #F3F4F6; /* gray-100 */
     }
 
+    .verification-claim {
+      transition: all 0.2s ease-in-out;
+      border-radius: 2px;
+    }
+    
+    .verification-claim:hover {
+      filter: brightness(0.95);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+
+    .bg-amber-100 { background-color: #fef3c7; }
+    .border-amber-200 { border-color: #fde68a; }
+    .bg-red-100 { background-color: #fee2e2; }
+    .border-red-200 { border-color: #fecaca; }
+
     .rams-typography strong {
       font-weight: 800;
       color: #000000;
@@ -203,6 +193,17 @@ interface ParsedTranscriptEntry extends TranscriptEntry {
       border-bottom: none;
     }
 
+    .rams-typography tr:nth-child(even) td {
+      background-color: #FAFBFC;
+    }
+
+    .rams-typography hr {
+      border: none;
+      height: 1px;
+      background: linear-gradient(to right, transparent, #D1D5DB, transparent);
+      margin: 2rem 0;
+    }
+
     /* Task Bracketing Styles */
     .rams-typography .bracket-removed {
       opacity: 0.4 !important;
@@ -236,25 +237,33 @@ interface ParsedTranscriptEntry extends TranscriptEntry {
     <div class="p-8 pb-4 flex justify-between items-end bg-white shrink-0 z-10 border-b border-[#EEEEEE] no-print">
       <div class="flex-1"></div>
       
-      @if (!gemini.isLoading()) {
+      @if (!intel.isLoading()) {
          <div class="flex items-center gap-2">
            @if (state.isLiveAgentActive()) {
-              <button (click)="endLiveConsult()" class="group flex items-center gap-2 px-4 py-2 border border-red-300 text-red-700 text-xs font-bold uppercase tracking-widest hover:bg-red-50 disabled:opacity-20 transition-colors">
-                 <span>Close Assistant</span>
-              </button>
+              <understory-button variant="danger" size="sm" (click)="endLiveConsult()">
+                 Close Assistant
+              </understory-button>
             } @else {
-               <button (click)="openVoicePanel()" [disabled]="!state.hasIssues() || !hasAnyReport()"
-                class="group flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-700 text-xs font-bold uppercase tracking-widest hover:bg-[#EEEEEE] hover:border-gray-400 disabled:opacity-20 disabled:hover:bg-transparent transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14q-1.25 0-2.125-.875T9 11V5q0-1.25.875-2.125T12 2q1.25 0 2.125.875T15 5v6q0 1.25-.875 2.125T12 14m-1 7v-3.075q-2.6-.35-4.3-2.325T5 11h2q0 2.075 1.463 3.537T12 16q2.075 0 3.538-1.463T17 11h2q0 2.225-1.7 4.2T13 17.925V21z"/></svg>
-                <span>Voice Assistant</span>
-              </button>
+               <understory-button [disabled]="!state.hasIssues() || !hasAnyReport()" 
+                                 (click)="openVoicePanel()" 
+                                 variant="secondary"
+                                 size="sm"
+                                 icon="M12 14q-1.25 0-2.125-.875T9 11V5q0-1.25.875-2.125T12 2q1.25 0 2.125.875T15 5v6q0 1.25-.875 2.125T12 14m-1 7v-3.075q-2.6-.35-4.3-2.325T5 11h2q0 2.075 1.463 3.537T12 16q2.075 0 3.538-1.463T17 11h2q0 2.225-1.7 4.2T13 17.925V21z">
+                Voice Assistant
+              </understory-button>
             }
-            <button (click)="generate()" [disabled]="!state.hasIssues()"
-            class="group flex items-center gap-2 px-4 py-2 bg-[#1C1C1C] text-white text-xs font-bold uppercase tracking-widest hover:bg-[#558B2F] disabled:opacity-20 disabled:hover:bg-[#1C1C1C] transition-colors">
-            @if (hasAnyReport()) { <span>Refresh Recommendations</span> } @else { <span>Generate Care Plan</span> }
-            <svg class="w-3 h-3 text-gray-500 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="square" stroke-linejoin="miter" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
-          </button>
-          
+            <understory-button (click)="intel.clearCache()" 
+                              variant="ghost"
+                              size="sm"
+                              ariaLabel="Clear AI Cache"
+                              [icon]="ClinicalIcons.Clear">
+            </understory-button>
+            <understory-button (click)="generate()" [disabled]="!state.hasIssues()"
+                              variant="primary"
+                              size="sm"
+                              [icon]="hasAnyReport() ? 'M17.65 6.35A7.95 7.95 0 0 0 12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.66-.67 3.17-1.76 4.24l1.42 1.42A9.92 9.92 0 0 0 22 12c0-2.76-1.12-5.26-2.35-7.65z' : 'M14 5l7 7m0 0l-7 7m7-7H3'">
+              {{ hasAnyReport() ? 'Refresh Recommendations' : 'Generate Care Plan' }}
+            </understory-button>
         </div>
       }
     </div>
@@ -263,42 +272,42 @@ interface ParsedTranscriptEntry extends TranscriptEntry {
     @if (hasAnyReport()) {
       <div class="px-8 py-3 border-b border-[#EEEEEE] no-print bg-white/50 backdrop-blur-sm">
         <div class="flex items-center gap-1 border-b border-gray-200">
-            <button (click)="changeLens('Care Plan Overview')"
-                    class="px-4 py-2 text-xs font-medium border-b-2 -mb-px transition-colors"
+            <understory-button (click)="changeLens('Care Plan Overview')"
+                    variant="ghost"
+                    size="sm"
+                    [class.border-b-2]="activeLens() === 'Care Plan Overview'"
                     [class.border-[#1C1C1C]]="activeLens() === 'Care Plan Overview'"
                     [class.text-[#1C1C1C]]="activeLens() === 'Care Plan Overview'"
-                    [class.text-gray-500]="activeLens() !== 'Care Plan Overview'"
-                    [class.border-transparent]="activeLens() !== 'Care Plan Overview'"
-                    [class.hover:bg-gray-100]="activeLens() !== 'Care Plan Overview'">
+                    class="rounded-none px-4 -mb-px shadow-none">
               Overview
-            </button>
-            <button (click)="changeLens('Functional Protocols')"
-                    class="px-4 py-2 text-xs font-medium border-b-2 -mb-px transition-colors"
+            </understory-button>
+            <understory-button (click)="changeLens('Functional Protocols')"
+                    variant="ghost"
+                    size="sm"
+                    [class.border-b-2]="activeLens() === 'Functional Protocols'"
                     [class.border-[#1C1C1C]]="activeLens() === 'Functional Protocols'"
                     [class.text-[#1C1C1C]]="activeLens() === 'Functional Protocols'"
-                    [class.text-gray-500]="activeLens() !== 'Functional Protocols'"
-                    [class.border-transparent]="activeLens() !== 'Functional Protocols'"
-                    [class.hover:bg-gray-100]="activeLens() !== 'Functional Protocols'">
+                    class="rounded-none px-4 -mb-px shadow-none">
               Interventions
-            </button>
-            <button (click)="changeLens('Monitoring & Follow-up')"
-                    class="px-4 py-2 text-xs font-medium border-b-2 -mb-px transition-colors"
+            </understory-button>
+            <understory-button (click)="changeLens('Monitoring & Follow-up')"
+                    variant="ghost"
+                    size="sm"
+                    [class.border-b-2]="activeLens() === 'Monitoring & Follow-up'"
                     [class.border-[#1C1C1C]]="activeLens() === 'Monitoring & Follow-up'"
                     [class.text-[#1C1C1C]]="activeLens() === 'Monitoring & Follow-up'"
-                    [class.text-gray-500]="activeLens() !== 'Monitoring & Follow-up'"
-                    [class.border-transparent]="activeLens() !== 'Monitoring & Follow-up'"
-                    [class.hover:bg-gray-100]="activeLens() !== 'Monitoring & Follow-up'">
+                    class="rounded-none px-4 -mb-px shadow-none">
               Monitoring
-            </button>
-            <button (click)="changeLens('Patient Education')"
-                    class="px-4 py-2 text-xs font-medium border-b-2 -mb-px transition-colors"
+            </understory-button>
+            <understory-button (click)="changeLens('Patient Education')"
+                    variant="ghost"
+                    size="sm"
+                    [class.border-b-2]="activeLens() === 'Patient Education'"
                     [class.border-[#1C1C1C]]="activeLens() === 'Patient Education'"
                     [class.text-[#1C1C1C]]="activeLens() === 'Patient Education'"
-                    [class.text-gray-500]="activeLens() !== 'Patient Education'"
-                    [class.border-transparent]="activeLens() !== 'Patient Education'"
-                    [class.hover:bg-gray-100]="activeLens() !== 'Patient Education'">
+                    class="rounded-none px-4 -mb-px shadow-none">
               Education
-            </button>
+            </understory-button>
         </div>
       </div>
     }
@@ -306,14 +315,60 @@ interface ParsedTranscriptEntry extends TranscriptEntry {
     <!-- Content Area -->
     <div #contentArea class="flex-1 overflow-y-auto p-8 min-h-0 relative bg-[#F9FAFB]">
          <!-- Analysis Engine Body -->
-         <div class="p-6 min-h-full">
-              @if (gemini.isLoading()) {
-                <div class="h-64 flex flex-col items-center justify-center opacity-50 no-print">
-                  <div class="w-8 h-8 border-2 border-[#EEEEEE] border-t-[#1C1C1C] rounded-full animate-spin mb-4"></div>
-                  <p class="text-[10px] font-bold uppercase tracking-widest text-[#1C1C1C]">Processing Comprehensive Analysis</p>
+         <div class="max-w-4xl mx-auto p-6 min-h-full">
+              <!-- Clinical Overview Dashboard -->
+              @if (intel.analysisMetrics(); as metrics) {
+                <div class="mb-10 grid grid-cols-1 md:grid-cols-3 gap-6 no-print">
+                  <div class="col-span-full mb-2">
+                    <h2 class="text-xs font-bold text-[#1C1C1C] uppercase tracking-widest border-b border-gray-100 pb-2">Clinical Overview Dashboard</h2>
+                  </div>
+                  
+                  <app-clinical-gauge 
+                    label="Complexity" 
+                    [value]="metrics.complexity" 
+                    type="complexity"
+                    description="Measures comorbid depth and case difficulty.">
+                  </app-clinical-gauge>
+
+                  <app-clinical-gauge 
+                    label="Stability" 
+                    [value]="metrics.stability" 
+                    type="stability"
+                    description="Patient physiological and functional compensatory status.">
+                  </app-clinical-gauge>
+
+                  <app-clinical-gauge 
+                    label="Certainty" 
+                    [value]="metrics.certainty" 
+                    type="certainty"
+                    description="AI confidence based on available data density.">
+                  </app-clinical-gauge>
+
+                  <!-- Trend Sparklines -->
+                  @if (historicalMetrics().length > 1) {
+                    <div class="col-span-full mt-4 p-6 bg-gray-50/50 rounded-2xl border border-gray-100 grid grid-cols-1 md:grid-cols-3 gap-8">
+                       <app-clinical-trend label="Complexity Trend" [values]="getHistoryValues('complexity')" type="complexity"></app-clinical-trend>
+                       <app-clinical-trend label="Stability Trend" [values]="getHistoryValues('stability')" type="stability"></app-clinical-trend>
+                       <app-clinical-trend label="Certainty Trend" [values]="getHistoryValues('certainty')" type="certainty"></app-clinical-trend>
+                    </div>
+                  }
                 </div>
               }
-              @if (gemini.error() && !hasAnyReport(); as error) {
+
+              @if (intel.isLoading() && !hasAnyReport()) {
+                <div class="h-64 flex flex-col items-center justify-center opacity-50 no-print">
+                  <div class="w-8 h-8 border-2 border-[#EEEEEE] border-t-[#1C1C1C] rounded-full animate-spin mb-4"></div>
+                  <div class="flex items-center gap-2">
+                    <span class="text-xs uppercase tracking-widest text-[#689F38] font-bold">{{ activeLens() }}</span>
+                    @if (intel.isLoading() && isTextEmpty(activeReport())) {
+                      <span class="flex h-1.5 w-1.5 rounded-full bg-[#689F38] animate-pulse"></span>
+                      <span class="text-[8px] uppercase tracking-tighter text-gray-400">Generating...</span>
+                    }
+                  </div>
+                  <p class="text-xs font-bold uppercase tracking-widest text-[#1C1C1C]">Processing Comprehensive Analysis</p>
+                </div>
+              }
+              @if (intel.error() && !hasAnyReport(); as error) {
                 <div class="p-4 border border-red-200 bg-red-50 text-red-900 text-xs rounded-lg mb-4">
                   <strong class="block uppercase tracking-wider mb-1">System Error</strong>
                   {{ error }}
@@ -322,188 +377,71 @@ interface ParsedTranscriptEntry extends TranscriptEntry {
               
               <!-- AI Report Section -->
               @if (reportSections(); as sections) {
-                <div class="rams-typography">
+                <div class="space-y-6">
                     @for(section of sections; track $index) {
-                      <div class="relative group/section">
-                          <div [innerHTML]="section.heading"></div>
-                           @if (state.isLiveAgentActive()) {
-                              <button (click)="insertSectionIntoChat(section.raw)"
-                                      class="absolute -left-8 top-8 opacity-0 group-hover/section:opacity-100 transition-opacity text-gray-300 hover:text-[#416B1F]"
-                                      title="Insert section into chat">
-                                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M10 9h4V6h3l-5-5-5 5h3zm-1 1H6V7l-5 5 5 5v-3h3zm11 3-5 5v-3h-4v3l-5-5 5-5v3h4z"/></svg>
-                              </button>
+                      <understory-card [title]="section.title" [icon]="section.icon">
+                        <div right-action class="flex items-center gap-2">
+                          @if (intel.isLoading() && !verificationStatus(section.title)) {
+                            <div class="flex items-center gap-1.5 mr-2">
+                              <span class="flex h-1.5 w-1.5 rounded-full bg-[#689F38] animate-pulse"></span>
+                              <span class="text-[8px] uppercase tracking-tighter text-gray-400">Streaming Section...</span>
+                            </div>
                           }
-                          
-                          @for(node of section.nodes; track node.id) {
-                            @if (node.type === 'raw') {
-                              <div [innerHTML]="node.rawHtml" class="mb-4"></div>
-                            } @else if (node.type === 'paragraph') {
-                              <div class="relative group/node mb-4">
-                                <p [innerHTML]="node.rawHtml" 
-                                   [class.bracket-removed]="node.bracketState === 'removed'"
-                                   [class.bracket-added]="node.bracketState === 'added'"
-                                    (dblclick)="handleNodeDoubleClick(node)"></p>
-                                
-                                <div class="absolute -left-10 top-0 opacity-0 group-hover/node:opacity-100 transition-opacity flex flex-col gap-1 z-10 no-print">
-                                   <button (click)="toggleNodeBracket(node)" class="w-7 h-7 bg-white rounded-md shadow-sm border border-gray-200 flex items-center justify-center text-gray-500 hover:text-[#416B1F] hover:bg-gray-50 transition-colors" title="Finalize Action">
-                                      <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                                   </button>
-                                   <button (click)="node.showNote = true" class="w-7 h-7 bg-white rounded-md shadow-sm border border-gray-200 flex items-center justify-center text-gray-500 hover:text-[#1C1C1C] hover:bg-gray-50 transition-colors" title="Add Note">
-                                      <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                                   </button>
-                                   <button (click)="pasteToNode(node)" class="w-7 h-7 bg-white rounded-md shadow-sm border border-gray-200 flex items-center justify-center text-gray-500 hover:text-[#1C1C1C] hover:bg-gray-50 transition-colors" title="Paste Note">
-                                      <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
-                                   </button>
-                                </div>
-
-                                @if (node.showNote || node.note) {
-                                  <div class="mt-2 relative no-print">
-                                    <textarea 
-                                      id="note-{{node.key}}"
-                                      name="note-{{node.key}}"
-                                      aria-label="Add observation note"
-                                      [value]="node.note" 
-                                      (input)="updateNodeNote(node, $event)" 
-                                      rows="3" 
-                                      class="w-full bg-[#F9FAFB] border border-gray-200 rounded-lg p-3 text-sm text-[#1C1C1C] focus:bg-white focus:border-[#689F38] focus:ring-1 focus:ring-[#689F38] transition-all placeholder-gray-400 resize-none font-sans" 
-                                      placeholder="Add your integrative observation here..."></textarea>
-                                    
-                                    <!-- Clinical Suggestions -->
-                                    <div class="flex flex-wrap gap-1.5 mt-2 mb-8">
-                                      @for (sugg of protocolInsights; track sugg) {
-                                        <button (click)="insertSuggestion(node, sugg)" class="px-2 py-1 bg-white border border-gray-100 rounded text-[9px] font-bold text-gray-500 uppercase tracking-tighter hover:border-[#689F38] hover:text-[#416B1F] transition-all">
-                                          + {{ sugg }}
-                                        </button>
-                                      }
-                                    </div>
-
-                                        <div class="absolute bottom-2 left-3 flex items-center gap-1.5 no-print">
-                                          @if (nodeSaveStatuses()[node.key]; as status) {
-                                            <span class="text-[9px] font-bold uppercase tracking-widest transition-opacity duration-300"
-                                                  [class.text-gray-500]="status === 'saving'"
-                                                  [class.text-[#416B1F]]="status === 'saved'">
-                                              {{ status === 'saving' ? 'Saving...' : 'Saved ✔' }}
-                                            </span>
-                                          }
-                                        </div>
-
-                                        <div class="absolute bottom-2 right-2 flex items-center gap-1.5">
-                                          <button (click)="copyNote(node.note)" [disabled]="!node.note" class="w-6 h-6 rounded-md flex items-center justify-center bg-white border border-gray-200 text-gray-500 hover:text-[#1C1C1C] transition-colors disabled:opacity-50" title="Copy">
-                                             <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                                          </button>
-                                          <button (click)="pasteToNode(node)" class="w-6 h-6 rounded-md flex items-center justify-center bg-white border border-gray-200 text-gray-500 hover:text-[#1C1C1C] transition-colors disabled:opacity-50" title="Paste">
-                                             <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
-                                          </button>
-                                          <button (click)="openNodeDictation(node)" [disabled]="!!dictation.permissionError()"
-                                                  class="w-6 h-6 rounded-md flex items-center justify-center border transition-all shadow-sm"
-                                                  [class.bg-red-50]="node.isDictating" [class.border-red-200]="node.isDictating" [class.text-red-600]="node.isDictating" [class.animate-pulse]="node.isDictating"
-                                                  [class.bg-white]="!node.isDictating" [class.border-gray-200]="!node.isDictating" [class.text-gray-500]="!node.isDictating" [class.hover:bg-gray-50]="!node.isDictating"
-                                                  title="Dictate Note">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
-                                          </button>
-                                        </div>
-                                      </div>
-                                    }
-                              </div>
-                            } @else if (node.type === 'list') {
-                              <ul [class.list-decimal]="node.ordered" [class.list-disc]="!node.ordered" class="pl-4 mb-6">
-                                @for(item of node.items; track item.id) {
-                                  <li class="relative group/item mb-2"
-                                      [class.bracket-removed]="item.bracketState === 'removed'"
-                                      [class.bracket-added]="item.bracketState === 'added'"
-                                      (dblclick)="handleNodeDoubleClick(item)">
-                                    <span [innerHTML]="item.html" class="block"></span>
-
-                                    <div class="absolute -left-10 top-0 opacity-0 group-hover/item:opacity-100 transition-opacity flex flex-col gap-1 z-10 no-print">
-                                       <button (click)="toggleNodeBracket(item)" class="w-7 h-7 bg-white rounded-md shadow-sm border border-gray-200 flex items-center justify-center text-gray-500 hover:text-[#416B1F] hover:bg-gray-50 transition-colors" title="Finalize Action">
-                                          <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                                       </button>
-                                       <button (click)="item.showNote = true" class="w-7 h-7 bg-white rounded-md shadow-sm border border-gray-200 flex items-center justify-center text-gray-500 hover:text-[#1C1C1C] hover:bg-gray-50 transition-colors" title="Add Note">
-                                          <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                                       </button>
-                                       <button (click)="pasteToNode(item)" class="w-7 h-7 bg-white rounded-md shadow-sm border border-gray-200 flex items-center justify-center text-gray-500 hover:text-[#1C1C1C] hover:bg-gray-50 transition-colors" title="Paste Note">
-                                          <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
-                                       </button>
-                                    </div>
-
-                                    @if (item.showNote || item.note) {
-                                      <div class="mt-2 mb-4 relative ml-2 no-print">
-                                        <textarea 
-                                          id="intervention-note-{{item.key}}"
-                                          name="intervention-note-{{item.key}}"
-                                          aria-label="Add intervention clinical note"
-                                          [value]="item.note" 
-                                          (input)="updateNodeNote(item, $event)" 
-                                          rows="2" 
-                                          class="w-full bg-[#F9FAFB] border border-gray-200 rounded-lg p-3 text-sm text-[#1C1C1C] focus:bg-white focus:border-[#689F38] focus:ring-1 focus:ring-[#689F38] transition-all placeholder-gray-400 resize-none font-sans" 
-                                          placeholder="Clinical note regarding this intervention..."></textarea>
-                                        
-                                        <!-- Clinical Suggestions -->
-                                        <div class="flex flex-wrap gap-1.5 mt-2 mb-8">
-                                          @for (sugg of protocolInsights; track sugg) {
-                                            <button (click)="insertSuggestion(item, sugg)" class="px-2 py-1 bg-white border border-gray-100 rounded text-[9px] font-bold text-gray-500 uppercase tracking-tighter hover:border-[#689F38] hover:text-[#416B1F] transition-all">
-                                              + {{ sugg }}
-                                            </button>
-                                          }
-                                        </div>
-
-                                        <div class="absolute bottom-2 left-3 flex items-center gap-1.5 no-print">
-                                          @if (nodeSaveStatuses()[item.key]; as status) {
-                                            <span class="text-[9px] font-bold uppercase tracking-widest transition-opacity duration-300"
-                                                  [class.text-gray-500]="status === 'saving'"
-                                                  [class.text-[#416B1F]]="status === 'saved'">
-                                              {{ status === 'saving' ? 'Saving...' : 'Saved ✔' }}
-                                            </span>
-                                          }
-                                        </div>
-
-                                        <div class="absolute bottom-2 right-2 flex items-center gap-1.5">
-                                          <button (click)="copyNote(item.note)" [disabled]="!item.note" class="w-6 h-6 rounded-md flex items-center justify-center bg-white border border-gray-200 text-gray-500 hover:text-[#1C1C1C] transition-colors disabled:opacity-50" title="Copy">
-                                             <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                                          </button>
-                                          <button (click)="pasteToNode(item)" class="w-6 h-6 rounded-md flex items-center justify-center bg-white border border-gray-200 text-gray-500 hover:text-[#1C1C1C] transition-colors disabled:opacity-50" title="Paste">
-                                             <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
-                                          </button>
-                                          <button (click)="openNodeDictation(item)" [disabled]="!!dictation.permissionError()"
-                                                  class="w-6 h-6 rounded-md flex items-center justify-center border transition-all shadow-sm"
-                                                  [class.bg-red-50]="item.isDictating" [class.border-red-200]="item.isDictating" [class.text-red-600]="item.isDictating" [class.animate-pulse]="item.isDictating"
-                                                  [class.bg-white]="!item.isDictating" [class.border-gray-200]="!item.isDictating" [class.text-gray-500]="!item.isDictating" [class.hover:bg-gray-50]="!item.isDictating"
-                                                  title="Dictate Note">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
-                                          </button>
-                                        </div>
-                                      </div>
-                                    }
-                                  </li>
-                                }
-                              </ul>
+                          @if (verificationStatus(section.title); as status) {
+                            <understory-badge [label]="status" [severity]="statusSeverity(status)">
+                              <div badge-icon [innerHTML]="ClinicalIcons.Verified"></div>
+                            </understory-badge>
+                          }
+                        </div>
+                        
+                        <div class="rams-typography">
+                            @for(node of section.nodes; track node.id) {
+                              @if (node.type === 'raw') {
+                                <div [innerHTML]="node.rawHtml" class="mb-4"></div>
+                              } @else if (node.type === 'paragraph') {
+                                <app-care-plan-node 
+                                  [node]="node" 
+                                  type="paragraph"
+                                  [saveStatus]="nodeSaveStatuses()[node.key]"
+                                  [protocolInsights]="protocolInsights"
+                                  (update)="handleNodeUpdate(node, $event)"
+                                  (dictationToggle)="openNodeDictation(node)">
+                                </app-care-plan-node>
+                              } @else if (node.type === 'list') {
+                                <ul [class.list-decimal]="node.ordered" [class.list-disc]="!node.ordered" class="pl-4 mb-6">
+                                  @for(item of node.items; track item.id) {
+                                    <app-care-plan-node 
+                                      [node]="item" 
+                                      type="list-item"
+                                      [saveStatus]="nodeSaveStatuses()[item.key]"
+                                      [protocolInsights]="protocolInsights"
+                                      (update)="handleNodeUpdate(item, $event)"
+                                      (dictationToggle)="openNodeDictation(item)">
+                                    </app-care-plan-node>
+                                  }
+                                </ul>
+                              }
                             }
-                          }
-                      </div>
+                        </div>
+                      </understory-card>
                     }
                 </div>
-                <div class="mt-12 pt-8 flex items-end justify-between border-t border-[#EEEEEE] no-print">
-                  <div>
-                    <div class="flex items-center gap-3">
-                        <h2 class="text-sm font-bold text-[#1C1C1C] uppercase tracking-widest">
-                            Care Plan Recommendation Engine
-                        </h2>
-                        @if (hasAnyReport()) {
-                            <div class="flex items-center gap-1.5 px-2 py-0.5 bg-white rounded border border-gray-200 shadow-sm no-print">
-                                <div class="w-1.5 h-1.5 rounded-full bg-green-500"></div>
-                                <span class="text-[9px] font-bold text-gray-600 uppercase tracking-widest">Last Refresh: {{ lastRefreshDate() | date:'shortTime' }}</span>
-                            </div>
-                        }
-                    </div>
-                    <p class="text-xs text-gray-500 mt-1">
-                        AI-Guided Strategy & Voice Assistant
-                    </p>
+                <!-- Redesigned Minimalist Footer (Dieter Rams inspired) -->
+                <div class="mt-20 pt-12 border-t border-black/10 grid grid-cols-1 md:grid-cols-3 gap-12 font-['Inter'] no-print mb-8">
+                  <div class="space-y-1">
+                    <div class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#000000]">System Identification</div>
+                    <div class="text-[10px] font-medium text-black/60 uppercase tracking-widest">Understory Analysis Engine v2.4.0</div>
                   </div>
-                  <div class="text-[10px] text-gray-400 uppercase tracking-widest">
-                    AI Generated Content. Physician Review Required.
+                  <div class="space-y-1">
+                    <div class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#000000]">Analysis Metadata</div>
+                    <div class="text-[10px] font-medium text-black/60 uppercase tracking-widest">Generated: {{ lastRefreshDate() | date:'yyyy.MM.dd HH:mm:ss' }}</div>
+                  </div>
+                  <div class="space-y-1 md:text-right">
+                    <div class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#000000]">Regulatory Status</div>
+                    <div class="text-[10px] font-medium text-black/60 uppercase tracking-widest">AI Generated Evidence. Physician Oversight Mandated.</div>
                   </div>
                 </div>
-              } @else if (!gemini.isLoading() && !hasAnyReport()) {
+              } @else if (!intel.isLoading() && !hasAnyReport()) {
                 <div class="h-64 border border-dashed border-gray-200 rounded-lg flex items-center justify-center no-print">
                   <p class="text-xs text-gray-500 font-medium uppercase tracking-widest">Waiting for input data...</p>
                 </div>
@@ -515,10 +453,31 @@ interface ParsedTranscriptEntry extends TranscriptEntry {
   `
 })
 export class AnalysisReportComponent implements OnDestroy, AfterViewInit {
-  gemini = inject(GeminiService);
-  state = inject(PatientStateService);
-  patientManager = inject(PatientManagementService);
-  dictation = inject(DictationService);
+  protected readonly intel = inject(ClinicalIntelligenceService);
+  protected readonly state = inject(PatientStateService);
+  protected readonly patientManager = inject(PatientManagementService);
+  protected readonly dictation = inject(DictationService);
+  protected readonly cache = inject(AiCacheService);
+  protected readonly ClinicalIcons = ClinicalIcons;
+
+  historyEntries = signal<any[]>([]);
+
+  historicalMetrics = computed(() => {
+    return this.historyEntries()
+      .map(e => e.value._metrics)
+      .filter(m => !!m);
+  });
+
+  getHistoryValues(type: 'complexity' | 'stability' | 'certainty'): number[] {
+    return this.historyEntries()
+      .map(e => e.value?._metrics?.[type] || 5)
+      .reverse();
+  }
+
+  async loadHistory() {
+    const entries = await this.cache.getAllEntries();
+    this.historyEntries.set(entries.filter(e => e.value?._isSnapshot));
+  }
 
   private resizeObserver: ResizeObserver | null = null;
   private carePlanObserver: MutationObserver | null = null;
@@ -533,7 +492,7 @@ export class AnalysisReportComponent implements OnDestroy, AfterViewInit {
 
     this.carePlanObserver = new MutationObserver(() => {
       // Only auto-scroll if we are generating
-      if (this.gemini.isLoading()) {
+      if (this.intel.isLoading()) {
         el.scrollTop = el.scrollHeight;
       }
     });
@@ -561,9 +520,31 @@ export class AnalysisReportComponent implements OnDestroy, AfterViewInit {
     'Watch for signs of infection.'
   ];
 
-  hasAnyReport = computed(() => Object.keys(this.gemini.analysisResults()).length > 0);
-  activeReport = computed(() => this.gemini.analysisResults()[this.activeLens()]);
+  hasAnyReport = computed(() => Object.keys(this.intel.analysisResults()).length > 0);
+  activeReport = computed(() => this.intel.analysisResults()[this.activeLens()]);
   contentArea = viewChild<ElementRef<HTMLDivElement>>('contentArea');
+
+  isSectionEmpty(section: any): boolean {
+    return !section.nodes || section.nodes.length === 0;
+  }
+
+  isTextEmpty(text: string | undefined): boolean {
+    return !text || text.trim().length === 0;
+  }
+
+  verificationStatus(sectionTitle: string): string | null {
+    const res = this.intel.verificationResults()[this.activeLens()];
+    return res?.status || null;
+  }
+
+  statusSeverity(status: string): any {
+    switch (status) {
+      case 'verified': return 'success';
+      case 'warning': return 'warning';
+      case 'error': return 'error';
+      default: return 'neutral';
+    }
+  }
 
   reportSections = computed<ReportSection[] | null>(() => {
     const raw = this.activeReport();
@@ -576,24 +557,67 @@ export class AnalysisReportComponent implements OnDestroy, AfterViewInit {
         if (!part.trim()) continue;
         const lines = part.split('\n');
         const headingMarkdown = lines.find(l => l.trim().startsWith('#')) || lines[0] || '';
+        const title = headingMarkdown.replace(/^#+\s*/, '').trim();
+        const icon = this.getIconForSection(title);
         const contentMarkdown = part === headingMarkdown ? '' : part.substring(part.indexOf(headingMarkdown) + headingMarkdown.length);
 
+        const verification = (this.intel.verificationResults()[this.activeLens()] || { status: 'verified', issues: [] });
         const tokens = marked.lexer(contentMarkdown);
         const nodes: CarePlanNode[] = [];
 
         for (const token of tokens) {
           const key = (token as any).text || token.raw || `node-${globalNodeId}`;
           const annotation = (this.lensAnnotations()[this.activeLens()] || {})[key] || { note: '', bracketState: 'normal' };
+          // const annotation = (this.lensAnnotations()[this.activeLens()] || {})[key] || { note: '', bracketState: 'normal' };
+
+          // Extract suggestions and proposals
+          const extractMetadata = (text: string) => {
+            const suggestions: string[] = [];
+            let proposedText: string | undefined;
+
+            const suggMatches = text.matchAll(/\[\[suggestion:\s*(.*?)\]\]/g);
+            for (const match of suggMatches) suggestions.push(match[1]);
+
+            const propMatch = text.match(/\[\[proposed:\s*(.*?)\]\]/);
+            if (propMatch) proposedText = propMatch[1];
+
+            const cleanedText = text
+              .replace(/\[\[suggestion:.*?\]\]/g, '')
+              .replace(/\[\[proposed:.*?\]\]/g, '')
+              .trim();
+
+            return { suggestions, proposedText, cleanedText };
+          };
+
+          const applyHighlights = (html: string, issues: VerificationIssue[]) => {
+            let highlightedHtml = html;
+            for (const issue of issues) {
+              if (issue.claim && highlightedHtml.includes(issue.claim)) {
+                const colorClass = issue.severity === 'high' ? 'bg-red-100 border-red-200' : 'bg-amber-100 border-amber-200';
+                const highlightSpan = `<span class="verification-claim px-0.5 border-b-2 border-dotted cursor-help ${colorClass}" title="${issue.message}">${issue.claim}</span>`;
+                highlightedHtml = highlightedHtml.replace(issue.claim, highlightSpan);
+              }
+            }
+            return highlightedHtml;
+          };
 
           if (token.type === 'paragraph') {
+            const { suggestions, proposedText, cleanedText } = extractMetadata(token.text);
+            const annotation = (this.lensAnnotations()[this.activeLens()] || {})[key] || { note: '', bracketState: 'normal' };
+            const content = annotation.modifiedText || cleanedText;
+
             nodes.push({
               id: `node-${globalNodeId++}`,
               key,
               type: 'paragraph',
-              rawHtml: marked.parseInline(token.text) as string,
+              rawHtml: applyHighlights(marked.parseInline(content) as string, verification.issues),
               bracketState: annotation.bracketState,
               note: annotation.note,
-              showNote: !!annotation.note
+              showNote: !!annotation.note,
+              suggestions,
+              proposedText,
+              verificationStatus: verification.status as any,
+              verificationIssues: verification.issues
             });
           } else if (token.type === 'list') {
             nodes.push({
@@ -604,13 +628,18 @@ export class AnalysisReportComponent implements OnDestroy, AfterViewInit {
               items: token.items.map(item => {
                 const itemKey = item.text;
                 const itemAnnotation = (this.lensAnnotations()[this.activeLens()] || {})[itemKey] || { note: '', bracketState: 'normal' };
+                const { suggestions, proposedText, cleanedText } = extractMetadata(item.text);
+                const content = itemAnnotation.modifiedText || cleanedText;
+
                 return {
                   id: `item-${globalNodeId++}`,
                   key: itemKey,
-                  html: marked.parseInline(item.text) as string,
+                  html: applyHighlights(marked.parseInline(content) as string, verification.issues),
                   bracketState: itemAnnotation.bracketState,
                   note: itemAnnotation.note,
-                  showNote: !!itemAnnotation.note
+                  showNote: !!itemAnnotation.note,
+                  suggestions,
+                  proposedText
                 };
               }),
               bracketState: annotation.bracketState,
@@ -633,32 +662,44 @@ export class AnalysisReportComponent implements OnDestroy, AfterViewInit {
         sections.push({
           raw: part,
           heading: marked.parse(headingMarkdown) as string,
+          title,
+          icon,
           nodes
         });
       }
       return sections;
     } catch (e) {
       console.error('Markdown parse error', e);
-      return [{ raw: raw, heading: '<h3>Error</h3>', nodes: [{ id: 'err', key: 'err', type: 'raw', rawHtml: '<p>Could not parse report.</p>', bracketState: 'normal', note: '', showNote: false }] }];
+      return [{ raw: raw, heading: '<h3>Error</h3>', title: 'Error', icon: ClinicalIcons.Risk, nodes: [{ id: 'err', key: 'err', type: 'raw', rawHtml: '<p>Could not parse report.</p>', bracketState: 'normal', note: '', showNote: false }] }];
     }
   });
 
+  private getIconForSection(title: string): string {
+    const lower = title.toLowerCase();
+    if (lower.includes('assessment') || lower.includes('overview')) return ClinicalIcons.Assessment;
+    if (lower.includes('protocol') || lower.includes('intervention')) return ClinicalIcons.Medication;
+    if (lower.includes('monitor') || lower.includes('cadence')) return ClinicalIcons.FollowUp;
+    if (lower.includes('education') || lower.includes('resource')) return ClinicalIcons.Education;
+    return ClinicalIcons.Assessment;
+  }
+
   parsedTranscript = computed<ParsedTranscriptEntry[]>(() => {
-    const transcript = this.gemini.transcript();
+    const transcript = this.intel.transcript();
     try {
       return transcript.map(entry => {
+        const parsed: ParsedTranscriptEntry = { ...entry };
         if (entry.role === 'model') {
-          return { ...entry, htmlContent: this.renderInteractiveContent(entry.text) };
+          parsed.htmlContent = this.renderInteractiveContent(entry.text);
         }
-        return entry;
+        return parsed;
       });
     } catch (e) {
       console.error('Transcript parse error', e);
-      return transcript;
+      return transcript.map(entry => ({ ...entry }));
     }
   });
 
-  readonly lensAnnotations = signal<Record<string, Record<string, { note: string, bracketState: 'normal' | 'added' | 'removed' }>>>({});
+  readonly lensAnnotations = signal<LensAnnotations>({});
 
   // Track save status per node
   readonly nodeSaveStatuses = signal<Record<string, 'idle' | 'saving' | 'saved'>>({});
@@ -706,9 +747,12 @@ export class AnalysisReportComponent implements OnDestroy, AfterViewInit {
       if (requestCount > 0) {
         untracked(() => {
           this.generate();
+          this.loadHistory();
         });
       }
     });
+
+    this.loadHistory();
 
     // Auto-save debouncing
     this.autoSaveSubject.pipe(
@@ -742,11 +786,13 @@ export class AnalysisReportComponent implements OnDestroy, AfterViewInit {
       type: 'FinalizedCarePlan',
       date: new Date().toISOString().split('T')[0].replace(/-/g, '.'),
       summary: 'Integrative Care Plan updated (auto-saved).',
-      report: this.gemini.analysisResults(),
+      report: this.intel.analysisResults(),
       annotations: this.lensAnnotations()
     };
 
-    this.patientManager.addHistoryEntry(patientId, historyEntry);
+    this.patientManager.updateHistoryEntry(patientId, historyEntry, (h) =>
+      h.type === 'FinalizedCarePlan' && h.date === historyEntry.date
+    );
 
     // Update all 'saving' statuses to 'saved'
     this.nodeSaveStatuses.update(prev => {
@@ -773,95 +819,43 @@ export class AnalysisReportComponent implements OnDestroy, AfterViewInit {
     return marked.parse(markdown) as string;
   }
 
-  // --- NODE RENDERER ACTIONS ---
-  handleNodeDoubleClick(node: CarePlanNode | CarePlanNodeItem) {
-    // If note is not shown, show it
-    if (!node.showNote) {
-      node.showNote = true;
-    } else {
-      // If already shown, maybe toggle bracket instead or just focus
-      // Let's keep bracket toggling as a fallback if the user wants it, 
-      // but the priority now is "inserting a new note"
-      // We'll toggle brackets with Alt+Click or separate buttons if needed, 
-      // but for now let's make double-click show/focus note.
+  handleNodeUpdate(node: CarePlanNode | CarePlanNodeItem, event: any) {
+    if (event.note !== undefined) {
+      this.updateAnnotation(node.key, { note: event.note });
+      node.note = event.note; // Update local node state
+      node.showNote = !!event.note; // Update local node state
     }
-    window.getSelection()?.removeAllRanges();
+    if (event.bracketState !== undefined) {
+      this.updateAnnotation(node.key, { bracketState: event.bracketState });
+      node.bracketState = event.bracketState; // Update local node state
+    }
+    if (event.acceptedProposal !== undefined) {
+      this.updateAnnotation(node.key, { modifiedText: event.acceptedProposal });
+      // The `reportSections` computed will re-render with `modifiedText`
+    }
+
+    // Trigger auto-save or sync
+    if (event.bracketState !== undefined || event.note !== undefined || event.acceptedProposal !== undefined) {
+      this.syncNodeToTaskFlow(node);
+    }
   }
 
-  toggleNodeBracket(node: CarePlanNode | CarePlanNodeItem) {
-    if (node.bracketState === 'normal') {
-      node.bracketState = 'added';
-    } else if (node.bracketState === 'added') {
-      node.bracketState = 'removed';
-    } else {
-      node.bracketState = 'normal';
-    }
-    this.updateAnnotation(node.key, { bracketState: node.bracketState });
-    this.syncNodeToTaskFlow(node);
-    window.getSelection()?.removeAllRanges();
-  }
 
   private syncNodeToTaskFlow(node: CarePlanNode | CarePlanNodeItem) {
-    // If it's not bracketed 'added' and has no note, remove it.
-    if (node.bracketState !== 'added' && !node.note) {
-      this.state.removeClinicalNote(node.key);
-      return;
-    }
-
-    // Strip HTML tags for clean display
-    const rawText = ('html' in node) ? node.html : node.rawHtml;
-    const cleanText = rawText ? rawText.replace(/<[^>]*>/g, '') : '';
-
-    let fullText = cleanText;
-    if (node.note) {
-      fullText += `\n\nObservation: ${node.note}`;
-    }
-
-    // Remove existing to replace
-    this.state.removeClinicalNote(node.key);
-
-    this.state.addClinicalNote({
-      id: node.key,
-      text: fullText,
-      sourceLens: this.activeLens(),
-      date: new Date().toISOString()
-    });
-  }
-
-  updateNodeNote(node: CarePlanNode | CarePlanNodeItem, event: Event) {
-    node.note = (event.target as HTMLTextAreaElement).value;
-    this.updateAnnotation(node.key, { note: node.note });
-    this.syncNodeToTaskFlow(node);
-  }
-
-  copyNote(text: string) {
-    if (text) {
-      navigator.clipboard.writeText(text);
+    if (node.bracketState === 'added' || node.note) {
+      this.state.addClinicalNote({
+        id: node.id,
+        text: node.note || (node as any).rawHtml || (node as any).html,
+        sourceLens: this.activeLens(),
+        date: new Date().toISOString().split('T')[0].replace(/-/g, '.')
+      });
+    } else {
+      this.state.removeClinicalNote(node.id);
     }
   }
 
-  async pasteToNode(node: CarePlanNode | CarePlanNodeItem) {
-    try {
-      const text = await navigator.clipboard.readText();
-      if (text) {
-        node.note = (node.note || '') + (node.note ? ' ' : '') + text;
-        node.showNote = true;
-        this.updateAnnotation(node.key, { note: node.note });
-        this.syncNodeToTaskFlow(node);
-      }
-    } catch (err) {
-      console.error('Failed to read clipboard', err);
-    }
-  }
 
-  insertSuggestion(node: CarePlanNode | CarePlanNodeItem, suggestion: string) {
-    node.note = (node.note || '') + (node.note ? ' ' : '') + suggestion;
-    node.showNote = true;
-    this.updateAnnotation(node.key, { note: node.note });
-    this.syncNodeToTaskFlow(node);
-  }
-
-  private updateAnnotation(key: string, data: Partial<{ note: string, bracketState: any }>) {
+  private updateAnnotation(key: string, data: Partial<NodeAnnotation>) {
     this.lensAnnotations.update(all => {
       const currentLens = this.activeLens();
       const lensData = { ...(all[currentLens] || {}) };
@@ -912,7 +906,7 @@ export class AnalysisReportComponent implements OnDestroy, AfterViewInit {
     const patient = patientId ? this.patientManager.patients().find(p => p.id === patientId) : null;
     const history = patient?.history || [];
 
-    const reportData = await this.gemini.generateComprehensiveReport(this.state.getAllDataForPrompt(history));
+    const reportData = await this.intel.generateComprehensiveReport(this.state.getAllDataForPrompt(history));
 
     if (patientId && Object.keys(reportData).length > 0) {
       const historyEntry: HistoryEntry = {
@@ -939,7 +933,7 @@ export class AnalysisReportComponent implements OnDestroy, AfterViewInit {
       type: 'FinalizedCarePlan',
       date: new Date().toISOString().split('T')[0].replace(/-/g, '.'),
       summary: 'Integrative Care Plan finalized and saved to chart.',
-      report: this.gemini.analysisResults(),
+      report: this.intel.analysisResults(),
       annotations: this.lensAnnotations()
     };
 

@@ -4,12 +4,13 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { fromEvent, Subscription } from 'rxjs';
 import { PatientManagementService } from '../services/patient-management.service';
 import { PatientStateService } from '../services/patient-state.service';
-import { GeminiService } from '../services/gemini.service';
+import { UnderstoryButtonComponent } from './shared/understory-button.component';
+import { UnderstoryInputComponent } from './shared/understory-input.component';
 
 @Component({
   selector: 'app-research-frame',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, UnderstoryButtonComponent, UnderstoryInputComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="absolute flex flex-col bg-white shadow-2xl border border-gray-300 rounded-lg overflow-hidden z-40"
@@ -21,9 +22,8 @@ import { GeminiService } from '../services/gemini.service';
       <!-- Header / Drag Handle -->
       <div (mousedown)="startDrag($event)" class="h-10 px-4 flex items-center justify-between bg-gray-100 border-b border-gray-200 shrink-0 cursor-move select-none">
         <h3 class="text-xs font-bold uppercase tracking-widest text-gray-600">Research Frame</h3>
-        <button (click)="close()" class="p-1 rounded-full text-gray-500 hover:bg-gray-300 hover:text-gray-800 transition-colors">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 10.586 16.95 5.636a1 1 0 1 1 1.414 1.414L13.414 12l4.95 4.95a1 1 0 0 1-1.414 1.414L12 13.414l-4.95 4.95a1 1 0 0 1-1.414-1.414L10.586 12 5.636 7.05a1 1 0 0 1 1.414-1.414L12 10.586z"/></svg>
-        </button>
+        <understory-button variant="ghost" size="sm" (click)="close()" icon="M12 10.586 16.95 5.636a1 1 0 1 1 1.414 1.414L13.414 12l4.95 4.95a1 1 0 0 1-1.414 1.414L12 13.414l-4.95 4.95a1 1 0 0 1-1.414-1.414L10.586 12 5.636 7.05a1 1 0 0 1 1.414-1.414L12 10.586z" title="Close Research Window">
+        </understory-button>
       </div>
 
       <!-- Toolbar -->
@@ -47,24 +47,19 @@ import { GeminiService } from '../services/gemini.service';
             </button>
           </div>
           <!-- Search Input -->
-          <input 
-            id="searchQuery"
-            name="searchQuery"
-            aria-label="Search term"
-            type="text"
-            #searchInput
-            [value]="searchText()"
-            (input)="searchText.set(searchInput.value)"
-            (keydown.enter)="search()"
-            class="flex-1 w-full text-xs bg-white border border-gray-200 focus:border-gray-400 focus:ring-0 transition-colors px-2 py-1"
-            placeholder="Research patient complaint...">
+          <div class="flex-1">
+              <understory-input 
+                [value]="searchText()"
+                (valueChange)="searchText.set($event)"
+                (keydown.enter)="search()"
+                placeholder="Research patient complaint...">
+              </understory-input>
+          </div>
           <!-- Actions -->
-          <button (click)="search()" class="p-2 text-gray-500 hover:text-gray-800 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5S14 7.01 14 9.5S11.99 14 9.5 14"/></svg>
-          </button>
-          <button (click)="addBookmark()" title="Bookmark current page" class="p-2 text-gray-500 hover:text-yellow-500 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="m12 15.4 3.75 2.6-1-4.35L18 11l-4.45-.4L12 6.5 10.45 10.6 6 11l3.25 2.65-1 4.35z"/></svg>
-          </button>
+          <understory-button variant="ghost" size="sm" (click)="search()" icon="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5S14 7.01 14 9.5S11.99 14 9.5 14" title="Execute Search">
+          </understory-button>
+          <understory-button variant="ghost" size="sm" (click)="addBookmark()" icon="m12 15.4 3.75 2.6-1-4.35L18 11l-4.45-.4L12 6.5 10.45 10.6 6 11l3.25 2.65-1 4.35z" title="Bookmark current page">
+          </understory-button>
         </div>
       </div>
 

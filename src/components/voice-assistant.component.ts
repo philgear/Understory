@@ -1,13 +1,15 @@
 import { Component, ChangeDetectionStrategy, inject, signal, computed, viewChild, ElementRef, OnDestroy, effect, untracked } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PatientStateService } from '../services/patient-state.service';
-import { GeminiService } from '../services/gemini.service';
+import { ClinicalIntelligenceService } from '../services/clinical-intelligence.service';
 import { DictationService } from '../services/dictation.service';
 import { marked } from 'marked';
+import { UnderstoryButtonComponent } from './shared/understory-button.component';
+import { UnderstoryInputComponent } from './shared/understory-input.component';
 
 @Component({
     selector: 'app-voice-assistant',
-    imports: [CommonModule],
+    imports: [CommonModule, UnderstoryButtonComponent, UnderstoryInputComponent],
     changeDetection: ChangeDetectionStrategy.OnPush,
     template: `
         <div class="h-full bg-white z-10 flex flex-col no-print border border-gray-200 rounded-xl shadow-sm overflow-hidden">
@@ -15,26 +17,32 @@ import { marked } from 'marked';
             <!-- Panel Header / Tabs -->
             <div class="flex items-center justify-between px-6 py-2 border-b border-gray-100 bg-white shadow-[0_4px_10px_-10px_rgba(0,0,0,0.1)] h-14 shrink-0 z-20 relative">
                 <div class="flex items-center gap-4">
-                    <button (click)="panelMode.set('selection')" 
-                            class="text-[10px] font-bold uppercase tracking-widest text-gray-500 hover:text-gray-900 transition-colors flex items-center gap-1.5 focus:outline-none">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                    <understory-button
+                        variant="ghost"
+                        size="xs"
+                        (click)="panelMode.set('selection')"
+                        icon="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z">
                         Home
-                    </button>
+                    </understory-button>
                     @if (panelMode() !== 'selection') {
                         <span class="text-gray-300">/</span>
                         <div class="flex items-center gap-2">
                            @if (panelMode() === 'chat') {
                               <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
                            }
-                           <span class="text-[10px] font-bold uppercase tracking-widest text-[#1C1C1C]">
+                           <span class="text-xs font-bold uppercase tracking-widest text-[#1C1C1C]">
                                {{ panelMode() === 'chat' ? 'Live Consult' : 'Dictation' }}
                            </span>
                         </div>
                     }
                 </div>
-                <button (click)="endLiveConsult()" class="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all focus:outline-none" title="Close Voice Assistant">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </button>
+                <understory-button
+                    variant="ghost"
+                    size="sm"
+                    (click)="endLiveConsult()"
+                    icon="M18 6L6 18M6 6l12 12"
+                    title="Close Voice Assistant">
+                </understory-button>
             </div>
 
             <!-- MODE: SELECTION -->
@@ -48,6 +56,9 @@ import { marked } from 'marked';
                             <h3 class="font-bold text-[#1C1C1C] text-sm mb-1.5">Live Consult</h3>
                             <p class="text-xs text-gray-500 leading-relaxed font-medium">Discuss patient data, ask questions, and explore diagnoses with AI.</p>
                         </div>
+                        <div class="mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <understory-button size="sm">Enter Lab</understory-button>
+                        </div>
                     </button>
 
                     <button (click)="activateDictation()" class="group relative w-full max-w-[280px] bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-[0_8px_30px_-10px_rgba(0,0,0,0.1)] hover:border-emerald-200 transition-all duration-300 p-6 flex flex-col items-center justify-center text-center gap-4 focus:outline-none">
@@ -57,6 +68,9 @@ import { marked } from 'marked';
                         <div>
                             <h3 class="font-bold text-[#1C1C1C] text-sm mb-1.5">Dictation Tool</h3>
                             <p class="text-xs text-gray-500 leading-relaxed font-medium">Transcribe voice notes to clipboard for use in reports or care plans.</p>
+                        </div>
+                        <div class="mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <understory-button size="sm" variant="success">Start Recording</understory-button>
                         </div>
                     </button>
                 </div>
@@ -77,7 +91,7 @@ import { marked } from 'marked';
                      }
                      @for (entry of parsedTranscript(); track $index) {
                       <div class="group flex gap-3 max-w-[90%]" [class.ml-auto]="entry.role === 'user'" [class.flex-row-reverse]="entry.role === 'user'">
-                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 shadow-sm border"
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0 shadow-sm border"
                              [class.bg-white]="entry.role === 'model'"
                              [class.border-gray-200]="entry.role === 'model'"
                              [class.text-[#416B1F]]="entry.role === 'model'"
@@ -90,16 +104,11 @@ import { marked } from 'marked';
                             <div class="flex flex-col gap-1.5 w-full">
                                 <div class="p-4 rounded-2xl rounded-tl-sm bg-white border border-gray-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] text-[#1C1C1C] rams-typography text-sm leading-relaxed" [innerHTML]="entry.htmlContent"></div>
                                 <div class="flex items-center gap-1.5 pl-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                                    <button (click)="actionCopy(entry.text)" class="p-1.5 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-md transition-colors" title="Copy Message">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                                    </button>
-                                    <button (click)="actionDictate(entry.text)" class="p-1.5 text-gray-400 hover:text-purple-500 hover:bg-purple-50 rounded-md transition-colors" title="Speak Aloud">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
-                                    </button>
-                                    <button (click)="actionInsert(entry.text)" class="p-1.5 text-gray-400 hover:text-emerald-500 hover:bg-emerald-50 rounded-md transition-colors flex items-center gap-1" title="Insert into Clinical Notes">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                                        <span class="text-[9px] font-bold uppercase tracking-wider">Insert</span>
-                                    </button>
+                                    <understory-button variant="ghost" size="xs" (click)="actionCopy(entry.text)" icon="M9 9h13v13H9V9zm-4 6H4v-9h9v1z" ariaLabel="Copy Message"></understory-button>
+                                    <understory-button variant="ghost" size="xs" (click)="actionDictate(entry.text)" icon="M11 5L6 9H2v6h4l5 4V5zm8.07-.07a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" ariaLabel="Speak Aloud"></understory-button>
+                                    <understory-button variant="ghost" size="xs" (click)="actionInsert(entry.text)" icon="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" ariaLabel="Insert into Clinical Notes">
+                                        Insert
+                                    </understory-button>
                                 </div>
                             </div>
                         } @else {
@@ -111,7 +120,7 @@ import { marked } from 'marked';
                     }
                     @if (agentState() === 'processing') {
                       <div class="flex gap-3 max-w-[85%] animate-pulse">
-                        <div class="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center text-[10px] font-bold shrink-0 shadow-sm text-[#416B1F]">
+                        <div class="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center text-xs font-bold shrink-0 shadow-sm text-[#416B1F]">
                              AI
                         </div>
                         <div class="p-4 rounded-2xl rounded-tl-sm bg-white border border-gray-100 shadow-sm flex items-center gap-2 h-[52px]">
@@ -134,40 +143,42 @@ import { marked } from 'marked';
                         <p class="text-[11px] text-red-600/80">{{ error }}</p>
                       </div>
                     }
-                    <form (submit)="sendMessage()" class="w-full flex items-end gap-2 bg-[#F9FAFB] border border-gray-200 rounded-2xl p-2 focus-within:border-gray-300 focus-within:bg-white focus-within:shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] transition-all duration-300">
+                    
+                    <form (submit)="sendMessage($event)" class="w-full flex items-end gap-2 bg-[#F9FAFB] border border-gray-200 rounded-2xl p-2 focus-within:border-gray-300 focus-within:bg-white focus-within:shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] transition-all duration-300">
                         <button type="button" (click)="toggleListening()" [disabled]="agentState() !== 'idle' || !!permissionError()"
-                                class="w-10 h-10 flex items-center justify-center hover:bg-white rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all shrink-0"
-                                [class.bg-red-50]="agentState() === 'listening'"
-                                [class.text-red-500]="agentState() === 'listening'"
-                                [class.animate-pulse]="agentState() === 'listening'"
-                                [class.text-gray-400]="agentState() === 'idle'"
-                                [class.hover:text-gray-700]="agentState() === 'idle'">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14q-1.25 0-2.125-.875T9 11V5q0-1.25.875-2.125T12 2q1.25 0 2.125.875T15 5v6q0 1.25-.875 2.125T12 14m-1 7v-3.075q-2.6-.35-4.3-2.325T5 11h2q0 2.075 1.463 3.537T12 16q2.075 0 3.538-1.463T17 11h2q0 2.225-1.7 4.2T13 17.925V21z"/></svg>
+                                class="w-10 h-10 flex items-center justify-center hover:bg-white rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all shrink-0">
+                            <div class="relative flex items-center justify-center">
+                                @if (agentState() === 'listening') {
+                                    <span class="absolute inset-0 rounded-full bg-red-500 animate-ping opacity-25"></span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-red-600 relative z-10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+                                } @else {
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-400 group-hover:text-blue-500 transition-colors" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+                                }
+                            </div>
                         </button>
 
-                        <label for="chatInputArea" class="sr-only">Ask a question</label>
-                        <textarea
-                          id="chatInputArea"
-                          name="chatInputArea"
-                          aria-label="Follow-up question"
-                          #chatInput
-                          rows="1"
-                          [value]="messageText()"
-                          (input)="messageText.set($event.target.value)"
-                          (keydown.enter)="sendMessage($event)"
-                          placeholder="Ask a question..."
-                          [disabled]="agentState() !== 'idle'"
-                          class="flex-1 max-h-[120px] bg-transparent border-none p-2.5 text-sm text-[#1C1C1C] focus:ring-0 placeholder-gray-400 resize-none disabled:opacity-50 min-h-[44px]"
-                          style="scrollbar-width: none;"
-                        ></textarea>
+                        <div class="flex-1">
+                            <understory-input
+                                type="textarea"
+                                [value]="messageText()"
+                                (valueChange)="messageText.set($event)"
+                                [rows]="1"
+                                placeholder="Ask a question..."
+                                [disabled]="agentState() !== 'idle'">
+                            </understory-input>
+                        </div>
 
-                        <button type="submit" [disabled]="!messageText().trim() || agentState() !== 'idle'"
-                                class="w-10 h-10 flex items-center justify-center bg-[#1C1C1C] hover:bg-[#333333] disabled:bg-gray-200 disabled:text-gray-400 text-white transition-all shrink-0 rounded-xl shadow-sm disabled:shadow-none mb-0.5 mr-0.5">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                        </button>
+                        <understory-button 
+                            type="submit" 
+                            [disabled]="!messageText().trim() || agentState() !== 'idle'"
+                            icon="M5 12h14M12 5l7 7-7 7"
+                            variant="primary"
+                            size="sm"
+                            class="mb-1 mr-1">
+                        </understory-button>
                     </form>
                     <div class="text-center mt-0.5">
-                        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Medical Voice AI Assistant</span>
+                        <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">Medical Voice AI Assistant</span>
                     </div>
                 </div>
             }
@@ -176,15 +187,14 @@ import { marked } from 'marked';
             @if (panelMode() === 'dictation') {
                 <div class="flex-1 flex flex-col p-6 bg-gray-50/30 overflow-hidden w-full">
                     <div class="flex-1 bg-white border border-gray-200 rounded-lg shadow-sm p-4 relative flex flex-col min-h-0">
-                        <label for="voiceDictationText" class="sr-only">Dictate your notes</label>
-                        <textarea 
-                            id="voiceDictationText"
-                            name="voiceDictationText"
-                            aria-label="Dictation text"
+                        <understory-input
+                            type="textarea"
                             [value]="dictationText()"
-                            (input)="dictationText.set($event.target.value)"
-                            class="flex-1 w-full resize-none outline-none text-sm leading-relaxed text-gray-800 placeholder-gray-300"
-                            placeholder="Start dictating..."></textarea>
+                            (valueChange)="dictationText.set($event)"
+                            [rows]="10"
+                            placeholder="Start dictating..."
+                            className="flex-1 border-none shadow-none">
+                        </understory-input>
                         
                         @if (isDictating()) {
                             <div class="absolute bottom-4 right-4 flex gap-1">
@@ -197,31 +207,30 @@ import { marked } from 'marked';
                     
                     <div class="shrink-0 pt-4 flex flex-col gap-3">
                         <div class="flex items-center gap-3">
-                            <button (click)="toggleDictation()" 
-                                    class="flex-1 flex justify-center items-center gap-2 px-4 py-2.5 rounded-lg font-bold uppercase tracking-widest text-[10px] transition-all shadow-sm border border-transparent"
-                                    [class.bg-red-50]="isDictating()"
-                                    [class.text-red-700]="isDictating()"
-                                    [class.border-red-200]="isDictating()"
-                                    [class.hover:bg-red-100]="isDictating()"
-                                    [class.bg-[#1C1C1C]]="!isDictating()"
-                                    [class.text-white]="!isDictating()"
-                                    [class.hover:bg-gray-800]="!isDictating()">
-                                @if (isDictating()) {
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-                                    <span>Pause</span>
-                                } @else {
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
-                                    <span>Record</span>
-                                }
-                            </button>
-                            <button (click)="clearDictation()" [disabled]="!dictationText()" class="px-4 py-2.5 rounded-lg border border-gray-200 bg-white text-[10px] font-bold text-gray-500 hover:text-red-500 hover:bg-red-50 hover:border-red-100 uppercase tracking-widest disabled:opacity-30 disabled:hover:bg-white disabled:hover:border-gray-200 transition-colors shadow-sm">
+                            <understory-button 
+                                (click)="toggleDictation()" 
+                                [variant]="isDictating() ? 'danger' : 'primary'"
+                                className="flex-1"
+                                [loading]="isDictating()"
+                                [icon]="isDictating() ? 'M6 4h4v16H6V4zm8 0h4v16h-4V4z' : 'M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z'">
+                                {{ isDictating() ? 'Pause' : 'Record' }}
+                            </understory-button>
+                            
+                            <understory-button 
+                                variant="secondary"
+                                (click)="clearDictation()" 
+                                [disabled]="!dictationText()">
                                 Clear
-                            </button>
+                            </understory-button>
                         </div>
-                        <button (click)="copyDictation()" [disabled]="!dictationText()" class="w-full flex justify-center items-center gap-2 px-4 py-2.5 border border-gray-300 rounded-lg text-[10px] font-bold uppercase tracking-widest text-gray-600 hover:bg-gray-100 hover:text-black hover:border-gray-400 disabled:opacity-30 transition-colors shadow-sm bg-white">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                        <understory-button 
+                            variant="secondary"
+                            className="w-full"
+                            (click)="copyDictation()" 
+                            [disabled]="!dictationText()"
+                            icon="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z">
                             Copy Text
-                        </button>
+                        </understory-button>
                     </div>
                 </div>
             }
@@ -230,7 +239,7 @@ import { marked } from 'marked';
 })
 export class VoiceAssistantComponent implements OnDestroy {
     state = inject(PatientStateService);
-    gemini = inject(GeminiService);
+    intel = inject(ClinicalIntelligenceService);
     dictation = inject(DictationService);
 
     panelMode = signal<'selection' | 'chat' | 'dictation'>('selection');
@@ -247,7 +256,7 @@ export class VoiceAssistantComponent implements OnDestroy {
 
     // Parse markdown in transcript
     parsedTranscript = computed(() => {
-        return this.gemini.transcript().map(t => ({
+        return this.intel.transcript().map(t => ({
             ...t,
             htmlContent: t.role === 'model' ? marked.parse(t.text, { async: false }) : t.text
         }));
@@ -461,7 +470,7 @@ export class VoiceAssistantComponent implements OnDestroy {
                 if (final) {
                     this.recognition.stop();
                     this.agentState.set('processing');
-                    const responseText = await this.gemini.sendChatMessage(final);
+                    const responseText = await this.intel.sendChatMessage(final);
                     this.speak(responseText);
                     this.scrollToBottom();
                 }
@@ -487,7 +496,7 @@ export class VoiceAssistantComponent implements OnDestroy {
         this.messageText.set('');
         this.agentState.set('processing');
         this.scrollToBottom();
-        const responseText = await this.gemini.sendChatMessage(message);
+        const responseText = await this.intel.sendChatMessage(message);
         this.speak(responseText);
         this.scrollToBottom();
     }

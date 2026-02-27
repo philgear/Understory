@@ -5,11 +5,13 @@ import { PatientManagementService, Patient, HistoryEntry } from '../services/pat
 import { BodyViewerComponent } from './body-viewer.component';
 import { PatientHistoryTimelineComponent } from './patient-history-timeline.component';
 import { DictationService } from '../services/dictation.service';
+import { UnderstoryButtonComponent } from './shared/understory-button.component';
+import { UnderstoryCardComponent } from './shared/understory-card.component';
 
 @Component({
   selector: 'app-medical-chart',
   standalone: true,
-  imports: [CommonModule, BodyViewerComponent, PatientHistoryTimelineComponent],
+  imports: [CommonModule, BodyViewerComponent, PatientHistoryTimelineComponent, UnderstoryButtonComponent, UnderstoryCardComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="w-full flex flex-col gap-6 p-8 bg-[#F9FAFB]">
@@ -27,20 +29,23 @@ import { DictationService } from '../services/dictation.service';
                      <span class="font-medium text-yellow-900">Reviewing past AI Analysis from <strong class="font-bold">{{ visit.date }}</strong>.</span>
                   }
               </div>
-              <button (click)="returnToCurrent()" class="px-4 py-2 text-xs font-bold text-yellow-800 bg-white border border-yellow-200 rounded-lg hover:bg-yellow-50 transition-colors shadow-sm">
+              <understory-button 
+                (click)="returnToCurrent()" 
+                variant="secondary" 
+                size="sm">
                 Return to Current State
-              </button>
+              </understory-button>
           </div>
       }
       
 
-      <!-- Body Viewer Menu Header -->
-      <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-md">
-        <div (click)="isViewerExpanded.set(!isViewerExpanded())" class="bg-gray-50/50 px-6 py-4 border-b border-gray-100 flex justify-between items-center cursor-pointer hover:bg-gray-100 transition-colors">
-          <div class="flex items-center gap-2">
-            <div class="w-1.5 h-4 bg-teal-600 rounded-full"></div>
-            <span class="text-[10px] font-bold uppercase tracking-widest text-gray-500">3D Body Viewer</span>
-          </div>
+      <!-- 3D Body Viewer Card -->
+      <understory-card 
+        title="3D Body Viewer" 
+        [icon]="viewerIcon"
+        [noPadding]="true">
+        
+        <div right-action (click)="isViewerExpanded.set(!isViewerExpanded())" class="cursor-pointer hover:bg-black/5 p-1 rounded-md transition-colors">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-500 transition-transform duration-200" [class.rotate-180]="!isViewerExpanded()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
         </div>
 
@@ -52,56 +57,42 @@ import { DictationService } from '../services/dictation.service';
               <div class="h-full w-full flex items-center justify-center text-gray-500 bg-gray-50/50">
                 <div class="flex flex-col items-center gap-3">
                   <div class="w-6 h-6 border-2 border-gray-200 border-t-[#689F38] rounded-full animate-spin"></div>
-                  <span class="text-[10px] uppercase tracking-widest font-bold">Loading 3D Viewer...</span>
+                  <span class="text-xs uppercase tracking-widest font-bold">Loading 3D Viewer...</span>
                 </div>
               </div>
             }
           </div>
         }
-      </div>
+      </understory-card>
 
       <!-- Patient History Card -->
-      <div class="flex flex-col bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-md">
-        <div (click)="isHistoryExpanded.set(!isHistoryExpanded())" class="bg-gray-50/50 px-6 py-4 border-b border-gray-100 flex justify-between items-center cursor-pointer hover:bg-gray-100 transition-colors">
-          <div class="flex items-center gap-4 flex-wrap">
-              <div class="flex items-center gap-2">
-                <div class="w-1 h-4 bg-[#1C1C1C]"></div>
-                <h3 class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.15em]">Patient History</h3>
-              </div>
-              
+      <understory-card 
+        title="Patient History" 
+        [icon]="historyIcon"
+        [noPadding]="true">
+        
+        <div right-action class="flex items-center gap-4">
               @if(historyBodyParts().length > 0) {
-                  <div class="h-4 w-px bg-gray-200"></div>
                   <div class="flex items-center gap-2">
-                      <button (click)="$event.stopPropagation(); historyFilter.set(null)"
-                              class="px-3 py-1 text-[9px] font-bold rounded-md transition-all border"
-                              [class.bg-[#1C1C1C]]="!historyFilter()"
-                              [class.text-white]="!historyFilter()"
-                              [class.border-[#1C1C1C]]="!historyFilter()"
-                              [class.bg-white]="!!historyFilter()"
-                              [class.text-gray-500]="!!historyFilter()"
-                              [class.border-gray-200]="!!historyFilter()"
-                              [class.hover:bg-gray-50]="!!historyFilter()">
-                          ALL
-                      </button>
+                      <understory-button 
+                        (click)="$event.stopPropagation(); historyFilter.set(null)"
+                        [variant]="!historyFilter() ? 'primary' : 'secondary'"
+                        size="xs">
+                        ALL
+                      </understory-button>
                       @for(part of historyBodyParts(); track part.id) {
-                          <button (click)="$event.stopPropagation(); historyFilter.set(part.id)"
-                                  class="px-3 py-1 text-[9px] font-bold rounded-md transition-all border"
-                                  [class.bg-[#1C1C1C]]="historyFilter() === part.id"
-                                  [class.text-white]="historyFilter() === part.id"
-                                  [class.border-[#1C1C1C]]="historyFilter() === part.id"
-                                  [class.bg-white]="historyFilter() !== part.id"
-                                  [class.text-gray-500]="historyFilter() !== part.id"
-                                  [class.border-gray-200]="historyFilter() !== part.id"
-                                  [class.hover:bg-gray-50]="historyFilter() !== part.id">
-                              {{ part.name }}
-                          </button>
+                          <understory-button 
+                            (click)="$event.stopPropagation(); historyFilter.set(part.id)"
+                            [variant]="historyFilter() === part.id ? 'primary' : 'secondary'"
+                            size="xs">
+                            {{ part.name }}
+                          </understory-button>
                       }
                   </div>
               }
-          </div>
-          <div class="flex items-center gap-3">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-500 transition-transform duration-200" [class.rotate-180]="!isHistoryExpanded()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
-          </div>
+              <div (click)="isHistoryExpanded.set(!isHistoryExpanded())" class="cursor-pointer hover:bg-black/5 p-1 rounded-md transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-500 transition-transform duration-200" [class.rotate-180]="!isHistoryExpanded()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+              </div>
         </div>
         
         @if(isHistoryExpanded()) {
@@ -122,14 +113,13 @@ import { DictationService } from '../services/dictation.service';
               @if (selectedPatient()?.history.length === 0) {
                 <div class="h-32 flex flex-col items-center justify-center text-gray-200">
                   <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 mb-2 opacity-30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg>
-                  <p class="text-[10px] font-bold uppercase tracking-[0.15em]">No recorded activity</p>
+                  <p class="text-xs font-bold uppercase tracking-[0.15em]">No recorded activity</p>
                 </div>
               }
             </div>
-
           </div>
         }
-      </div>
+      </understory-card>
 
     </div>
   `
@@ -138,6 +128,17 @@ export class MedicalChartComponent {
   state = inject(PatientStateService);
   patientManager = inject(PatientManagementService);
   dictation = inject(DictationService);
+
+  viewerIcon = `
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-5.25v9" />
+    </svg>
+  `;
+  historyIcon = `
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+  `;
 
   // --- Accordion State ---
   isViewerExpanded = signal(true);
