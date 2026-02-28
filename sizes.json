@@ -1,0 +1,61 @@
+{
+  "results": [
+    {
+      "bundleName": "dist/chunk-FB4NOBZK.js",
+      "totalBytes": 3715,
+      "mappedBytes": 0,
+      "unmappedBytes": 3671,
+      "eolBytes": 2,
+      "sourceMapCommentBytes": 42,
+      "files": {
+        "[sourceMappingURL]": {
+          "size": 42
+        },
+        "[unmapped]": {
+          "size": 3671
+        },
+        "[EOLs]": {
+          "size": 2
+        }
+      }
+    },
+    {
+      "bundleName": "dist/chunk-H4CX5BLO.js",
+      "totalBytes": 4286,
+      "mappedBytes": 0,
+      "unmappedBytes": 4242,
+      "eolBytes": 2,
+      "sourceMapCommentBytes": 42,
+      "files": {
+        "[sourceMappingURL]": {
+          "size": 42
+        },
+        "[unmapped]": {
+          "size": 4242
+        },
+        "[EOLs]": {
+          "size": 2
+        }
+      }
+    },
+    {
+      "bundleName": "dist/chunk-ZGVHDELW.js",
+      "totalBytes": 1171,
+      "mappedBytes": 0,
+      "unmappedBytes": 1127,
+      "eolBytes": 2,
+      "sourceMapCommentBytes": 42,
+      "files": {
+        "[sourceMappingURL]": {
+          "size": 42
+        },
+        "[unmapped]": {
+          "size": 1127
+        },
+        "[EOLs]": {
+          "size": 2
+        }
+      }
+    }
+  ]
+}

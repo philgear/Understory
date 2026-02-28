@@ -15,6 +15,7 @@ import { AI_CONFIG, AiProviderConfig } from './services/ai-provider.types';
 import { IntelligenceProviderToken } from './services/ai/intelligence.provider.token';
 import { GeminiProvider } from './services/ai/gemini.provider';
 import { ClinicalIntelligenceService } from './services/clinical-intelligence.service';
+import { RevealDirective } from './directives/reveal.directive';
 
 @Component({
   selector: 'app-root',
@@ -29,18 +30,19 @@ import { ClinicalIntelligenceService } from './services/clinical-intelligence.se
     TaskFlowComponent,
     ResearchFrameComponent,
     IntakeFormComponent,
-    VoiceAssistantComponent
+    VoiceAssistantComponent,
+    RevealDirective
   ],
   providers: [],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     
-    <div class="h-screen w-full bg-[#EEEEEE] flex flex-col overflow-hidden font-sans selection:bg-green-100 selection:text-green-900 group/app">
+    <div class="min-h-[100dvh] md:h-screen w-full bg-[#EEEEEE] flex flex-col md:overflow-hidden font-sans selection:bg-green-100 selection:text-green-900 group/app">
       
       <app-dictation-modal></app-dictation-modal>
 
       @if (!hasApiKey()) {
-        <div class="fixed inset-0 bg-white z-[100] flex flex-col items-center justify-center p-8 text-center">
+        <main class="fixed inset-0 bg-white z-[100] flex flex-col items-center justify-center p-8 text-center landmark-main">
           <div class="mb-8">
             <svg width="64" height="64" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" class="mx-auto">
               <g transform="translate(0, -20)">
@@ -54,7 +56,7 @@ import { ClinicalIntelligenceService } from './services/clinical-intelligence.se
               </g>
             </svg>
           </div>
-          <h2 class="text-xl font-bold mb-2 uppercase tracking-[0.2em]">Understory</h2>
+          <h1 class="text-xl font-bold mb-2 uppercase tracking-[0.2em]">Understory</h1>
           <p class="text-gray-500 mb-8 max-w-sm text-sm">To access the practitioner dashboard and 3D visualization tools, please select a paid Gemini API key.</p>
           <button (click)="selectKey()" class="px-10 py-4 bg-[#1C1C1C] text-white text-xs font-bold uppercase tracking-widest hover:bg-black transition-all shadow-xl">
             Select API Key
@@ -62,15 +64,14 @@ import { ClinicalIntelligenceService } from './services/clinical-intelligence.se
           <a href="https://ai.google.dev/gemini-api/docs/billing" target="_blank" class="mt-6 text-xs text-gray-500 uppercase tracking-widest hover:text-gray-600 transition-colors">
             Billing Documentation
           </a>
-        </div>
-      }
-
-      <main class="flex-1 flex flex-col min-w-0 relative group/main"> <!-- Main Content -->
+        </main>
+      } @else {
+        <main class="flex-1 flex flex-col min-w-0 relative group/main"> <!-- Main Content -->
         <!-- Navbar: Pure utility, no decoration -->
-        <nav class="h-14 border-b border-[#EEEEEE] flex items-center justify-between px-6 shrink-0 bg-white z-20 no-print">
+        <nav class="h-14 border-b border-[#EEEEEE] flex items-center justify-between px-3 sm:px-6 shrink-0 bg-white z-20 no-print">
           <div class="flex items-center gap-4">
               <div class="flex items-center gap-3">
-                  <svg width="42" height="42" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <svg width="42" height="42" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" class="shrink-0">
                     <g transform="translate(0, -20)">
                       <rect x="166" y="275" width="180" height="10" rx="2" fill="#76B362" />
                       <g>
@@ -83,13 +84,13 @@ import { ClinicalIntelligenceService } from './services/clinical-intelligence.se
                       </g>
                     </g>
                   </svg>
-                  <span class="font-medium text-[#1C1C1C] tracking-[0.15em] text-sm">UNDERSTORY</span>
+                  <span class="font-medium text-[#1C1C1C] tracking-[0.15em] text-sm hidden sm:inline">UNDERSTORY</span>
               </div>
-            <div class="h-4 w-px bg-[#EEEEEE]"></div>
-            <div class="text-xs text-gray-500 font-medium mr-4">INTAKE MODULE 01</div>
+            <div class="h-4 w-px bg-[#EEEEEE] hidden sm:block"></div>
+            <div class="text-xs text-gray-500 font-medium mr-4 hidden sm:block">INTAKE MODULE 01</div>
 
-            <!-- System Status Indicator -->
-            <div class="flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-full border border-gray-200 hover:border-gray-300 transition-all cursor-help group relative no-print">
+            <!-- System Status Indicator (Hidden on smallest watches) -->
+            <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-full border border-gray-200 hover:border-gray-300 transition-all cursor-help group relative no-print">
             <div class="relative flex h-2 w-2">
               <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" style="will-change: transform, opacity;"></span>
               <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
@@ -129,12 +130,30 @@ import { ClinicalIntelligenceService } from './services/clinical-intelligence.se
           <div class="flex items-center gap-2">
             <app-patient-dropdown></app-patient-dropdown>
             
-            <button (click)="state.toggleResearchFrame()"
-                    class="group flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-700 text-xs font-bold uppercase tracking-widest hover:bg-[#EEEEEE] hover:border-gray-400 transition-colors">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2A10 10 0 0 0 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2m0 18c-2.29 0-4.43-.78-6.14-2.1C4.6 16.5 4 14.83 4 12c0-1.5.3-2.91.86-4.22L16.22 19.14A7.92 7.92 0 0 1 12 20m7.14-2.1C20.4 16.5 21 14.83 21 12c0-1.5-.3-2.91-.86-4.22L8.78 19.14C10.09 20.7 11.97 21.5 14 21.5c1.47 0 2.87-.42 4.14-1.14Z"/></svg>
-              <span>Research</span>
+            <button (click)="state.toggleLiveAgent(!state.isLiveAgentActive())"
+                    class="group shrink-0 flex items-center gap-2 max-sm:px-2 max-sm:py-1.5 px-4 py-2 border transition-colors text-xs font-bold uppercase tracking-widest"
+                    [class.bg-gray-800]="state.isLiveAgentActive()"
+                    [class.border-gray-800]="state.isLiveAgentActive()"
+                    [class.text-white]="state.isLiveAgentActive()"
+                    [class.bg-transparent]="!state.isLiveAgentActive()"
+                    [class.border-gray-300]="!state.isLiveAgentActive()"
+                    [class.text-gray-700]="!state.isLiveAgentActive()"
+                    [class.hover:bg-[#EEEEEE]]="!state.isLiveAgentActive()"
+                    [class.hover:border-gray-400]="!state.isLiveAgentActive()">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 md:w-4 md:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                <line x1="12" x2="12" y1="19" y2="22"/>
+              </svg>
+              <span class="hidden sm:inline">Agent</span>
             </button>
-            <div class="flex items-center gap-6 text-xs font-medium text-gray-500 pl-4">
+            
+            <button (click)="state.toggleResearchFrame()"
+                    class="group shrink-0 flex items-center gap-2 max-sm:px-2 max-sm:py-1.5 px-4 py-2 border border-gray-300 text-gray-700 text-xs font-bold uppercase tracking-widest hover:bg-[#EEEEEE] hover:border-gray-400 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 md:w-4 md:h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2A10 10 0 0 0 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2m0 18c-2.29 0-4.43-.78-6.14-2.1C4.6 16.5 4 14.83 4 12c0-1.5.3-2.91.86-4.22L16.22 19.14A7.92 7.92 0 0 1 12 20m7.14-2.1C20.4 16.5 21 14.83 21 12c0-1.5-.3-2.91-.86-4.22L8.78 19.14C10.09 20.7 11.97 21.5 14 21.5c1.47 0 2.87-.42 4.14-1.14Z"/></svg>
+              <span class="hidden sm:inline">Research</span>
+            </button>
+            <div class="hidden sm:flex items-center gap-6 text-xs font-medium text-gray-500 pl-4">
               <span>{{ today | date:'yyyy.MM.dd' }}</span>
               <span class="text-[#416B1F]">REQ. DR. SMITH</span>
             </div>
@@ -142,26 +161,77 @@ import { ClinicalIntelligenceService } from './services/clinical-intelligence.se
         </nav>
 
         <!-- Main Grid Layout -->
-        <div #mainContainer class="flex-1 flex flex-col md:flex-row overflow-y-auto md:overflow-hidden relative bg-[#F9FAFB] p-2 md:p-6 gap-3 md:gap-6">
+        <div #mainContainer class="flex-1 flex flex-col md:flex-row md:overflow-hidden relative bg-[#F9FAFB] p-2 md:p-6 gap-3 md:gap-6">
 
 
           
           <!-- Column 1: Patient Medical Chart -->
-          <div class="relative w-full md:h-full bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col md:block flex-shrink-0"
-               [class.md:flex-1]="isAnalysisCollapsed()"
+          <div class="relative w-full md:h-full bg-white rounded-xl shadow-sm border border-gray-200 md:overflow-hidden flex flex-col md:block flex-shrink-0"
+               [class.md:flex-1]="isAnalysisCollapsed() || inputPanelWidth() === undefined"
                [class.transition-all]="!isDragging()"
                [class.duration-500]="!isDragging()"
                [class.ease-[cubic-bezier(0.68,-0.55,0.265,1.55)]]="!isDragging()"
                [style.--panel-width.px]="isChartCollapsed() ? 0 : (isAnalysisCollapsed() ? null : inputPanelWidth())"
-               [class.md:w-[var(--panel-width)]]="!isAnalysisCollapsed()"
-               style="min-height: 60vh; md:min-height: 0;"
-               [class.hidden]="isChartCollapsed()">
-               <div class="h-full w-full overflow-hidden flex-1 flex flex-col">
-                 @defer {
-                   <app-medical-chart class="no-print h-full block overflow-y-auto w-full"></app-medical-chart>
-                 } @placeholder {
-                   <div class="w-full h-full flex items-center justify-center animate-pulse bg-gray-100"></div>
-                 }
+               [class.md:w-[var(--panel-width)]]="!isAnalysisCollapsed() && inputPanelWidth() !== undefined"
+               [class.hidden]="isChartCollapsed()"
+               [class.max-md:hidden]="!!state.selectedPartId()">
+               <div class="md:h-full w-full md:overflow-hidden flex-1 flex flex-col">
+                 <app-medical-chart class="no-print md:h-full block md:overflow-y-auto w-full"></app-medical-chart>
+               </div>
+            </div>
+
+            <!-- RESIZER V -->
+            <div title="Drag to resize, Double-click to maximize chart" class="hidden md:flex w-2 shrink-0 items-center justify-center cursor-col-resize z-20 no-print group relative"
+                 [class.md:hidden]="isChartCollapsed() || isAnalysisCollapsed()"
+                 (mousedown)="startColumnDrag($event)"
+                 (dblclick)="maximizeChart()">
+                
+                <!-- Full-width background bar -->
+                <div class="absolute inset-y-0 left-1/2 -translate-x-1/2 w-4 bg-transparent group-hover:bg-gray-100 transition-colors rounded-full z-0"></div>
+                <div class="absolute inset-0 bg-gray-100 group-hover:bg-gray-200 transition-colors rounded"></div>
+                <!-- Handle -->
+                <div class="h-12 w-1.5 rounded-full bg-gray-200 group-hover:bg-gray-300 transition-colors relative z-10"></div>
+
+                <!-- Quick Actions (V4) -->
+                <div class="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col gap-3 bg-white shadow-xl border border-gray-200 rounded-full p-1.5 z-30">
+                   
+                   <!-- Panel Management -->
+                   <div class="flex flex-col gap-1 border-b border-gray-100 pb-1.5 mb-0.5">
+                      <button (click)="$event.stopPropagation(); toggleChart()" [class.bg-black]="!isChartCollapsed()" [class.text-white]="!isChartCollapsed()"
+                              title="Toggle Medical Chart" class="p-2 hover:bg-gray-100 rounded-full text-gray-500 hover:text-black transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><polyline points="14 2 14 8 20 8"></polyline><path d="M16 13H8"></path><path d="M16 17H8"></path><path d="M10 9H8"></path><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path></svg>
+                      </button>
+                      <button (click)="$event.stopPropagation(); toggleAnalysis()" [class.bg-black]="!isAnalysisCollapsed()" [class.text-white]="!isAnalysisCollapsed()"
+                              title="Toggle Analysis Panel" class="p-2 hover:bg-gray-100 rounded-full text-gray-500 hover:text-black transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                      </button>
+                      <button (click)="$event.stopPropagation(); maximizeChart()" class="p-2 hover:bg-gray-100 rounded-full text-gray-500 hover:text-black transition-colors" title="Maximize Chart">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                    </svg>
+                    <span class="hidden sm:inline">Voice Assistant</span>
+                </button>
+            </div>
+          </div>
+        </nav>
+
+        <!-- Main Grid Layout -->
+        <div #mainContainer class="flex-1 flex flex-col md:flex-row max-md:overflow-visible overflow-y-auto md:overflow-hidden relative bg-[#F9FAFB] p-2 md:p-6 gap-3 md:gap-6">
+
+
+          
+          <!-- Column 1: Patient Medical Chart -->
+          <div class="relative w-full md:h-full bg-white rounded-xl shadow-sm border border-gray-200 md:overflow-hidden flex flex-col md:block flex-shrink-0"
+               [class.md:flex-1]="isAnalysisCollapsed() || inputPanelWidth() === undefined"
+               [class.transition-all]="!isDragging()"
+               [class.duration-500]="!isDragging()"
+               [class.ease-[cubic-bezier(0.68,-0.55,0.265,1.55)]]="!isDragging()"
+               [style.--panel-width.px]="isChartCollapsed() ? 0 : (isAnalysisCollapsed() ? null : inputPanelWidth())"
+               [class.md:w-[var(--panel-width)]]="!isAnalysisCollapsed() && inputPanelWidth() !== undefined"
+               [class.hidden]="isChartCollapsed()"
+               [class.max-md:hidden]="!!state.selectedPartId()">
+               <div class="md:h-full w-full md:overflow-hidden flex-1 flex flex-col">
+                 <app-medical-chart class="no-print md:h-full block md:overflow-y-auto w-full max-md:overflow-visible"></app-medical-chart>
                </div>
             </div>
 
@@ -195,39 +265,60 @@ import { ClinicalIntelligenceService } from './services/clinical-intelligence.se
                       </button>
                    </div>
 
-                   <!-- Removed View Modes & Anatomy Layers -->
+                   
                 </div>
             </div>
 
+            <!-- Mobile Header: Back Button & Tabs -->
+            @if (state.selectedPartId() && !state.isLiveAgentActive()) {
+              <div class="w-full flex-col gap-3 shrink-0 z-20 hidden max-md:flex mb-3">
+                <button (click)="goBackToChart()" class="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-black self-start px-2 py-3 -ml-2 transition-colors min-h-[44px]">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                  <span>Back to Chart</span>
+                </button>
+                <div class="flex p-1.5 bg-gray-200 rounded-[10px] w-full">
+                  <button (click)="mobileActiveTab.set('tasks')" 
+                          class="flex-1 py-3 text-xs font-bold uppercase tracking-widest rounded-md transition-all shadow-sm min-h-[44px]"
+                          [class.bg-white]="mobileActiveTab() === 'tasks'" [class.text-black]="mobileActiveTab() === 'tasks'"
+                          [class.text-gray-500]="mobileActiveTab() !== 'tasks'" [class.hover:text-gray-700]="mobileActiveTab() !== 'tasks'">
+                    Tasks
+                  </button>
+                  <button (click)="mobileActiveTab.set('analysis')"
+                          class="flex-1 py-3 text-xs font-bold uppercase tracking-widest rounded-md transition-all shadow-sm min-h-[44px]"
+                          [class.bg-white]="mobileActiveTab() === 'analysis'" [class.text-black]="mobileActiveTab() === 'analysis'"
+                          [class.text-gray-500]="mobileActiveTab() !== 'analysis'" [class.hover:text-gray-700]="mobileActiveTab() !== 'analysis'">
+                    Analysis
+                  </button>
+                </div>
+              </div>
+            }
+
             <!-- Column 2 (Middle): Task Flow & Intake Bracket -->
             @if (state.selectedPartId() && !state.isLiveAgentActive()) {
-               <div class="shrink-0 w-full md:w-[400px] flex flex-col gap-3 md:gap-6 h-full z-20 transition-all duration-300">
+               <div class="shrink-0 w-full md:w-[400px] flex flex-col gap-3 md:gap-6 h-full z-20 transition-all duration-300"
+                    [class.max-md:hidden]="mobileActiveTab() !== 'tasks'"
+                    [class.tab-fade-enter]="mobileActiveTab() === 'tasks'">
                   <div class="flex-1 min-h-0 overflow-hidden rounded-xl shadow-sm border border-gray-200">
-                    @defer {
-                      <app-intake-form></app-intake-form>
-                    }
+                    <app-intake-form appReveal></app-intake-form>
                   </div>
                   <div class="flex-1 min-h-0 overflow-hidden rounded-xl shadow-sm border border-gray-200">
-                    @defer {
-                      <app-task-flow></app-task-flow>
-                    }
+                    <app-task-flow appReveal [revealDelay]="100"></app-task-flow>
                   </div>
                </div>
             }
 
             <!-- Column 3 (Right Area): Split View -->
-            <div class="flex-1 flex overflow-y-auto md:overflow-hidden relative gap-3 md:gap-6 flex-col" 
-                 [class.hidden]="isAnalysisCollapsed()">
+            <div class="flex-1 flex md:overflow-hidden relative gap-3 md:gap-6 flex-col"
+                 [class.hidden]="isAnalysisCollapsed()"
+                 [class.max-md:hidden]="!!state.selectedPartId() && mobileActiveTab() !== 'analysis'"
+                 [class.tab-fade-enter]="!!state.selectedPartId() && mobileActiveTab() === 'analysis'">
              
                  <!-- Section 1: Medical Summary -->
                  <div class="shrink-0 overflow-hidden flex flex-col bg-white rounded-xl shadow-sm border border-gray-200 transition-all duration-300 hover:shadow-md"
-                      [style.height.px]="topSectionHeight()">
+                      [style.height.px]="topSectionHeight()"
+                      [class.flex-[0_0_40%]]="topSectionHeight() === undefined">
                      <div class="flex-1 w-full h-full overflow-y-auto min-h-[50vh] md:min-h-0 min-w-0">
-                         @defer {
-                           <app-medical-summary class="block h-full overflow-y-auto"></app-medical-summary>
-                         } @placeholder {
-                           <div class="w-full h-full flex items-center justify-center animate-pulse bg-gray-50"></div>
-                         }
+                         <app-medical-summary class="block h-full overflow-y-auto" appReveal></app-medical-summary>
                      </div>
                  </div>
 
@@ -251,32 +342,18 @@ import { ClinicalIntelligenceService } from './services/clinical-intelligence.se
 
                  <!-- Section 2: Analysis Intake Container -->
                  <div class="overflow-hidden flex flex-col bg-white rounded-xl shadow-sm border border-gray-200 transition-all duration-300 hover:shadow-md flex-1 min-h-[50vh] md:min-h-0"
-                      [style.height.px]="analysisSectionHeight() || null">
-                     @defer {
-                       <app-analysis-container class="block h-full min-h-0 min-w-0"></app-analysis-container>
-                     } @placeholder {
-                       <div class="w-full h-full flex items-center justify-center animate-pulse bg-gray-50"></div>
-                     }
+                      [style.height.px]="analysisSectionHeight()">
+                     <app-analysis-container class="block h-full min-h-0 min-w-0" appReveal [revealDelay]="100"></app-analysis-container>
                  </div>
             </div>
 
-            <!-- RESIZER V (Main Resizer 2 for Voice Assistant) -->
-            <div title="Drag to resize voice panel" class="hidden md:flex w-2 shrink-0 items-center justify-center cursor-col-resize z-20 no-print group relative"
-                 [class.hidden]="!state.isLiveAgentActive()"
-                 (mousedown)="startVoiceColDrag($event)">
-                <div class="absolute inset-y-0 left-1/2 -translate-x-1/2 w-4 bg-transparent group-hover:bg-gray-100 transition-colors rounded-full z-0"></div>
-                <div class="absolute inset-0 bg-gray-100 group-hover:bg-gray-200 transition-colors rounded"></div>
-                <div class="h-12 w-1.5 rounded-full bg-gray-200 group-hover:bg-gray-300 transition-colors relative z-10"></div>
-            </div>
-
-            <!-- Column 4 (Voice Assistant) -->
-            <div class="flex flex-col bg-white rounded-xl shadow-sm border border-gray-200 transition-all duration-300 hover:shadow-md shrink-0 max-h-[600px] self-start min-w-[300px]"
-                 [style.width.px]="voiceColWidth()"
-                 [class.hidden]="!state.isLiveAgentActive()">
-                 @defer (when state.isLiveAgentActive()) {
-                   <app-voice-assistant class="block h-full overflow-y-auto w-full"></app-voice-assistant>
-                 }
-            </div>
+            <!-- Overlay: Full Screen Voice Assistant -->
+            @if (state.isLiveAgentActive()) {
+              <div class="fixed inset-0 z-[100] bg-white flex flex-col transition-all duration-700 animate-in fade-in"
+                   style="animation: intro-fullscreen 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;">
+                  <app-voice-assistant class="block h-full w-full"></app-voice-assistant>
+              </div>
+            }
 
         </div>
         
@@ -284,10 +361,15 @@ import { ClinicalIntelligenceService } from './services/clinical-intelligence.se
             <app-research-frame></app-research-frame>
         }
       </main>
-    </div>
+    }
+  </div>
   `,
   styles: [`
-    :host { display: block; height: 100%; }
+    :host { display: block; min-height: 100%; }
+    @keyframes intro-fullscreen {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
   `]
 })
 export class AppComponent implements OnDestroy {
@@ -345,6 +427,13 @@ export class AppComponent implements OnDestroy {
   private boundOnWindowResize: (() => void) | null = null;
   private resizeDebounceTimer: any = null;
 
+  isMobile = signal<boolean>(typeof window !== 'undefined' ? window.innerWidth < 768 : false);
+  mobileActiveTab = signal<'tasks' | 'analysis'>('tasks');
+
+  goBackToChart(): void {
+    this.state.selectPart(null);
+  }
+
   isViewingVisitDetails = computed(() => {
     const pastVisit = this.state.viewingPastVisit();
     // Show details view only when a visit is being reviewed AND no specific part has been selected yet.
@@ -373,22 +462,10 @@ export class AppComponent implements OnDestroy {
 
   constructor() {
     afterNextRender(async () => {
-      const containerEl = this.mainContainer()?.nativeElement;
-      if (!containerEl) return;
-
-      // Initialize Dimensions
-      const containerWidth = containerEl.offsetWidth;
-      const containerHeight = containerEl.offsetHeight;
-      this.inputPanelWidth.set(containerWidth * 0.5);
-      this.topSectionHeight.set(containerHeight * this.topHeightRatio);
-      this.summaryColWidth.set(300);
-      this.analysisColWidth.set(containerWidth * 0.4);
-      this.analysisSectionHeight.set(containerHeight * this.analysisHeightRatio);
-      this.voiceColWidth.set(350);
+      if (typeof window === 'undefined') return;
+      this.isMobile.set(window.innerWidth < 768);
 
       // Set up window resize listener for responsive layout
-      this.lastContainerHeight = containerHeight;
-      this.lastContainerWidth = containerWidth;
       this.boundOnWindowResize = this.onWindowResize.bind(this);
       window.addEventListener('resize', this.boundOnWindowResize);
     });
@@ -420,20 +497,16 @@ export class AppComponent implements OnDestroy {
       clearTimeout(this.resizeDebounceTimer);
     }
     this.resizeDebounceTimer = setTimeout(() => {
-      if (this.isDragging()) return;
-      const containerEl = this.mainContainer()?.nativeElement;
-      if (!containerEl) return;
+      if (typeof window === 'undefined') return;
+      this.isMobile.set(window.innerWidth < 768);
 
-      const newHeight = containerEl.offsetHeight;
-      const newWidth = containerEl.offsetWidth;
-
-      // Only react if the container size actually changed significantly
-      if (Math.abs(newHeight - this.lastContainerHeight) > 10 || Math.abs(newWidth - this.lastContainerWidth) > 10) {
-        this.lastContainerHeight = newHeight;
-        this.lastContainerWidth = newWidth;
-        this.topSectionHeight.set(newHeight * this.topHeightRatio);
-        this.analysisSectionHeight.set(newHeight * this.analysisHeightRatio);
-      }
+      // If window resizes, revert panels back to their flexible, percentage-based dimensions
+      this.inputPanelWidth.set(undefined);
+      this.topSectionHeight.set(undefined);
+      this.voiceColWidth.set(undefined);
+      this.analysisSectionHeight.set(undefined);
+      this.summaryColWidth.set(undefined);
+      this.analysisColWidth.set(undefined);
     }, 150);
   }
 
@@ -474,7 +547,14 @@ export class AppComponent implements OnDestroy {
     event.preventDefault();
     this.isDraggingColumn.set(true);
     this.initialColumnDragX = event.clientX;
-    this.initialInputPanelWidth = this.inputPanelWidth();
+
+    if (this.inputPanelWidth() === undefined) {
+      const panelEl = (event.target as HTMLElement).previousElementSibling as HTMLElement;
+      this.initialInputPanelWidth = panelEl.offsetWidth;
+      this.inputPanelWidth.set(this.initialInputPanelWidth);
+    } else {
+      this.initialInputPanelWidth = this.inputPanelWidth()!;
+    }
 
     document.body.style.cursor = 'col-resize';
     document.addEventListener('mousemove', this.boundDoColumnDrag);
@@ -514,7 +594,14 @@ export class AppComponent implements OnDestroy {
     event.preventDefault();
     this.isDraggingTopRow.set(true);
     this.initialTopRowDragY = event.clientY;
-    this.initialTopSectionHeight = this.topSectionHeight();
+
+    if (this.topSectionHeight() === undefined) {
+      const topSectionEl = (event.target as HTMLElement).previousElementSibling as HTMLElement;
+      this.initialTopSectionHeight = topSectionEl.offsetHeight;
+      this.topSectionHeight.set(this.initialTopSectionHeight);
+    } else {
+      this.initialTopSectionHeight = this.topSectionHeight()!;
+    }
 
     document.body.style.cursor = 'row-resize';
     document.addEventListener('mousemove', this.boundDoTopRowDrag);
@@ -551,8 +638,7 @@ export class AppComponent implements OnDestroy {
   }
 
   resetColumnWidth(): void {
-    const containerWidth = this.mainContainer()?.nativeElement.offsetWidth ?? window.innerWidth;
-    this.inputPanelWidth.set(containerWidth * 0.50);
+    this.inputPanelWidth.set(undefined);
   }
 
   resetRowHeights(): void {
@@ -678,7 +764,14 @@ export class AppComponent implements OnDestroy {
     event.preventDefault();
     this.isDraggingVoiceCol.set(true);
     this.initialVoiceDragX = event.clientX;
-    this.initialVoiceWidth = this.voiceColWidth();
+
+    if (this.voiceColWidth() === undefined) {
+      const panelEl = (event.target as HTMLElement).nextElementSibling as HTMLElement;
+      this.initialVoiceWidth = panelEl.offsetWidth;
+      this.voiceColWidth.set(this.initialVoiceWidth);
+    } else {
+      this.initialVoiceWidth = this.voiceColWidth()!;
+    }
 
     document.body.style.cursor = 'col-resize';
     document.addEventListener('mousemove', this.boundDoVoiceColDrag);

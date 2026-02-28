@@ -7,11 +7,13 @@ import { DomSanitizer } from '@angular/platform-browser';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="glass-card rounded-xl border border-white/20 shadow-lg relative overflow-hidden h-full flex flex-col transition-all duration-300 hover:shadow-xl hover:border-white/40">
-      <!-- Glow Effect -->
-      <div class="absolute -top-24 -right-24 w-48 h-48 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="glass-card rounded-xl border border-white/20 shadow-lg relative h-full flex flex-col transition-all duration-300 hover:shadow-xl hover:border-white/40">
+      <!-- Glow Effect (Clipped to card bounds) -->
+      <div class="absolute inset-0 overflow-hidden rounded-xl pointer-events-none">
+        <div class="absolute -top-24 -right-24 w-48 h-48 bg-primary/5 rounded-full blur-3xl"></div>
+      </div>
       
-      <div class="px-6 py-4 flex items-center justify-between border-b border-white/10 shrink-0">
+      <div class="px-6 py-4 flex items-center justify-between border-b border-white/10 shrink-0 relative z-10">
         <div class="flex items-center gap-3">
           @if (icon()) {
             <div class="w-8 h-8 rounded-lg bg-primary-10 flex items-center justify-center text-[#689F38]">

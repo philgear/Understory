@@ -16,10 +16,10 @@ import { UnderstoryBadgeComponent } from './shared/understory-badge.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (patient(); as p) {
-      <div class="p-8 font-sans text-gray-800 h-full flex flex-col bg-white">
+      <div class="p-4 sm:p-8 font-sans text-gray-800 h-full flex flex-col bg-white">
 
             <!-- Chart Header -->
-            <div class="flex justify-between items-start pb-6 border-b border-gray-100">
+            <div class="flex flex-col sm:flex-row justify-between items-start pb-6 border-b border-gray-100 gap-4 sm:gap-0">
               <div>
                 <h1 class="text-3xl font-light text-[#1C1C1C] tracking-tight">{{ p.name }}</h1>
                 <p class="text-xs font-bold uppercase tracking-[0.2em] text-gray-500 mt-2">{{ today | date:'fullDate' }}</p>
@@ -98,7 +98,7 @@ import { UnderstoryBadgeComponent } from './shared/understory-badge.component';
                 <section>
                     <h2 class="text-xs font-bold text-gray-500 uppercase tracking-[0.15em] mb-6">Biometric Telemetry</h2>
                 </section>
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 border-b border-gray-100 pb-8">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 border-b border-gray-100 pb-8">
                   <div class="flex flex-col gap-2 p-3 bg-white border border-gray-100 hover:border-gray-200 transition-colors">
                     <span class="text-xs font-bold text-gray-500 uppercase tracking-[0.15em]">BP</span>
                     <understory-input

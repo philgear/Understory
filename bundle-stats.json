@@ -1,0 +1,23 @@
+{
+  "results": [
+    {
+      "bundleName": "dist/chunk-ZGVHDELW.js",
+      "totalBytes": 1171,
+      "mappedBytes": 0,
+      "unmappedBytes": 1127,
+      "eolBytes": 2,
+      "sourceMapCommentBytes": 42,
+      "files": {
+        "[sourceMappingURL]": {
+          "size": 42
+        },
+        "[unmapped]": {
+          "size": 1127
+        },
+        "[EOLs]": {
+          "size": 2
+        }
+      }
+    }
+  ]
+}

@@ -10,7 +10,7 @@ export interface TranscriptEntry {
     text: string;
 }
 
-export type AnalysisLens = 'Care Plan Overview' | 'Functional Protocols' | 'Monitoring & Follow-up' | 'Patient Education';
+export type AnalysisLens = 'Summary Overview' | 'Functional Protocols' | 'Monitoring & Follow-up' | 'Patient Education';
 
 export interface ClinicalMetrics {
     complexity: number; // 0-10
@@ -32,6 +32,7 @@ export class ClinicalIntelligenceService {
     readonly analysisResults = signal<Partial<Record<AnalysisLens, string>>>({});
     readonly analysisMetrics = signal<ClinicalMetrics | null>(null);
     readonly verificationResults = signal<Partial<Record<AnalysisLens, { status: string, issues: VerificationIssue[] }>>>({});
+    readonly lastRefreshTime = signal<Date | null>(null);
 
     // For live agent chat
     readonly transcript = signal<TranscriptEntry[]>([]);
@@ -49,6 +50,10 @@ FORMATTING RULES (you MUST follow these exactly):
 - Never output raw URLs.
 - Do NOT repeat the patient data back — synthesize and advise.
 - Write in third person clinical voice ("The patient presents with..." not "You have...").
+- CITATION INTEGRITY (UKRIO): When referencing medical literature, you MUST use a parenthetical citation [Author et al., Year].
+- ACCURACY: Only cite a source if it directly supports the specific clinical claim being made. DO NOT use research sources to support patient-reported symptoms unless the source provides specific diagnostic criteria or evidence matched to those symptoms.
+- TRANSPARENCY: Include the full reference in the 'References' section. Use DOIs whenever available. If a source is peer-reviewed, state this clearly in the reference.
+- NO HALLUCINATION: Only cite sources provided in the "Research Context" or "Bookmarks" sections. If no provided source supports a claim, do NOT cite anything.
 
 ANNOTATION SYNTAX (place on a NEW LINE after the relevant paragraph or list item, never inline):
 [[suggestion: Short actionable suggestion]]
@@ -56,9 +61,9 @@ ANNOTATION SYNTAX (place on a NEW LINE after the relevant paragraph or list item
 `;
 
     private systemInstructions: Record<AnalysisLens, string> = {
-        'Care Plan Overview': `You are a world-class care plan recommendation engine for a clinical decision-support tool.
+        'Summary Overview': `You are a world-class care plan recommendation engine for a clinical decision-support tool.
 
-Analyze the patient overview and generate a **Care Plan Overview** structured as follows:
+Analyze the patient overview and generate a **Visit Summary Overview** structured as follows:
 
 ### Clinical Assessment
 A concise 2–3 sentence synthesis of the patient's current clinical picture — key diagnoses, functional status, and risk factors.
@@ -71,6 +76,9 @@ Actionable treatment steps organized by priority. Use sub-bullets for specifics 
 
 ### Goals
 Short-term (2 weeks) and long-term (3 months) measurable clinical goals as bullet points.
+
+### References (UKRIO Compliant)
+A structured list of all sources cited in this report. Format: **Author(s)** (Year). *Title*. Publisher/Journal. DOI (as a clickable link if available). Indicate if Peer-Reviewed.
 ` + this.FORMATTING_RULES,
 
         'Functional Protocols': `You are an expert functional and integrative medicine strategist for a clinical decision-support tool.
@@ -143,6 +151,7 @@ If a section has no relevant source data, output the heading followed by: "*No s
     public loadArchivedAnalysis(report: Partial<Record<AnalysisLens, string>>) {
         this.resetAIState();
         this.analysisResults.set(report);
+        this.lastRefreshTime.set(new Date());
     }
 
     private async generateVisualMetrics(report: Record<string, string>): Promise<void> {
@@ -176,7 +185,7 @@ If a section has no relevant source data, output the heading followed by: "*No s
         this.analysisResults.set({});
         this.analysisMetrics.set(null);
 
-        const lenses: AnalysisLens[] = ['Care Plan Overview', 'Functional Protocols', 'Monitoring & Follow-up', 'Patient Education'];
+        const lenses: AnalysisLens[] = ['Summary Overview', 'Functional Protocols', 'Monitoring & Follow-up', 'Patient Education'];
         const newReport: Partial<Record<AnalysisLens, string>> = {};
 
         if (this.lastSuccessfulPatientData) {
@@ -201,8 +210,10 @@ If a section has no relevant source data, output the heading followed by: "*No s
             }
         }
 
+        const adkModel = await this.ai.getAdkModel();
+
         try {
-            for (const lens of lenses) {
+            const orchestrationPromises = lenses.map(async (lens) => {
                 const sysInstruction = this.systemInstructions[lens];
                 const cacheKey = await this.cache.generateKey([patientData, sysInstruction, lens]);
 
@@ -215,19 +226,31 @@ If a section has no relevant source data, output the heading followed by: "*No s
                         newReport[lens] = responseText;
                         this.analysisResults.update(all => ({ ...all, [lens]: responseText }));
                     } else {
-                        const stream = this.ai.generateReportStream(patientData, lens, sysInstruction);
+                        // ADK Multi-Agent Orchestration
+                        const { LlmAgent, InMemoryRunner } = await import('@google/adk');
 
-                        await new Promise<void>((resolve, reject) => {
-                            stream.subscribe({
-                                next: (chunk) => {
-                                    responseText += chunk;
+                        const agent = new LlmAgent({
+                            name: `Clinical_${lens.replace(/[^A-Za-z]/g, '')}`,
+                            model: adkModel,
+                            instruction: sysInstruction
+                        });
+
+                        const runner = new InMemoryRunner({ agent });
+                        const events = runner.runEphemeral({
+                            userId: 'user',
+                            newMessage: { role: 'user', parts: [{ text: patientData }] }
+                        });
+
+                        for await (const event of events) {
+                            if (event.content?.role === 'model') {
+                                const newText = event.content?.parts?.[0]?.text;
+                                if (newText) {
+                                    responseText += newText;
                                     newReport[lens] = responseText;
                                     this.analysisResults.update(all => ({ ...all, [lens]: responseText }));
-                                },
-                                error: (err) => reject(err),
-                                complete: () => resolve()
-                            });
-                        });
+                                }
+                            }
+                        }
 
                         await this.cache.set(cacheKey, responseText);
                     }
@@ -240,12 +263,15 @@ If a section has no relevant source data, output the heading followed by: "*No s
                     }
                 } catch (e: any) {
                     console.error(`Error in lens ${lens}`, e);
-                    newReport[lens] = `### Error\nAn error occurred in this section.`;
+                    newReport[lens] = `### Error\nAn error occurred in this section: ${e?.message ?? e}`;
                 }
-            }
+            });
+
+            await Promise.allSettled(orchestrationPromises);
 
             this.lastSuccessfulPatientData = patientData;
             this.analysisResults.set(newReport);
+            this.lastRefreshTime.set(new Date());
             await this.generateVisualMetrics(newReport as Record<string, string>);
 
             const reportText = Object.values(newReport).join('\n\n');
@@ -267,10 +293,10 @@ If a section has no relevant source data, output the heading followed by: "*No s
         }
     }
 
-    startChatSession(patientData: string) {
+    async startChatSession(patientData: string) {
         this.transcript.set([]);
-        const context = `You are a collaborative care plan co-pilot named "Aura". You are assisting a doctor in refining a strategy for their patient. You have already reviewed the finalized patient overview and the current recommendations. Your role is to help the doctor iterate on the care plan, explore functional protocols, structure follow-ups, or answer specific questions about the patient's data. Keep your answers brief, actionable, and focused on strategic holistic care. Be ready to elaborate when asked.`;
-        this.ai.startChat(patientData, context);
+        const context = `You are a collaborative care plan co-pilot named "Cerebella". You are assisting a doctor in refining a strategy for their patient. You have already reviewed the finalized patient overview and the current recommendations. Your role is to help the doctor iterate on the care plan, explore functional protocols, structure follow-ups, or answer specific questions about the patient's data. Keep your answers brief, actionable, and focused on strategic holistic care. Be ready to elaborate when asked.`;
+        await this.ai.startChat(patientData, context);
     }
 
     async getInitialGreeting(): Promise<string> {

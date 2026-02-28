@@ -1,112 +1,20 @@
 import { Injectable, signal, computed } from '@angular/core';
-import { HistoryEntry } from './patient-management.service';
+import {
+  BodyPartIssue,
+  PatientVitals,
+  BiometricEntry,
+  ClinicalNote,
+  ChecklistItem,
+  DraftSummaryItem,
+  PatientState,
+  HistoryEntry,
+  Bookmark,
+  BODY_PART_NAMES,
+  BODY_PART_MAPPING
+} from './patient.types';
 
-export interface BodyPartIssue {
-  id: string; // body part id
-  noteId: string; // unique note id
-  name: string;
-  painLevel: number; // 1-10
-  description: string;
-  symptoms: string[];
-  recommendation?: string;
-}
+export { BODY_PART_NAMES, BODY_PART_MAPPING };
 
-export interface PatientVitals {
-  bp: string;      // Blood Pressure
-  hr: string;      // Heart Rate
-  temp: string;    // Temperature
-  spO2: string;    // Oxygen Saturation
-  weight: string;
-  height: string;
-}
-
-export interface ClinicalNote {
-  id: string;
-  text: string;
-  sourceLens: string;
-  date: string;
-}
-
-export interface ChecklistItem {
-  id: string;
-  text: string;
-  completed: boolean;
-}
-
-export interface PatientState {
-  issues: Record<string, BodyPartIssue[]>;
-  patientGoals: string;
-  vitals: PatientVitals;
-  clinicalNotes?: ClinicalNote[];
-  checklist?: ChecklistItem[];
-}
-
-export const BODY_PART_NAMES: Record<string, string> = {
-  'head': 'Head & Neck',
-  'chest': 'Chest & Upper Torso',
-  'abdomen': 'Abdomen & Stomach',
-  'pelvis': 'Pelvis & Hips',
-  'r_shoulder': 'Right Shoulder',
-  'r_arm': 'Right Arm',
-  'r_hand': 'Right Hand & Wrist',
-  'l_shoulder': 'Left Shoulder',
-  'l_arm': 'Left Arm',
-  'l_hand': 'Left Hand & Wrist',
-  'r_thigh': 'Right Thigh',
-  'r_shin': 'Right Lower Leg',
-  'r_foot': 'Right Foot',
-  'l_thigh': 'Left Thigh',
-  'l_shin': 'Left Lower Leg',
-  'l_foot': 'Left Foot'
-};
-
-export const BODY_PART_MAPPING: Record<string, string> = {
-  'head': 'head',
-  'head and neck': 'head',
-  'neck': 'head',
-
-  'chest': 'chest',
-  'chest and upper torso': 'chest',
-  'upper torso': 'chest',
-
-  'abdomen': 'abdomen',
-  'stomach': 'abdomen',
-  'abdomen and stomach': 'abdomen',
-
-  'pelvis': 'pelvis',
-  'hips': 'pelvis',
-  'pelvis and hips': 'pelvis',
-
-  'right shoulder': 'r_shoulder',
-  'right arm': 'r_arm',
-
-  'right hand': 'r_hand',
-  'right wrist': 'r_hand',
-  'right hand and wrist': 'r_hand',
-
-  'left shoulder': 'l_shoulder',
-  'left arm': 'l_arm',
-
-  'left hand': 'l_hand',
-  'left wrist': 'l_hand',
-  'left hand and wrist': 'l_hand',
-
-  'right thigh': 'r_thigh',
-  'right upper leg': 'r_thigh',
-
-  'right shin': 'r_shin',
-  'right lower leg': 'r_shin',
-
-  'right foot': 'r_foot',
-
-  'left thigh': 'l_thigh',
-  'left upper leg': 'l_thigh',
-
-  'left shin': 'l_shin',
-  'left lower leg': 'l_shin',
-
-  'left foot': 'l_foot'
-};
 
 @Injectable({
   providedIn: 'root'
@@ -122,8 +30,10 @@ export class PatientStateService {
   readonly requestedResearchUrl = signal<string | null>(null);
   readonly requestedResearchQuery = signal<string | null>(null);
   readonly viewingPastVisit = signal<HistoryEntry | null>(null);
-  readonly bodyViewerMode = signal<'3d' | '2d'>('3d');
+  readonly bodyViewerMode = signal<'3d' | '2d'>('2d');
   readonly isInternalView = signal<boolean>(false);
+  readonly activePatientSummary = signal<string | null>(null);
+  readonly draftSummaryItems = signal<DraftSummaryItem[]>([]);
 
   // --- Patient Data State ---
   readonly issues = signal<Record<string, BodyPartIssue[]>>({});
@@ -133,8 +43,7 @@ export class PatientStateService {
   });
   readonly clinicalNotes = signal<ClinicalNote[]>([]);
   readonly checklist = signal<ChecklistItem[]>([]);
-  readonly activeCarePlan = signal<string | null>(null);
-  readonly draftCarePlanItems = signal<string[]>([]); // Array of discrete recommendation items for the generative plan
+  readonly biometricHistory = signal<BiometricEntry[]>([]);
 
   // A trigger to force the UI to expand the analysis panel when an item is selected/clicked
   readonly uiExpandTrigger = signal<number>(0);
@@ -237,8 +146,17 @@ export class PatientStateService {
     }));
   }
 
-  updateActiveCarePlan(plan: string | null) {
-    this.activeCarePlan.set(plan);
+  updateActivePatientSummary(plan: string | null) {
+    this.activePatientSummary.set(plan);
+  }
+
+  // --- Biometric Data Actions ---
+  addBiometricEntries(entries: BiometricEntry[]) {
+    this.biometricHistory.update(history => [...history, ...entries]);
+  }
+
+  clearBiometricHistory() {
+    this.biometricHistory.set([]);
   }
 
   // --- Care Plan Drafting Actions ---
@@ -250,10 +168,15 @@ export class PatientStateService {
     this.clinicalNotes.update(notes => notes.filter(n => n.id !== id));
   }
 
-  addDraftCarePlanItem(item: string) {
-    this.draftCarePlanItems.update(items => {
-      if (items.includes(item)) return items;
-      return [...items, item];
+  addDraftSummaryItem(id: string, text: string) {
+    this.draftSummaryItems.update(items => {
+      const existing = items.findIndex(i => i.id === id);
+      if (existing > -1) {
+        const next = [...items];
+        next[existing] = { id, text };
+        return next;
+      }
+      return [...items, { id, text }];
     });
   }
 
@@ -271,12 +194,12 @@ export class PatientStateService {
     this.checklist.update(items => items.filter(item => item.id !== id));
   }
 
-  removeDraftCarePlanItem(itemToRemove: string) {
-    this.draftCarePlanItems.update(items => items.filter(item => item !== itemToRemove));
+  removeDraftSummaryItem(id: string) {
+    this.draftSummaryItems.update(items => items.filter(item => item.id !== id));
   }
 
-  clearDraftCarePlanItems() {
-    this.draftCarePlanItems.set([]);
+  clearDraftSummaryItems() {
+    this.draftSummaryItems.set([]);
   }
 
   requestAnalysisUpdate() {
@@ -310,8 +233,9 @@ export class PatientStateService {
     this.vitals.set({ bp: '', hr: '', temp: '', spO2: '', weight: '', height: '' });
     this.clinicalNotes.set([]);
     this.checklist.set([]);
-    this.activeCarePlan.set(null);
-    this.draftCarePlanItems.set([]);
+    this.activePatientSummary.set(null);
+    this.draftSummaryItems.set([]);
+    this.biometricHistory.set([]);
     this.requestedResearchUrl.set(null);
     this.requestedResearchQuery.set(null);
     this.viewingPastVisit.set(null);
@@ -323,7 +247,7 @@ export class PatientStateService {
     this.selectedNoteId.set(null);
     this.issues.set({});
     this.patientGoals.set('');
-    this.draftCarePlanItems.set([]);
+    this.draftSummaryItems.set([]);
     // Do not clear clinicalNotes or checklist here
   }
 
@@ -351,10 +275,10 @@ export class PatientStateService {
 
 
   // --- Data Aggregation ---
-  getAllDataForPrompt(patientHistory: HistoryEntry[] = []): string {
+  getAllDataForPrompt(patientHistory: HistoryEntry[] = [], bookmarks: Bookmark[] = []): string {
     const issues = this.issues();
     const vitals = this.vitals();
-    const carePlan = this.activeCarePlan();
+    const carePlan = this.activePatientSummary();
 
     // 1. Current Issues
     const partsText = Object.values(issues).flat().map((i: BodyPartIssue) =>
@@ -382,6 +306,12 @@ export class PatientStateService {
         return '';
       }).join('\n');
 
+    // 4. Research Context & Bookmarks
+    const citedBookmarks = bookmarks.filter(b => b.cited);
+    const bookmarksText = bookmarks.map(b =>
+      `- [${b.cited ? 'CITED' : 'Reference'}] ${b.title}: ${b.url}${b.authors ? ` (Authors: ${b.authors})` : ''}${b.doi ? ` (DOI: ${b.doi})` : ''}`
+    ).join('\n');
+
     let prompt = `
     Patient Goals/Chief Complaint: ${this.patientGoals()}
     
@@ -393,6 +323,9 @@ export class PatientStateService {
 
     Recent History & Context:
     ${recentHistory || 'No recent history available.'}
+
+    Research Context (Bookmarks):
+    ${bookmarksText || 'No bookmarks available. Use general medical knowledge.'}
     `;
 
     if (carePlan) {

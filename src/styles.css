@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 @keyframes wobble {
+
     0%,
     100% {
         transform: scaleX(1) rotate(0deg);
@@ -29,4 +30,250 @@
     animation: wobble 2s infinite ease-in-out !important;
     background-color: #1C1C1C !important;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Printing Systems */
+@media print {
+
+    /* Critical reset to allow document flow for multi-page printing */
+    body,
+    html,
+    app-root,
+    * {
+        height: auto !important;
+        max-height: none !important;
+        min-height: auto !important;
+        overflow: visible !important;
+    }
+
+    /* Professional Margin for Medical Stationary */
+    @page {
+        margin: 15mm;
+        size: letter portrait;
+    }
+
+    /* Hide everything marked as no-print */
+    .no-print,
+    .no-print * {
+        display: none !important;
+    }
+
+    /* Print-only area base styling */
+    .print-only {
+        display: block !important;
+        visibility: visible !important;
+        width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        position: static !important;
+        background: white !important;
+    }
+
+    /* Page breaking controls for structured layout */
+    .print-markdown-content h1,
+    .print-markdown-content h2,
+    .print-markdown-content h3,
+    .print-markdown-content h4 {
+        page-break-after: avoid;
+        break-after: avoid;
+    }
+
+    .print-markdown-content table,
+    .print-markdown-content blockquote,
+    .print-markdown-content img,
+    ul,
+    ol,
+    .avoid-break {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+
+    .page-break-before {
+        page-break-before: always;
+        break-before: always;
+    }
+
+    /* typography adjustments for ink/paper */
+    .rams-typography {
+        color: black !important;
+    }
+}
+
+@media screen {
+    .print-only {
+        display: none !important;
+    }
+}
+
+/* Premium Inter Typography Styles (Dieter Rams inspired) */
+.rams-typography h1 {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #111827;
+    margin-top: 3rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #E5E7EB;
+    padding-bottom: 1rem;
+    letter-spacing: -0.025em;
+}
+
+.rams-typography h2 {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #1F2937;
+    margin-top: 2.5rem;
+    margin-bottom: 1.25rem;
+    border-bottom: 1px solid #F3F4F6;
+    padding-bottom: 0.75rem;
+    letter-spacing: -0.02em;
+}
+
+.rams-typography h3 {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-weight: 800;
+    color: #6B7280;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+}
+
+.rams-typography h4,
+.rams-typography h5,
+.rams-typography h6 {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #111827;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.rams-typography p,
+.rams-typography li,
+.rams-typography td,
+.rams-typography th {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    line-height: 1.6;
+    color: #374151;
+}
+
+.rams-typography strong {
+    font-weight: 800;
+    color: #111827;
+}
+
+.rams-typography ul {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 2rem;
+}
+
+.rams-typography li {
+    margin-bottom: 0.75rem;
+    padding: 0.5rem 0.75rem 0.5rem 2rem;
+    position: relative;
+}
+
+.rams-typography li::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: #9CA3AF;
+    border-radius: 50%;
+    position: absolute;
+    left: 0.75rem;
+    top: 1.15em;
+}
+
+.rams-typography blockquote {
+    border-left: 4px solid #689F38;
+    padding: 1rem 1.5rem;
+    background-color: #F9FAFB;
+    font-style: italic;
+    font-weight: 500;
+    color: #4B5563;
+    margin: 2rem 0;
+    border-radius: 0 8px 8px 0;
+}
+
+/* Tables — AI-generated tables for labs, medication, and monitoring */
+.rams-typography table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-size: 0.875rem;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #E5E7EB;
+}
+
+.rams-typography thead {
+    background: #F3F4F6;
+}
+
+.rams-typography th {
+    text-align: left;
+    padding: 0.75rem 1rem;
+    font-weight: 700;
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #6B7280;
+    border-bottom: 2px solid #E5E7EB;
+}
+
+.rams-typography td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #F3F4F6;
+    vertical-align: top;
+}
+
+.rams-typography tbody tr:nth-child(even) {
+    background: #FAFBFC;
+}
+
+.rams-typography tbody tr:hover {
+    background: #F0FDF4;
+}
+
+/* Responsive table wrapper */
+.rams-typography .table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Imagineering Scroll & Reveal Animations */
+.reveal-hidden {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.reveal-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Tab Fade Transition for mobile */
+.tab-fade-enter {
+    animation: fadeIn 0.4s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

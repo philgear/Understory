@@ -1,11 +1,12 @@
 import { Component, ChangeDetectionStrategy, inject, computed } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { PatientStateService } from '../services/patient-state.service';
+import { RevealDirective } from '../directives/reveal.directive';
 
 @Component({
   selector: 'app-task-flow',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RevealDirective],
   providers: [DatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -45,8 +46,8 @@ import { PatientStateService } from '../services/patient-state.service';
               <div class="mb-4">
                 <h3 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3 px-1">Tasks</h3>
                 <div class="flex flex-col gap-2">
-                  @for (task of checklist(); track task.id) {
-                    <div class="flex items-start gap-3 bg-white border border-gray-200 rounded-lg p-3 shadow-sm group hover:border-gray-300 transition-colors">
+                  @for (task of checklist(); track task.id; let i = $index) {
+                    <div appReveal [revealDelay]="i * 75" class="flex items-start gap-3 bg-white border border-gray-200 rounded-lg p-3 shadow-sm group hover:border-gray-300 transition-colors">
                       <input 
                         type="checkbox" 
                         [id]="'task-' + task.id"
@@ -72,8 +73,8 @@ import { PatientStateService } from '../services/patient-state.service';
               <div>
                 <h3 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3 px-1">Notes</h3>
                 <div class="flex flex-col gap-4">
-                  @for (note of clinicalNotes(); track note.id) {
-                    <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm group hover:border-[#689F38] transition-colors relative">
+                  @for (note of clinicalNotes(); track note.id; let i = $index) {
+                    <div appReveal [revealDelay]="i * 75" class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm group hover:border-[#689F38] transition-colors relative">
                       <div class="flex justify-between items-start mb-3">
                         <span class="text-xs font-bold uppercase tracking-widest text-[#416B1F] bg-[#F1F8E9] px-2 py-1 rounded inline-block">
                           {{ note.sourceLens }}

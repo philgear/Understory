@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { UnderstoryButtonComponent } from './shared/understory-button.component';
 import { UnderstoryBadgeComponent } from './shared/understory-badge.component';
 import { PatientStateService } from '../services/patient-state.service';
-import { HistoryEntry, BodyPartIssue } from '../services/patient-management.service';
+import { HistoryEntry, BodyPartIssue } from '../services/patient.types';
 
 interface NotesByPart {
   partId: string;

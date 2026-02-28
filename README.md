@@ -3,7 +3,9 @@
 > Insight beneath the surface.
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-orange.svg)
-![Angular](https://img.shields.io/badge/Angular-v20%2B-DD0031?logo=angular)
+![Angular](https://img.shields.io/badge/Angular-v21.1-DD0031?logo=angular)
+![Three.js](https://img.shields.io/badge/Three.js-v0.183-000000?logo=three.js)
+![Lighthouse 100](https://img.shields.io/badge/Lighthouse-100-brightgreen?logo=lighthouse)
 ![Status](https://img.shields.io/badge/status-active-brightgreen)
 ![Version](https://img.shields.io/badge/version-0.1.0-blue)
 
@@ -11,20 +13,26 @@
 
 ![Understory Dashboard](docs/images/understory_dashboard.png)
 
-Understory streamlines patient intake with an interactive body map and AI-powered insights. It empowers doctors with rapid data visualization and analysis for proactive care decisions.
-
-This tool aims to accelerate the data-gathering process, allowing physicians to quickly visualize patient issues and leverage generative AI to explore potential connections and research avenues before ever speaking to the patient.
+Understory streamlines patient intake with an interactive 3D body map and AI-powered clinical intelligence. It empowers practitioners with rapid data visualization and strategy synthesis for proactive care decisions.
 
 **#GeminiLiveAgentChallenge**
 
 ---
 
-- **Care Plan Recommendation Engine:** Evolved clinical analysis that synthesizes structured strategies for patient care, organized by diagnostic lenses (Overview, Interventions, Monitoring, Education).
-- **Interactive Task Bracketing:** Rapidly markup generated care plans using a double-click state machine (Normal, Added, Removed) to vet and customize AI recommendations.
-- **Localized Auto-Save:** Real-time persistence of clinical notes and bracket states with visual "Saving..." and "Saved ✔" status indicators.
-- **Live AI Consult:** A voice-enabled, conversational "Live Consult" co-pilot (powered by Aura) that collaborates with clinicians to refine strategy in real-time.
-- **Real-time & Responsive:** Built with Angular signals for a reactive UI that updates instantly as data is entered.
-- **Modern UI/UX:** A minimalist, professional interface designed for clinical environments, built with Tailwind CSS.
+## Core Features
+
+-   **Care Plan Recommendation Engine:** A professional clinical analysis engine that synthesizes structured strategies for patient care, organized by diagnostic lenses (Overview, Interventions, Monitoring, Education).
+-   **Multi-Agent Orchestration:** Powered by `@google/adk`, coordinating specialized `LlmAgent` experts to synthesize complex clinical data into actionable insights with stable streaming.
+-   **Printable Clinical Stationery:** CSS Grid-optimized, multi-page physical printouts featuring Halftone body maps for visual pain hotspot diagnosis, with user-selectable toggles for clinical summaries and history.
+-   **Minimalist Dieter Rams Design:** A premium, minimalist UI inspired by the principles of Dieter Rams—prioritizing clarity, neutrality, functional excellence, and seamless mobile responsive layouts (`100dvh`).
+-   **Smartwatch & Mobile Optimization:** Responsive UI scaling down to extremely constrained viewports (e.g., Pixel Watch 2 at 286px width) for ultra-portable clinical referencing.
+-   **Interactive 3D Body Mapping:** Precise anatomical selection using a Three.js-powered skeletal and surface model for localized clinical notation.
+-   **Box Breathing UX:** Focused 16-second box breathing visual animations integrated into primary intake text areas and interactive cursors to promote practitioner mindfulness.
+-   **Interactive Task Bracketing:** Rapidly markup generated care plans using a double-click state machine (Normal, Added, Removed) to vet and customize AI recommendations.
+-   **FHIR-Standard Data Portability:** Seamless import and export of patient data using the FHIR Bundle standard, featuring Unicode-safe Base64 encoding for complete data integrity.
+-   **Patient Management System:** Full CRUD capabilities for patient records, including historical visit review and permanent record removal.
+-   **Live AI Consult:** A voice-enabled, conversational co-pilot that collaborates with clinicians to refine strategy in real-time.
+-   **Localized Auto-Save:** Real-time persistence of clinical notes and bracket states with visual "Saving..." and "Saved ✔" status indicators.
 
 ## Architecture
 
@@ -32,9 +40,11 @@ The application follows a modern, reactive architecture using Angular Signals an
 
 ```mermaid
 graph TD
-    User[Doctor/User] -->|Interacts| UI[Angular Frontend]
+    User[Doctor/User] -->|HTTPS| CloudRun[Google Cloud Run Hosting]
+    CloudRun -->|Serves| UI[Angular Frontend]
+    CloudRun -->|Hosts| Backend[Express.js Server]
     
-    subgraph "Client-Side (Angular)"
+    subgraph "Clinical Data Layer"
         UI -->|Selects Body Part| BodyMap[BodyViewer Component]
         UI -->|Enters Data| Intake[IntakeForm Component]
         UI -->|Requests Analysis| Analysis[Analysis Component]
@@ -44,40 +54,62 @@ graph TD
         Intake -->|Updates| State
         Dictation -->|Updates| Intake
         
+        State -->|Uses Centralized Types| Types[patient.types.ts]
         Analysis -->|Reads| State
-        Analysis -->|Calls| GeminiSvc[Gemini Service]
+        Analysis -->|Invokes| AdkRunner[ADK InMemoryRunner]
+    end
+
+    subgraph "Persistence & Portability"
+        State -->|Persists| PM[Patient Management]
+        PM -->|Exports/Imports| FHIR[FHIR Bundle / PDF]
     end
     
-    subgraph "Google Cloud / AI Studio"
-        GeminiSvc -->|Generate Content| Flash[Gemini 2.5 Flash]
+    subgraph "AI Core & Integrations"
+        AdkRunner -->|Orchestrates| Agents[Specialized LlmAgents]
+        Agents -->|Generate Content| Flash[Gemini 2.5 Flash]
+        Backend -->|Proxy Request| PubMedProxy[/api/pubmed Endpoint]
+        Backend -->|Static Serve| GoogleSearch[search.html]
+        PubMedProxy -->|E-utilities API| NCBI[NCBI PubMed]
+        GoogleSearch -->|CSE API| Google[Google Programmable Search]
     end
     
-    Flash -->|Returns JSON/Text| GeminiSvc
+    UI -->|Iframe Message| GoogleSearch
+    UI -->|API Call| PubMedProxy
+    Flash -->|Returns Partial JSON| Agents
+    Agents -->|Streams JSON| AdkRunner
+    AdkRunner -->|Yields Chunks| Analysis
+    NCBI -->|XML to JSON| PubMedProxy
+    PubMedProxy -->|Search Results| UI
+    Google -->|Search Results| GoogleSearch
+    GoogleSearch -->|postMessage| UI
 ```
-
-## Powered By
-
-This project leverages the following Google technologies:
-
--   [**Google Gemini API**](https://ai.google.dev/) - The core intelligence engine for patient analysis and report generation.
--   [**Angular**](https://angular.dev/) - The web framework used for the reactive, signal-based user interface.
--   [**Google AI Studio**](https://aistudio.google.com/) - The development platform used to build and prototype this agent.
 
 ## Tech Stack
 
-- **Framework:** Angular (v18+, Standalone Components, Zoneless)
-- **Styling:** Tailwind CSS
-- **AI Integration:** 
-  - `gemini-2.5-flash` (Analysis & Chat)
-- **Speech:** Web Speech API (SpeechRecognition & SpeechSynthesis)
+-   **Framework:** Angular v21.1 (Signals-based, Zoneless)
+-   **Architecture:** Angular Server-Side Rendering (SSR) & Client-Side Hydration
+-   **Visualization:** Three.js (3D Anatomical Modeling)
+-   **Intelligence:** Google GenAI SDK (`gemini-2.5-flash`) & Google Agent Development Kit (`@google/adk`)
+-   **Research Integrations:** Google Programmable Search Engine (CSE) & NIH PubMed E-utilities
+-   **Export Engine:** jsPDF & FHIR Bundle standard
+-   **Styling:** Tailwind CSS & Dieter Rams Design System
+-   **Speech Control:** Web Speech API (Bi-directional voice interaction)
+
+## Kaizen Philosophy
+
+Understory is built on the **Kaizen** principle of *continuous, incremental improvement*. We believe that clinical tools should never be "finished," but rather evolve alongside the practitioners who use them.
+
+-   **Incremental Intelligence**: Every clinical analysis is a baseline for refinement. We use interactive bracketing to allow doctors to continuously improve the AI's output.
+-   **Iterative Design**: Our UI is constantly polished to reduce cognitive load, ensuring that every pixel serves a clinical purpose.
+-   **Evolving Integration**: We prioritize high-integrity manual data handling today while continuously building the bridges for automated, high-privacy biometric telemetry tomorrow.
 
 ## Getting Started
 
-To run this project in a local development environment, you would typically follow these steps:
+To run this project in a local development environment:
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/your-username/understory.git
+    git clone https://github.com/philgear/understory.git
     ```
 
 2.  **Install dependencies:**
@@ -85,27 +117,38 @@ To run this project in a local development environment, you would typically foll
     npm install
     ```
 
-3.  **Set up environment variables:**
-    Create a `.env` file in the root directory and add your Gemini API key:
-    ```
-    API_KEY=your_gemini_api_key_here
-    ```
-
-4.  **Run the development server:**
+3.  **Run the development server:**
     ```bash
-    npm start
+    npm run dev
     ```
 
-## Versioning & Changelog
+4.  **Preview Production Build:**
+    ```bash
+    npm run preview
+    ```
 
-This project adheres to [Semantic Versioning](https://semver.org/).
+## Personal Learning Commitment
 
-Before committing new features or patches, document your changes in the [CHANGELOG.md](CHANGELOG.md).
-Once documented, you can automatically bump the package version and generate the Git release tag via:
+Reflecting on the development of Understory, my commitment is to continuously embrace the complexity of multi-agent architectures and rigorous frontend performance optimization. Building this platform taught me the profound importance of balancing bleeding-edge AI orchestration—like implementing `@google/adk`'s `InMemoryRunner` to stabilize clinical generations—with the strict UX demands of a modern progressive web application. I commit to changing how I approach state management in future projects by prioritizing granular, reactive UI signals from day one, and to never settle for "good enough" when a top-tier mobile performance score (100/100 Lighthouse) is attainable through diligent layout unblocking and dynamic asset loading. Further, this project deepened my respect for CSS—from mastering viewport units (`100dvh`) to restore native scrolling on complex mobile constraints, to implementing robust `@media print` rules for structured offline clinical stationery.
 
-```bash
-npm run release
-```
+## Data Card
+
+Understanding how clinical information flows through Understory is critical for building practitioner trust.
+
+**Data Type & Processing:**
+Understory operates as a localized Clinical Data processor. It does not train core foundation models on user data. The primary data inputs include:
+- **Patient Intake:** Demographics, chief complaints, and historical medical notes entered manually or via Web Speech recognition.
+- **Biometric Selection:** Anatomical regions pinpointed interactively via the 3D body map viewer.
+- **Vitals & Telemetry:** Standard health metrics (Heart rate, Blood pressure, SpO2).
+
+**Data Storage & Privacy:**
+- **Local Persistence:** All patient states, clinical brackets, and historical visit notes are stored strictly within the client's local session.
+- **No Remote Database:** There is no centralized remote database storing persistent patient records. 
+- **AI Processing:** Selected clinical context is transmitted securely to the Gemini API (`gemini-2.5-flash`) and specialized `@google/adk` agent orchestrators via transient inference requests. The data is used solely for the immediate generation of the clinical summary and is intentionally not retained by the application backend for training.
+
+**Data Export & Portability:**
+- **FHIR Bundles:** Users can export explicit JSON blobs representing standard FHIR patient state formats, encouraging open data portability.
+- **Printable Stationery:** Generated insights can be physically printed via CSS-optimized layouts featuring Halftone diagnostic maps, ensuring sensitive records can be kept strictly on offline paper when required.
 
 ## Impact Statement
 
@@ -115,16 +158,13 @@ npm run release
 Understory is designed to transform the initial clinical encounter by shifting the burden of data synthesis from the physician to an AI-augmented workflow. By evolving generic medical analysis into a "Care Plan Recommendation Engine," the platform aims to reclaim clinical time for direct patient interaction, ultimately strengthening the doctor-patient relationship through increased presence and empathy.
 
 **Societal and Ethical Implications**  
-- **Autonomy and Dignity**: The platform prioritizes physician autonomy by acting as a "Live Consult" co-pilot rather than an automated decision-maker. Interactive "Task Bracketing" ensures that every medical recommendation is manually vetted and adjusted by a human clinician, preserving the dignity of personalized medical professional judgment.
-- **Fairness and Community Well-being**: By streamlining complex data ingestion—vitals, history, and chief complaint—Understory reduces the cognitive load on healthcare providers. This has the longitudinal potential to reduce physician burnout, leading to more stable medical communities and more equitable access to high-quality care.
-- **Risks and Mitigations**: A primary risk is "automation bias," where a provider might over-rely on AI-generated interventions. We mitigate this through localized auto-saving and explicit manual override triggers (added/removed states), forcing active engagement with the generated content.
+- **Autonomy and Dignity**: The platform prioritizes physician autonomy by acting as a "Live Consult" co-pilot rather than an automated decision-maker. Interactive "Task Bracketing" ensures that every medical recommendation is manually vetted and adjusted by a human clinician.
+- **Fairness and Community Well-being**: By streamlining complex data ingestion—vitals, history, and chief complaint—Understory reduces the cognitive load on healthcare providers, mitigating physician burnout.
+- **Data Integrity**: The commitment to FHIR standards ensures that patient data remains portable, interoperable, and owned by the clinical institution, preventing proprietary data silos.
 
 **Environmental Impact**  
-By facilitating rapid, data-driven synthesis in a paperless environment, Understory promotes resource efficiency within clinics. The use of efficient, quantized models (like Gemini Pro Flash) ensures that the computational footprint of these high-fidelity clinical insights remains optimized for sustainable growth.
-
-**Uncertainties**  
-The long-term impact on clinical outcomes depends on continued human-centric design. While initial results show significant time savings, the ultimate efficacy of AI-augmented strategy requires ongoing longitudinal assessment of diagnostic accuracy and provider-patient satisfaction.
+By facilitating rapid, data-driven synthesis in a paperless environment, Understory promotes resource efficiency within clinics. The use of efficient models (Gemini Flash) ensures that the computational footprint remains optimized for sustainable growth.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+This project is licensed under the MIT License.

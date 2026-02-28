@@ -25,7 +25,9 @@
   },
   "files": [
     "./main.ts",
-    "./src/globals.d.ts"
+    "./src/globals.d.ts",
+    "src/main.server.ts",
+    "src/server.ts"
   ],
   "angularCompilerOptions": {
     "disableTypeScriptVersionCheck": true

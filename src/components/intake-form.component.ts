@@ -1,10 +1,11 @@
 import { Component, ChangeDetectionStrategy, inject, computed, signal, OnDestroy, effect, untracked } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { marked } from 'marked';
+import { MarkdownService } from '../services/markdown.service';
 import { DictationService } from '../services/dictation.service';
 import { ClinicalIntelligenceService } from '../services/clinical-intelligence.service';
-import { PatientStateService, BodyPartIssue, BODY_PART_NAMES } from '../services/patient-state.service';
-import { PatientManagementService, HistoryEntry } from '../services/patient-management.service';
+import { PatientStateService } from '../services/patient-state.service';
+import { PatientManagementService } from '../services/patient-management.service';
+import { BodyPartIssue, BODY_PART_NAMES, BODY_PART_MAPPING, HistoryEntry } from '../services/patient.types';
 
 import { UnderstoryButtonComponent } from './shared/understory-button.component';
 import { UnderstoryInputComponent } from './shared/understory-input.component';
@@ -120,6 +121,8 @@ interface NoteTimelineItem extends BodyPartIssue {
                       [value]="formState().description"
                       (valueChange)="updateDescManual($event)"
                       [disabled]="!note.isCurrent"
+                      [breathing]="note.isCurrent"
+                      [autofocus]="note.isCurrent"
                       [rows]="5"
                       [placeholder]="dictation.isListening() ? 'Listening for your notes...' : 'Describe symptoms, triggers, and observations...'"
                       icon="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z">
@@ -158,7 +161,7 @@ interface NoteTimelineItem extends BodyPartIssue {
                 <!-- 3. Recommendations Section -->
                 <div class="space-y-3">
                   <div class="flex justify-between items-center mb-1">
-                    <label class="text-xs font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
+                    <label for="recommendation-input" class="text-xs font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
                       <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
                       Recommendations
                     </label>
@@ -166,13 +169,14 @@ interface NoteTimelineItem extends BodyPartIssue {
                       <understory-button
                         variant="ghost"
                         size="xs"
-                        (click)="addToCarePlan()"
+                        (click)="addToPatientSummary()"
                         icon="M12 5v14M5 12h14">
-                        Add to Care Plan
+                        Add to Patient Summary
                       </understory-button>
                     }
                   </div>
                   <understory-input
+                    inputId="recommendation-input"
                     type="textarea"
                     [value]="formState().recommendation"
                     (valueChange)="updateRecManual($event)"
@@ -447,6 +451,7 @@ export class IntakeFormComponent implements OnDestroy {
   });
 
   private intel = inject(ClinicalIntelligenceService);
+  private markdownService = inject(MarkdownService);
 
   aiInsights = computed(() => {
     const report = this.intel.analysisResults()['Care Plan Overview'];
@@ -456,12 +461,14 @@ export class IntakeFormComponent implements OnDestroy {
     if (!partName) return [];
 
     try {
-      const tokens = marked.lexer(report);
+      const parser = this.markdownService.parser();
+      if (!parser) return [];
+      const tokens = parser.lexer(report);
       const relevantNodes: any[] = [];
       const partWords = partName.toLowerCase().split(' ');
 
-      tokens.forEach(token => {
-        const text = (token as any).text || token.raw || '';
+      tokens.forEach((token: any) => {
+        const text = token.text || token.raw || '';
         const lowercaseText = text.toLowerCase();
 
         // Find if the body part name exists in this token
@@ -470,7 +477,7 @@ export class IntakeFormComponent implements OnDestroy {
             relevantNodes.push({
               id: `ai-${Math.random()}`,
               type: 'paragraph',
-              rawHtml: marked.parseInline(token.text)
+              rawHtml: parser.parseInline(token.text)
             });
           } else if (token.type === 'list') {
             relevantNodes.push({
@@ -478,14 +485,14 @@ export class IntakeFormComponent implements OnDestroy {
               type: 'list',
               items: token.items.map((it: any) => ({
                 id: `ai-item-${Math.random()}`,
-                html: marked.parseInline(it.text)
+                html: parser.parseInline(it.text)
               }))
             });
           } else if (token.type === 'table' || token.type === 'blockquote' || token.type === 'html') {
             relevantNodes.push({
               id: `ai-${Math.random()}`,
               type: 'raw',
-              rawHtml: marked.parse(token.raw)
+              rawHtml: parser.parse(token.raw)
             });
           }
         }
@@ -738,10 +745,11 @@ export class IntakeFormComponent implements OnDestroy {
     }
   }
 
-  addToCarePlan() {
+  addToPatientSummary() {
     const rec = this.localRecommendation().trim();
-    if (rec) {
-      this.state.addDraftCarePlanItem(rec);
+    const currentNote = this.viewedNote();
+    if (rec && currentNote) {
+      this.state.addDraftSummaryItem(currentNote.id, rec);
     }
   }
 
@@ -827,61 +835,3 @@ export class IntakeFormComponent implements OnDestroy {
     }
   }
 }
-
-const BODY_PART_MAPPING: Record<string, string> = {
-  'head': 'head',
-  'skull': 'head',
-  'face': 'head',
-  'neck': 'head',
-  'chest': 'chest',
-  'torso': 'chest',
-  'stomach': 'abdomen',
-  'abdomen': 'abdomen',
-  'belly': 'abdomen',
-  'hips': 'pelvis',
-  'pelvis': 'pelvis',
-  'groin': 'pelvis',
-  'right shoulder': 'r_shoulder',
-  'right arm': 'r_arm',
-  'right bicep': 'r_arm',
-  'right elbow': 'r_arm',
-  'right forearm': 'r_arm',
-  'right hand': 'r_hand',
-  'right wrist': 'r_hand',
-  'right fingers': 'r_fingers',
-  'right thumb': 'r_fingers',
-  'left shoulder': 'l_shoulder',
-  'left arm': 'l_arm',
-  'left bicep': 'l_arm',
-  'left elbow': 'l_arm',
-  'left forearm': 'l_arm',
-  'left hand': 'l_hand',
-  'left wrist': 'l_hand',
-  'left fingers': 'l_fingers',
-  'left thumb': 'l_fingers',
-  'right thigh': 'r_thigh',
-  'right upper leg': 'r_thigh',
-  'right knee': 'r_shin',
-  'right shin': 'r_shin',
-  'right calf': 'r_shin',
-  'right lower leg': 'r_shin',
-  'right ankle': 'r_foot',
-  'right foot': 'r_foot',
-  'right toes': 'r_toes',
-  'left thigh': 'l_thigh',
-  'left upper leg': 'l_thigh',
-  'left knee': 'l_shin',
-  'left shin': 'l_shin',
-  'left calf': 'l_shin',
-  'left lower leg': 'l_shin',
-  'left ankle': 'l_foot',
-  'left foot': 'l_foot',
-  'left toes': 'l_toes',
-  'upper back': 'upper_back',
-  'lower back': 'lower_back',
-  'spine': 'upper_back',
-  'back': 'upper_back',
-  'glutes': 'glutes',
-  'buttocks': 'glutes',
-  'bottom': 'glutes'
-};

@@ -33,7 +33,12 @@ export interface IntelligenceProvider {
     /**
      * Chat Session Management
      */
-    startChat(patientData: string, context: string): void;
+    startChat(patientData: string, context: string): Promise<void>;
     sendMessage(message: string): Promise<string>;
     getInitialGreeting(prompt: string): Promise<string>;
+
+    /**
+     * ADK Interoperability
+     */
+    getAdkModel(): Promise<any>;
 }

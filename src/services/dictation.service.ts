@@ -20,6 +20,11 @@ export class DictationService {
   }
 
   private initializeSpeechRecognition() {
+    if (typeof window === 'undefined') {
+      this.permissionError.set("Voice dictation is not supported during SSR.");
+      return;
+    }
+
     const SpeechRecognitionAPI = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognitionAPI) {
       this.permissionError.set("Voice dictation is not supported in this browser.");
@@ -61,7 +66,7 @@ export class DictationService {
           interim += event.results[i][0].transcript;
         }
       }
-      
+
       if (this.resultCallback) {
         if (final) this.resultCallback(final, true);
         if (interim) this.resultCallback(interim, false);

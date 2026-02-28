@@ -1,7 +1,8 @@
-import { Component, ChangeDetectionStrategy, inject, computed, signal } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, computed, signal, viewChild, ElementRef, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PatientStateService, PatientState } from '../services/patient-state.service';
-import { PatientManagementService, Patient, HistoryEntry } from '../services/patient-management.service';
+import { PatientStateService } from '../services/patient-state.service';
+import { PatientManagementService } from '../services/patient-management.service';
+import { PatientState, Patient, HistoryEntry } from '../services/patient.types';
 import { BodyViewerComponent } from './body-viewer.component';
 import { PatientHistoryTimelineComponent } from './patient-history-timeline.component';
 import { DictationService } from '../services/dictation.service';
@@ -14,7 +15,7 @@ import { UnderstoryCardComponent } from './shared/understory-card.component';
   imports: [CommonModule, BodyViewerComponent, PatientHistoryTimelineComponent, UnderstoryButtonComponent, UnderstoryCardComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="w-full flex flex-col gap-6 p-8 bg-[#F9FAFB]">
+    <div class="w-full min-h-full flex flex-col gap-4 sm:gap-6 p-4 sm:p-8 bg-[#F9FAFB]">
  
        <!-- Review Mode Banner -->
       @if(isReviewMode() && state.viewingPastVisit(); as visit) {
@@ -97,7 +98,7 @@ import { UnderstoryCardComponent } from './shared/understory-card.component';
         
         @if(isHistoryExpanded()) {
           <div class="flex flex-col min-h-0">
-            <div class="p-6">
+            <div #historyContainer class="p-6 overflow-y-auto max-h-[500px] scroll-smooth">
               @if(selectedPatient()?.history; as history) {
                 <app-patient-history-timeline 
                   [history]="filteredHistory()"
@@ -128,6 +129,31 @@ export class MedicalChartComponent {
   state = inject(PatientStateService);
   patientManager = inject(PatientManagementService);
   dictation = inject(DictationService);
+
+  historyContainer = viewChild<ElementRef<HTMLDivElement>>('historyContainer');
+
+  el = inject(ElementRef);
+
+  constructor() {
+    effect(() => {
+      // depend on history to trigger scroll
+      const history = this.filteredHistory();
+      if (history) {
+        setTimeout(() => {
+          // Scroll the inner container
+          const histEl = this.historyContainer()?.nativeElement;
+          if (histEl && typeof histEl.scrollTo === 'function') {
+            histEl.scrollTo({ top: histEl.scrollHeight, behavior: 'smooth' });
+          }
+          // Scroll the host container, which has overflow-y-auto applied from app.component.ts
+          const mainEl = this.el.nativeElement as HTMLElement;
+          if (mainEl && typeof mainEl.scrollTo === 'function') {
+            mainEl.scrollTo({ top: mainEl.scrollHeight, behavior: 'smooth' });
+          }
+        }, 100);
+      }
+    });
+  }
 
   viewerIcon = `
     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -189,8 +215,8 @@ export class MedicalChartComponent {
         case 'ChartArchived':
           return !!entry.state?.issues[filter];
         case 'AnalysisRun':
-        case 'CarePlanUpdate':
-        case 'FinalizedCarePlan':
+        case 'PatientSummaryUpdate':
+        case 'FinalizedPatientSummary':
         case 'BookmarkAdded':
           return true;
         default:

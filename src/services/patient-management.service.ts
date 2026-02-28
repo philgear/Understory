@@ -1,66 +1,13 @@
 import { Injectable, inject, signal, effect, WritableSignal, computed, untracked } from '@angular/core';
-import { PatientStateService, PatientState, BodyPartIssue } from './patient-state.service';
+import { PatientStateService } from './patient-state.service';
 import { ClinicalIntelligenceService, AnalysisLens } from './clinical-intelligence.service';
-
-export interface Bookmark {
-  title: string;
-  url: string;
-}
-
-export type HistoryEntry = {
-  type: 'Visit';
-  date: string;
-  summary: string;
-  state: PatientState;
-} | {
-  type: 'ChartArchived';
-  date: string;
-  summary: string;
-  state: PatientState;
-} | {
-  type: 'CarePlanUpdate';
-  date: string;
-  summary: string;
-} | {
-  type: 'BookmarkAdded';
-  date: string;
-  summary: string;
-  bookmark: Bookmark;
-} | {
-  type: 'NoteCreated';
-  date: string;
-  summary: string; // e.g. "Note added for Head & Neck"
-  partId: string;
-  noteId: string;
-} | {
-  type: 'NoteDeleted';
-  date: string;
-  summary: string; // e.g. "Note deleted for Head & Neck"
-  partId: string;
-  noteId: string;
-} | {
-  type: 'AnalysisRun';
-  date: string;
-  summary: string;
-  report: Partial<Record<AnalysisLens, string>>;
-} | {
-  type: 'FinalizedCarePlan';
-  date: string;
-  summary: string;
-  report: Partial<Record<AnalysisLens, string>>;
-  annotations: Record<string, Record<string, { note: string, bracketState: 'normal' | 'added' | 'removed' }>>;
-};
-
-export interface Patient extends PatientState {
-  id: string;
-  name: string;
-  age: number;
-  gender: 'Male' | 'Female' | 'Non-binary' | 'Other';
-  lastVisit: string;
-  preexistingConditions: string[];
-  history: HistoryEntry[];
-  bookmarks: Bookmark[];
-}
+import {
+  Bookmark,
+  HistoryEntry,
+  Patient,
+  PatientState,
+  BodyPartIssue
+} from './patient.types';
 
 // Re-export for use in other components
 export type { BodyPartIssue };
@@ -69,147 +16,52 @@ export type { BodyPartIssue };
 const MOCK_PATIENTS: Patient[] = [
   {
     id: 'p001',
-    name: 'Alex Vance',
-    age: 45,
-    gender: 'Non-binary',
-    lastVisit: '2024.06.15',
-    preexistingConditions: ['Migraines', 'Cervical Spondylosis'],
-    patientGoals: 'Follow-up on persistent cervicogenic headaches and associated right shoulder tension.',
-    vitals: { bp: '130/85', hr: '72', temp: '98.7°F', spO2: '98%', weight: '155 lbs', height: `5'7"` },
+    name: 'Robert Davis',
+    age: 58,
+    gender: 'Male',
+    lastVisit: '2024.11.20',
+    preexistingConditions: ['Obesity (BMI 42)', 'Severe Obstructive Sleep Apnea', 'Metabolic Syndrome'],
+    patientGoals: 'Discuss CPAP compliance issues and weight management strategies.',
+    vitals: { bp: '152/95', hr: '88', temp: '98.4°F', spO2: '94%', weight: '295 lbs', height: `5'10"` },
     issues: {
-      'head': [{ id: 'head', noteId: 'note_p001_head_1', name: 'Head & Neck', painLevel: 7, description: 'Reports a dull, throbbing pain originating from the neck and radiating to the temples, rated 7/10. Pain worsens throughout the day, particularly with prolonged computer use.', symptoms: [] }],
-      'r_shoulder': [{ id: 'r_shoulder', noteId: 'note_p001_rshoulder_1', name: 'Right Shoulder', painLevel: 5, description: 'Describes a persistent stiffness and ache in the right trapezius and shoulder, rated 5/10, with a noted decrease in cervical rotation.', symptoms: [] }]
+      'chest': [{ id: 'chest', noteId: 'note_p001_chest_1', name: 'Chest & Lungs', painLevel: 1, description: 'Reports waking up gasping for air frequently. Daytime somnolence affecting work performance.', symptoms: [] }],
+      'head': [{ id: 'head', noteId: 'note_p001_head_1', name: 'Head & Neck', painLevel: 2, description: 'Morning headaches nearly every day, likely secondary to hypoxemia and OSA.', symptoms: [] }]
     },
     history: [
       {
-        type: 'AnalysisRun',
-        date: '2024.06.15',
-        summary: 'Care Plan Generated',
-        report: {
-          'Care Plan Overview': `### Executive Care Strategy
-**STATUS:** HIGH PRIORITY INTERVENTION
-
-<hr/>
-
-#### Functional Rationale
-Analysis of Eleanor's biometric trends indicates a direct correlation between sustained shoulder tension and headache onset. Vitals remain within normal parameters (BP: 130/85), though a 12% increase in heart rate is noted during peak pain episodes.
-
-- **Pathology:** Cervicogenic origin confirmed via segmental testing.
-- **Biometrics:** Stable BP suggests pain-induced sympathetic drive.
-
-#### Prioritized Objectives
-1. **Acute Tension Relief:** Targeted myofascial release of right trapezius and levator scapulae.
-2. **Cervical Stabilization:** Address C2-C3 mobility restrictions via Grade II manual therapy.
-3. **Ergonomic Drift:** Correct forward head posture (FHP) through workstation optimization.`,
-          'Functional Protocols': `### Functional Protocols
-**TARGETED THERAPEUTIC ROADMAP**
-
-<hr/>
-
-#### Phase 01: Acute Normalization
-- **Manual Therapy:** Grade II Cervical Mobilization. Focus on C2-C3 segments to restore arthrokinematics.
-- **Neuromuscular:** Dry Needling (RA). Active trigger point release in the upper trapezius.
-
-#### Phase 02: Structural Re-education
-- Implement **Deep Neck Flexor (DNF)** training protocol. Initial focus on isometric chin tucks with biofeedback monitoring to ensure recruitment of longus colli over superficial musculature.
-
-#### Wholistic Trajectory
-> **70% Pain Reduction | 15° ROM Increase**
-> *Expected stabilization of C-spine within 4-6 weeks of adherence.*`,
-          'Monitoring & Follow-up': `### Track & Review Protocol
-**OBSERVATION & ESCALATION**
-
-<hr/>
-
-| Parameter | Frequency | Threshold / Goal | Action |
-| :--- | :---: | :--- | :--- |
-| **Pain Level (VAS)**| Daily | < 3/10 | Maintain NSAIDs PRN |
-| **Cervical ROM**    | Weekly | > 45° rotation | Advance to Phase 02 PT |
-| **Headache Freq.**  | Weekly | < 2 episodes/wk | Continue current plan |
-
-#### Red Flag Escalation
-**IMMEDIATE REVIEW REQUIRED IF:**
-- Onset of radicular symptoms (numbness/tingling in right UE).
-- Sudden, severe "thunderclap" headache.
-- Loss of cervical motor control.`,
-          'Patient Education': `### Patient Directives
-**LIFESTYLE & ACTIVITY MODIFICATIONS**
-
-<hr/>
-
-#### 1. Postural Awareness
-- **Action:** Anchor "chin tuck" posture to frequent environmental triggers (e.g., every time you send an email).
-- **Rationale:** Reduces chronic loading on the suboccipital muscles.
-
-#### 2. Thermal Modulation
-- **Action:** 15 mins alternating Heat/Cold therapy on the right shoulder, 3x daily.
-- **Rationale:** Heat promotes vasodilation for healing; cold interrupts the pain-spasm cycle.
-
-#### 3. Autonomic Regulation
-- **Action:** Integrate 4-7-8 breathing technique during peak stress hours.
-- **Rationale:** Mitigates the sympathetic nervous system's amplification of perceived pain.`
-        }
-      },
-      { type: 'BookmarkAdded', date: '2024.06.15', summary: 'Cervicogenic Headaches', bookmark: { title: 'Cervicogenic Headaches', url: 'https://pubmed.ncbi.nlm.nih.gov/?term=cervicogenic+headache' } },
-      {
         type: 'Visit',
-        date: '2024.05.10',
-        summary: 'Initial consultation for neck stiffness.',
+        date: '2024.10.10',
+        summary: 'Initial consultation for sleep study follow-up.',
         state: {
-          patientGoals: 'Initial consultation for neck stiffness and right shoulder pain.',
-          vitals: { bp: '128/82', hr: '70', temp: '98.6°F', spO2: '99%', weight: '155 lbs', height: `5'7"` },
-          issues: {
-            'head': [{ id: 'head', noteId: 'note_p001_head_hist1', name: 'Head & Neck', painLevel: 6, description: 'Patient reports moderate neck stiffness, worse on the right side.', symptoms: [] }],
-            'r_shoulder': [{ id: 'r_shoulder', noteId: 'note_p001_rshoulder_hist1', name: 'Right Shoulder', painLevel: 4, description: 'Dull ache in right shoulder, seems related to neck.', symptoms: [] }]
-          }
-        }
-      },
-      {
-        type: 'Visit',
-        date: '2024.04.22',
-        summary: 'Annual physical examination.',
-        state: {
-          patientGoals: 'Annual physical, feeling generally well.',
-          vitals: { bp: '120/80', hr: '68', temp: '98.6°F', spO2: '99%', weight: '154 lbs', height: `5'7"` },
+          patientGoals: 'Review sleep study results.',
+          vitals: { bp: '148/92', hr: '85', temp: '98.6°F', spO2: '96%', weight: '298 lbs', height: `5'10"` },
           issues: {}
         }
       }
     ],
-    bookmarks: [
-      { title: 'Cervicogenic Headaches', url: 'https://pubmed.ncbi.nlm.nih.gov/?term=cervicogenic+headache' },
-    ]
+    bookmarks: []
   },
   {
     id: 'p002',
-    name: 'Jordan Holloway',
-    age: 38,
+    name: 'Sarah Jenkins',
+    age: 42,
     gender: 'Female',
-    lastVisit: '2024.05.20',
-    preexistingConditions: ['History of Sciatica'],
-    patientGoals: 'Evaluation of recurrent lumbar strain, exacerbated by recent improper lifting.',
-    vitals: { bp: '122/80', hr: '65', temp: '98.6°F', spO2: '99%', weight: '180 lbs', height: `6'1"` },
+    lastVisit: '2024.12.01',
+    preexistingConditions: ['Chronic Lower Back Pain', 'Opioid Use Disorder (in remission)', 'Depression'],
+    patientGoals: 'Seeking alternative pain management options to avoid opioid relapse.',
+    vitals: { bp: '118/72', hr: '76', temp: '98.2°F', spO2: '99%', weight: '145 lbs', height: `5'5"` },
     issues: {
-      'lower_back': [{ id: 'lower_back', noteId: 'note_p002_lowerback_1', name: 'Lower Back', painLevel: 6, description: 'Patient reports acute, sharp pain (6/10) in the lower lumbar region upon flexion. This transitions to a constant, dull ache when sitting for over 20 minutes. No radiating pain or numbness reported.', symptoms: [] }]
+      'mid_back': [{ id: 'mid_back', noteId: 'note_p002_back_1', name: 'Lower Back', painLevel: 7, description: 'Constant aching pain in L4-L5 region radiating to the left glute. Worsens with prolonged standing.', symptoms: [] }]
     },
     history: [
       {
         type: 'Visit',
-        date: '2024.05.20',
-        summary: 'Follow-up for lumbar strain.',
+        date: '2024.10.15',
+        summary: 'Discussion of physical therapy and cognitive behavioral therapy for pain.',
         state: {
-          patientGoals: 'Follow-up for lumbar strain, reporting significant improvement with rest.',
-          vitals: { bp: '120/80', hr: '65', temp: '98.6°F', spO2: '99%', weight: '180 lbs', height: `6'1"` },
-          issues: { 'lower_back': [{ id: 'lower_back', noteId: 'note_p002_lowerback_hist1', name: 'Lower Back', painLevel: 3, description: 'Patient reports pain is much improved, now a dull ache (3/10) only with prolonged sitting. No sharp pain on flexion.', symptoms: [] }] }
-        }
-      },
-      {
-        type: 'Visit',
-        date: '2024.05.05',
-        summary: 'Injury assessment post-lifting incident.',
-        state: {
-          patientGoals: 'Assessment of back pain after lifting a heavy box.',
-          vitals: { bp: '125/85', hr: '75', temp: '98.6°F', spO2: '98%', weight: '180 lbs', height: `6'1"` },
-          issues: { 'lower_back': [{ id: 'lower_back', noteId: 'note_p002_lowerback_hist2', name: 'Lower Back', painLevel: 8, description: 'Severe sharp pain in lower back after lifting incident yesterday.', symptoms: [] }] }
+          patientGoals: 'Need help managing flare-ups without medication.',
+          vitals: { bp: '120/75', hr: '74', temp: '98.5°F', spO2: '99%', weight: '148 lbs', height: `5'5"` },
+          issues: { 'mid_back': [{ id: 'mid_back', noteId: 'note_p002_back_hist1', name: 'Lower Back', painLevel: 6, description: 'Pain has been increasing recently due to work stress.', symptoms: [] }] }
         }
       }
     ],
@@ -217,22 +69,22 @@ Analysis of Eleanor's biometric trends indicates a direct correlation between su
   },
   {
     id: 'p003',
-    name: 'Sam Petrova',
-    age: 29,
+    name: 'William Henderson',
+    age: 81,
     gender: 'Male',
-    lastVisit: '2024.07.01',
-    preexistingConditions: ['IBS (unconfirmed)'],
-    patientGoals: 'Seeking consultation for chronic postprandial bloating, abdominal cramping, and general gastrointestinal discomfort.',
-    vitals: { bp: '115/75', hr: '68', temp: '98.5°F', spO2: '99%', weight: '135 lbs', height: `5'5"` },
+    lastVisit: '2024.12.05',
+    preexistingConditions: ["Mild Cognitive Impairment / Early Alzheimer's", 'Osteoarthritis', 'Fall Risk'],
+    patientGoals: 'Family requested evaluation for increased confusion and recent fall at home.',
+    vitals: { bp: '135/82', hr: '68', temp: '97.9°F', spO2: '97%', weight: '162 lbs', height: `5'9"` },
     issues: {
-      'abdomen': [{ id: 'abdomen', noteId: 'note_p003_abdomen_1', name: 'Abdomen & Stomach', painLevel: 4, description: `Patient describes a diffuse abdominal ache, rated 4/10, accompanied by significant bloating and a feeling of 'fullness' within 30 minutes after eating most meals. Reports cramping is intermittent and not localized. No signs of nausea or vomiting.`, symptoms: [] }]
+      'head': [{ id: 'head', noteId: 'note_p003_head_1', name: 'Brain & Cognition', painLevel: 0, description: `Daughter reports patient got lost returning from the grocery store yesterday. Requires prompting for ADLs. MoCA score: 18/30.`, symptoms: [] }],
+      'r_arm': [{ id: 'r_arm', noteId: 'note_p003_arm_1', name: 'Right Arm / Wrist', painLevel: 4, description: 'Bruising and tenderness from mechanical fall two days ago. X-ray negative for fracture.', symptoms: [] }]
     },
     history: [
-      { type: 'Visit', date: '2024.06.18', summary: 'Dietary follow-up and symptom check.', state: { patientGoals: 'Dietary follow-up.', vitals: { bp: '115/75', hr: '68', temp: '98.5°F', spO2: '99%', weight: '135 lbs', height: `5'5"` }, issues: { 'abdomen': [{ id: 'abdomen', noteId: 'note_p003_abdomen_hist1', name: 'Abdomen & Stomach', painLevel: 5, description: 'Still experiencing bloating and discomfort.', symptoms: [] }] } } },
-      { type: 'Visit', date: '2024.05.15', summary: 'Initial consult for gastrointestinal issues.', state: { patientGoals: 'Chronic stomach bloating and pain.', vitals: { bp: '118/76', hr: '70', temp: '98.5°F', spO2: '99%', weight: '138 lbs', height: `5'5"` }, issues: { 'abdomen': [{ id: 'abdomen', noteId: 'note_p003_abdomen_hist2', name: 'Abdomen & Stomach', painLevel: 6, description: 'Bloating after every meal for the last few months.', symptoms: [] }] } } },
+      { type: 'Visit', date: '2024.06.12', summary: '6-month geriatric assessment.', state: { patientGoals: 'Routine check, family notes mild forgetfulness.', vitals: { bp: '130/80', hr: '70', temp: '98.1°F', spO2: '98%', weight: '165 lbs', height: `5'9"` }, issues: { 'head': [{ id: 'head', noteId: 'note_p003_head_hist2', name: 'Brain & Cognition', painLevel: 0, description: 'Mild short-term memory deficits noted.', symptoms: [] }] } } },
     ],
     bookmarks: []
-  },
+  }
 ];
 
 
@@ -263,16 +115,16 @@ export class PatientManagementService {
         if (patient) {
           // Load the selected patient's data into the main state service
           this.patientState.loadState(patient);
-          this.findAndLoadActiveCarePlan(patient.history);
+          this.findAndLoadActivePatientSummary(patient.history);
 
           // Reset the AI analysis first, then load the existing one if we have it
           this.geminiService.resetAIState();
 
-          const latestAnalysis = patient.history.find(entry => entry.type === 'AnalysisRun' || entry.type === 'FinalizedCarePlan');
+          const latestAnalysis = patient.history.find(entry => entry.type === 'AnalysisRun' || entry.type === 'FinalizedPatientSummary');
           if (latestAnalysis) {
             if (latestAnalysis.type === 'AnalysisRun') {
               this.geminiService.loadArchivedAnalysis(latestAnalysis.report);
-            } else if (latestAnalysis.type === 'FinalizedCarePlan') {
+            } else if (latestAnalysis.type === 'FinalizedPatientSummary') {
               this.geminiService.loadArchivedAnalysis(latestAnalysis.report);
             }
           }
@@ -285,13 +137,13 @@ export class PatientManagementService {
     }); // Warning: direct signal writes in effects are discouraged but sometimes necessary for orchestration 
   }
 
-  private findAndLoadActiveCarePlan(history: HistoryEntry[]) {
-    // Find the most recent care plan update
-    const latestCarePlan = history.find(entry => entry.type === 'CarePlanUpdate');
-    if (latestCarePlan) {
-      this.patientState.updateActiveCarePlan(latestCarePlan.summary);
+  private findAndLoadActivePatientSummary(history: HistoryEntry[]) {
+    // Find the most recent patient summary update
+    const latestSummary = history.find(entry => entry.type === 'PatientSummaryUpdate');
+    if (latestSummary) {
+      this.patientState.updateActivePatientSummary(latestSummary.summary);
     } else {
-      this.patientState.updateActiveCarePlan(null);
+      this.patientState.updateActivePatientSummary(null);
     }
   }
 
@@ -312,8 +164,8 @@ export class PatientManagementService {
       this.geminiService.resetAIState();
 
       // Reload the latest analysis so the panel isn't empty after exiting review mode
-      const latestAnalysis = patient.history.find(entry => entry.type === 'AnalysisRun' || entry.type === 'FinalizedCarePlan');
-      if (latestAnalysis && (latestAnalysis.type === 'AnalysisRun' || latestAnalysis.type === 'FinalizedCarePlan')) {
+      const latestAnalysis = patient.history.find(entry => entry.type === 'AnalysisRun' || entry.type === 'FinalizedPatientSummary');
+      if (latestAnalysis && (latestAnalysis.type === 'AnalysisRun' || latestAnalysis.type === 'FinalizedPatientSummary')) {
         this.geminiService.loadArchivedAnalysis(latestAnalysis.report);
       }
     }
@@ -341,6 +193,27 @@ export class PatientManagementService {
     // Add to the top of the list for immediate visibility
     this.patients.update(patients => [newPatient, ...patients]);
     this.selectedPatientId.set(newPatientId);
+  }
+
+  /** Removes a patient record. */
+  removePatient(id: string) {
+    const isActive = this.selectedPatientId() === id;
+
+    this.patients.update(patients => {
+      const filtered = patients.filter(p => p.id !== id);
+
+      // If we removed the active patient, select the next available one or null
+      if (isActive) {
+        if (filtered.length > 0) {
+          // Use setTimeout to avoid expression changed after checked and ensure safe state transition
+          setTimeout(() => this.selectedPatientId.set(filtered[0].id));
+        } else {
+          setTimeout(() => this.selectedPatientId.set(null));
+        }
+      }
+
+      return filtered;
+    });
   }
 
   /** Imports a pre-built Patient object (from JSON or FHIR import). */
@@ -438,6 +311,22 @@ export class PatientManagementService {
     );
   }
 
+  /** Updates an existing bookmark's metadata. */
+  updateBookmark(url: string, updates: Partial<Bookmark>) {
+    const patientId = this.selectedPatientId();
+    if (!patientId) return;
+
+    this.patients.update(patients =>
+      patients.map(p => {
+        if (p.id !== patientId) return p;
+        return {
+          ...p,
+          bookmarks: p.bookmarks.map(b => b.url === url ? { ...b, ...updates } : b)
+        };
+      })
+    );
+  }
+
   deleteNoteAndHistory(noteEntry: HistoryEntry) {
     if (noteEntry.type !== 'NoteCreated') return;
 
@@ -487,9 +376,9 @@ export class PatientManagementService {
     const patient = this.patients().find(p => p.id === patientId);
     if (patient) {
       const associatedAnalysis = patient.history.find(entry =>
-        (entry.type === 'AnalysisRun' || entry.type === 'FinalizedCarePlan') && entry.date === visit.date
+        (entry.type === 'AnalysisRun' || entry.type === 'FinalizedPatientSummary') && entry.date === visit.date
       );
-      if (associatedAnalysis && (associatedAnalysis.type === 'AnalysisRun' || associatedAnalysis.type === 'FinalizedCarePlan')) {
+      if (associatedAnalysis && (associatedAnalysis.type === 'AnalysisRun' || associatedAnalysis.type === 'FinalizedPatientSummary')) {
         this.geminiService.loadArchivedAnalysis(associatedAnalysis.report);
       }
     }

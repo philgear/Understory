@@ -1,13 +1,13 @@
 import { Component, ChangeDetectionStrategy, inject, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { HistoryEntry, BodyPartIssue } from '../services/patient-management.service';
+import { HistoryEntry, BodyPartIssue } from '../services/patient.types';
 
 // --- Icon Definitions ---
 const ICONS: Record<string, string> = {
   // Event Types
   VISIT: `<path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14zM7 10h5v5H7z"/>`,
-  CARE_PLAN: `<path d="M7 15h7v2H7zm0-4h10v2H7zm0-4h10v2H7zm12-4h-4.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2m-7-2c.55 0 1 .45 1 1s-.45 1-1 1s-1-.45-1-1s.45-1 1-1m7 18H5V5h14z"/>`,
+  PATIENT_SUMMARY: `<path d="M7 15h7v2H7zm0-4h10v2H7zm0-4h10v2H7zm12-4h-4.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2m-7-2c.55 0 1 .45 1 1s-.45 1-1 1s-1-.45-1-1s.45-1 1-1m7 18H5V5h14z"/>`,
   BOOKMARK: `<path d="m12 15.4 3.75 2.6-1-4.35L18 11l-4.45-.4L12 6.5 10.45 10.6 6 11l3.25 2.65-1 4.35z"/>`,
   NOTE: `<path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 0 0-1.41 0l-1.83 1.83l3.75 3.75z"/>`,
   ANALYSIS: `<path d="M11 22h2v-2h-2zm-4-4h2v-2H7zm8 0h2v-2h-2zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2m0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m-1-13h2v6h-2z"/>`,
@@ -44,17 +44,15 @@ const ICONS: Record<string, string> = {
           <div class="absolute left-3 top-2 -translate-x-1/2 w-6 h-6 rounded-full bg-white flex items-center justify-center border"
                [class.border-gray-300]="entry.type === 'Visit' || entry.type === 'ChartArchived'"
                [class.border-gray-200]="entry.type !== 'Visit' && entry.type !== 'ChartArchived'">
-            <svg xmlns="http://www.w3.org/2000/svg" 
-                 class="w-3.5 h-3.5"
+            <span class="inline-flex items-center justify-center w-3.5 h-3.5"
                  [class.text-[#1C1C1C]]="entry.type === 'Visit' || entry.type === 'ChartArchived'"
-                 [class.text-blue-500]="entry.type === 'CarePlanUpdate' || entry.type === 'FinalizedCarePlan'"
+                 [class.text-blue-500]="entry.type === 'PatientSummaryUpdate' || entry.type === 'FinalizedPatientSummary'"
                  [class.text-yellow-500]="entry.type === 'BookmarkAdded'"
                  [class.text-purple-500]="entry.type === 'NoteCreated'"
                  [class.text-red-500]="entry.type === 'NoteDeleted'"
                  [class.text-green-500]="entry.type === 'AnalysisRun'"
-                 viewBox="0 0 24 24" fill="currentColor">
-              <g [innerHTML]="getSafeIconHtml(entry)"></g>
-            </svg>
+                 [innerHTML]="getSafeIconHtml(entry)">
+            </span>
           </div>
 
           <!-- Data Card -->
@@ -94,7 +92,7 @@ const ICONS: Record<string, string> = {
                     <p class="text-sm text-[#1C1C1C] mt-1 leading-relaxed font-light">{{ entry.summary }}</p>
                 </button>
               }
-              @case ('CarePlanUpdate') {
+              @case ('PatientSummaryUpdate') {
                 <div class="p-4 bg-white border border-gray-100 border-l-4 border-l-blue-400 rounded">
                   <div>
                     <p class="text-xs font-bold text-blue-500 uppercase tracking-[0.15em]">{{ entry.date }}</p>
@@ -153,7 +151,7 @@ const ICONS: Record<string, string> = {
                   </div>
                 </button>
               }
-              @case ('FinalizedCarePlan') {
+              @case ('FinalizedPatientSummary') {
                 <button (click)="reviewAnalysis.emit(entry)"
                         class="w-full text-left p-4 rounded transition-colors duration-200 border-l-4"
                         [class.bg-white]="activeVisit() === entry"
@@ -166,7 +164,7 @@ const ICONS: Record<string, string> = {
                         [class.border-gray-100]="true">
                   <div>
                     <div class="flex items-center gap-2 mb-1.5">
-                        <span class="px-1.5 py-0.5 rounded text-[8px] font-bold bg-blue-50 text-blue-600 uppercase tracking-[0.1em] border border-blue-100">Care Plan</span>
+                        <span class="px-1.5 py-0.5 rounded text-[8px] font-bold bg-blue-50 text-blue-600 uppercase tracking-[0.1em] border border-blue-100">Patient Summary</span>
                         <p class="text-xs font-bold text-gray-500 uppercase tracking-[0.15em]">{{ entry.date }}</p>
                     </div>
                     <p class="text-sm text-[#1C1C1C] mt-1 leading-relaxed font-bold">{{ entry.summary }}</p>
@@ -194,13 +192,14 @@ export class PatientHistoryTimelineComponent {
 
   getSafeIconHtml(entry: HistoryEntry): SafeHtml {
     const svgPathString = this.getIconSvgPath(entry);
-    return this.sanitizer.bypassSecurityTrustHtml(svgPathString);
+    const fullSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-full h-full">${svgPathString}</svg>`;
+    return this.sanitizer.bypassSecurityTrustHtml(fullSvg);
   }
 
   private getIconSvgPath(entry: HistoryEntry): string {
     switch (entry.type) {
-      case 'CarePlanUpdate':
-        return ICONS['CARE_PLAN'];
+      case 'PatientSummaryUpdate':
+        return ICONS['PATIENT_SUMMARY'];
       case 'BookmarkAdded':
         return ICONS['BOOKMARK'];
       case 'NoteCreated':
@@ -211,8 +210,8 @@ export class PatientHistoryTimelineComponent {
         return ICONS['ANALYSIS'];
       case 'ChartArchived':
         return ICONS['CHART_ARCHIVED'];
-      case 'FinalizedCarePlan':
-        return ICONS['CARE_PLAN'];
+      case 'FinalizedPatientSummary':
+        return ICONS['PATIENT_SUMMARY'];
       case 'Visit':
         const issues = entry.state?.issues ?? {};
         // FIX: The original logic was incorrect as it treated an array of issues as a single object.

@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { jsPDF } from 'jspdf';
-import { Patient, HistoryEntry } from './patient-management.service';
-import { PatientVitals, BodyPartIssue } from './patient-state.service';
+
+import { Patient, HistoryEntry, PatientVitals, BodyPartIssue } from './patient.types';
 
 /** Shape of the native JSON export file. */
 export interface NativePatientExport {
@@ -38,75 +37,84 @@ export class ExportService {
      * Generates and downloads a clinical PDF report.
      */
     async downloadAsPdf(data: any, patientName: string = 'Patient'): Promise<void> {
-        const doc = new jsPDF();
-        const timestamp = new Date().toLocaleString();
-        const margin = 20;
-        const pageWidth = 170;
-        const pageHeight = 275;
-        let currentY = margin;
+        console.log('[ExportService] Starting PDF generation for:', patientName);
+        try {
+            const { jsPDF } = await import('jspdf');
+            const doc = new jsPDF();
+            const timestamp = new Date().toLocaleString();
+            const margin = 20;
+            const pageWidth = 170;
+            const pageHeight = 275;
+            let currentY = margin;
 
-        const checkPage = (needed: number) => {
-            if (currentY + needed > pageHeight) {
-                doc.addPage();
-                currentY = margin;
-                return true;
-            }
-            return false;
-        };
+            const checkPage = (needed: number) => {
+                if (currentY + needed > pageHeight) {
+                    doc.addPage();
+                    currentY = margin;
+                    return true;
+                }
+                return false;
+            };
 
-        // Header
-        doc.setFontSize(22);
-        doc.setTextColor(43, 75, 252); // Understory Blueish
-        doc.text('Understory Clinical Intelligence', margin, currentY);
-        currentY += 10;
+            // Header
+            doc.setFontSize(22);
+            doc.setTextColor(43, 75, 252); // Understory Blueish
+            doc.text('Understory Clinical Intelligence', margin, currentY);
+            currentY += 10;
 
-        doc.setFontSize(10);
-        doc.setTextColor(100, 100, 100);
-        doc.text(`Generated: ${timestamp}`, margin, currentY);
-        currentY += 6;
-        doc.text(`Patient: ${patientName}`, margin, currentY);
-        currentY += 6;
+            doc.setFontSize(10);
+            doc.setTextColor(100, 100, 100);
+            doc.text(`Generated: ${timestamp}`, margin, currentY);
+            currentY += 6;
+            doc.text(`Patient: ${patientName}`, margin, currentY);
+            currentY += 6;
 
-        doc.setDrawColor(200, 200, 200);
-        doc.line(margin, currentY, margin + pageWidth, currentY);
-        currentY += 15;
+            doc.setDrawColor(200, 200, 200);
+            doc.line(margin, currentY, margin + pageWidth, currentY);
+            currentY += 15;
 
-        // Summary Section
-        doc.setFontSize(16);
-        doc.setTextColor(33, 33, 33);
-        doc.text('Medical Summary', margin, currentY);
-        currentY += 10;
+            // Summary Section
+            doc.setFontSize(16);
+            doc.setTextColor(33, 33, 33);
+            doc.text('Medical Summary', margin, currentY);
+            currentY += 10;
 
-        doc.setFontSize(11);
-        const summaryLines = doc.splitTextToSize(data.summary || 'No summary available.', pageWidth);
-        summaryLines.forEach((line: string) => {
-            checkPage(7);
-            doc.text(line, margin, currentY);
-            currentY += 7;
-        });
-        currentY += 15;
+            doc.setFontSize(11);
+            const summaryLines = doc.splitTextToSize(data.summary || 'No summary available.', pageWidth);
+            summaryLines.forEach((line: string) => {
+                checkPage(7);
+                doc.text(line, margin, currentY);
+                currentY += 7;
+            });
+            currentY += 15;
 
-        // Analysis Section
-        checkPage(20);
-        doc.setFontSize(16);
-        doc.text('Analysis Report', margin, currentY);
-        currentY += 10;
+            // Analysis Section
+            checkPage(20);
+            doc.setFontSize(16);
+            doc.text('Analysis Report', margin, currentY);
+            currentY += 10;
 
-        doc.setFontSize(11);
-        const reportContent = typeof data.report === 'object'
-            ? Object.values(data.report).join('\n\n')
-            : (data.report || 'No analysis available.');
+            doc.setFontSize(11);
+            const reportContent = typeof data.report === 'object'
+                ? Object.entries(data.report).map(([key, val]) => `${key.toUpperCase()}\n\n${val}`).join('\n\n')
+                : (data.report || 'No analysis available.');
 
-        const reportLines = doc.splitTextToSize(reportContent, pageWidth);
-        reportLines.forEach((line: string) => {
-            checkPage(7);
-            doc.text(line, margin, currentY);
-            currentY += 7;
-        });
+            console.log('[ExportService] Text splitting for report content...');
+            const reportLines = doc.splitTextToSize(reportContent, pageWidth);
+            reportLines.forEach((line: string) => {
+                checkPage(7);
+                doc.text(line, margin, currentY);
+                currentY += 7;
+            });
 
-        // Save PDF
-        const fileName = `Understory_Report_${patientName.replace(/\s+/g, '_')}_${Date.now()}.pdf`;
-        doc.save(fileName);
+            // Save PDF
+            const fileName = `Understory_Report_${patientName.replace(/\s+/g, '_')}_${Date.now()}.pdf`;
+            console.log('[ExportService] Saving PDF:', fileName);
+            doc.save(fileName);
+            console.log('[ExportService] PDF download triggered.');
+        } catch (error) {
+            console.error('[ExportService] PDF export failed:', error);
+        }
     }
 
     // ─── Analysis-only FHIR Export (existing) ─────────────────
@@ -115,52 +123,58 @@ export class ExportService {
      * Generates and downloads a FHIR DiagnosticReport (JSON) for the analysis only.
      */
     async downloadAsFhir(data: any, patientName: string = 'Patient'): Promise<void> {
-        const fhirReport = {
-            resourceType: 'DiagnosticReport',
-            id: `understory-${Date.now()}`,
-            status: 'final',
-            category: [
-                {
-                    coding: [
-                        {
-                            system: 'http://terminology.hl7.org/CodeSystem/v2-0074',
-                            code: 'GE',
-                            display: 'General'
-                        }
-                    ]
-                }
-            ],
-            code: {
-                coding: [
+        console.log('[ExportService] Starting FHIR DiagnosticReport generation...');
+        try {
+            const fhirReport = {
+                resourceType: 'DiagnosticReport',
+                id: `understory-${Date.now()}`,
+                status: 'final',
+                category: [
                     {
-                        system: 'http://loinc.org',
-                        code: '11506-3',
-                        display: 'Progress note'
+                        coding: [
+                            {
+                                system: 'http://terminology.hl7.org/CodeSystem/v2-0074',
+                                code: 'GE',
+                                display: 'General'
+                            }
+                        ]
                     }
                 ],
-                text: 'Understory AI Clinical Analysis'
-            },
-            subject: {
-                display: patientName
-            },
-            effectiveDateTime: new Date().toISOString(),
-            issued: new Date().toISOString(),
-            conclusion: data.summary,
-            presentedForm: [
-                {
-                    contentType: 'text/markdown',
-                    data: this._toBase64(typeof data.report === 'object' ? JSON.stringify(data.report) : data.report)
-                }
-            ]
-        };
+                code: {
+                    coding: [
+                        {
+                            system: 'http://loinc.org',
+                            code: '11506-3',
+                            display: 'Progress note'
+                        }
+                    ],
+                    text: 'Understory AI Clinical Analysis'
+                },
+                subject: {
+                    display: patientName
+                },
+                effectiveDateTime: new Date().toISOString(),
+                issued: new Date().toISOString(),
+                conclusion: data.summary,
+                presentedForm: [
+                    {
+                        contentType: 'text/markdown',
+                        data: this._toBase64(typeof data.report === 'object' ? JSON.stringify(data.report) : data.report)
+                    }
+                ]
+            };
 
-        const blob = new Blob([JSON.stringify(fhirReport, null, 2)], { type: 'application/json' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `FHIR_Report_${patientName.replace(/\s+/g, '_')}.json`;
-        a.click();
-        window.URL.revokeObjectURL(url);
+            const blob = new Blob([JSON.stringify(fhirReport, null, 2)], { type: 'application/json' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `FHIR_Report_${patientName.replace(/\s+/g, '_')}.json`;
+            console.log('[ExportService] Triggering FHIR download:', a.download);
+            a.click();
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error('[ExportService] FHIR export failed:', error);
+        }
     }
 
     // ─── Native JSON Export / Import ──────────────────────────
@@ -210,152 +224,159 @@ export class ExportService {
      * Includes Patient, Condition, Observation, Goal, and DiagnosticReport resources.
      */
     downloadAsFhirBundle(patient: Patient): void {
-        const patientRef = `Patient/understory-${patient.id}`;
-        const entries: { resource: FhirResource }[] = [];
+        console.log('[ExportService] Starting FHIR Bundle generation for:', patient.name);
+        try {
+            const patientRef = `Patient/understory-${patient.id}`;
+            const entries: { resource: FhirResource }[] = [];
 
-        // 1. Patient resource
-        entries.push({
-            resource: {
-                resourceType: 'Patient',
-                id: `understory-${patient.id}`,
-                name: [{ text: patient.name }],
-                gender: this._toFhirGender(patient.gender),
-                birthDate: this._estimateBirthYear(patient.age),
-                extension: [
-                    {
-                        url: 'http://understory.app/fhir/StructureDefinition/last-visit',
-                        valueString: patient.lastVisit,
-                    }
-                ]
-            }
-        });
-
-        // 2. Conditions
-        patient.preexistingConditions.forEach((condition, i) => {
+            // 1. Patient resource
             entries.push({
                 resource: {
-                    resourceType: 'Condition',
-                    id: `condition-${i}`,
-                    subject: { reference: patientRef },
-                    code: { text: condition },
-                    clinicalStatus: {
-                        coding: [{ system: 'http://terminology.hl7.org/CodeSystem/condition-clinical', code: 'active' }]
-                    }
+                    resourceType: 'Patient',
+                    id: `understory-${patient.id}`,
+                    name: [{ text: patient.name }],
+                    gender: this._toFhirGender(patient.gender),
+                    birthDate: this._estimateBirthYear(patient.age),
+                    extension: [
+                        {
+                            url: 'http://understory.app/fhir/StructureDefinition/last-visit',
+                            valueString: patient.lastVisit,
+                        }
+                    ]
                 }
             });
-        });
 
-        // 3. Vitals as Observations
-        const vitals = patient.vitals;
-        const vitalMappings: { field: keyof PatientVitals; loinc: string; display: string }[] = [
-            { field: 'bp', loinc: '85354-9', display: 'Blood Pressure' },
-            { field: 'hr', loinc: '8867-4', display: 'Heart Rate' },
-            { field: 'temp', loinc: '8310-5', display: 'Body Temperature' },
-            { field: 'spO2', loinc: '2708-6', display: 'Oxygen Saturation' },
-            { field: 'weight', loinc: '29463-7', display: 'Body Weight' },
-            { field: 'height', loinc: '8302-2', display: 'Body Height' },
-        ];
-
-        vitalMappings.forEach(({ field, loinc, display }) => {
-            const value = vitals[field];
-            if (!value) return;
-            entries.push({
-                resource: {
-                    resourceType: 'Observation',
-                    id: `vital-${field}`,
-                    status: 'final',
-                    category: [{
-                        coding: [{ system: 'http://terminology.hl7.org/CodeSystem/observation-category', code: 'vital-signs' }]
-                    }],
-                    code: { coding: [{ system: 'http://loinc.org', code: loinc, display }], text: display },
-                    subject: { reference: patientRef },
-                    valueString: value,
-                }
-            });
-        });
-
-        // 4. Body issues as Observations
-        Object.entries(patient.issues).forEach(([partId, issues]) => {
-            issues.forEach((issue, i) => {
+            // 2. Conditions
+            patient.preexistingConditions.forEach((condition, i) => {
                 entries.push({
                     resource: {
-                        resourceType: 'Observation',
-                        id: `issue-${partId}-${i}`,
-                        status: 'final',
-                        category: [{
-                            coding: [{ system: 'http://terminology.hl7.org/CodeSystem/observation-category', code: 'exam' }]
-                        }],
-                        code: { text: issue.name },
+                        resourceType: 'Condition',
+                        id: `condition-${i}`,
                         subject: { reference: patientRef },
-                        bodySite: { text: partId },
-                        valueString: issue.description,
-                        extension: [
-                            {
-                                url: 'http://understory.app/fhir/StructureDefinition/pain-level',
-                                valueInteger: issue.painLevel,
-                            },
-                            {
-                                url: 'http://understory.app/fhir/StructureDefinition/note-id',
-                                valueString: issue.noteId,
-                            },
-                        ]
+                        code: { text: condition },
+                        clinicalStatus: {
+                            coding: [{ system: 'http://terminology.hl7.org/CodeSystem/condition-clinical', code: 'active' }]
+                        }
                     }
                 });
             });
-        });
 
-        // 5. Patient goals
-        if (patient.patientGoals) {
-            entries.push({
-                resource: {
-                    resourceType: 'Goal',
-                    id: 'goal-chief-complaint',
-                    lifecycleStatus: 'active',
-                    subject: { reference: patientRef },
-                    description: { text: patient.patientGoals },
-                }
+            // 3. Vitals as Observations
+            const vitals = patient.vitals;
+            const vitalMappings: { field: keyof PatientVitals; loinc: string; display: string }[] = [
+                { field: 'bp', loinc: '85354-9', display: 'Blood Pressure' },
+                { field: 'hr', loinc: '8867-4', display: 'Heart Rate' },
+                { field: 'temp', loinc: '8310-5', display: 'Body Temperature' },
+                { field: 'spO2', loinc: '2708-6', display: 'Oxygen Saturation' },
+                { field: 'weight', loinc: '29463-7', display: 'Body Weight' },
+                { field: 'height', loinc: '8302-2', display: 'Body Height' },
+            ];
+
+            vitalMappings.forEach(({ field, loinc, display }) => {
+                const value = vitals[field];
+                if (!value) return;
+                entries.push({
+                    resource: {
+                        resourceType: 'Observation',
+                        id: `vital-${String(field)}`,
+                        status: 'final',
+                        category: [{
+                            coding: [{ system: 'http://terminology.hl7.org/CodeSystem/observation-category', code: 'vital-signs' }]
+                        }],
+                        code: { coding: [{ system: 'http://loinc.org', code: loinc, display }], text: display },
+                        subject: { reference: patientRef },
+                        valueString: value,
+                    }
+                });
             });
-        }
 
-        // 6. Analysis reports from history
-        patient.history
-            .filter(h => h.type === 'AnalysisRun' || h.type === 'FinalizedCarePlan')
-            .forEach((entry, i) => {
-                if (entry.type === 'AnalysisRun' || entry.type === 'FinalizedCarePlan') {
+            // 4. Body issues as Observations
+            Object.entries(patient.issues).forEach(([partId, issues]) => {
+                (issues as BodyPartIssue[]).forEach((issue, i) => {
                     entries.push({
                         resource: {
-                            resourceType: 'DiagnosticReport',
-                            id: `report-${i}`,
+                            resourceType: 'Observation',
+                            id: `issue-${partId}-${i}`,
                             status: 'final',
-                            code: { text: 'Understory AI Clinical Analysis' },
+                            category: [{
+                                coding: [{ system: 'http://terminology.hl7.org/CodeSystem/observation-category', code: 'exam' }]
+                            }],
+                            code: { text: issue.name },
                             subject: { reference: patientRef },
-                            effectiveDateTime: this._toISODate(entry.date),
-                            conclusion: entry.summary,
-                            presentedForm: [{
-                                contentType: 'application/json',
-                                data: this._toBase64(JSON.stringify(entry.report)),
-                            }]
+                            bodySite: { text: partId },
+                            valueString: issue.description,
+                            extension: [
+                                {
+                                    url: 'http://understory.app/fhir/StructureDefinition/pain-level',
+                                    valueInteger: issue.painLevel,
+                                },
+                                {
+                                    url: 'http://understory.app/fhir/StructureDefinition/note-id',
+                                    valueString: issue.noteId,
+                                },
+                            ]
                         }
                     });
-                }
+                });
             });
 
-        const bundle: FhirBundle = {
-            resourceType: 'Bundle',
-            id: `understory-bundle-${Date.now()}`,
-            type: 'collection',
-            timestamp: new Date().toISOString(),
-            meta: {
-                tag: [{
-                    system: 'http://understory.app/fhir',
-                    code: 'understory-export',
-                    display: 'Understory Patient Export',
-                }]
-            },
-            entry: entries,
-        };
+            // 5. Patient goals
+            if (patient.patientGoals) {
+                entries.push({
+                    resource: {
+                        resourceType: 'Goal',
+                        id: 'goal-chief-complaint',
+                        lifecycleStatus: 'active',
+                        subject: { reference: patientRef },
+                        description: { text: patient.patientGoals },
+                    }
+                });
+            }
 
-        this._downloadJson(bundle, `FHIR_Bundle_${patient.name.replace(/\s+/g, '_')}.json`);
+            // 6. Analysis reports from history
+            patient.history
+                .filter(h => h.type === 'AnalysisRun' || h.type === 'FinalizedPatientSummary')
+                .forEach((entry, i) => {
+                    if (entry.type === 'AnalysisRun' || entry.type === 'FinalizedPatientSummary') {
+                        entries.push({
+                            resource: {
+                                resourceType: 'DiagnosticReport',
+                                id: `report-${i}`,
+                                status: 'final',
+                                code: { text: 'Understory AI Clinical Analysis' },
+                                subject: { reference: patientRef },
+                                effectiveDateTime: this._toISODate(entry.date),
+                                conclusion: entry.summary,
+                                presentedForm: [{
+                                    contentType: 'application/json',
+                                    data: this._toBase64(JSON.stringify(entry.report)),
+                                }]
+                            }
+                        });
+                    }
+                });
+
+            const bundle: FhirBundle = {
+                resourceType: 'Bundle',
+                id: `understory-bundle-${Date.now()}`,
+                type: 'collection',
+                timestamp: new Date().toISOString(),
+                meta: {
+                    tag: [{
+                        system: 'http://understory.app/fhir',
+                        code: 'understory-export',
+                        display: 'Understory Patient Export',
+                    }]
+                },
+                entry: entries,
+            };
+
+            const filename = `FHIR_Bundle_${patient.name.replace(/\s+/g, '_')}.json`;
+            console.log('[ExportService] Triggering FHIR Bundle download:', filename);
+            this._downloadJson(bundle, filename);
+        } catch (error) {
+            console.error('[ExportService] FHIR Bundle export failed:', error);
+        }
     }
 
     /**

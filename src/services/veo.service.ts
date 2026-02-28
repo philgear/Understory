@@ -1,5 +1,4 @@
 import { Injectable, signal } from '@angular/core';
-import { GoogleGenAI } from '@google/genai';
 
 export interface VeoGenerationState {
   isGenerating: boolean;
@@ -20,16 +19,16 @@ export class VeoService {
   });
 
   async hasApiKey(): Promise<boolean> {
-    if (typeof window.aistudio?.hasSelectedApiKey === 'function') {
-      return await window.aistudio.hasSelectedApiKey();
+    if (typeof (window as any).aistudio?.hasSelectedApiKey === 'function') {
+      return await (window as any).aistudio.hasSelectedApiKey();
     }
     const envKey = typeof process !== 'undefined' && process.env ? process.env.GEMINI_API_KEY : '';
     return !!envKey;
   }
 
   async selectApiKey(): Promise<void> {
-    if (typeof window.aistudio?.openSelectKey === 'function') {
-      await window.aistudio.openSelectKey();
+    if (typeof (window as any).aistudio?.openSelectKey === 'function') {
+      await (window as any).aistudio.openSelectKey();
     }
   }
 
@@ -48,9 +47,10 @@ export class VeoService {
       return;
     }
 
+    const { GoogleGenAI } = await import('@google/genai');
     const ai = new GoogleGenAI({ apiKey });
 
-    const prompt = `A highly detailed medical 3D model of a human ${gender.toLowerCase()} body, ${type.toLowerCase()} view ${type === 'Internal' ? 'showing skeleton and major organs' : 'showing skin and surface anatomy'}, rotating 360 degrees smoothly on a pure white background. Clinical, professional medical visualization style. High resolution, 1080p.`;
+    const prompt = `A highly detailed medical 3D model of a human ${gender.toLowerCase()} body, ${type.toLowerCase()} view ${type === 'Internal' ? 'showing skeleton and major organs' : 'showing skin and surface anatomy'}, rotating 360 degrees smoothly on a pure white background.Clinical, professional medical visualization style.High resolution, 1080p.`;
 
     try {
       this.state.update(s => ({ ...s, progress: 'Requesting video generation (this may take a few minutes)...' }));
@@ -74,7 +74,7 @@ export class VeoService {
 
       // Check for errors in the operation result
       if ((operation as any).error) {
-        throw new Error(`Video generation failed: ${(operation as any).error.message}`);
+        throw new Error(`Video generation failed: ${(operation as any).error.message} `);
       }
 
       const downloadLink = operation.response?.generatedVideos?.[0]?.video?.uri || (operation as any).result?.generatedVideos?.[0]?.video?.uri;
@@ -90,7 +90,7 @@ export class VeoService {
         });
 
         if (!videoResponse.ok) {
-          throw new Error(`Failed to download video: ${videoResponse.statusText}`);
+          throw new Error(`Failed to download video: ${videoResponse.statusText} `);
         }
 
         const blob = await videoResponse.blob();

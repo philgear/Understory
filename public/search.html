@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Search</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f3f4f6;
+            /* bg-gray-100 */
+        }
+
+        /* Customizing Google Search Results to match Understory */
+        .gsc-control-cse {
+            padding: 1rem !important;
+            background: transparent !important;
+            border: none !important;
+        }
+
+        .gsc-search-box {
+            display: none !important;
+            /* Hide Google's native search box, we use Angular's */
+        }
+
+        .gsc-result {
+            background: white !important;
+            padding: 1rem !important;
+            border-radius: 0.375rem !important;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+            margin-bottom: 1rem !important;
+            border: 1px solid #e5e7eb !important;
+        }
+
+        .gs-title {
+            color: #1e40af !important;
+            /* text-blue-800 */
+            font-weight: 700 !important;
+            text-decoration: none !important;
+        }
+
+        .gs-title:hover {
+            text-decoration: underline !important;
+        }
+
+        .gs-snippet {
+            color: #4b5563 !important;
+            /* text-gray-600 */
+            font-size: 0.875rem !important;
+            line-height: 1.25rem !important;
+        }
+
+        .gsc-url-top {
+            color: #6b7280 !important;
+            /* text-gray-500 */
+            font-size: 0.6875rem !important;
+        }
+
+        /* Button injected via Javascript */
+        .understory-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .understory-btn:hover {
+            background-color: #1d4ed8;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Google Custom Search Engine -->
+    <script async src="https://cse.google.com/cse.js?cx=631456b3b98e3415b"></script>
+    <div class="gcse-searchresults-only" data-gname="understory-search"></div>
+
+    <script>
+        // Listen for messages from the parent Angular application
+        window.addEventListener('message', (event) => {
+            // Security check (ideally verify origin in prod)
+            if (event.data && event.data.type === 'EXECUTE_SEARCH') {
+                const query = event.data.query;
+
+                // Wait for GSE to initialize if it hasn't yet
+                const checkExist = setInterval(function () {
+                    if (window.google && window.google.search && window.google.search.cse) {
+                        clearInterval(checkExist);
+                        const element = google.search.cse.element.getElement('understory-search');
+                        if (element) {
+                            element.execute(query);
+                        }
+                    }
+                }, 100);
+            }
+        });
+
+        // Override links to ensure they open in parent frame or new tab
+        document.addEventListener('click', function (e) {
+            const gseLink = e.target.closest('a.gs-title');
+            if (gseLink) {
+                e.preventDefault();
+                window.parent.postMessage({ type: 'OPEN_LINK', url: gseLink.href }, '*');
+            }
+
+            // Handle the custom inject 'Bookmark' button
+            if (e.target.closest('.understory-btn')) {
+                e.preventDefault();
+                const resultDiv = e.target.closest('.gsc-result');
+                const titleEl = resultDiv.querySelector('a.gs-title');
+
+                if (titleEl) {
+                    window.parent.postMessage({
+                        type: 'BOOKMARK_RESULT',
+                        title: titleEl.innerText,
+                        url: titleEl.href
+                    }, '*');
+                }
+            }
+        });
+
+        // Inject Bookmark buttons when search results load
+        // Using a simple MutationObserver to detect inserted result blocks
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.addedNodes) {
+                    mutation.addedNodes.forEach((node) => {
+                        if (node.nodeType === 1 && node.classList) { // ELEMENT_NODE
+                            if (node.classList.contains('gsc-webResult') && !node.querySelector('.understory-btn')) {
+                                const btn = document.createElement('button');
+                                btn.className = 'understory-btn';
+                                btn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
+                    </svg>
+                    Bookmark
+                  `;
+
+                                // gsc-thumbnail-inside tends to be the text container
+                                let container = node.querySelector('.gsc-thumbnail-inside') || node.querySelector('.gs-result');
+                                if (container) {
+                                    container.appendChild(btn);
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+        });
+
+        // Start observing once the container exists
+        const checkContainer = setInterval(() => {
+            const wrapper = document.querySelector('.gsc-control-cse');
+            if (wrapper) {
+                clearInterval(checkContainer);
+                observer.observe(wrapper, { childList: true, subtree: true });
+            }
+        }, 500);
+    </script>
+</body>
+
+</html>

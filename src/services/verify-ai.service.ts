@@ -1,5 +1,4 @@
 import { Injectable, inject } from '@angular/core';
-import { GoogleGenAI } from '@google/genai';
 import { VerificationIssue } from '../components/analysis-report.types';
 import { AI_CONFIG } from './ai-provider.types';
 import { AiCacheService } from './ai-cache.service';
@@ -9,16 +8,20 @@ import { AiCacheService } from './ai-cache.service';
 })
 export class VerifyAiService {
     private config = inject(AI_CONFIG);
-    private _ai: GoogleGenAI | null = null;
+    private _ai: any = null;
     private cache = inject(AiCacheService);
 
-    private get ai(): GoogleGenAI {
+    private async getAi(): Promise<any> {
         if (!this._ai) {
-            const apiKey = (window as any).GEMINI_API_KEY || this.config.apiKey;
-            if (!apiKey) {
-                throw new Error('API key must be set when using the Gemini API.');
+            let initialKey = (window as any).GEMINI_API_KEY || this.config.apiKey;
+            if (!initialKey && typeof process !== 'undefined' && process.env) {
+                initialKey = process.env.GEMINI_API_KEY;
             }
-            this._ai = new GoogleGenAI({ apiKey });
+            if (!initialKey) {
+                throw new Error("API key must be set when using the Gemini API. Ensure server injection or environment variable is present.");
+            }
+            const { GoogleGenAI } = await import('@google/genai');
+            this._ai = new GoogleGenAI({ apiKey: initialKey });
         }
         return this._ai;
     }
@@ -33,38 +36,38 @@ export class VerifyAiService {
     ): Promise<{ status: 'verified' | 'warning' | 'error', issues: VerificationIssue[] }> {
 
         const prompt = `
-      You are a Medical Auditor AI. Your task is to verify an AI-generated clinical report section against the source patient transcript.
+      You are a Medical Auditor AI.Your task is to verify an AI - generated clinical report section against the source patient transcript.
       
       SOURCE TRANSCRIPT:
       ${sourceTranscript}
       
-      REPORT SECTION [${sectionTitle}]:
+      REPORT SECTION[${sectionTitle}]:
       ${sectionContent}
-      
-      INSTRUCTIONS:
-      1. Cross-reference every clinical claim in the report with the source transcript.
+
+INSTRUCTIONS:
+1. Cross - reference every clinical claim in the report with the source transcript.
       2. Identify any:
-         - Hallucinations (claims not found in transcript)
-         - Inaccuracies (claims that distort transcript facts)
-         - Critical Omissions (if the section title implies something that was missed)
-      3. Rate the overall verification status as:
-         - "verified": All claims are supported by the transcript.
+- Hallucinations(claims not found in transcript)
+    - Inaccuracies(claims that distort transcript facts)
+    - Critical Omissions(if the section title implies something that was missed)
+3. Rate the overall verification status as:
+- "verified": All claims are supported by the transcript.
          - "warning": Minor inaccuracies or unsupported claims that don't change clinical intent.
-         - "error": Major hallucinations or contradictory information.
+    - "error": Major hallucinations or contradictory information.
       
       OUTPUT FORMAT:
       Return a JSON object with the following structure:
-      {
-        "status": "verified" | "warning" | "error",
+{
+    "status": "verified" | "warning" | "error",
         "issues": [
-          {
-            "severity": "low" | "medium" | "high",
-            "message": "Description of the issue",
-            "suggestedFix": "Corrected text based on transcript",
-            "claim": "The exact substring from the generated report that is problematic"
-          }
+            {
+                "severity": "low" | "medium" | "high",
+                "message": "Description of the issue",
+                "suggestedFix": "Corrected text based on transcript",
+                "claim": "The exact substring from the generated report that is problematic"
+            }
         ]
-      }
+}
       
       Return ONLY the JSON.
     `;
@@ -80,7 +83,8 @@ export class VerifyAiService {
             const cached = await this.cache.get(cacheKey);
             if (cached) return cached;
 
-            const response = await this.ai.models.generateContent({
+            const ai = await this.getAi();
+            const response = await ai.models.generateContent({
                 model: this.config.verificationModel.modelId,
                 contents: [{ role: 'user', parts: [{ text: prompt }] }],
                 config: {

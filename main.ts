@@ -1,5 +1,5 @@
 
-import { bootstrapApplication } from '@angular/platform-browser';
+import { bootstrapApplication, provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { AppComponent } from './src/app.component';
 import { AI_CONFIG, AiProviderConfig } from './src/services/ai-provider.types';
@@ -20,7 +20,7 @@ bootstrapApplication(AppComponent, {
     {
       provide: IntelligenceProviderToken,
       useClass: GeminiProvider
-    }
+    }, provideClientHydration(withEventReplay())
   ]
 }).catch(err => console.error(err));
 

@@ -40,12 +40,43 @@
               "raf",
               "rgbcolor",
               "html2canvas"
-            ]
+            ],
+            "externalDependencies": [
+              "@mikro-orm/sqlite",
+              "@google-cloud/opentelemetry-cloud-monitoring-exporter",
+              "@google-cloud/opentelemetry-cloud-trace-exporter",
+              "@opentelemetry/resource-detector-gcp",
+              "@google-cloud/storage",
+              "@mikro-orm/mariadb",
+              "@mikro-orm/mssql",
+              "@mikro-orm/mysql",
+              "@mikro-orm/postgresql",
+              "@mikro-orm/core",
+              "@opentelemetry/otlp-transformer",
+              "express",
+              "compression",
+              "@google-cloud/secret-manager",
+              "@google/generative-ai",
+              "swagger-ui-express",
+              "dompurify",
+              "jsdom"
+            ],
+            "security": {
+              "allowedHosts": [
+                "localhost"
+              ]
+            },
+            "server": "src/main.server.ts",
+            "prerender": false,
+            "outputMode": "server",
+            "ssr": {
+              "entry": "src/server.ts"
+            }
           },
           "configurations": {
             "production": {
               "outputHashing": "all",
-              "sourceMap": false,
+              "sourceMap": true,
               "optimization": true
             },
             "development": {
@@ -59,7 +90,7 @@
         "serve": {
           "builder": "@angular/build:dev-server",
           "options": {
-            "port": 3000
+            "port": 4200
           },
           "configurations": {
             "production": {

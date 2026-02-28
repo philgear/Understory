@@ -1,4 +1,5 @@
-import { Component, ChangeDetectionStrategy, input, output, signal } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input, output, signal, computed, inject, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -9,19 +10,20 @@ import { FormsModule } from '@angular/forms';
   template: `
     <div class="flex flex-col gap-1.5 w-full">
       @if (label()) {
-        <label [for]="id()" class="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1">
+        <label [for]="inputId()" class="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1">
           {{ label() }}
         </label>
       }
       
       <div class="relative group">
         @if (icon()) {
-          <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors h-4 w-4 flex items-center justify-center" [innerHTML]="icon()"></div>
+          <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors h-4 w-4 flex items-center justify-center" [innerHTML]="iconHtml()"></div>
         }
         
         @if (type() === 'textarea') {
           <textarea
-            [id]="id()"
+            #inputEl
+            [id]="inputId()"
             [placeholder]="placeholder()"
             [disabled]="disabled()"
             [ngModel]="value()"
@@ -31,7 +33,8 @@ import { FormsModule } from '@angular/forms';
           ></textarea>
         } @else {
           <input
-            [id]="id()"
+            #inputEl
+            [id]="inputId()"
             [type]="type()"
             [placeholder]="placeholder()"
             [disabled]="disabled()"
@@ -113,6 +116,45 @@ import { FormsModule } from '@angular/forms';
       box-shadow: none;
     }
 
+    /* Box Breathing Animation */
+    .animate-box-breathing {
+      animation: box-breathing-border 16s linear infinite, box-breathing-caret 16s linear infinite !important;
+    }
+    .animate-box-breathing:focus {
+      outline: none;
+    }
+
+    @keyframes box-breathing-border {
+      0% { 
+        border-color: #E5E7EB; 
+        box-shadow: 0 0 0 0 rgba(104, 159, 56, 0); 
+      }
+      25% { 
+        border-color: #689F38; 
+        box-shadow: 0 0 0 4px rgba(104, 159, 56, 0.2); 
+      }
+      50% { 
+        border-color: #689F38; 
+        box-shadow: 0 0 0 4px rgba(104, 159, 56, 0.2); 
+      }
+      75% { 
+        border-color: #E5E7EB; 
+        box-shadow: 0 0 0 0 rgba(104, 159, 56, 0); 
+      }
+      100% { 
+        border-color: #E5E7EB; 
+        box-shadow: 0 0 0 0 rgba(104, 159, 56, 0); 
+      }
+    }
+    
+    @keyframes box-breathing-caret {
+      0% { caret-color: transparent; }
+      25% { caret-color: #689F38; }
+      50% { caret-color: #689F38; }
+      75% { caret-color: transparent; }
+      100% { caret-color: transparent; }
+    }
+
     input.input-base {
       padding: 0.75rem 1rem;
     }
@@ -125,8 +167,8 @@ import { FormsModule } from '@angular/forms';
   `],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class UnderstoryInputComponent {
-  id = input<string>(`input-${Math.random().toString(36).substr(2, 9)}`);
+export class UnderstoryInputComponent implements AfterViewInit {
+  inputId = input<string>(`input-${Math.random().toString(36).substr(2, 9)}`);
   label = input<string>('');
   placeholder = input<string>('');
   type = input<'text' | 'email' | 'password' | 'textarea' | 'number'>('text');
@@ -137,8 +179,35 @@ export class UnderstoryInputComponent {
   icon = input<string>('');
   rows = input<number>(4);
 
+  breathing = input<boolean>(false);
+  autofocus = input<boolean>(false);
+
   value = input<string>('');
   valueChange = output<string>();
+
+  @ViewChild('inputEl') inputEl?: ElementRef<HTMLInputElement | HTMLTextAreaElement>;
+
+  private sanitizer = inject(DomSanitizer);
+
+  ngAfterViewInit() {
+    if (this.autofocus() && !this.disabled()) {
+      setTimeout(() => {
+        this.inputEl?.nativeElement.focus();
+      }, 150);
+    }
+  }
+
+  iconHtml = computed(() => {
+    const raw = this.icon();
+    if (!raw) return '';
+    let html: string;
+    if (raw.includes('<')) {
+      html = raw;
+    } else {
+      html = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="${raw}"></path></svg>`;
+    }
+    return this.sanitizer.bypassSecurityTrustHtml(html);
+  });
 
   onModelChange(val: string) {
     this.valueChange.emit(val);
@@ -146,9 +215,11 @@ export class UnderstoryInputComponent {
 
   inputClasses(): string {
     return [
+      'input-base',
       this.error() ? 'input-error' : '',
       this.icon() ? 'has-icon' : '',
-      this.variant() === 'minimal' ? 'variant-minimal' : ''
+      this.variant() === 'minimal' ? 'variant-minimal' : '',
+      this.breathing() ? 'animate-box-breathing' : ''
     ].join(' ');
   }
 }

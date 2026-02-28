@@ -7,7 +7,7 @@ export interface VerificationIssue {
     claim?: string; // The specific text in the report that is being flagged
 }
 
-export interface CarePlanNodeItem {
+export interface SummaryNodeItem {
     id: string;
     html: string;
     bracketState: 'normal' | 'added' | 'removed';
@@ -21,12 +21,12 @@ export interface CarePlanNodeItem {
     verificationIssues?: VerificationIssue[];
 }
 
-export interface CarePlanNode {
+export interface SummaryNode {
     id: string;
     type: 'raw' | 'paragraph' | 'list';
     rawHtml?: string;
     ordered?: boolean;
-    items?: CarePlanNodeItem[];
+    items?: SummaryNodeItem[];
     bracketState: 'normal' | 'added' | 'removed';
     note: string;
     showNote: boolean;
@@ -43,7 +43,7 @@ export interface ReportSection {
     heading: string;
     title: string;
     icon: string;
-    nodes: CarePlanNode[];
+    nodes: SummaryNode[];
 }
 
 export interface ParsedTranscriptEntry extends TranscriptEntry {

@@ -42,17 +42,22 @@ async function fetchGeminiApiKey() {
   }
 
   // Layer 3: Cloud Infrastructure (Secret Manager)
-  const projectId = process.env.GOOGLE_CLOUD_PROJECT || process.env.GCLOUD_PROJECT;
-  if (!projectId) {
-    console.warn('[WARN] GOOGLE_CLOUD_PROJECT is not set. To fetch from GCP Secret Manager, define this variable. Returning empty string.');
-    return '';
-  }
-
   try {
-    console.log(`[Secrets] Fetching GEMINI_API_KEY from GCP Secret Manager for project ${projectId}...`);
     const client = new SecretManagerServiceClient();
+    let projectId = process.env.GOOGLE_CLOUD_PROJECT || process.env.GCLOUD_PROJECT;
+
+    if (!projectId) {
+      console.log('[Secrets] GOOGLE_CLOUD_PROJECT not set, attempting to resolve automatically...');
+      projectId = await client.getProjectId();
+    }
+
+    if (!projectId) {
+      console.warn('[WARN] Could not determine project ID. Returning empty string.');
+      return '';
+    }
+
+    console.log(`[Secrets] Fetching GEMINI_API_KEY from GCP Secret Manager for project ${projectId}...`);
     const [version] = await client.accessSecretVersion({
-      // We expect the secret name to be GEMINI_API_KEY
       name: `projects/${projectId}/secrets/GEMINI_API_KEY/versions/latest`,
     });
     const payload = version.payload.data.toString('utf8');
@@ -85,6 +90,35 @@ app.use((req, res, next) => {
   next();
 });
 
+// PubMed Proxy Endpoints
+app.get('/api/pubmed/search', async (req, res) => {
+  try {
+    const { term } = req.query;
+    if (!term) return res.status(400).json({ error: 'Term is required' });
+    const eSearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(term)}&retmode=json&retmax=15`;
+    const response = await fetch(eSearchUrl);
+    const data = await response.json();
+    res.json(data);
+  } catch (err) {
+    console.error('PubMed Search Proxy Error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/api/pubmed/summary', async (req, res) => {
+  try {
+    const { id } = req.query;
+    if (!id) return res.status(400).json({ error: 'ID is required' });
+    const eSummaryUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=${id}&retmode=json`;
+    const response = await fetch(eSummaryUrl);
+    const data = await response.json();
+    res.json(data);
+  } catch (err) {
+    console.error('PubMed Summary Proxy Error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.status(200).send('OK');
@@ -96,24 +130,34 @@ app.use(express.static(distFolder, { maxAge: '1y', index: false }));
 
 // Fallback to index.html for Angular routing and root requests
 app.get(/(.*)/, (req, res) => {
-  // Only intercept if we are serving index.html or fallback routing (no extension)
-  const isDoc = req.url === '/' || req.url === '/index.html' || !req.url.includes('.');
   const indexPath = join(distFolder, 'index.html');
+
+  // A request is a "document" request if it:
+  // 1. Is the root '/'
+  // 2. Is index.html
+  // 3. Doesn't have a file extension (likely an Angular route)
+  const isDoc = req.url === '/' || req.url === '/index.html' || !req.url.includes('.');
+
+  if (!isDoc) {
+    // If it's not a doc and wasn't caught by express.static, it's a 404
+    console.log(`[SERVER] 404 Not Found: ${req.url}`);
+    return res.status(404).send('Not Found');
+  }
 
   res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
   res.setHeader('Pragma', 'no-cache');
   res.setHeader('Expires', '0');
 
-  if (isDoc && fs.existsSync(indexPath)) {
+  if (fs.existsSync(indexPath)) {
     try {
       let html = fs.readFileSync(indexPath, 'utf8');
       if (geminiApiKeyCached) {
         // Inject script immediately before closing </head>
-        const scriptTag = `<script>window.GEMINI_API_KEY = "${geminiApiKeyCached}";</script>\n</head>`;
+        const scriptTag = `<script px-api-key="true">window.GEMINI_API_KEY = "${geminiApiKeyCached}";</script>\n</head>`;
         html = html.replace('</head>', scriptTag);
       }
       res.setHeader('Content-Type', 'text/html');
-      return res.send(html);
+      return res.status(200).send(html);
     } catch (err) {
       console.error('[SERVER] Error injecting secret into index.html:', err);
     }

@@ -1,6 +1,7 @@
 import { Component, ChangeDetectionStrategy, inject, signal, computed, OnDestroy, effect, viewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PatientStateService, BodyPartIssue } from '../services/patient-state.service';
+import { PatientStateService } from '../services/patient-state.service';
+import { BodyPartIssue } from '../services/patient.types';
 import { PatientManagementService } from '../services/patient-management.service';
 import { Body3DViewerComponent } from './body-3d-viewer.component';
 
@@ -53,11 +54,18 @@ import { Body3DViewerComponent } from './body-3d-viewer.component';
         </div>
 
         @if (state.bodyViewerMode() === '3d') {
-          <app-body-3d-viewer 
-            class="w-full h-full"
-            [isInternal]="state.isInternalView()"
-            (partSelected)="onPartSelected($event)">
-          </app-body-3d-viewer>
+          @defer {
+            <app-body-3d-viewer 
+              class="w-full h-full"
+              [isInternal]="state.isInternalView()"
+              (partSelected)="onPartSelected($event)">
+            </app-body-3d-viewer>
+          } @placeholder {
+            <div class="w-full h-full flex flex-col items-center justify-center text-gray-400 gap-4">
+              <div class="w-8 h-8 rounded-full border-2 border-gray-300 border-t-black animate-spin"></div>
+              <p class="text-sm font-medium uppercase tracking-widest text-[#1c1c1c] opacity-50">Loading 3D Engine...</p>
+            </div>
+          }
         } @else {
           <!-- 2D SVG Schematic -->
           <div class="h-full w-full flex items-center justify-center p-4">

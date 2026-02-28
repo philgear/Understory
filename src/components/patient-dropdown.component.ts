@@ -32,9 +32,9 @@ import { UnderstoryButtonComponent } from './shared/understory-button.component'
              <span class="text-xs font-bold text-gray-500">{{ patientManagement.patients().length }}</span>
           </div>
 
-          <div class="py-1 overflow-y-auto flex-1">
+          <div class="py-1 overflow-y-auto flex-1 group/list">
             @for (patient of patientManagement.patients(); track patient.id) {
-              <button (click)="selectPatient(patient.id)" class="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-[#F8F9FA] hover:text-gray-900 flex items-center gap-3 transition-colors relative border-l-4" [class.bg-blue-50]="patient.id === patientManagement.selectedPatientId()" [class.border-[#689F38]]="patient.id === patientManagement.selectedPatientId()" [class.border-transparent]="patient.id !== patientManagement.selectedPatientId()">
+              <button (click)="selectPatient(patient.id)" class="group w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-[#F8F9FA] hover:text-gray-900 flex items-center gap-3 transition-colors relative border-l-4" [class.bg-blue-50]="patient.id === patientManagement.selectedPatientId()" [class.border-[#689F38]]="patient.id === patientManagement.selectedPatientId()" [class.border-transparent]="patient.id !== patientManagement.selectedPatientId()">
                 
                 <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs shrink-0 font-bold shadow-sm"
                      [class.bg-[#689F38]]="patient.id === patientManagement.selectedPatientId()"
@@ -51,6 +51,14 @@ import { UnderstoryButtonComponent } from './shared/understory-button.component'
                      <span class="truncate">{{ patient.gender }}</span>
                   </div>
                 </div>
+
+                <button (click)="removePatient($event, patient.id)" 
+                        class="opacity-0 group-hover:opacity-100 p-1.5 rounded-full text-red-400 hover:text-red-600 hover:bg-red-50 transition-all shrink-0"
+                        title="Remove Patient">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                  </svg>
+                </button>
               </button>
             }
           </div>
@@ -123,6 +131,13 @@ export class PatientDropdownComponent {
   createNewPatient() {
     this.patientManagement.createNewPatient();
     this.isOpen.set(false);
+  }
+
+  removePatient(event: Event, id: string) {
+    event.stopPropagation(); // Prevent selecting the patient when clicking remove
+    if (confirm('Are you sure you want to permanently remove this patient record?')) {
+      this.patientManagement.removePatient(id);
+    }
   }
 
   triggerImport() {
