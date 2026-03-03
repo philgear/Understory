@@ -128,8 +128,8 @@ graph TD
     subgraph "AI Core & Integrations"
         AdkRunner -->|Orchestrates| Agents[Specialized LlmAgents]
         Agents -->|Generate Content| Flash[Gemini 2.5 Flash]
-        Backend -->|Proxy Request| PubMedProxy[/api/pubmed Endpoint]
-        Backend -->|Static Serve| GoogleSearch[search.html]
+        Backend -->|Proxy Request| PubMedProxy["/api/pubmed Endpoint"]
+        Backend -->|Static Serve| GoogleSearch["search.html"]
         PubMedProxy -->|E-utilities API| NCBI[NCBI PubMed]
         GoogleSearch -->|CSE API| Google[Google Programmable Search]
     end
