@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecting to Pocket Gall...</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f0f8ff;
+            /* Light sky blue */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .text-container {
+            z-index: 10;
+            text-align: center;
+            opacity: 0;
+            animation: fadeIn 1s ease-in forwards 0.5s;
+        }
+
+        h1 {
+            color: #1a365d;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        p {
+            color: #4a5568;
+            font-size: 1.2rem;
+        }
+
+        /* The Seagull */
+        .seagull-container {
+            position: absolute;
+            top: 40%;
+            left: -150px;
+            animation: flyAcross 4s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+        }
+
+        .seagull {
+            width: 100px;
+            height: 100px;
+            /* Placeholder for a cool SVG seagull */
+        }
+
+        .seagull svg {
+            width: 100%;
+            height: 100%;
+            fill: #2d3748;
+            animation: flap 0.6s infinite alternate ease-in-out;
+        }
+
+        /* Animations */
+        @keyframes flyAcross {
+            0% {
+                transform: translate(0, 50px) scale(0.5);
+            }
+
+            50% {
+                transform: translate(50vw, -20px) scale(1.2);
+            }
+
+            100% {
+                transform: translate(120vw, -100px) scale(0.8);
+            }
+        }
+
+        @keyframes flap {
+            0% {
+                transform: scaleY(1);
+            }
+
+            100% {
+                transform: scaleY(0.4);
+            }
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="seagull-container">
+        <div class="seagull">
+            <!-- Simple SVG Seagull shape -->
+            <svg viewBox="0 0 100 50" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10,25 Q25,5 50,25 Q75,5 90,25 Q75,15 50,25 Q25,15 10,25 Z" />
+                <circle cx="50" cy="25" r="3" fill="#1a365d" />
+                <path d="M45,25 L55,25 L50,30 Z" fill="#e2e8f0" />
+            </svg>
+        </div>
+    </div>
+
+    <div class="text-container">
+        <h1>Heading to Pocket Gall</h1>
+        <p>Just a quick flight over...</p>
+    </div>
+
+    <script>
+        // Redirect after the animation completes
+        setTimeout(() => {
+            window.location.href = "https://pocketgall.app";
+        }, 3000); // 3 seconds
+    </script>
+</body>
+
+</html>

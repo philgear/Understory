@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecting to Pocket Gall...</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f2;
+            /* Dieter Rams functional off-white */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .text-container {
+            z-index: 10;
+            text-align: center;
+            opacity: 0;
+            animation: fadeIn 1s ease-in forwards 0.5s;
+        }
+
+        h1 {
+            color: #222222;
+            font-size: 2rem;
+            font-weight: 500;
+            letter-spacing: -0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        p {
+            color: #777777;
+            font-size: 1.1rem;
+            font-weight: 400;
+        }
+
+        /* The Pocket */
+        .pocket {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 160px;
+            height: 60px;
+            background-color: #e8e8e8;
+            border-top: 1px solid #d0d0d0;
+            border-radius: 6px 6px 0 0;
+            z-index: 20;
+        }
+
+        .pocket::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background-color: #333333;
+            border-radius: 2px;
+        }
+
+        /* The Flying Container */
+        .seagull-container {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            z-index: 10;
+            animation: flightPath 4.5s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+        }
+
+        /* The Paper */
+        .paper {
+            position: absolute;
+            left: -40px;
+            bottom: 0;
+            width: 80px;
+            height: 100px;
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            animation: foldPaper 1s ease-in forwards;
+            transform-origin: center;
+        }
+
+        /* Paper creases */
+        .paper::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 1px;
+            height: 100%;
+            background: #f0f0f0;
+        }
+
+        .paper::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: #f0f0f0;
+        }
+
+        .seagull {
+            position: absolute;
+            left: -55px;
+            bottom: -5px;
+            width: 110px;
+            height: 110px;
+            opacity: 0;
+            transform: scale(0.1);
+            animation: unfoldBird 1s ease-out forwards;
+        }
+
+        .seagull svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0px 10px 15px rgba(0, 0, 0, 0.1));
+            animation: flap 0.8s infinite alternate ease-in-out;
+            transform-origin: center;
+        }
+
+        /* Animations */
+        @keyframes flightPath {
+            0% {
+                transform: translateX(-50%) translateY(120px) scale(0.8);
+            }
+
+            15% {
+                transform: translateX(-50%) translateY(-80px) scale(0.9);
+            }
+
+            22% {
+                transform: translateX(-50%) translateY(-60px) scale(1);
+            }
+
+            100% {
+                transform: translate(calc(-50% + 50vw), -80vh) scale(1.5);
+            }
+        }
+
+        @keyframes foldPaper {
+
+            0%,
+            55% {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+
+            80% {
+                transform: scale(0.3) rotate(180deg) rotateX(70deg);
+                opacity: 0.8;
+            }
+
+            95%,
+            100% {
+                transform: scale(0) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes unfoldBird {
+
+            0%,
+            75% {
+                opacity: 0;
+                transform: scale(0.1) rotate(-180deg);
+            }
+
+            90% {
+                opacity: 1;
+                transform: scale(1.2) rotate(15deg);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1) rotate(0deg);
+            }
+        }
+
+        @keyframes flap {
+            0% {
+                transform: rotate(-3deg) scaleY(1);
+            }
+
+            100% {
+                transform: rotate(3deg) scaleY(0.85);
+            }
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- The Pocket -->
+    <div class="pocket"></div>
+
+    <div class="seagull-container">
+        <div class="paper"></div>
+        <div class="seagull">
+            <!-- Origami SVG Seagull shape - Braun minimalist palette -->
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <!-- Far Wing -->
+                <polygon points="50,40 65,15 58,45" fill="#d0d0d0" stroke="#b0b0b0" stroke-width="0.5"
+                    stroke-linejoin="round" />
+                <!-- Tail -->
+                <polygon points="20,50 50,40 10,35" fill="#e0e0e0" stroke="#d0d0d0" stroke-width="0.5"
+                    stroke-linejoin="round" />
+                <!-- Body Base -->
+                <polygon points="20,50 50,40 58,45 75,55 50,65" fill="#f4f4f4" stroke="#e0e0e0" stroke-width="0.5"
+                    stroke-linejoin="round" />
+                <!-- Near Wing (Upper) -->
+                <polygon points="50,40 58,45 35,85" fill="#ffffff" stroke="#f0f0f0" stroke-width="0.5"
+                    stroke-linejoin="round" />
+                <!-- Near Wing (Fold) -->
+                <polygon points="50,40 35,85 20,50" fill="#f9f9f9" stroke="#e0e0e0" stroke-width="0.5"
+                    stroke-linejoin="round" />
+                <!-- Neck/Head -->
+                <polygon points="75,55 58,45 85,38" fill="#ffffff" stroke="#f0f0f0" stroke-width="0.5"
+                    stroke-linejoin="round" />
+                <!-- Beak - Functional Braun Orange Accent -->
+                <polygon points="85,38 82,45 95,34" fill="#ff4500" stroke="#df3d00" stroke-width="0.5"
+                    stroke-linejoin="round" />
+            </svg>
+        </div>
+    </div>
+
+    <div class="text-container">
+        <h1>Heading to Pocket Gall</h1>
+        <p>Just a quick flight over...</p>
+    </div>
+
+    <script>
+        // Redirect after the animation completes
+        setTimeout(() => {
+            window.location.href = "https://pocketgall.app";
+        }, 4000); // 4 seconds
+    </script>
+</body>
+
+</html>

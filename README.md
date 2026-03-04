@@ -12,11 +12,26 @@
 > **Note:** This application was created for the purposes of entering the Gemini Live Agent Challenge hackathon.
 > **Category:** Live Agents 🗣️ (Real-time Interaction Voice & Visual UI)
 
-![Pocket Gall Dashboard](docs/images/pocket-gall_dashboard.png)
+![Pocket Gall Dashboard](./docs/images/pocket-gall_dashboard.png)
 
 Pocket Gall streamlines patient intake with an interactive 3D body map and AI-powered clinical intelligence. It empowers practitioners with rapid data visualization and strategy synthesis for proactive care decisions, acting as an interruptible voice-first clinical co-pilot.
 
 **#GeminiLiveAgentChallenge**
+
+---
+
+## Real-Time Clinical Experience
+
+A highly interactive, aesthetically minimal user interface (Industrial Grace) designed for immediate clinical insight.
+*For a full demonstration, press the `Demo` button in the top-right of the application to load the patient simulation.*
+
+### Product Highlights
+
+![Dashboard Snapshot](./docs/images/dashboard.png)
+
+![3D Body Viewer](./docs/images/body_viewer.png)
+
+![Inline Agent Chat](./docs/images/inline_chat.webp)
 
 ---
 
