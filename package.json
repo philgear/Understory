@@ -1,5 +1,5 @@
 {
-  "name": "understory",
+  "name": "pocket-gall",
   "version": "0.1.0",
   "description": "Insight beneath the surface. Real-time medical Care Plan Strategy and Live AI Consult engine powered by Google Gemini.",
   "author": "Phil Gear",
@@ -16,7 +16,7 @@
   "private": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/philgear/understory.git"
+    "url": "https://github.com/philgear/pocket-gall.git"
   },
   "engines": {
     "node": ">=20.0.0"
@@ -70,7 +70,7 @@
     "dev": "ng serve",
     "build": "ng build",
     "lint": "tsc --noEmit",
-    "preview": "npm run build && node server.js",
+    "preview": "npm run build && node dist/server/server.mjs",
     "start": "node dist/server/server.mjs",
     "gcp-build": "npm run build",
     "changelog": "echo \"Remember to update CHANGELOG.md before running npm run release\"",

@@ -63,7 +63,7 @@
             "security": {
               "allowedHosts": [
                 "localhost",
-                "understory-444980566010.us-west1.run.app"
+                "pocket-gall-444980566010.us-west1.run.app"
               ]
             },
             "server": "src/main.server.ts",

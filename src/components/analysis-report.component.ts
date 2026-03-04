@@ -5,25 +5,26 @@ import { PatientStateService } from '../services/patient-state.service';
 import { PatientManagementService } from '../services/patient-management.service';
 import { HistoryEntry } from '../services/patient.types';
 import { MarkdownService } from '../services/markdown.service';
+import { SafeHtmlPipe } from '../pipes/safe-html.pipe';
 import { DictationService } from '../services/dictation.service';
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 
 declare var webkitSpeechRecognition: any;
 import { SummaryNode, SummaryNodeItem, ReportSection, ParsedTranscriptEntry, NodeAnnotation, LensAnnotations, VerificationIssue } from './analysis-report.types';
 import { SummaryNodeComponent } from './summary-node.component';
-import { UnderstoryCardComponent } from './shared/understory-card.component';
-import { UnderstoryBadgeComponent } from './shared/understory-badge.component';
+import { PocketGallCardComponent } from './shared/pocket-gall-card.component';
+import { PocketGallBadgeComponent } from './shared/pocket-gall-badge.component';
 import { ClinicalGaugeComponent } from './clinical-gauge.component';
 import { ClinicalIcons } from '../assets/clinical-icons';
 import { ClinicalTrendComponent } from './clinical-trend.component';
 import { AiCacheService } from '../services/ai-cache.service';
-import { UnderstoryButtonComponent } from './shared/understory-button.component';
+import { PocketGallButtonComponent } from './shared/pocket-gall-button.component';
 import { RevealDirective } from '../directives/reveal.directive';
 
 @Component({
   selector: 'app-analysis-report',
   standalone: true,
-  imports: [CommonModule, SummaryNodeComponent, UnderstoryCardComponent, UnderstoryBadgeComponent, ClinicalGaugeComponent, ClinicalTrendComponent, UnderstoryButtonComponent, RevealDirective],
+  imports: [CommonModule, SummaryNodeComponent, PocketGallCardComponent, PocketGallBadgeComponent, ClinicalGaugeComponent, ClinicalTrendComponent, PocketGallButtonComponent, RevealDirective, SafeHtmlPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   host: {
@@ -40,33 +41,33 @@ import { RevealDirective } from '../directives/reveal.directive';
       <div class="flex items-center gap-2">
         <!--Voice Assistant — Always Visible-->
         @if (state.isLiveAgentActive()) {
-          <understory-button variant="danger" size="sm" (click)="endLiveConsult()">
+          <pocket-gall-button variant="danger" size="sm" (click)="endLiveConsult()">
             Close Assistant
-          </understory-button>
+          </pocket-gall-button>
         } @else {
-          <understory-button
+          <pocket-gall-button
             (click)="openVoicePanel()"
             variant="secondary"
             size="sm"
             icon="M12 14q-1.25 0-2.125-.875T9 11V5q0-1.25.875-2.125T12 2q1.25 0 2.125.875T15 5v6q0 1.25-.875 2.125T12 14m-1 7v-3.075q-2.6-.35-4.3-2.325T5 11h2q0 2.075 1.463 3.537T12 16q2.075 0 3.538-1.463T17 11h2q0 2.225-1.7 4.2T13 17.925V21z">
             Voice Assistant
-          </understory-button>
+          </pocket-gall-button>
         }
 
         <!--Actions gated on loading state-->
         @if (!intel.isLoading()) {
-          <understory-button (click)="intel.clearCache()"
+          <pocket-gall-button (click)="intel.clearCache()"
             variant="ghost"
             size="sm"
             ariaLabel="Clear AI Cache"
             [icon]="ClinicalIcons.Clear">
-          </understory-button>
-          <understory-button (click)="generate()" [disabled]="!state.hasIssues()"
+          </pocket-gall-button>
+          <pocket-gall-button (click)="generate()" [disabled]="!state.hasIssues()"
             variant="primary"
             size="sm"
             [icon]="hasAnyReport() ? 'M17.65 6.35A7.95 7.95 0 0 0 12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.66-.67 3.17-1.76 4.24l1.42 1.42A9.92 9.92 0 0 0 22 12c0-2.76-1.12-5.26-2.35-7.65z' : 'M14 5l7 7m0 0l-7 7m7-7H3'">
             {{ hasAnyReport() ? 'Refresh Analysis' : 'Generate Patient Summary' }}
-          </understory-button>
+          </pocket-gall-button>
         }
       </div>
     </div>
@@ -75,7 +76,7 @@ import { RevealDirective } from '../directives/reveal.directive';
     @if (hasAnyReport()) {
       <div class="px-8 py-3 border-b border-[#EEEEEE] no-print bg-white/50 backdrop-blur-sm">
         <div class="flex items-center gap-1 border-b border-gray-200">
-          <understory-button (click)="changeLens('Summary Overview')"
+          <pocket-gall-button (click)="changeLens('Summary Overview')"
             variant="ghost"
             size="sm"
             [class.border-b-2]="activeLens() === 'Summary Overview'"
@@ -83,8 +84,8 @@ import { RevealDirective } from '../directives/reveal.directive';
             [class.text-[#1C1C1C]]="activeLens() === 'Summary Overview'"
             class="rounded-none px-4 -mb-px shadow-none">
             Overview
-          </understory-button>
-          <understory-button (click)="changeLens('Functional Protocols')"
+          </pocket-gall-button>
+          <pocket-gall-button (click)="changeLens('Functional Protocols')"
             variant="ghost"
             size="sm"
             [class.border-b-2]="activeLens() === 'Functional Protocols'"
@@ -92,8 +93,8 @@ import { RevealDirective } from '../directives/reveal.directive';
             [class.text-[#1C1C1C]]="activeLens() === 'Functional Protocols'"
             class="rounded-none px-4 -mb-px shadow-none">
             Interventions
-          </understory-button>
-          <understory-button (click)="changeLens('Monitoring & Follow-up')"
+          </pocket-gall-button>
+          <pocket-gall-button (click)="changeLens('Monitoring & Follow-up')"
             variant="ghost"
             size="sm"
             [class.border-b-2]="activeLens() === 'Monitoring & Follow-up'"
@@ -101,8 +102,8 @@ import { RevealDirective } from '../directives/reveal.directive';
             [class.text-[#1C1C1C]]="activeLens() === 'Monitoring & Follow-up'"
             class="rounded-none px-4 -mb-px shadow-none">
             Monitoring
-          </understory-button>
-          <understory-button (click)="changeLens('Patient Education')"
+          </pocket-gall-button>
+          <pocket-gall-button (click)="changeLens('Patient Education')"
             variant="ghost"
             size="sm"
             [class.border-b-2]="activeLens() === 'Patient Education'"
@@ -110,7 +111,7 @@ import { RevealDirective } from '../directives/reveal.directive';
             [class.text-[#1C1C1C]]="activeLens() === 'Patient Education'"
             class="rounded-none px-4 -mb-px shadow-none">
             Education
-          </understory-button>
+          </pocket-gall-button>
         </div>
       </div>
     }
@@ -183,7 +184,7 @@ import { RevealDirective } from '../directives/reveal.directive';
           <div class="flex flex-col gap-6 pb-4 w-full">
             @for (section of sections; track $index; let i = $index) {
               <div appReveal [revealDelay]="i * 100" class="w-full shrink-0 flex flex-col min-h-max">
-                <understory-card [title]="section.title" [icon]="section.icon" class="flex-1">
+                <pocket-gall-card [title]="section.title" [icon]="section.icon" class="flex-1">
                   <div right-action class="flex items-center gap-2">
                     @if (intel.isLoading() && !verificationStatus(section.title)) {
                       <div class="flex items-center gap-1.5 mr-2">
@@ -192,24 +193,26 @@ import { RevealDirective } from '../directives/reveal.directive';
                       </div>
                     }
                     @if (verificationStatus(section.title); as status) {
-                      <understory-badge [label]="status" [severity]="statusSeverity(status)">
-                        <div badge-icon [innerHTML]="ClinicalIcons.Verified"></div>
-                      </understory-badge>
+                      <pocket-gall-badge [label]="status" [severity]="statusSeverity(status)">
+                        <div badge-icon [innerHTML]="ClinicalIcons.Verified | safeHtml"></div>
+                      </pocket-gall-badge>
                     }
                   </div>
 
                   <div class="rams-typography">
                     @for (node of section.nodes; track node.id) {
                       @if (node.type === 'raw') {
-                        <div [innerHTML]="node.rawHtml" class="mb-4"></div>
+                        <div [innerHTML]="node.rawHtml | safeHtml" class="mb-4"></div>
                       } @else if (node.type === 'paragraph') {
                         <app-summary-node
                           [node]="node"
                           type="paragraph"
+                          [sectionTitle]="section.title"
                           [saveStatus]="nodeSaveStatuses()[node.key]"
                           [protocolInsights]="protocolInsights"
                           (update)="handleNodeUpdate(node, $event)"
-                          (dictationToggle)="openNodeDictation(node)">
+                          (dictationToggle)="openNodeDictation(node)"
+                          (askAgent)="openAgentDialog($event)">
                         </app-summary-node>
                       } @else if (node.type === 'list') {
                         @if (node.ordered) {
@@ -219,10 +222,12 @@ import { RevealDirective } from '../directives/reveal.directive';
                                 <app-summary-node
                                   [node]="item"
                                   type="list-item"
+                                  [sectionTitle]="section.title"
                                   [saveStatus]="nodeSaveStatuses()[item.key]"
                                   [protocolInsights]="protocolInsights"
                                   (update)="handleNodeUpdate(item, $event)"
-                                  (dictationToggle)="openNodeDictation(item)">
+                                  (dictationToggle)="openNodeDictation(item)"
+                                  (askAgent)="openAgentDialog($event)">
                                 </app-summary-node>
                               </li>
                             }
@@ -234,10 +239,12 @@ import { RevealDirective } from '../directives/reveal.directive';
                                 <app-summary-node
                                   [node]="item"
                                   type="list-item"
+                                  [sectionTitle]="section.title"
                                   [saveStatus]="nodeSaveStatuses()[item.key]"
                                   [protocolInsights]="protocolInsights"
                                   (update)="handleNodeUpdate(item, $event)"
-                                  (dictationToggle)="openNodeDictation(item)">
+                                  (dictationToggle)="openNodeDictation(item)"
+                                  (askAgent)="openAgentDialog($event)">
                                 </app-summary-node>
                               </li>
                             }
@@ -246,7 +253,7 @@ import { RevealDirective } from '../directives/reveal.directive';
                       }
                     }
                   </div>
-                </understory-card>
+                </pocket-gall-card>
               </div>
             }
           </div>
@@ -378,7 +385,7 @@ export class AnalysisReportComponent implements OnDestroy, AfterViewInit {
 
         for (let nIdx = 0; nIdx < tokens.length; nIdx++) {
           const token = tokens[nIdx];
-          const key = (token as any).text || token.raw || `node-${sIdx}-${nIdx}`;
+          const key = (token as any).text || token.raw || `node- ${sIdx} - ${nIdx}`;
           const annotation = (this.lensAnnotations()[this.activeLens()] || {})[key] || { note: '', bracketState: 'normal' };
           // const annotation = (this.lensAnnotations()[this.activeLens()] || {})[key] || { note: '', bracketState: 'normal' };
 
@@ -406,7 +413,7 @@ export class AnalysisReportComponent implements OnDestroy, AfterViewInit {
             for (const issue of issues) {
               if (issue.claim && highlightedHtml.includes(issue.claim)) {
                 const colorClass = issue.severity === 'high' ? 'bg-red-100 border-red-200' : 'bg-amber-100 border-amber-200';
-                const highlightSpan = `< span class="verification-claim px-0.5 border-b-2 border-dotted cursor-help ${colorClass}" title = "${issue.message}" > ${issue.claim} </span>`;
+                const highlightSpan = `< span class= "verification-claim px-0.5 border-b-2 border-dotted cursor-help ${colorClass}" title = "${issue.message}" > ${issue.claim} </span>`;
                 highlightedHtml = highlightedHtml.replace(issue.claim, highlightSpan);
               }
             }

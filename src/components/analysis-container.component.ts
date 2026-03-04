@@ -6,13 +6,13 @@ import { AiCacheService } from '../services/ai-cache.service';
 import { ClinicalIntelligenceService } from '../services/clinical-intelligence.service';
 import { ExportService } from '../services/export.service';
 import { ClinicalTrendComponent } from './clinical-trend.component';
-import { UnderstoryButtonComponent } from './shared/understory-button.component';
+import { PocketGallButtonComponent } from './shared/pocket-gall-button.component';
 import { PatientManagementService } from '../services/patient-management.service';
 
 @Component({
   selector: 'app-analysis-container',
   standalone: true,
-  imports: [CommonModule, AnalysisReportComponent, ClinicalTrendComponent, UnderstoryButtonComponent],
+  imports: [CommonModule, AnalysisReportComponent, ClinicalTrendComponent, PocketGallButtonComponent],
   template: `
     <div class="flex h-full w-full overflow-hidden bg-[#F3F4F6]">
       
@@ -68,19 +68,19 @@ import { PatientManagementService } from '../services/patient-management.service
         <!-- Top Toolbar / Header -->
         <div class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 shrink-0 relative z-10">
           <div class="flex items-center gap-6">
-            <understory-button 
+            <pocket-gall-button 
                     (click)="showHistory.set(!showHistory())" 
                     [variant]="showHistory() ? 'secondary' : 'ghost'" 
                     size="sm"
                     icon="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z">
                Clinical History
-            </understory-button>
+            </pocket-gall-button>
             
             <div class="h-6 w-px bg-gray-200 hidden sm:block"></div>
             
             <div class="hidden sm:block">
               <h1 class="text-sm font-bold text-gray-900 leading-tight">AI Clinical Synthesis</h1>
-              <p class="text-[10px] uppercase font-medium tracking-widest text-gray-500">Understory Intelligence v2.4</p>
+              <p class="text-[10px] uppercase font-medium tracking-widest text-gray-500">Pocket Gall Intelligence v2.4</p>
             </div>
           </div>
 
@@ -93,20 +93,20 @@ import { PatientManagementService } from '../services/patient-management.service
               </div>
               
               <div class="flex gap-2">
-                <understory-button 
+                <pocket-gall-button 
                   (click)="exportPdf()" 
                   variant="secondary" 
                   size="sm" 
                   icon="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z">
                   Export PDF
-                </understory-button>
-                <understory-button 
+                </pocket-gall-button>
+                <pocket-gall-button 
                   (click)="exportFhir()" 
                   variant="secondary" 
                   size="sm" 
                   icon="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4">
                   Export FHIR
-                </understory-button>
+                </pocket-gall-button>
               </div>
             } @else {
                <div class="hidden md:flex items-center gap-2 mr-2">
@@ -129,7 +129,7 @@ import { PatientManagementService } from '../services/patient-management.service
             <div class="shrink-0 mt-2 pt-6 border-t border-black/10 grid grid-cols-1 md:grid-cols-3 gap-6 font-['Inter'] no-print opacity-80 hover:opacity-100 transition-opacity">
               <div class="space-y-1">
                 <div class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#000000]">System Identification</div>
-                <div class="text-[10px] font-medium text-black/60 uppercase tracking-widest">Understory Analysis Engine v2.4.0</div>
+                <div class="text-[10px] font-medium text-black/60 uppercase tracking-widest">Pocket Gall Analysis Engine v2.4.0</div>
               </div>
               <div class="space-y-1">
                 <div class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#000000]">Analysis Metadata</div>

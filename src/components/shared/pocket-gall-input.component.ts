@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'understory-input',
+  selector: 'pocket-gall-input',
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
@@ -169,7 +169,7 @@ import { FormsModule } from '@angular/forms';
   `],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class UnderstoryInputComponent implements AfterViewInit {
+export class PocketGallInputComponent implements AfterViewInit {
   inputId = input<string>(`input-${Math.random().toString(36).substr(2, 9)}`);
   label = input<string>('');
   placeholder = input<string>('');

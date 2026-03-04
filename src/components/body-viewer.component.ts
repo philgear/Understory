@@ -29,25 +29,25 @@ import { Body3DViewerComponent } from './body-3d-viewer.component';
         <!-- 2D/3D & Anatomy Layer Toggles (Top Right) -->
         <div class="absolute top-4 right-4 flex flex-col gap-2 z-20 no-print">
           <!-- View Modes -->
-          <div class="flex flex-col gap-1 bg-white p-1 rounded-full shadow-sm border border-[#EEEEEE]">
+          <div class="flex flex-col gap-1 bg-white p-1 rounded-sm shadow-sm border border-[#EEEEEE]">
             <button (click)="state.bodyViewerMode.set('3d')" [class.bg-black]="state.bodyViewerMode() === '3d'" [class.text-white]="state.bodyViewerMode() === '3d'"
-                    title="3D View" class="p-2 rounded-full hover:bg-gray-100 transition-all flex items-center justify-center text-gray-600 hover:text-black">
+                    title="3D View" class="p-2 rounded-sm hover:bg-gray-100 transition-all flex items-center justify-center text-gray-600 hover:text-black">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
             </button>
             <button (click)="state.bodyViewerMode.set('2d')" [class.bg-black]="state.bodyViewerMode() === '2d'" [class.text-white]="state.bodyViewerMode() === '2d'"
-                    title="2D View" class="p-2 rounded-full hover:bg-gray-100 transition-all flex items-center justify-center text-gray-600 hover:text-black">
+                    title="2D View" class="p-2 rounded-sm hover:bg-gray-100 transition-all flex items-center justify-center text-gray-600 hover:text-black">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
             </button>
           </div>
 
           <!-- Anatomy Layers -->
-          <div class="flex flex-col gap-1 bg-white p-1 rounded-full shadow-sm border border-[#EEEEEE]">
+          <div class="flex flex-col gap-1 bg-white p-1 rounded-sm shadow-sm border border-[#EEEEEE]">
             <button (click)="state.isInternalView.set(false)" [class.bg-black]="!state.isInternalView()" [class.text-white]="!state.isInternalView()"
-                    title="Surface View" class="p-2 rounded-full hover:bg-gray-100 transition-all flex items-center justify-center text-gray-600 hover:text-black">
+                    title="Surface View" class="p-2 rounded-sm hover:bg-gray-100 transition-all flex items-center justify-center text-gray-600 hover:text-black">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
             </button>
             <button (click)="state.isInternalView.set(true)" [class.bg-black]="state.isInternalView()" [class.text-white]="state.isInternalView()"
-                    title="Skeletal View" class="p-2 rounded-full hover:bg-gray-100 transition-all flex items-center justify-center text-gray-600 hover:text-black">
+                    title="Skeletal View" class="p-2 rounded-sm hover:bg-gray-100 transition-all flex items-center justify-center text-gray-600 hover:text-black">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><path d="M12 2v20"></path><path d="M7 7h10"></path><path d="M5 12h14"></path><path d="M7 17h10"></path></svg>
             </button>
           </div>
@@ -62,7 +62,7 @@ import { Body3DViewerComponent } from './body-3d-viewer.component';
             </app-body-3d-viewer>
           } @placeholder {
             <div class="w-full h-full flex flex-col items-center justify-center text-gray-400 gap-4">
-              <div class="w-8 h-8 rounded-full border-2 border-gray-300 border-t-black animate-spin"></div>
+              <div class="w-8 h-8 rounded-sm border-2 border-gray-300 border-t-black animate-spin"></div>
               <p class="text-sm font-medium uppercase tracking-widest text-[#1c1c1c] opacity-50">Loading 3D Engine...</p>
             </div>
           }
@@ -112,13 +112,13 @@ import { Body3DViewerComponent } from './body-3d-viewer.component';
           <!-- 2D Direction Controls (Local to component as they only apply to 2D) -->
           <div class="absolute bottom-4 right-4 flex text-[8px] font-bold tracking-widest uppercase gap-1 z-20">
             <button (click)="view.set('front')" 
-                    class="w-8 h-8 border transition-all flex items-center justify-center rounded-full shadow-sm"
+                    class="w-8 h-8 border transition-all flex items-center justify-center rounded-sm shadow-sm"
                     [class.bg-black]="view() === 'front'"
                     [class.text-white]="view() === 'front'"
                     [class.bg-white]="view() !== 'front'"
                     [class.text-black]="view() !== 'front'">F</button>
             <button (click)="view.set('back')" 
-                    class="w-8 h-8 border transition-all flex items-center justify-center rounded-full shadow-sm"
+                    class="w-8 h-8 border transition-all flex items-center justify-center rounded-sm shadow-sm"
                     [class.bg-black]="view() === 'back'"
                     [class.text-white]="view() === 'back'"
                     [class.bg-white]="view() !== 'back'"
@@ -132,18 +132,18 @@ import { Body3DViewerComponent } from './body-3d-viewer.component';
       <!-- Manual Zoom/Reset Controls (Bottom Left) -->
       <div class="absolute bottom-4 left-4 flex flex-col gap-2 z-20 no-print">
          <button (click)="resetControls()" 
-                 class="p-3 bg-white border border-[#EEEEEE] hover:bg-[#F8F8F8] rounded-full shadow-sm transition-all active:scale-95 text-gray-600 hover:text-black" 
+                 class="p-3 bg-white border border-[#EEEEEE] hover:bg-[#F8F8F8] rounded-sm shadow-sm transition-all active:scale-95 text-gray-600 hover:text-black" 
                  title="Reset View">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
         </button>
         @if (state.bodyViewerMode() === '3d') {
           <button (click)="zoomIn()" 
-                  class="p-3 bg-white border border-[#EEEEEE] hover:bg-[#F8F8F8] rounded-full shadow-sm transition-all active:scale-95 text-gray-600 hover:text-black" 
+                  class="p-3 bg-white border border-[#EEEEEE] hover:bg-[#F8F8F8] rounded-sm shadow-sm transition-all active:scale-95 text-gray-600 hover:text-black" 
                   title="Zoom In">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
           </button>
           <button (click)="zoomOut()" 
-                  class="p-3 bg-white border border-[#EEEEEE] hover:bg-[#F8F8F8] rounded-full shadow-sm transition-all active:scale-95 text-gray-600 hover:text-black" 
+                  class="p-3 bg-white border border-[#EEEEEE] hover:bg-[#F8F8F8] rounded-sm shadow-sm transition-all active:scale-95 text-gray-600 hover:text-black" 
                   title="Zoom Out">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/></svg>
           </button>

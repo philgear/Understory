@@ -2,13 +2,13 @@ import { Component, ChangeDetectionStrategy, inject, signal, effect, OnDestroy, 
 import { CommonModule } from '@angular/common';
 import { DictationService } from '../services/dictation.service';
 
-import { UnderstoryButtonComponent } from './shared/understory-button.component';
-import { UnderstoryInputComponent } from './shared/understory-input.component';
+import { PocketGallButtonComponent } from './shared/pocket-gall-button.component';
+import { PocketGallInputComponent } from './shared/pocket-gall-input.component';
 
 @Component({
   selector: 'app-dictation-modal',
   standalone: true,
-  imports: [CommonModule, UnderstoryButtonComponent, UnderstoryInputComponent],
+  imports: [CommonModule, PocketGallButtonComponent, PocketGallInputComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (dictation.isModalOpen()) {
@@ -18,7 +18,7 @@ import { UnderstoryInputComponent } from './shared/understory-input.component';
           <!-- Header -->
           <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
             <div class="flex items-center gap-3">
-              <div class="w-8 h-8 rounded-full flex items-center justify-center transition-colors"
+              <div class="w-8 h-8 rounded-sm flex items-center justify-center transition-colors"
                    [class.bg-red-100]="dictation.isListening()"
                    [class.text-red-600]="dictation.isListening()"
                    [class.bg-gray-100]="!dictation.isListening()"
@@ -39,24 +39,24 @@ import { UnderstoryInputComponent } from './shared/understory-input.component';
                 </p>
               </div>
             </div>
-            <understory-button 
+            <pocket-gall-button 
               variant="ghost" 
               size="sm"
               (click)="cancel()" 
               icon="M18 6L6 18M6 6l12 12">
-            </understory-button>
+            </pocket-gall-button>
           </div>
 
           <!-- Content -->
           <div class="p-6 relative">
-            <understory-input
+            <pocket-gall-input
               type="textarea"
               [value]="currentText()"
               (valueChange)="updateTextManual($event)"
               [rows]="10"
               placeholder="Start speaking or type here..."
               class="w-full">
-            </understory-input>
+            </pocket-gall-input>
             
             @if (interimText()) {
               <div class="absolute bottom-8 left-8 right-8 text-gray-500 text-sm italic truncate pointer-events-none">
@@ -66,9 +66,9 @@ import { UnderstoryInputComponent } from './shared/understory-input.component';
 
             @if (dictation.isListening()) {
               <div class="absolute bottom-8 right-8 flex gap-1">
-                 <span class="w-2 h-2 bg-red-500 rounded-full animate-bounce" style="animation-delay: 0ms"></span>
-                 <span class="w-2 h-2 bg-red-500 rounded-full animate-bounce" style="animation-delay: 150ms"></span>
-                 <span class="w-2 h-2 bg-red-500 rounded-full animate-bounce" style="animation-delay: 300ms"></span>
+                 <span class="w-2 h-2 bg-red-500 rounded-sm animate-bounce" style="animation-delay: 0ms"></span>
+                 <span class="w-2 h-2 bg-red-500 rounded-sm animate-bounce" style="animation-delay: 150ms"></span>
+                 <span class="w-2 h-2 bg-red-500 rounded-sm animate-bounce" style="animation-delay: 300ms"></span>
               </div>
             }
           </div>
@@ -76,31 +76,31 @@ import { UnderstoryInputComponent } from './shared/understory-input.component';
           <!-- Footer -->
           <div class="px-6 py-4 border-t border-gray-100 bg-gray-50/50 flex justify-between items-center">
             <div class="flex items-center gap-2">
-               <understory-button 
+               <pocket-gall-button 
                  (click)="toggleListening()" 
                  [variant]="dictation.isListening() ? 'secondary' : 'danger'"
                  size="sm"
                  [icon]="dictation.isListening() ? 'M6 4h4v16H6V4zm8 0h4v16h-4V4z' : 'M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zM17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z'">
                  {{ dictation.isListening() ? 'Pause' : 'Resume' }}
-               </understory-button>
+               </pocket-gall-button>
                @if (dictation.permissionError(); as error) {
                  <span class="text-xs text-red-600">{{ error }}</span>
                }
             </div>
 
             <div class="flex items-center gap-3">
-               <understory-button 
+               <pocket-gall-button 
                  variant="ghost" 
                  size="sm" 
                  (click)="cancel()">
                  Cancel
-               </understory-button>
-               <understory-button 
+               </pocket-gall-button>
+               <pocket-gall-button 
                  variant="primary" 
                  size="sm" 
                  (click)="accept()">
                  Insert Text
-               </understory-button>
+               </pocket-gall-button>
             </div>
           </div>
 

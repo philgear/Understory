@@ -1,16 +1,28 @@
 import { Component, ChangeDetectionStrategy, inject, signal, computed, viewChild, ElementRef, OnDestroy, effect, untracked } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { PatientStateService } from '../services/patient-state.service';
 import { ClinicalIntelligenceService } from '../services/clinical-intelligence.service';
 import { DictationService } from '../services/dictation.service';
 import { PatientManagementService } from '../services/patient-management.service';
-import { UnderstoryButtonComponent } from './shared/understory-button.component';
-import { UnderstoryInputComponent } from './shared/understory-input.component';
+import { SafeHtmlPipe } from '../pipes/safe-html.pipe';
+import { PocketGallButtonComponent } from './shared/pocket-gall-button.component';
+import { PocketGallInputComponent } from './shared/pocket-gall-input.component';
 import { MarkdownService } from '../services/markdown.service';
+import { RichMediaService, RichMediaCard } from '../services/rich-media.service';
+import { Medical3DViewerComponent } from './medical-3d-viewer.component';
+import { ClinicalIcons } from '../assets/clinical-icons';
+
+export interface ChatEntry {
+    role: 'user' | 'model';
+    text: string;
+    htmlContent?: string;
+    richCards?: RichMediaCard[];
+}
 
 @Component({
     selector: 'app-voice-assistant',
-    imports: [CommonModule, UnderstoryButtonComponent, UnderstoryInputComponent],
+    imports: [CommonModule, FormsModule, PocketGallButtonComponent, PocketGallInputComponent, SafeHtmlPipe, Medical3DViewerComponent],
     changeDetection: ChangeDetectionStrategy.OnPush,
     template: `
         <div class="h-full bg-white z-10 flex flex-col no-print w-full">
@@ -31,7 +43,7 @@ import { MarkdownService } from '../services/markdown.service';
                              </g>
                            </g>
                         </svg>
-                        <span class="font-medium text-[#1C1C1C] tracking-[0.1em] sm:tracking-[0.15em] text-[10px] sm:text-sm uppercase truncate">Understory Intelligence</span>
+                        <span class="font-medium text-[#1C1C1C] tracking-[0.1em] sm:tracking-[0.15em] text-[10px] sm:text-sm uppercase truncate">Pocket Gall Intelligence</span>
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
@@ -76,11 +88,11 @@ import { MarkdownService } from '../services/markdown.service';
                             <!-- Grand Intro Greeting -->
                             @if (agentState() === 'typing') {
                                 <div class="flex flex-col items-center justify-center text-center mt-12 fade-in-up">
-                                    <div class="w-20 h-20 rounded-full bg-green-50/50 border border-green-100 flex items-center justify-center mb-8 pulse-ring">
+                                    <div class="w-20 h-20 rounded-sm bg-green-50/50 border border-green-100 flex items-center justify-center mb-8 pulse-ring">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-green-600" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
                                     </div>
                                     <h1 class="text-2xl sm:text-3xl lg:text-4xl font-light text-gray-900 leading-tight md:leading-snug max-w-2xl mx-auto tracking-tight">
-                                        <span class="typing-text" [innerHTML]="typingIntroText()"></span><span class="animate-pulse text-green-500">_</span>
+                                        <span class="typing-text" [innerHTML]="typingIntroText() | safeHtml"></span><span class="animate-pulse text-green-500">_</span>
                                     </h1>
                                 </div>
                             }
@@ -88,7 +100,7 @@ import { MarkdownService } from '../services/markdown.service';
                             <!-- Regular Transcript -->
                             @for (entry of parsedTranscript(); track $index) {
                                 <div class="group flex gap-3 sm:gap-5 w-full sm:max-w-[95%] animate-in fade-in slide-in-from-bottom-2 duration-300" [class.ml-auto]="entry.role === 'user'" [class.flex-row-reverse]="entry.role === 'user'">
-                                    <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-xs sm:text-sm font-bold shrink-0 border"
+                                    <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-sm flex items-center justify-center text-xs sm:text-sm font-bold shrink-0 border"
                                          [class.bg-white]="entry.role === 'model'"
                                          [class.border-gray-200]="entry.role === 'model'"
                                          [class.text-[#416B1F]]="entry.role === 'model'"
@@ -98,17 +110,143 @@ import { MarkdownService } from '../services/markdown.service';
                                          {{ entry.role === 'model' ? 'AI' : 'DR' }}
                                     </div>
                                     @if (entry.role === 'model') {
-                                        <div class="flex flex-col gap-2 w-full pt-1.5">
-                                            <div class="text-[#1C1C1C] rams-typography text-lg leading-relaxed font-light" [innerHTML]="entry.htmlContent"></div>
+                                        <div class="flex flex-col gap-2 w-full pt-1.5 min-w-0">
+                                            <div class="text-[#1C1C1C] rams-typography text-lg leading-relaxed font-light break-words" [innerHTML]="entry.htmlContent | safeHtml"></div>
+                                            
+                                            <!-- ─── Rich Media Cards ──────────────────────── -->
+                                            @if (entry.richCards && entry.richCards.length > 0) {
+                                                <div class="flex flex-col gap-4 mt-2 mb-2">
+                                                    @for (card of entry.richCards; track card.query) {
+
+                                                        <!-- 3D Model -->
+                                                        @if (card.kind === 'model-3d' && card.models?.length) {
+                                                            <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 transform-gpu">
+                                                                <div class="px-4 py-3 border-b border-gray-100 flex items-center gap-2 bg-gray-50/50">
+                                                                    <svg viewBox="0 -960 960 960" fill="currentColor" width="16" height="16" class="text-blue-500"><path d="M440-183v-274L200-596v274l240 139Zm80 0 240-139v-274L520-457v274Zm-40-343 237-137-237-137-237 137 237 137ZM160-252q-19-11-29.5-29T120-321v-318q0-22 10.5-40t29.5-29l280-161q19-11 40-11t40 11l280 161q19 11 29.5 29t10.5 40v318q0 22-10.5 40T800-252L520-91q-19 11-40 11t-40-11L160-252Z"/></svg>
+                                                                    <span class="text-sm font-semibold text-gray-800">{{ card.models[0].name }}</span>
+                                                                    <span class="ml-auto text-[10px] font-bold tracking-wider text-blue-600 uppercase bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100">3D Model</span>
+                                                                </div>
+                                                                <div class="h-[240px] w-full bg-[#fdfdfd] relative contain-strict">
+                                                                    @defer (on viewport; prefetch on idle) {
+                                                                        <app-medical-3d-viewer 
+                                                                            [threejsId]="card.models[0].threejsId"
+                                                                            [severity]="card.severity"
+                                                                            [afflictionHighlight]="card.afflictionHighlight"
+                                                                            [particles]="card.particles"
+                                                                            class="w-full h-full block">
+                                                                        </app-medical-3d-viewer>
+                                                                    } @placeholder {
+                                                                        <div class="absolute inset-0 flex items-center justify-center bg-[#FDFDFD] border border-[#EEEEEE] rounded-sm">
+                                                                            <div class="w-6 h-6 rounded-sm border-2 border-gray-300 border-t-black animate-spin"></div>
+                                                                        </div>
+                                                                    }
+                                                                </div>
+                                                                <div class="px-4 py-2 bg-gray-50 border-t border-gray-100 text-[10px] text-gray-500 font-medium">Interactive Volume · Procedural Generation</div>
+                                                            </div>
+                                                        }
+
+                                                        <!-- Image Gallery -->
+                                                        @if (card.kind === 'image-gallery') {
+                                                            <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 transform-gpu">
+                                                                <div class="px-4 py-3 border-b border-gray-100 flex items-center gap-2 bg-gray-50/50">
+                                                                    <svg viewBox="0 -960 960 960" fill="currentColor" width="16" height="16" class="text-purple-500"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-800v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm40-80h480L570-480 450-320l-90-120-120 160Z"/></svg>
+                                                                    <span class="text-sm font-semibold text-gray-800">Medical Illustrations: {{ card.query }}</span>
+                                                                    <span class="ml-auto text-[10px] font-bold tracking-wider text-purple-600 uppercase bg-purple-50 px-2 py-0.5 rounded-full border border-purple-100">Wikimedia</span>
+                                                                </div>
+                                                                @if (card.loading) {
+                                                                    <div class="px-4 py-6 text-sm text-gray-500 italic animate-pulse flex items-center gap-3">
+                                                                        <div class="w-4 h-4 border-2 border-gray-300 border-t-purple-500 rounded-full animate-spin"></div>
+                                                                        Searching Wikimedia Commons…
+                                                                    </div>
+                                                                } @else if (card.images?.length) {
+                                                                    <div class="flex overflow-x-auto gap-3 p-4 bg-gray-50 scrollbar-hide snap-x">
+                                                                        @for (img of card.images; track img.url) {
+                                                                            <a [href]="img.descriptionUrl" target="_blank" rel="noopener" class="shrink-0 w-48 group snap-start block">
+                                                                                <div class="aspect-video w-full rounded-lg overflow-hidden bg-white border border-gray-200 mb-2 relative shadow-sm hover:shadow-md transition-shadow">
+                                                                                    <img [src]="img.thumbUrl" [alt]="img.title" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">
+                                                                                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"></div>
+                                                                                </div>
+                                                                                <span class="text-xs text-gray-600 group-hover:text-black line-clamp-2 transition-colors">{{ img.title | slice:0:40 }}</span>
+                                                                            </a>
+                                                                        }
+                                                                    </div>
+                                                                } @else {
+                                                                    <div class="px-4 py-6 text-sm text-gray-500 italic flex items-center gap-2">
+                                                                        <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4 text-gray-400" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                                                                        No illustrations found for "{{ card.query }}"
+                                                                    </div>
+                                                                }
+                                                                <div class="px-4 py-2 bg-gray-50 border-t border-gray-100 text-[10px] text-gray-500 font-medium">Public domain · Wikimedia Commons</div>
+                                                            </div>
+                                                        }
+
+                                                        <!-- PubMed Citations -->
+                                                        @if (card.kind === 'pubmed-refs') {
+                                                            <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 transform-gpu">
+                                                                <div class="px-4 py-3 border-b border-gray-100 flex items-center gap-2 bg-gray-50/50">
+                                                                    <svg viewBox="0 -960 960 960" fill="currentColor" width="16" height="16" class="text-teal-600"><path d="M320-240h320v-80H320v80Zm0-160h320v-80H320v80ZM240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h320l240 240v480q0 33-23.5 56.5T720-80H240Zm280-520v-200H240v640h480v-440H520ZM240-800v200-200 640-640Z"/></svg>
+                                                                    <span class="text-sm font-semibold text-gray-800">Research: {{ card.query }}</span>
+                                                                    <span class="ml-auto text-[10px] font-bold tracking-wider text-teal-700 uppercase bg-teal-50 px-2 py-0.5 rounded-full border border-teal-100">PubMed</span>
+                                                                </div>
+                                                                @if (card.loading) {
+                                                                    <div class="px-4 py-6 text-sm text-gray-500 italic animate-pulse flex items-center gap-3">
+                                                                        <div class="w-4 h-4 border-2 border-gray-300 border-t-teal-600 rounded-full animate-spin"></div>
+                                                                        Searching PubMed…
+                                                                    </div>
+                                                                } @else if (card.citations?.length) {
+                                                                    <div class="flex flex-col">
+                                                                        @for (cite of card.citations; track cite.pmid) {
+                                                                            <a [href]="cite.url" target="_blank" rel="noopener" class="group px-4 py-3 border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors block">
+                                                                                <div class="text-sm font-medium text-gray-900 leading-snug group-hover:text-teal-700 transition-colors">{{ cite.title }}</div>
+                                                                                <div class="text-xs text-gray-500 mt-1 line-clamp-1 truncate">{{ cite.authors }} · <em class="not-italic font-semibold text-gray-600">{{ cite.journal }}</em> · {{ cite.year }}</div>
+                                                                                <div class="text-[10px] font-mono text-gray-400 mt-1 uppercase tracking-wider group-hover:text-teal-600 transition-colors">PMID {{ cite.pmid }} ↗</div>
+                                                                            </a>
+                                                                        }
+                                                                    </div>
+                                                                } @else {
+                                                                    <div class="px-4 py-6 text-sm text-gray-500 italic flex items-center gap-2">
+                                                                        <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4 text-gray-400" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                                                                        No results found
+                                                                    </div>
+                                                                }
+                                                                <div class="px-4 py-2 bg-gray-50 border-t border-gray-100 text-[10px] text-gray-500 font-medium">NIH National Library of Medicine</div>
+                                                            </div>
+                                                        }
+
+                                                        <!-- PHIL Image -->
+                                                        @if (card.kind === 'phil-image' && card.philImages?.length) {
+                                                            <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 transform-gpu">
+                                                                <div class="px-4 py-3 border-b border-gray-100 flex items-center gap-2 bg-gray-50/50">
+                                                                    <svg viewBox="0 -960 960 960" fill="currentColor" width="16" height="16" class="text-orange-600"><path d="M480-80q-139-35-229.5-159.5T160-516v-244l320-120 320 120v244q0 152-90.5 276.5T480-80Z"/></svg>
+                                                                    <span class="text-sm font-semibold text-gray-800">{{ card.philImages[0].title }}</span>
+                                                                    <span class="ml-auto text-[10px] font-bold tracking-wider text-orange-700 uppercase bg-orange-50 px-2 py-0.5 rounded-full border border-orange-100">CDC PHIL</span>
+                                                                </div>
+                                                                <div class="flex overflow-x-auto gap-3 p-4 bg-gray-50 scrollbar-hide snap-x">
+                                                                    @for (img of card.philImages; track img.id) {
+                                                                        <div class="shrink-0 w-56 group snap-start block">
+                                                                            <div class="aspect-square w-full rounded-lg overflow-hidden bg-white border border-gray-200 mb-2 shadow-sm relative">
+                                                                                <img [src]="img.thumbUrl" [alt]="img.title" class="w-full h-full object-contain p-2" loading="lazy" (error)="img.thumbUrl = img.url">
+                                                                            </div>
+                                                                            <span class="text-[10px] text-gray-500 block leading-tight">{{ img.credit }}</span>
+                                                                        </div>
+                                                                    }
+                                                                </div>
+                                                                <div class="px-4 py-2 bg-gray-50 border-t border-gray-100 text-[10px] text-gray-500 font-medium">Public domain · CDC Public Health Image Library</div>
+                                                            </div>
+                                                        }
+                                                    }
+                                                </div>
+                                            }
+
                                             <div class="flex items-center gap-2 mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                                                <understory-button variant="ghost" size="xs" (click)="actionCopy(entry.text)" icon="M9 9h13v13H9V9zm-4 6H4v-9h9v1z" ariaLabel="Copy Message">Copy</understory-button>
-                                                <understory-button variant="ghost" size="xs" (click)="actionDictate(entry.text)" icon="M11 5L6 9H2v6h4l5 4V5zm8.07-.07a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" ariaLabel="Speak Aloud">Speak</understory-button>
-                                                <understory-button variant="ghost" size="xs" (click)="actionInsert(entry.text)" icon="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" ariaLabel="Insert into Clinical Notes">Insert</understory-button>
+                                                <pocket-gall-button variant="ghost" size="xs" (click)="actionCopy(entry.text)" icon="M9 9h13v13H9V9zm-4 6H4v-9h9v1z" ariaLabel="Copy Message">Copy</pocket-gall-button>
+                                                <pocket-gall-button variant="ghost" size="xs" (click)="actionDictate(entry.text)" icon="M11 5L6 9H2v6h4l5 4V5zm8.07-.07a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" ariaLabel="Speak Aloud">Speak</pocket-gall-button>
+                                                <pocket-gall-button variant="ghost" size="xs" (click)="actionInsert(entry.text)" icon="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" ariaLabel="Insert into Clinical Notes">Insert</pocket-gall-button>
                                             </div>
                                         </div>
                                     } @else {
-                                        <div class="px-6 py-4 rounded-3xl rounded-tr-sm text-base font-medium leading-relaxed bg-gray-100 text-gray-900 border border-transparent">
-                                          <p>{{ entry.text }}</p>
+                                        <div class="px-6 py-4 rounded-3xl rounded-tr-sm text-base font-medium leading-relaxed bg-gray-100 text-gray-900 border border-transparent flex flex-col gap-2 min-w-0 break-words">
+                                          <div [innerHTML]="(entry.htmlContent || entry.text) | safeHtml"></div>
                                         </div>
                                     }
                                 </div>
@@ -116,11 +254,11 @@ import { MarkdownService } from '../services/markdown.service';
 
                             @if (agentState() === 'processing') {
                                 <div class="flex gap-5 max-w-[85%] animate-pulse">
-                                    <div class="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-sm font-bold shrink-0 text-[#416B1F]">AI</div>
+                                    <div class="w-10 h-10 rounded-sm border border-gray-200 flex items-center justify-center text-sm font-bold shrink-0 text-[#416B1F]">AI</div>
                                     <div class="pt-4 flex items-center gap-2">
-                                       <span class="w-2 h-2 rounded-full bg-green-500 animate-bounce" style="animation-delay: 0ms"></span>
-                                       <span class="w-2 h-2 rounded-full bg-green-500 animate-bounce" style="animation-delay: 150ms"></span>
-                                       <span class="w-2 h-2 rounded-full bg-green-500 animate-bounce" style="animation-delay: 300ms"></span>
+                                       <span class="w-2 h-2 rounded-sm bg-green-500 animate-bounce" style="animation-delay: 0ms"></span>
+                                       <span class="w-2 h-2 rounded-sm bg-green-500 animate-bounce" style="animation-delay: 150ms"></span>
+                                       <span class="w-2 h-2 rounded-sm bg-green-500 animate-bounce" style="animation-delay: 300ms"></span>
                                     </div>
                                 </div>
                             }
@@ -140,13 +278,26 @@ import { MarkdownService } from '../services/markdown.service';
                               </div>
                             }
                             
+                            @if (selectedFiles().length > 0) {
+                                <div class="flex flex-wrap gap-2 mb-1 px-4">
+                                    @for (file of selectedFiles(); track file.name) {
+                                        <div class="flex items-center gap-1.5 bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-xs font-medium border border-blue-100 shadow-sm">
+                                            <span class="truncate max-w-[150px]" [title]="file.name">{{ file.name }}</span>
+                                            <button type="button" class="mt-0.5 hover:text-red-500 transition-colors focus:outline-none" (click)="removeFile($index)">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                                            </button>
+                                        </div>
+                                    }
+                                </div>
+                            }
+
                             <form (submit)="sendMessage($event)" class="w-full flex items-center gap-3 bg-white border border-gray-200 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] rounded-[2rem] p-2 pl-4 focus-within:border-gray-300 focus-within:shadow-[0_10px_40px_-5px_rgba(0,0,0,0.15)] transition-all duration-300 transform-gpu">
                                 <button type="button" (click)="toggleListening()" [disabled]="agentState() !== 'idle' || !!permissionError()"
                                         title="Start/Stop Voice Capture"
-                                        class="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center hover:bg-gray-50 rounded-full disabled:opacity-50 disabled:cursor-not-allowed transition-all shrink-0">
+                                        class="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center hover:bg-gray-50 rounded-sm disabled:opacity-50 disabled:cursor-not-allowed transition-all shrink-0">
                                     <div class="relative flex items-center justify-center">
                                         @if (agentState() === 'listening') {
-                                            <span class="absolute inset-0 rounded-full bg-red-500 animate-ping opacity-25"></span>
+                                            <span class="absolute inset-0 rounded-sm bg-red-500 animate-ping opacity-25"></span>
                                             <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-red-600 relative z-10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
                                         } @else {
                                             <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-gray-400 group-hover:text-blue-500 transition-colors" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
@@ -154,22 +305,27 @@ import { MarkdownService } from '../services/markdown.service';
                                     </div>
                                 </button>
 
+                                <button type="button" class="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center hover:bg-gray-50 rounded-sm disabled:opacity-50 disabled:cursor-not-allowed transition-all shrink-0 text-gray-400 hover:text-blue-500" (click)="triggerFileInput()" [disabled]="agentState() !== 'idle'" title="Attach Files">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+                                </button>
+                                <input type="file" #fileInput (change)="onFileSelected($event)" multiple accept="image/*,video/*" class="hidden" style="display: none;">
+
                                 <div class="flex-1 py-1">
-                                    <understory-input
+                                    <pocket-gall-input
                                         type="text"
                                         [value]="messageText()"
                                         (valueChange)="messageText.set($event)"
-                                        placeholder="Ask Understory..."
+                                        placeholder="Ask Pocket Gall..."
                                         className="!border-transparent !bg-transparent !shadow-none !px-0 !py-2 text-base"
                                         [disabled]="agentState() !== 'idle'"
                                         (keydown)="handleKeydown($event)">
-                                    </understory-input>
+                                    </pocket-gall-input>
                                 </div>
 
                                 <button 
                                     type="submit" 
                                     [disabled]="!messageText().trim() || agentState() !== 'idle'"
-                                    class="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center bg-black text-white disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed hover:bg-gray-800 transition-colors shrink-0 shadow-sm mr-1">
+                                    class="w-10 h-10 sm:w-12 sm:h-12 rounded-sm flex items-center justify-center bg-black text-white disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed hover:bg-gray-800 transition-colors shrink-0 shadow-sm mr-1">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 sm:w-5 sm:h-5 sm:-mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                                 </button>
                             </form>
@@ -191,10 +347,12 @@ export class VoiceAssistantComponent implements OnDestroy {
     dictation = inject(DictationService);
     patientMgmt = inject(PatientManagementService);
     markdownService = inject(MarkdownService);
+    richMedia = inject(RichMediaService);
 
     panelMode = signal<'selection' | 'chat' | 'dictation'>('selection');
 
     transcriptContainer = viewChild<ElementRef<HTMLDivElement>>('transcriptContainer');
+    fileInputRef = viewChild<ElementRef<HTMLInputElement>>('fileInput');
 
     // --- Chat State ---
     agentState = signal<'idle' | 'listening' | 'processing' | 'speaking' | 'typing'>('idle');
@@ -202,17 +360,17 @@ export class VoiceAssistantComponent implements OnDestroy {
     permissionError = signal<string | null>(null);
     messageText = signal('');
     typingIntroText = signal('');
+    chatHistory = signal<ChatEntry[]>([]);
+    selectedFiles = signal<File[]>([]);
+
+    protected readonly ClinicalIcons = ClinicalIcons;
 
     private recognition: any;
     private preferredVoice = signal<SpeechSynthesisVoice | null>(null);
 
-    // Parse markdown in transcript
+    // Derived signal for UI rendering
     parsedTranscript = computed(() => {
-        const parser = this.markdownService.parser();
-        return this.intel.transcript().map(t => ({
-            ...t,
-            htmlContent: t.role === 'model' ? (parser ? parser.parse(t.text, { async: false }) : t.text) : t.text
-        }));
+        return this.chatHistory();
     });
 
     // --- Action Bar Logic ---
@@ -312,31 +470,41 @@ export class VoiceAssistantComponent implements OnDestroy {
     async activateChat() {
         this.panelMode.set('chat');
 
-        // Clear previous state for a fresh "grand introduction"
-        this.intel.transcript.set([]);
+        this.chatHistory.set([]);
         console.log("Activating chat...");
 
-        // Initialize AI chat session
         const patient = this.patientMgmt.selectedPatient();
         const history = patient?.history || [];
-        const patientData = this.state.getAllDataForPrompt(history);
+        let rawPatientData = this.state.getAllDataForPrompt(history);
 
-        console.log("Starting chat session with patientData length:", patientData.length);
-        await this.intel.startChatSession(patientData);
+        const recentNodes = this.intel.recentNodes();
+        if (recentNodes.length > 0) {
+            rawPatientData += "\n\n=== RECENT CLINICAL NODE DISCUSSIONS ===\n" +
+                recentNodes.map(n =>
+                    `[Section: ${n.sectionTitle}]\nClaim in Focus: "${n.nodeText}"\nDiscussion History:\n${n.transcript.map(t => `${t.role.toUpperCase()}: ${t.text}`).join('\n')}`
+                ).join('\n\n---\n\n');
+        }
+
+        console.log("Starting chat session with patientData length:", rawPatientData.length);
+
+        // We'll manually specify context for VoiceAssistant to ensure rich-media parsing is respected
+        const context = `You are a collaborative care plan co-pilot named "Cerebella". You are assisting a doctor in refining a strategy for their patient. You have already reviewed the finalized patient overview and the current recommendations. Your role is to help the doctor iterate on the care plan, explore functional protocols, structure follow-ups, or answer specific questions. Keep your answers brief, actionable, and focused on strategic holistic care. Be ready to elaborate when asked.
+
+VISUAL GROUNDING: When the user asks for images, a 3D model, or research (e.g. "show me an image", "3D model of", "find research on"), respond with a \`\`\`rich-media\`\`\` JSON block BEFORE your prose explanation. Format:
+\`\`\`rich-media
+{ "cards": [{ "kind": "model-3d"|"image-gallery"|"pubmed-refs"|"phil-image", "query": "<anatomical or clinical term>", "severity": "green"|"yellow"|"red", "afflictionHighlight": "<anatomical part>", "particles": true|false }] }
+\`\`\`
+Only include a rich-media block when the user explicitly requests visual or research content.`;
+
+        await this.intel.ai.startChat(rawPatientData, context);
         console.log("Chat session started.");
 
         this.agentState.set('typing');
-        console.log("Agent state set to typing, fetching greeting...");
         const greeting = await this.intel.getInitialGreeting();
-        console.log("Greeting fetched:", greeting);
 
-        // Remove the greeting from transcript so we can "type" it out
-        this.intel.transcript.set([]);
-
-        // Typing effect
         this.typingIntroText.set('');
         let i = 0;
-        const typingSpeed = 30; // ms per char
+        const typingSpeed = 30;
 
         const typeWriter = () => {
             if (i < greeting.length) {
@@ -345,7 +513,7 @@ export class VoiceAssistantComponent implements OnDestroy {
                 setTimeout(typeWriter, typingSpeed);
             } else {
                 this.agentState.set('idle');
-                this.intel.transcript.set([{ role: 'model', text: greeting }]);
+                this._appendModel(greeting);
                 this.typingIntroText.set('');
                 this.speak(greeting);
             }
@@ -396,8 +564,83 @@ export class VoiceAssistantComponent implements OnDestroy {
             if (container) {
                 container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
             }
-        }, 100); // Increased timeout slightly to ensure DOM update is fully complete before calculating height
+        }, 100);
     }
+
+    // --- Helpers ---
+    private _appendUser(text: string, htmlContent?: string) {
+        const html = htmlContent || `<p>${text}</p>`;
+        this.chatHistory.update(h => [...h, { role: 'user', text, htmlContent: html }]);
+        this.scrollToBottom();
+    }
+
+    private _appendModel(md: string) {
+        const richMediaRegex = /```rich-media\\s*([\\s\\S]*?)```/i;
+        const match = md.match(richMediaRegex);
+        let richCards: RichMediaCard[] | undefined;
+        let cleanMd = md;
+
+        if (match) {
+            cleanMd = md.replace(richMediaRegex, '').trim();
+            try {
+                const parsed = JSON.parse(match[1].trim());
+                const rawCards: Array<{ kind: string; query: string; severity?: string; afflictionHighlight?: string; particles?: boolean }> = parsed.cards ?? [];
+                richCards = rawCards
+                    .filter(c => ['model-3d', 'image-gallery', 'pubmed-refs', 'phil-image'].includes(c.kind))
+                    .map(c => ({
+                        kind: c.kind as any,
+                        query: c.query,
+                        severity: c.severity as any,
+                        afflictionHighlight: c.afflictionHighlight,
+                        particles: c.particles,
+                        loading: true
+                    }));
+            } catch { /* malformed JSON — ignore block */ }
+        }
+
+        let htmlContent = cleanMd;
+        const parser = this.markdownService.parser();
+        if (parser) { try { htmlContent = (parser as any).parse(cleanMd); } catch { htmlContent = `<p>${cleanMd}</p>`; } }
+
+        const entry: ChatEntry = { role: 'model', text: cleanMd, htmlContent, richCards };
+        this.chatHistory.update(h => [...h, entry]);
+        this.scrollToBottom();
+
+        if (richCards && richCards.length > 0) {
+            Promise.all(richCards.map(card => this.richMedia.resolveCard(card))).then(resolved => {
+                this.chatHistory.update(h => {
+                    const next = [...h];
+                    const last = next[next.length - 1];
+                    if (last && last.role === 'model') {
+                        next[next.length - 1] = { ...last, richCards: resolved };
+                    }
+                    return next;
+                });
+                this.scrollToBottom();
+            });
+        }
+    }
+
+    triggerFileInput() {
+        this.fileInputRef()?.nativeElement.click();
+    }
+
+    onFileSelected(event: Event) {
+        const input = event.target as HTMLInputElement;
+        if (input.files) {
+            const filesToAdd = Array.from(input.files);
+            this.selectedFiles.update(current => [...current, ...filesToAdd]);
+            input.value = '';
+        }
+    }
+
+    removeFile(index: number) {
+        this.selectedFiles.update(files => files.filter((_, i) => i !== index));
+    }
+
+    requestImage() { this.messageText.set(`Show me medical images of relevant anatomy`); this.sendMessage(); }
+    request3DModel() { this.messageText.set(`Show me a 3D anatomical model`); this.sendMessage(); }
+    requestResearch() { this.messageText.set(`Find clinical research on the topics discussed`); this.sendMessage(); }
 
     // --- Speech & Agent Logic ---
     private loadVoices() {
@@ -432,7 +675,6 @@ export class VoiceAssistantComponent implements OnDestroy {
             if (this.panelMode() === 'chat') {
                 if (this.agentState() === 'listening') this.agentState.set('idle');
             } else if (this.panelMode() === 'dictation') {
-                // If we are still supposed to be dictating, try to restart
                 if (this.isDictating()) {
                     try {
                         this.recognition.start();
@@ -474,10 +716,8 @@ export class VoiceAssistantComponent implements OnDestroy {
             if (this.panelMode() === 'chat') {
                 if (final) {
                     this.recognition.stop();
-                    this.agentState.set('processing');
-                    const responseText = await this.intel.sendChatMessage(final);
-                    this.speak(responseText);
-                    this.scrollToBottom();
+                    this.messageText.set(final);
+                    await this.sendMessage();
                 }
             } else if (this.panelMode() === 'dictation') {
                 if (final) {
@@ -500,14 +740,35 @@ export class VoiceAssistantComponent implements OnDestroy {
         event?.preventDefault();
 
         const message = this.messageText().trim();
-        if (!message || this.agentState() !== 'idle') return;
+        const files = this.selectedFiles();
+        if ((!message && files.length === 0) || this.agentState() !== 'idle') return;
 
         this.messageText.set('');
+        this.selectedFiles.set([]);
         this.agentState.set('processing');
         this.scrollToBottom();
-        const responseText = await this.intel.sendChatMessage(message);
-        this.speak(responseText);
-        this.scrollToBottom();
+
+        // create message with text and file indicators for user UI
+        let userDisplayHtml = message ? `<p>${message}</p>` : '';
+        if (files.length > 0) {
+            const fileNames = files.map(f => f.name).join(', ');
+            userDisplayHtml += `<p style="font-size: 11px; color: #9CA3AF; margin-top: 4px;">📎 Attached: ${fileNames}</p>`;
+        }
+
+        this._appendUser(message, userDisplayHtml);
+
+        try {
+            const responseText = await this.intel.ai.sendMessage(message, files);
+            this._appendModel(responseText);
+            this.speak(responseText);
+        } catch (e: any) {
+            this._appendModel(`Error: ${e?.message ?? e}`);
+        } finally {
+            if (this.agentState() === 'processing') {
+                this.agentState.set('idle');
+            }
+            this.scrollToBottom();
+        }
     }
 
     toggleListening() {

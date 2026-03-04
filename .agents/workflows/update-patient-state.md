@@ -1,7 +1,7 @@
 ---
 description: Update Patient State and State Management
 ---
-This workflow guides the addition or modification of state in the Understory application.
+This workflow guides the addition or modification of state in the Pocket Gall application.
 
 1. **Service Analysis**:
    - Locate the relevant signal or method in `src/services/patient-state.service.ts`.

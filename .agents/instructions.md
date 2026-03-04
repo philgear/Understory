@@ -1,6 +1,6 @@
-# Understory Agentic Instructions
+# Pocket Gall Agentic Instructions
 
-This document provides guidance for AI agents working on the Understory project.
+This document provides guidance for AI agents working on the Pocket Gall project.
 
 ## Technical Stack
 - **Framework**: Angular (Latest) with Signals.

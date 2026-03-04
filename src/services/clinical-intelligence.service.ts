@@ -10,6 +10,13 @@ export interface TranscriptEntry {
     text: string;
 }
 
+export interface NodeContext {
+    nodeText: string;
+    sectionTitle: string;
+    transcript: TranscriptEntry[];
+    timestamp: Date;
+}
+
 export type AnalysisLens = 'Summary Overview' | 'Functional Protocols' | 'Monitoring & Follow-up' | 'Patient Education';
 
 export interface ClinicalMetrics {
@@ -22,7 +29,7 @@ export interface ClinicalMetrics {
     providedIn: 'root'
 })
 export class ClinicalIntelligenceService {
-    private ai = inject(IntelligenceProviderToken);
+    readonly ai = inject(IntelligenceProviderToken);
     private cache = inject(AiCacheService);
 
     readonly isLoading = signal<boolean>(false);
@@ -37,7 +44,18 @@ export class ClinicalIntelligenceService {
     // For live agent chat
     readonly transcript = signal<TranscriptEntry[]>([]);
 
-    private lastSuccessfulPatientData: string | null = null;
+    readonly recentNodes = signal<NodeContext[]>([]);
+
+    readonly lastPatientData = signal<string | null>(null);
+
+    public addRecentNode(nodeContext: NodeContext) {
+        this.recentNodes.update(nodes => {
+            // Keep only the last 3 most recent nodes to prevent context bloat
+            const next = [nodeContext, ...nodes];
+            if (next.length > 3) return next.slice(0, 3);
+            return next;
+        });
+    }
 
     private readonly FORMATTING_RULES = `
 
@@ -189,12 +207,12 @@ If a section has no relevant source data, output the heading followed by: "*No s
         const lenses: AnalysisLens[] = ['Summary Overview', 'Functional Protocols', 'Monitoring & Follow-up', 'Patient Education'];
         const newReport: Partial<Record<AnalysisLens, string>> = {};
 
-        if (this.lastSuccessfulPatientData) {
-            const isSignificant = await this.ai.detectClinicalChanges(this.lastSuccessfulPatientData, patientData);
+        if (this.lastPatientData()) {
+            const isSignificant = await this.ai.detectClinicalChanges(this.lastPatientData()!, patientData);
 
             if (!isSignificant) {
                 console.log("Clinical Delta: No significant changes detected. Reusing existing report.");
-                this.lastSuccessfulPatientData = patientData;
+                this.lastPatientData.set(patientData);
 
                 const currentResults = this.analysisResults() as Record<string, string>;
                 if (Object.keys(currentResults).length > 0) {
@@ -256,7 +274,7 @@ If a section has no relevant source data, output the heading followed by: "*No s
 
             await Promise.allSettled(orchestrationPromises);
 
-            this.lastSuccessfulPatientData = patientData;
+            this.lastPatientData.set(patientData);
             this.analysisResults.set(newReport);
             this.lastRefreshTime.set(new Date());
             await this.generateVisualMetrics(newReport as Record<string, string>);

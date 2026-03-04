@@ -39,7 +39,19 @@ const MOCK_PATIENTS: Patient[] = [
         }
       }
     ],
-    bookmarks: []
+    bookmarks: [],
+    scans: [
+      {
+        id: 'scan_003',
+        type: 'X-Ray',
+        title: 'PA and Lateral Chest',
+        date: '2024.10.12',
+        bodyPartId: 'chest',
+        description: 'Bilateral hyperinflation consistent with COPD. No focal consolidation, pneumothorax or pleural effusion. Borderline cardiomegaly.',
+        status: 'Reviewed',
+        imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Chest_xray_mac.jpg/640px-Chest_xray_mac.jpg'
+      }
+    ]
   },
   {
     id: 'p002',
@@ -65,7 +77,31 @@ const MOCK_PATIENTS: Patient[] = [
         }
       }
     ],
-    bookmarks: []
+    bookmarks: [],
+    scans: [
+      {
+        id: 'scan_001',
+        type: 'MRI',
+        title: 'Lumbar Spine MRI',
+        date: '2024.11.15',
+        bodyPartId: 'lower_back',
+        description: 'L4-L5 disc desiccation and mild paracentral disc protrusion without significant canal stenosis. Mild bilateral neural foraminal narrowing.',
+        status: 'Reviewed',
+        // Example realistic MRI URL from Wikimedia Commons
+        imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/MRI_of_the_Lumbar_Spine_%28Sagittal_View%29.jpg/640px-MRI_of_the_Lumbar_Spine_%28Sagittal_View%29.jpg'
+      },
+      {
+        id: 'scan_002',
+        type: 'X-Ray',
+        title: 'Lumbar Spine AP/Lateral X-Ray',
+        date: '2024.11.02',
+        bodyPartId: 'lower_back',
+        description: 'Normal alignment. No fracture or acute bony abnormality. Mild degenerative disc disease at L4-L5.',
+        status: 'Reviewed',
+        // Example realistic X-Ray URL from Wikimedia Commons
+        imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/X-ray_of_the_lumbar_spine_%28lateral_view%29.jpg/640px-X-ray_of_the_lumbar_spine_%28lateral_view%29.jpg'
+      }
+    ]
   },
   {
     id: 'p003',
@@ -83,7 +119,29 @@ const MOCK_PATIENTS: Patient[] = [
     history: [
       { type: 'Visit', date: '2024.06.12', summary: '6-month geriatric assessment.', state: { patientGoals: 'Routine check, family notes mild forgetfulness.', vitals: { bp: '130/80', hr: '70', temp: '98.1°F', spO2: '98%', weight: '165 lbs', height: `5'9"` }, issues: { 'head': [{ id: 'head', noteId: 'note_p003_head_hist2', name: 'Brain & Cognition', painLevel: 0, description: 'Mild short-term memory deficits noted.', symptoms: [] }] } } },
     ],
-    bookmarks: []
+    bookmarks: [],
+    scans: [
+      {
+        id: 'scan_004',
+        type: 'CT Scan',
+        title: 'Non-Contrast Head CT',
+        date: '2024.12.04',
+        bodyPartId: 'head',
+        description: 'Mild diffuse age-related volume loss. No acute intracranial hemorrhage or mass effect. Tiny focal areas of chronic microvascular ischemic disease.',
+        status: 'Reviewed',
+        imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/CT_scan_of_the_brain.jpg/640px-CT_scan_of_the_brain.jpg'
+      },
+      {
+        id: 'scan_005',
+        type: 'X-Ray',
+        title: 'Right Forearm/Wrist',
+        date: '2024.12.04',
+        bodyPartId: 'r_arm',
+        description: 'No acute displaced fracture or dislocation. Degenerative changes in radiocarpal joint.',
+        status: 'Reviewed',
+        imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/X-Ray_of_Colles_Fracture.jpg/640px-X-Ray_of_Colles_Fracture.jpg'
+      }
+    ]
   }
 ];
 

@@ -1,12 +1,13 @@
 import { Component, ChangeDetectionStrategy, inject, signal, computed, effect, viewChild, ElementRef, OnDestroy, untracked, HostListener, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { SafeHtmlPipe } from '../pipes/safe-html.pipe';
 import { fromEvent, Subscription } from 'rxjs';
 import { PatientManagementService } from '../services/patient-management.service';
 import { PatientStateService } from '../services/patient-state.service';
 import { Bookmark } from '../services/patient.types';
-import { UnderstoryButtonComponent } from './shared/understory-button.component';
-import { UnderstoryInputComponent } from './shared/understory-input.component';
+import { PocketGallButtonComponent } from './shared/pocket-gall-button.component';
+import { PocketGallInputComponent } from './shared/pocket-gall-input.component';
 
 export interface PubMedSearchResult {
   id: string;
@@ -20,7 +21,7 @@ export interface PubMedSearchResult {
 @Component({
   selector: 'app-research-frame',
   standalone: true,
-  imports: [CommonModule, UnderstoryButtonComponent, UnderstoryInputComponent],
+  imports: [CommonModule, PocketGallButtonComponent, PocketGallInputComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="absolute flex flex-col bg-white shadow-2xl border border-gray-300 rounded-lg overflow-hidden z-40"
@@ -32,8 +33,8 @@ export interface PubMedSearchResult {
       <!-- Header / Drag Handle -->
       <div (mousedown)="startDrag($event)" class="h-10 px-4 flex items-center justify-between bg-gray-100 border-b border-gray-200 shrink-0 cursor-move select-none">
         <h3 class="text-xs font-bold uppercase tracking-widest text-gray-600">Research Frame</h3>
-        <understory-button variant="ghost" size="sm" (click)="close()" icon="M12 10.586 16.95 5.636a1 1 0 1 1 1.414 1.414L13.414 12l4.95 4.95a1 1 0 0 1-1.414 1.414L12 13.414l-4.95 4.95a1 1 0 0 1-1.414-1.414L10.586 12 5.636 7.05a1 1 0 0 1 1.414-1.414L12 10.586z" title="Close Research Window" ariaLabel="Close Research Window">
-        </understory-button>
+        <pocket-gall-button variant="ghost" size="sm" (click)="close()" icon="M12 10.586 16.95 5.636a1 1 0 1 1 1.414 1.414L13.414 12l4.95 4.95a1 1 0 0 1-1.414 1.414L12 13.414l-4.95 4.95a1 1 0 0 1-1.414-1.414L10.586 12 5.636 7.05a1 1 0 0 1 1.414-1.414L12 10.586z" title="Close Research Window" ariaLabel="Close Research Window">
+        </pocket-gall-button>
       </div>
 
       <!-- Toolbar -->
@@ -58,20 +59,20 @@ export interface PubMedSearchResult {
           </div>
           <!-- Search Input -->
           <div class="flex-1">
-              <understory-input 
+              <pocket-gall-input 
                 [value]="searchText()"
                 (valueChange)="searchText.set($event)"
                 (keydown.enter)="search()"
                 placeholder="Research patient complaint...">
-              </understory-input>
+              </pocket-gall-input>
           </div>
           <!-- Actions -->
-          <understory-button variant="ghost" size="sm" (click)="search()" icon="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5S14 7.01 14 9.5S11.99 14 9.5 14" title="Execute Search" ariaLabel="Execute Search">
-          </understory-button>
-          <understory-button variant="ghost" size="sm" (click)="addBookmark()" icon="m12 15.4 3.75 2.6-1-4.35L18 11l-4.45-.4L12 6.5 10.45 10.6 6 11l3.25 2.65-1 4.35z" title="Bookmark current page" ariaLabel="Bookmark current page">
-          </understory-button>
-          <understory-button variant="ghost" size="sm" (click)="showCitationForm.set(!showCitationForm())" [class.text-blue-600]="showCitationForm()" icon="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" title="Citation Metadata" ariaLabel="Citation Metadata">
-          </understory-button>
+          <pocket-gall-button variant="ghost" size="sm" (click)="search()" icon="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5S14 7.01 14 9.5S11.99 14 9.5 14" title="Execute Search" ariaLabel="Execute Search">
+          </pocket-gall-button>
+          <pocket-gall-button variant="ghost" size="sm" (click)="addBookmark()" icon="m12 15.4 3.75 2.6-1-4.35L18 11l-4.45-.4L12 6.5 10.45 10.6 6 11l3.25 2.65-1 4.35z" title="Bookmark current page" ariaLabel="Bookmark current page">
+          </pocket-gall-button>
+          <pocket-gall-button variant="ghost" size="sm" (click)="showCitationForm.set(!showCitationForm())" [class.text-blue-600]="showCitationForm()" icon="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" title="Citation Metadata" ariaLabel="Citation Metadata">
+          </pocket-gall-button>
         </div>
 
         <!-- Citation Metadata Form -->
@@ -79,8 +80,8 @@ export interface PubMedSearchResult {
           <div class="mt-3 p-3 bg-white border border-blue-100 rounded-md shadow-inner space-y-2 animate-in fade-in slide-in-from-top-1">
             <h4 class="text-[10px] font-bold text-blue-800 uppercase tracking-tighter mb-1">Citation Metadata (UKRIO Style)</h4>
             <div class="grid grid-cols-2 gap-2">
-              <understory-input [value]="authors()" (valueChange)="authors.set($event)" placeholder="Authors (e.g. Smith et al.)" size="sm"></understory-input>
-              <understory-input [value]="doi()" (valueChange)="doi.set($event)" placeholder="DOI (e.g. 10.1038/s41586-021-03503-x)" size="sm"></understory-input>
+              <pocket-gall-input [value]="authors()" (valueChange)="authors.set($event)" placeholder="Authors (e.g. Smith et al.)" size="sm"></pocket-gall-input>
+              <pocket-gall-input [value]="doi()" (valueChange)="doi.set($event)" placeholder="DOI (e.g. 10.1038/s41586-021-03503-x)" size="sm"></pocket-gall-input>
             </div>
             <div class="flex items-center gap-4">
               <label for="peer-reviewed-checkbox" class="flex items-center gap-1.5 cursor-pointer">
@@ -146,7 +147,7 @@ export interface PubMedSearchResult {
             } @else {
               @for (res of pubmedResults(); track res.id) {
                 <div class="bg-white p-4 rounded-md shadow-sm border border-gray-200">
-                  <h4 class="font-bold text-blue-800 text-sm leading-snug mb-1" [innerHTML]="res.title"></h4>
+                  <h4 class="font-bold text-blue-800 text-sm leading-snug mb-1" [innerHTML]="res.title | safeHtml"></h4>
                   <p class="text-xs text-gray-600 mb-1 font-medium">{{ res.authors }}</p>
                   <div class="text-[11px] text-gray-500 flex items-center gap-2 mb-3">
                     <span class="font-bold">{{ res.source }}</span> • <span>{{ res.pubdate }}</span>
@@ -155,9 +156,9 @@ export interface PubMedSearchResult {
                     }
                   </div>
                   <div class="flex items-center gap-2">
-                    <understory-button variant="primary" size="sm" (click)="addPubmedBookmark(res)" icon="m12 15.4 3.75 2.6-1-4.35L18 11l-4.45-.4L12 6.5 10.45 10.6 6 11l3.25 2.65-1 4.35z">
+                    <pocket-gall-button variant="primary" size="sm" (click)="addPubmedBookmark(res)" icon="m12 15.4 3.75 2.6-1-4.35L18 11l-4.45-.4L12 6.5 10.45 10.6 6 11l3.25 2.65-1 4.35z">
                       Bookmark & Cite
-                    </understory-button>
+                    </pocket-gall-button>
                     <a [href]="'https://pubmed.ncbi.nlm.nih.gov/' + res.id + '/'" target="_blank" class="text-xs font-semibold text-gray-600 hover:text-blue-600 transition-colors inline-block px-2 py-1 bg-gray-100 hover:bg-blue-50 rounded">
                       Open in PubMed
                     </a>

@@ -4,11 +4,11 @@ import { CommonModule } from '@angular/common';
 export type BadgeSeverity = 'info' | 'success' | 'warning' | 'error' | 'neutral';
 
 @Component({
-  selector: 'understory-badge',
+  selector: 'pocket-gall-badge',
   standalone: true,
   imports: [CommonModule],
   template: `
-    <span [class]="badgeClasses()" class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider border transition-all duration-200">
+    <span [class]="badgeClasses()" class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-bold uppercase tracking-wider border transition-all duration-200">
       <ng-content select="[badge-icon]"></ng-content>
       <span [class.ml-1]="hasIcon()">{{ label() }}</span>
     </span>
@@ -48,7 +48,7 @@ export type BadgeSeverity = 'info' | 'success' | 'warning' | 'error' | 'neutral'
   `],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class UnderstoryBadgeComponent {
+export class PocketGallBadgeComponent {
   label = input.required<string>();
   severity = input<BadgeSeverity>('neutral');
   hasIcon = input<boolean>(false);

@@ -1,11 +1,11 @@
 #!/bin/bash
-# Understory - Automated Google Cloud Run Deployment Script
+# Pocket Gall - Automated Google Cloud Run Deployment Script
 # Required for Gemini Live Agent Challenge Infrastructure-as-Code Bonus
 
 set -e
 
 echo "=========================================================="
-echo "🚀 Deploying Understory to Google Cloud Run"
+echo "🚀 Deploying Pocket Gall to Google Cloud Run"
 echo "=========================================================="
 
 # 1. Ensure gcloud is initialized and authenticated
@@ -19,7 +19,7 @@ if [ -z "$PROJECT_ID" ]; then
     exit 1
 fi
 
-SERVICE_NAME="understory"
+SERVICE_NAME="pocket-gall"
 REGION="us-west1"
 IMAGE_TAG="gcr.io/$PROJECT_ID/$SERVICE_NAME:latest"
 

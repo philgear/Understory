@@ -160,9 +160,36 @@ export class GeminiProvider implements IntelligenceProvider {
         }
     }
 
-    async sendMessage(message: string): Promise<string> {
+    async sendMessage(message: string, files?: File[]): Promise<string> {
         if (!this.chat) throw new Error("Chat not started");
-        const result = await this.chat.sendMessage({ message });
+
+        let payload: any = message;
+
+        if (files && files.length > 0) {
+            const parts: any[] = [{ text: message }];
+            for (const file of files) {
+                const base64Data = await new Promise<string>((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        const res = reader.result as string;
+                        // Data URL looks like: data:image/png;base64,...
+                        const base64Str = res.includes(',') ? res.split(',')[1] : res;
+                        resolve(base64Str);
+                    };
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                });
+                parts.push({
+                    inlineData: {
+                        data: base64Data,
+                        mimeType: file.type
+                    }
+                });
+            }
+            payload = parts;
+        }
+
+        const result = await this.chat.sendMessage({ message: payload });
         return result.text;
     }
 

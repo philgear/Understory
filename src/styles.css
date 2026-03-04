@@ -97,6 +97,95 @@
     .rams-typography {
         color: black !important;
     }
+
+    /* ─── Evidence Trail — Dieter Rams Print Design ─── */
+    /* Hairline divider, monochrome, numbered reference list */
+    .evidence-trail-print {
+        margin-top: 10pt;
+        padding-top: 8pt;
+        border-top: 0.5pt solid #1C1C1C;
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    .et-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 6pt;
+    }
+
+    .et-label {
+        font-family: 'Inter', system-ui, sans-serif;
+        font-size: 6pt;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.18em;
+        color: #1C1C1C;
+        border: 0.5pt solid #1C1C1C;
+        padding: 1pt 4pt;
+        border-radius: 2pt;
+    }
+
+    .et-count {
+        font-family: 'Inter', system-ui, sans-serif;
+        font-size: 6pt;
+        font-weight: 400;
+        color: #6B7280;
+        letter-spacing: 0.06em;
+    }
+
+    .et-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .et-item {
+        display: flex;
+        gap: 8pt;
+        align-items: flex-start;
+        padding: 4pt 0;
+        border-bottom: 0.25pt solid #E5E7EB;
+    }
+
+    .et-item:last-child {
+        border-bottom: none;
+    }
+
+    .et-num {
+        font-family: 'Inter', system-ui, sans-serif;
+        font-size: 6.5pt;
+        font-weight: 700;
+        color: #9CA3AF;
+        min-width: 10pt;
+        text-align: right;
+        flex-shrink: 0;
+        padding-top: 0.5pt;
+        letter-spacing: 0.05em;
+    }
+
+    .et-content {
+        display: flex;
+        flex-direction: column;
+        gap: 1pt;
+    }
+
+    .et-text {
+        font-family: 'Inter', system-ui, sans-serif;
+        font-size: 7.5pt;
+        font-weight: 400;
+        color: #1C1C1C;
+        line-height: 1.45;
+    }
+
+    .et-drill {
+        font-family: 'Inter', system-ui, sans-serif;
+        font-size: 6pt;
+        font-style: italic;
+        color: #6B7280;
+        letter-spacing: 0.03em;
+    }
 }
 
 @media screen {
@@ -275,5 +364,237 @@
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+/* ─── Rich Media Cards ──────────────────────────────────────────────────────── */
+
+.rm-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.rm-card {
+    background: #0f0f10;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 6px;
+    overflow: hidden;
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.72);
+    animation: fadeIn 0.3s ease-out;
+}
+
+.rm-card-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 10px;
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.rm-card-header svg {
+    flex-shrink: 0;
+    opacity: 0.6;
+}
+
+.rm-card-title {
+    flex: 1;
+    font-size: 9.5px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.rm-card-badge {
+    font-size: 7.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 2px 5px;
+    background: rgba(104, 159, 56, 0.18);
+    color: #8bc34a;
+    border-radius: 3px;
+    border: 1px solid rgba(104, 159, 56, 0.25);
+    flex-shrink: 0;
+}
+
+.rm-card--model .rm-card-badge {
+    background: rgba(66, 133, 244, 0.15);
+    color: #7ab4f8;
+    border-color: rgba(66, 133, 244, 0.25);
+}
+
+.rm-card--gallery .rm-card-badge {
+    background: rgba(251, 188, 4, 0.12);
+    color: #f9c232;
+    border-color: rgba(251, 188, 4, 0.2);
+}
+
+.rm-card--pubmed .rm-card-badge {
+    background: rgba(234, 67, 53, 0.12);
+    color: #f28b82;
+    border-color: rgba(234, 67, 53, 0.2);
+}
+
+.rm-card--phil .rm-card-badge {
+    background: rgba(104, 159, 56, 0.18);
+    color: #8bc34a;
+    border-color: rgba(104, 159, 56, 0.25);
+}
+
+.rm-card-footer {
+    padding: 5px 10px;
+    font-size: 8px;
+    color: rgba(255, 255, 255, 0.2);
+    letter-spacing: 0.04em;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.rm-loading,
+.rm-empty {
+    padding: 14px 10px;
+    font-size: 9px;
+    color: rgba(255, 255, 255, 0.3);
+    text-align: center;
+    font-style: italic;
+}
+
+/* 3D Model */
+.rm-model-frame-wrap {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%;
+    background: #050507;
+}
+
+.rm-model-frame {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* Image gallery */
+.rm-gallery-strip {
+    display: flex;
+    gap: 6px;
+    padding: 8px 10px;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+}
+
+.rm-gallery-strip::-webkit-scrollbar {
+    height: 3px;
+}
+
+.rm-gallery-strip::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 2px;
+}
+
+.rm-gallery-item {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.rm-gallery-img {
+    width: 80px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 3px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: #1a1a1c;
+    transition: border-color 0.15s;
+}
+
+.rm-gallery-item:hover .rm-gallery-img {
+    border-color: rgba(104, 159, 56, 0.5);
+}
+
+.rm-gallery-caption {
+    font-size: 7.5px;
+    color: rgba(255, 255, 255, 0.35);
+    max-width: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* PubMed citations */
+.rm-citations {
+    display: flex;
+    flex-direction: column;
+    padding: 4px 0;
+}
+
+.rm-citation {
+    display: block;
+    padding: 8px 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.12s;
+}
+
+.rm-citation:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.rm-citation:last-child {
+    border-bottom: none;
+}
+
+.rm-citation-title {
+    font-size: 9.5px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.82);
+    line-height: 1.4;
+    margin-bottom: 2px;
+}
+
+.rm-citation-meta {
+    font-size: 8.5px;
+    color: rgba(255, 255, 255, 0.38);
+    margin-bottom: 2px;
+}
+
+.rm-citation-pmid {
+    font-size: 8px;
+    color: #7ab4f8;
+    letter-spacing: 0.03em;
+}
+
+/* Media pills */
+.inline-pill--media {
+    background: rgba(255, 255, 255, 0.04) !important;
+    border-color: rgba(104, 159, 56, 0.3) !important;
+    color: #8bc34a !important;
+}
+
+.inline-pill--media:hover {
+    background: rgba(104, 159, 56, 0.12) !important;
+    border-color: rgba(104, 159, 56, 0.5) !important;
+}
+
+/* Print: hide all rich media */
+@media print {
+
+    .rm-panel,
+    .rm-card,
+    .inline-pill--media {
+        display: none !important;
     }
 }

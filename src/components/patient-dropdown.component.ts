@@ -2,25 +2,25 @@ import { Component, ChangeDetectionStrategy, inject, signal, HostListener, Eleme
 import { CommonModule } from '@angular/common';
 import { PatientManagementService } from '../services/patient-management.service';
 import { ExportService } from '../services/export.service';
-import { UnderstoryButtonComponent } from './shared/understory-button.component';
+import { PocketGallButtonComponent } from './shared/pocket-gall-button.component';
 
 @Component({
   selector: 'app-patient-dropdown',
   standalone: true,
-  imports: [CommonModule, UnderstoryButtonComponent],
+  imports: [CommonModule, PocketGallButtonComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="relative inline-block text-left z-50">
       <div>
       <div>
-        <understory-button 
+        <pocket-gall-button 
           type="button" 
           (click)="toggleDropdown()" 
           variant="secondary" 
           size="sm"
           [trailingIcon]="isOpen() ? 'M19 15l-7-7-7 7' : 'M5 9l7 7 7-7'">
           {{ currentPatientName() }}
-        </understory-button>
+        </pocket-gall-button>
       </div>
       </div>
 
@@ -36,7 +36,7 @@ import { UnderstoryButtonComponent } from './shared/understory-button.component'
             @for (patient of patientManagement.patients(); track patient.id) {
               <button (click)="selectPatient(patient.id)" class="group w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-[#F8F9FA] hover:text-gray-900 flex items-center gap-3 transition-colors relative border-l-4" [class.bg-blue-50]="patient.id === patientManagement.selectedPatientId()" [class.border-[#689F38]]="patient.id === patientManagement.selectedPatientId()" [class.border-transparent]="patient.id !== patientManagement.selectedPatientId()">
                 
-                <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs shrink-0 font-bold shadow-sm"
+                <div class="w-8 h-8 rounded-sm flex items-center justify-center text-xs shrink-0 font-bold shadow-sm"
                      [class.bg-[#689F38]]="patient.id === patientManagement.selectedPatientId()"
                      [class.text-white]="patient.id === patientManagement.selectedPatientId()"
                      [class.bg-gray-200]="patient.id !== patientManagement.selectedPatientId()"
@@ -47,13 +47,13 @@ import { UnderstoryButtonComponent } from './shared/understory-button.component'
                   <div class="font-bold text-gray-900 text-sm truncate">{{ patient.name }}</div>
                   <div class="text-xs text-gray-500 font-medium uppercase tracking-wider flex items-center gap-1.5 mt-0.5">
                      <span class="whitespace-nowrap">{{ patient.age }} YRS</span>
-                     <span class="w-1 h-1 bg-gray-300 rounded-full shrink-0"></span>
+                     <span class="w-1 h-1 bg-gray-300 rounded-sm shrink-0"></span>
                      <span class="truncate">{{ patient.gender }}</span>
                   </div>
                 </div>
 
                 <button (click)="removePatient($event, patient.id)" 
-                        class="opacity-0 group-hover:opacity-100 p-1.5 rounded-full text-red-400 hover:text-red-600 hover:bg-red-50 transition-all shrink-0"
+                        class="opacity-0 group-hover:opacity-100 p-1.5 rounded-sm text-red-400 hover:text-red-600 hover:bg-red-50 transition-all shrink-0"
                         title="Remove Patient">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
@@ -64,22 +64,22 @@ import { UnderstoryButtonComponent } from './shared/understory-button.component'
           </div>
           
           <div class="border-t border-gray-100 bg-white shrink-0 p-2 flex flex-col gap-1">
-             <understory-button 
+             <pocket-gall-button 
                (click)="createNewPatient()" 
                variant="ghost" 
                size="sm" 
                class="w-full"
                icon="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z">
                 New Patient
-             </understory-button>
-             <understory-button 
+             </pocket-gall-button>
+             <pocket-gall-button 
                (click)="triggerImport()" 
                variant="ghost" 
                size="sm" 
                class="w-full"
                icon="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12">
                 Import Patient
-             </understory-button>
+             </pocket-gall-button>
           </div>
         </div>
       }

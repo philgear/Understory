@@ -126,10 +126,10 @@ export class Body3DViewerComponent implements AfterViewInit, OnDestroy {
         });
 
         // Head
-        this.addPart('head', new THREE.SphereGeometry(0.25, 32, 24), baseMaterial, { y: 1.75 });
+        this.addPart('head', new THREE.BoxGeometry(0.45, 0.45, 0.45), baseMaterial, { y: 1.75 });
 
         // Neck
-        this.addPart('neck', new THREE.CylinderGeometry(0.08, 0.1, 0.15), baseMaterial, { y: 1.55 });
+        this.addPart('neck', new THREE.BoxGeometry(0.15, 0.15, 0.15), baseMaterial, { y: 1.55 });
 
         // Torso (Upper/Chest)
         this.addPart('chest', new THREE.BoxGeometry(0.5, 0.45, 0.3), baseMaterial, { y: 1.3 });
@@ -142,24 +142,24 @@ export class Body3DViewerComponent implements AfterViewInit, OnDestroy {
 
         // Arms
         // Right
-        this.addPart('r_shoulder', new THREE.SphereGeometry(0.12, 16, 16), baseMaterial, { x: -0.32, y: 1.45 });
-        this.addPart('r_arm', new THREE.CylinderGeometry(0.06, 0.05, 0.5), baseMaterial, { x: -0.42, y: 1.15, z: 0.05, rx: 0.1 });
+        this.addPart('r_shoulder', new THREE.BoxGeometry(0.2, 0.2, 0.2), baseMaterial, { x: -0.32, y: 1.45 });
+        this.addPart('r_arm', new THREE.BoxGeometry(0.1, 0.5, 0.1), baseMaterial, { x: -0.42, y: 1.15, z: 0.05, rx: 0.1 });
         this.addPart('r_hand', new THREE.BoxGeometry(0.08, 0.15, 0.05), baseMaterial, { x: -0.5, y: 0.82, rx: 0.2 });
 
         // Left
-        this.addPart('l_shoulder', new THREE.SphereGeometry(0.12, 16, 16), baseMaterial, { x: 0.32, y: 1.45 });
-        this.addPart('l_arm', new THREE.CylinderGeometry(0.06, 0.05, 0.5), baseMaterial, { x: 0.42, y: 1.15, z: 0.05, rx: 0.1 });
+        this.addPart('l_shoulder', new THREE.BoxGeometry(0.2, 0.2, 0.2), baseMaterial, { x: 0.32, y: 1.45 });
+        this.addPart('l_arm', new THREE.BoxGeometry(0.1, 0.5, 0.1), baseMaterial, { x: 0.42, y: 1.15, z: 0.05, rx: 0.1 });
         this.addPart('l_hand', new THREE.BoxGeometry(0.08, 0.15, 0.05), baseMaterial, { x: 0.5, y: 0.82, rx: 0.2 });
 
         // Legs
         // Right
-        this.addPart('r_thigh', new THREE.CylinderGeometry(0.14, 0.1, 0.6), baseMaterial, { x: -0.18, y: 0.35 });
-        this.addPart('r_shin', new THREE.CylinderGeometry(0.09, 0.06, 0.6), baseMaterial, { x: -0.18, y: -0.25 });
+        this.addPart('r_thigh', new THREE.BoxGeometry(0.2, 0.6, 0.2), baseMaterial, { x: -0.18, y: 0.35 });
+        this.addPart('r_shin', new THREE.BoxGeometry(0.15, 0.6, 0.15), baseMaterial, { x: -0.18, y: -0.25 });
         this.addPart('r_foot', new THREE.BoxGeometry(0.15, 0.08, 0.25), baseMaterial, { x: -0.18, y: -0.58, z: 0.05 });
 
         // Left
-        this.addPart('l_thigh', new THREE.CylinderGeometry(0.14, 0.1, 0.6), baseMaterial, { x: 0.18, y: 0.35 });
-        this.addPart('l_shin', new THREE.CylinderGeometry(0.09, 0.06, 0.6), baseMaterial, { x: 0.18, y: -0.25 });
+        this.addPart('l_thigh', new THREE.BoxGeometry(0.2, 0.6, 0.2), baseMaterial, { x: 0.18, y: 0.35 });
+        this.addPart('l_shin', new THREE.BoxGeometry(0.15, 0.6, 0.15), baseMaterial, { x: 0.18, y: -0.25 });
         this.addPart('l_foot', new THREE.BoxGeometry(0.15, 0.08, 0.25), baseMaterial, { x: 0.18, y: -0.58, z: 0.05 });
 
         this.updatePartColors();
@@ -201,7 +201,7 @@ export class Body3DViewerComponent implements AfterViewInit, OnDestroy {
             if (isSelected) {
                 // "Task Bracketing" active state: Dark with high-contrast accent
                 material.color.setHex(0x1C1C1C);       // Obsidian base
-                material.emissive.setHex(0x76B362);    // Understory Green accent
+                material.emissive.setHex(0x76B362);    // PocketGall Green accent
                 material.emissiveIntensity = 0.4;      // Glow effect indicating active focus
                 material.opacity = 0.95;               // Solidify the selected part
             } else {

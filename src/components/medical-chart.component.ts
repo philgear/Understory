@@ -5,14 +5,15 @@ import { PatientManagementService } from '../services/patient-management.service
 import { PatientState, Patient, HistoryEntry } from '../services/patient.types';
 import { BodyViewerComponent } from './body-viewer.component';
 import { PatientHistoryTimelineComponent } from './patient-history-timeline.component';
+import { PatientScansComponent } from './patient-scans.component';
 import { DictationService } from '../services/dictation.service';
-import { UnderstoryButtonComponent } from './shared/understory-button.component';
-import { UnderstoryCardComponent } from './shared/understory-card.component';
+import { PocketGallButtonComponent } from './shared/pocket-gall-button.component';
+import { PocketGallCardComponent } from './shared/pocket-gall-card.component';
 
 @Component({
   selector: 'app-medical-chart',
   standalone: true,
-  imports: [CommonModule, BodyViewerComponent, PatientHistoryTimelineComponent, UnderstoryButtonComponent, UnderstoryCardComponent],
+  imports: [CommonModule, BodyViewerComponent, PatientHistoryTimelineComponent, PatientScansComponent, PocketGallButtonComponent, PocketGallCardComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="w-full min-h-full flex flex-col gap-4 sm:gap-6 p-4 sm:p-8 bg-[#F9FAFB]">
@@ -21,7 +22,7 @@ import { UnderstoryCardComponent } from './shared/understory-card.component';
       @if(isReviewMode() && state.viewingPastVisit(); as visit) {
           <div class="bg-yellow-50 border border-yellow-200 p-4 flex justify-between items-center text-sm rounded-xl shadow-sm mb-2">
               <div class="flex items-center gap-3">
-                  <div class="p-2 bg-yellow-100 rounded-full text-yellow-700">
+                  <div class="p-2 bg-yellow-100 rounded-sm text-yellow-700">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
                   </div>
                   @if (visit.type === 'Visit' || visit.type === 'ChartArchived') {
@@ -30,18 +31,18 @@ import { UnderstoryCardComponent } from './shared/understory-card.component';
                      <span class="font-medium text-yellow-900">Reviewing past AI Analysis from <strong class="font-bold">{{ visit.date }}</strong>.</span>
                   }
               </div>
-              <understory-button 
+              <pocket-gall-button 
                 (click)="returnToCurrent()" 
                 variant="secondary" 
                 size="sm">
                 Return to Current State
-              </understory-button>
+              </pocket-gall-button>
           </div>
       }
       
 
       <!-- 3D Body Viewer Card -->
-      <understory-card 
+      <pocket-gall-card 
         title="3D Body Viewer" 
         [icon]="viewerIcon"
         [noPadding]="true">
@@ -57,17 +58,17 @@ import { UnderstoryCardComponent } from './shared/understory-card.component';
             } @placeholder {
               <div class="h-full w-full flex items-center justify-center text-gray-500 bg-gray-50/50">
                 <div class="flex flex-col items-center gap-3">
-                  <div class="w-6 h-6 border-2 border-gray-200 border-t-[#689F38] rounded-full animate-spin"></div>
+                  <div class="w-6 h-6 border-2 border-gray-200 border-t-[#689F38] rounded-sm animate-spin"></div>
                   <span class="text-xs uppercase tracking-widest font-bold">Loading 3D Viewer...</span>
                 </div>
               </div>
             }
           </div>
         }
-      </understory-card>
+      </pocket-gall-card>
 
       <!-- Patient History Card -->
-      <understory-card 
+      <pocket-gall-card 
         title="Patient History" 
         [icon]="historyIcon"
         [noPadding]="true">
@@ -75,19 +76,19 @@ import { UnderstoryCardComponent } from './shared/understory-card.component';
         <div right-action class="flex items-center gap-4">
               @if(historyBodyParts().length > 0) {
                   <div class="flex items-center gap-2">
-                      <understory-button 
+                      <pocket-gall-button 
                         (click)="$event.stopPropagation(); historyFilter.set(null)"
                         [variant]="!historyFilter() ? 'primary' : 'secondary'"
                         size="xs">
                         ALL
-                      </understory-button>
+                      </pocket-gall-button>
                       @for(part of historyBodyParts(); track part.id) {
-                          <understory-button 
+                          <pocket-gall-button 
                             (click)="$event.stopPropagation(); historyFilter.set(part.id)"
                             [variant]="historyFilter() === part.id ? 'primary' : 'secondary'"
                             size="xs">
                             {{ part.name }}
-                          </understory-button>
+                          </pocket-gall-button>
                       }
                   </div>
               }
@@ -120,7 +121,24 @@ import { UnderstoryCardComponent } from './shared/understory-card.component';
             </div>
           </div>
         }
-      </understory-card>
+      </pocket-gall-card>
+
+      <!-- Patient Scans Card -->
+      <pocket-gall-card 
+        title="Scans & Diagnostics" 
+        [icon]="scansIcon"
+        [noPadding]="true">
+        
+        <div right-action (click)="isScansExpanded.set(!isScansExpanded())" class="cursor-pointer hover:bg-black/5 p-1 rounded-md transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-500 transition-transform duration-200" [class.rotate-180]="!isScansExpanded()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+        </div>
+
+        @if(isScansExpanded()) {
+          <div class="p-6 bg-[#F9FAFB]/50 border-b border-gray-100 last:border-0 min-h-0">
+             <app-patient-scans [scans]="patientScans()"></app-patient-scans>
+          </div>
+        }
+      </pocket-gall-card>
 
     </div>
   `
@@ -167,10 +185,16 @@ export class MedicalChartComponent {
       <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
     </svg>
   `;
+  scansIcon = `
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+    </svg>
+  `;
 
   // --- Accordion State ---
   isViewerExpanded = signal(true);
   isHistoryExpanded = signal(true);
+  isScansExpanded = signal(true);
 
   historyFilter = signal<string | null>(null);
 
@@ -179,6 +203,8 @@ export class MedicalChartComponent {
     if (!selectedId) return null;
     return this.patientManager.patients().find(p => p.id === selectedId);
   });
+
+  patientScans = computed(() => this.selectedPatient()?.scans || []);
 
   isReviewMode = computed(() => !!this.state.viewingPastVisit());
 

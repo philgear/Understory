@@ -2063,7 +2063,7 @@
                 "unusedBytes": 9499
               },
               {
-                "name": "understory-button.component.ts",
+                "name": "pocket-gall-button.component.ts",
                 "resourceBytes": 3860,
                 "unusedBytes": 159
               },
@@ -2073,7 +2073,7 @@
                 "unusedBytes": 3004
               },
               {
-                "name": "understory-input.component.ts",
+                "name": "pocket-gall-input.component.ts",
                 "resourceBytes": 4999,
                 "unusedBytes": 930
               },
@@ -2093,7 +2093,7 @@
                 "unusedBytes": 997
               },
               {
-                "name": "understory-card.component.ts",
+                "name": "pocket-gall-card.component.ts",
                 "resourceBytes": 2391,
                 "unusedBytes": 86
               },
@@ -2103,7 +2103,7 @@
                 "unusedBytes": 3063
               },
               {
-                "name": "understory-badge.component.ts",
+                "name": "pocket-gall-badge.component.ts",
                 "resourceBytes": 1272
               },
               {

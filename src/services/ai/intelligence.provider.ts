@@ -34,6 +34,6 @@ export interface IntelligenceProvider {
      * Chat Session Management
      */
     startChat(patientData: string, context: string): Promise<void>;
-    sendMessage(message: string): Promise<string>;
+    sendMessage(message: string, files?: File[]): Promise<string>;
     getInitialGreeting(prompt: string): Promise<string>;
 }

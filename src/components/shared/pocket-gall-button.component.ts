@@ -6,7 +6,7 @@ export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'ghost' | 'outl
 export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg';
 
 @Component({
-  selector: 'understory-button',
+  selector: 'pocket-gall-button',
   standalone: true,
   imports: [CommonModule],
   template: `
@@ -18,7 +18,7 @@ export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg';
       (click)="onClick($event)"
     >
       @if (loading()) {
-        <div class="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin mr-2"></div>
+        <div class="w-3 h-3 border-2 border-current border-t-transparent rounded-sm animate-spin mr-2"></div>
       } @else if (icon()) {
         <div class="mr-2 flex items-center justify-center h-full" [innerHTML]="iconHtml()"></div>
       }
@@ -134,7 +134,7 @@ export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg';
   `],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class UnderstoryButtonComponent {
+export class PocketGallButtonComponent {
   private sanitizer = inject(DomSanitizer);
 
   variant = input<ButtonVariant>('primary');

@@ -1,5 +1,6 @@
 import { Component, ChangeDetectionStrategy, inject, computed, signal, viewChild, ElementRef, afterNextRender, effect, ChangeDetectorRef, untracked, OnDestroy, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { PatientDropdownComponent } from './components/patient-dropdown.component';
 import { PatientStateService } from './services/patient-state.service';
 import { ResearchFrameComponent } from './components/research-frame.component';
@@ -15,13 +16,16 @@ import { AI_CONFIG, AiProviderConfig } from './services/ai-provider.types';
 import { IntelligenceProviderToken } from './services/ai/intelligence.provider.token';
 import { GeminiProvider } from './services/ai/gemini.provider';
 import { ClinicalIntelligenceService } from './services/clinical-intelligence.service';
+import { PatientManagementService } from './services/patient-management.service';
 import { RevealDirective } from './directives/reveal.directive';
+import { DEMO_ANALYSIS_REPORT } from './demo-data';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     PatientDropdownComponent,
     MedicalChartComponent,
     AnalysisContainerComponent,
@@ -42,9 +46,10 @@ import { RevealDirective } from './directives/reveal.directive';
       <app-dictation-modal></app-dictation-modal>
 
       @if (!hasApiKey()) {
-        <main class="fixed inset-0 bg-white z-[100] flex flex-col items-center justify-center p-8 text-center landmark-main">
-          <div class="mb-8">
-            <svg width="64" height="64" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" class="mx-auto">
+        <main class="fixed inset-0 bg-white z-[100] flex flex-col items-center justify-center p-6 text-center landmark-main">
+          <!-- Logo -->
+          <div class="mb-6">
+            <svg width="56" height="56" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" class="mx-auto">
               <g transform="translate(0, -20)">
                 <rect x="166" y="275" width="180" height="10" rx="2" fill="#76B362" />
                 <path d="M251 270 C200 250 155 200 155 145 C155 180 185 240 251 270Z" fill="#76B362" />
@@ -56,17 +61,68 @@ import { RevealDirective } from './directives/reveal.directive';
               </g>
             </svg>
           </div>
-          <h1 class="text-xl font-bold mb-2 uppercase tracking-[0.2em]">Understory</h1>
-          <p class="text-gray-500 mb-8 max-w-sm text-sm">To access the practitioner dashboard and 3D visualization tools, please select a paid Gemini API key.</p>
-          <button (click)="selectKey()" class="px-10 py-4 bg-[#1C1C1C] text-white text-xs font-bold uppercase tracking-widest hover:bg-black transition-all shadow-xl">
-            Select API Key
-          </button>
-          <a href="https://ai.google.dev/gemini-api/docs/billing" target="_blank" class="mt-6 text-xs text-gray-500 uppercase tracking-widest hover:text-gray-600 transition-colors">
-            Billing Documentation
-          </a>
+          <h1 class="text-xl font-bold mb-1 uppercase tracking-[0.2em]">Pocket Gall</h1>
+          <p class="text-gray-500 mb-8 text-xs uppercase tracking-widest">Clinical Intelligence Platform</p>
+
+          <!-- API Key Input -->
+          <div class="w-full max-w-sm">
+            <p class="text-gray-500 mb-4 text-sm">Enter your Gemini API key to access the live practitioner dashboard.</p>
+            <div class="relative flex items-center border border-gray-200 rounded focus-within:border-gray-400 transition-colors mb-2">
+              <input
+                id="api-key-input"
+                [(ngModel)]="apiKeyInput"
+                [type]="showPassword() ? 'text' : 'password'"
+                placeholder="Paste your Gemini API key here"
+                class="flex-1 px-4 py-3 text-sm bg-transparent outline-none font-mono text-gray-800 placeholder-gray-300"
+                (keydown.enter)="submitApiKey()"
+              />
+              <button (click)="showPassword.update(v => !v)" class="px-3 text-gray-500 hover:text-gray-600 transition-colors" [attr.aria-label]="showPassword() ? 'Hide key' : 'Show key'">
+                @if (showPassword()) {
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                } @else {
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                }
+              </button>
+            </div>
+            @if (apiKeyError()) {
+              <p class="text-red-500 text-xs mb-3">{{ apiKeyError() }}</p>
+            }
+            <button (click)="submitApiKey()" [disabled]="!apiKeyInput().trim()"
+              class="w-full py-3 bg-[#1C1C1C] text-white text-xs font-bold uppercase tracking-widest hover:bg-black transition-all disabled:opacity-40 disabled:cursor-not-allowed mb-3">
+              Enter Dashboard
+            </button>
+            <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener"
+              class="block text-xs text-[#416B1F] hover:text-[#244626] transition-colors mb-8">
+              Get a free API key at <span class="font-bold">ai.dev</span> →
+            </a>
+
+            <!-- Divider -->
+            <div class="relative flex items-center gap-4 mb-8">
+              <div class="flex-1 h-px bg-gray-100"></div>
+              <span class="text-xs text-gray-500 uppercase tracking-widest">or</span>
+              <div class="flex-1 h-px bg-gray-100"></div>
+            </div>
+
+            <!-- Demo Mode -->
+            <button (click)="loadDemoMode()"
+              class="w-full py-3 border border-gray-200 text-gray-600 text-xs font-bold uppercase tracking-widest hover:bg-gray-50 hover:border-gray-300 transition-all">
+              Try Demo — No Key Required
+            </button>
+            <p class="text-gray-500 text-xs mt-2">Loads a pre-sampled patient with example AI analysis outputs.</p>
+          </div>
         </main>
       } @else {
-        <main class="flex-1 flex flex-col min-w-0 relative group/main"> <!-- Main Content -->
+        <main class="flex-1 flex flex-col min-w-0 min-h-0 relative group/main"> <!-- Main Content -->
+        <!-- Demo Banner -->
+        @if (isDemoMode()) {
+          <div class="bg-amber-50 border-b border-amber-200 px-4 py-2 flex items-center justify-between gap-4 no-print shrink-0">
+            <div class="flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-amber-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <p class="text-xs text-amber-800 font-medium">Demo Mode — Showing pre-sampled patient data. AI analysis generation requires an API key.</p>
+            </div>
+            <button (click)="exitDemoMode()" class="text-xs font-bold text-amber-800 uppercase tracking-widest hover:text-amber-900 whitespace-nowrap transition-colors">Enter API Key →</button>
+          </div>
+        }
         <!-- Navbar: Pure utility, no decoration -->
         <nav class="h-14 border-b border-[#EEEEEE] flex items-center justify-between px-3 sm:px-6 shrink-0 bg-white z-50 no-print">
           <div class="flex items-center gap-4">
@@ -84,7 +140,7 @@ import { RevealDirective } from './directives/reveal.directive';
                       </g>
                     </g>
                   </svg>
-                  <span class="font-medium text-[#1C1C1C] tracking-[0.15em] text-sm hidden sm:inline">UNDERSTORY</span>
+                  <span class="font-medium text-[#1C1C1C] tracking-[0.15em] text-sm hidden sm:inline">POCKET GALL</span>
               </div>
             <div class="h-4 w-px bg-[#EEEEEE] hidden sm:block"></div>
             <div class="text-xs text-gray-500 font-medium mr-4 hidden sm:block">INTAKE MODULE 01</div>
@@ -164,7 +220,7 @@ import { RevealDirective } from './directives/reveal.directive';
 
 
         <!-- Main Grid Layout -->
-        <div #mainContainer class="flex-1 flex flex-col md:flex-row max-md:overflow-visible overflow-y-auto md:overflow-hidden relative bg-[#F9FAFB] p-2 md:p-6 gap-3 md:gap-6">
+        <div #mainContainer class="flex-1 flex flex-col md:flex-row max-md:overflow-visible overflow-y-auto md:overflow-hidden relative bg-[#F9FAFB] p-2 md:p-6 gap-3 md:gap-6 min-h-0">
 
 
           
@@ -178,7 +234,7 @@ import { RevealDirective } from './directives/reveal.directive';
                [class.md:w-[var(--panel-width)]]="!isAnalysisCollapsed() && inputPanelWidth() !== undefined"
                [class.hidden]="isChartCollapsed()"
                [class.max-md:hidden]="!!state.selectedPartId()">
-               <div class="md:h-full w-full md:overflow-hidden flex-1 flex flex-col">
+               <div class="md:h-full w-full md:overflow-hidden flex-1 flex flex-col min-h-0">
                  <app-medical-chart class="no-print md:h-full block md:overflow-y-auto w-full max-md:overflow-visible"></app-medical-chart>
                </div>
             </div>
@@ -323,8 +379,14 @@ import { RevealDirective } from './directives/reveal.directive';
 export class AppComponent implements OnDestroy {
   state = inject(PatientStateService);
   private ngZone = inject(NgZone);
+  private patientMgmt = inject(PatientManagementService);
+  private clinicalIntelligence = inject(ClinicalIntelligenceService);
   today = new Date();
-  hasApiKey = signal<boolean>(true);
+  hasApiKey = signal<boolean>(false);
+  isDemoMode = signal<boolean>(false);
+  apiKeyInput = signal<string>('');
+  showPassword = signal<boolean>(false);
+  apiKeyError = signal<string | null>(null);
   isChartCollapsed = signal<boolean>(false);
   isAnalysisCollapsed = signal<boolean>(false);
 
@@ -413,6 +475,17 @@ export class AppComponent implements OnDestroy {
       if (typeof window === 'undefined') return;
       this.isMobile.set(window.innerWidth < 768);
 
+      // Check for stored API key first
+      try {
+        const storedKey = localStorage.getItem('GEMINI_API_KEY');
+        if (storedKey) {
+          this.hasApiKey.set(true);
+        }
+      } catch (e) { /* ignore */ }
+
+      // Also check AI Studio key selection
+      await this.checkApiKey();
+
       // Set up window resize listener for responsive layout
       this.boundOnWindowResize = this.onWindowResize.bind(this);
       window.addEventListener('resize', this.boundOnWindowResize);
@@ -461,7 +534,7 @@ export class AppComponent implements OnDestroy {
   async checkApiKey() {
     if (typeof window.aistudio?.hasSelectedApiKey === 'function') {
       const hasKey = await window.aistudio.hasSelectedApiKey();
-      this.hasApiKey.set(hasKey);
+      if (hasKey) this.hasApiKey.set(true);
     }
   }
 
@@ -470,6 +543,41 @@ export class AppComponent implements OnDestroy {
       await window.aistudio.openSelectKey();
       this.hasApiKey.set(true);
     }
+  }
+
+  submitApiKey() {
+    const key = this.apiKeyInput().trim();
+    if (!key) return;
+    if (!key.startsWith('AI') || key.length < 20) {
+      this.apiKeyError.set('This does not look like a valid Gemini API key. Keys typically start with "AI".');
+      return;
+    }
+    try {
+      localStorage.setItem('GEMINI_API_KEY', key);
+    } catch (e) { /* ignore */ }
+    this.apiKeyError.set(null);
+    this.isDemoMode.set(false);
+    // Force GeminiProvider to reinitialise with the new key on next call
+    this.hasApiKey.set(true);
+  }
+
+  loadDemoMode() {
+    this.isDemoMode.set(true);
+    this.hasApiKey.set(true);
+    // Load demo patient (Sarah Jenkins – p002)
+    this.patientMgmt.selectPatient('p002');
+    // Inject pre-baked analysis outputs (no API call)
+    setTimeout(() => {
+      this.clinicalIntelligence.loadArchivedAnalysis(DEMO_ANALYSIS_REPORT);
+      // Minimise the medical summary pane so the analysis report is immediately visible
+      this.maximizeReport();
+    }, 350);
+  }
+
+  exitDemoMode() {
+    this.isDemoMode.set(false);
+    this.hasApiKey.set(false);
+    this.apiKeyInput.set('');
   }
 
   toggleChart() {

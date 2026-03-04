@@ -111,6 +111,17 @@ export interface ClinicalNote {
     date: string;
 }
 
+export interface DiagnosticScan {
+    id: string;
+    type: 'MRI' | 'X-Ray' | 'CT Scan' | 'Ultrasound' | 'Lab Report' | 'Document';
+    title: string;
+    date: string;
+    bodyPartId?: string;
+    description: string;
+    status: 'Normal' | 'Abnormal' | 'Pending' | 'Reviewed';
+    imageUrl?: string;
+}
+
 export interface ChecklistItem {
     id: string;
     text: string;
@@ -129,6 +140,7 @@ export interface PatientState {
     biometricHistory?: BiometricEntry[];
     clinicalNotes?: ClinicalNote[];
     checklist?: ChecklistItem[];
+    scans?: DiagnosticScan[];
 }
 
 export interface Bookmark {

@@ -1,6 +1,6 @@
 /**
- * Centralized registry of clinical and UI icons for Understory.
- * Used for shared components like UnderstoryCard and UnderstoryBadge.
+ * Centralized registry of clinical and UI icons for Pocket Gall.
+ * Used for shared components like PocketGallCard and PocketGallBadge.
  */
 export const ClinicalIcons = {
   Assessment: `
@@ -62,6 +62,33 @@ export const ClinicalIcons = {
       <path d="M3 6h18"></path>
       <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
       <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+    </svg>
+  `,
+  EvidenceFocus: `
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-[#689F38]">
+      <path d="M8.5 7.5c0-1.5 2.5-3 4.5-3 3 0 4 2 2.5 4-1.5 2-3.5 3-3.5 5.5" />
+      <line x1="12" y1="3" x2="12" y2="15" />
+      <line x1="12" y1="19" x2="12.01" y2="19" stroke-width="2.5" />
+    </svg>
+  `,
+  Image: `
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5">
+      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+      <circle cx="8.5" cy="8.5" r="1.5"></circle>
+      <polyline points="21 15 16 10 5 21"></polyline>
+    </svg>
+  `,
+  Model3D: `
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5">
+      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+      <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+      <line x1="12" y1="22.08" x2="12" y2="12"></line>
+    </svg>
+  `,
+  Research: `
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5">
+      <circle cx="11" cy="11" r="8"></circle>
+      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
     </svg>
   `
 };

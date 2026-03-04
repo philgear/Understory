@@ -1,13 +1,13 @@
-# Understory
+# Pocket Gall
 
 > Insight beneath the surface. A voice-first clinical co-pilot for AI-augmented patient intake and care plan synthesis.
 
-Understory is an Angular v21.1 progressive web application deployed on Google Cloud Run. It combines a Three.js interactive 3D anatomical body map with Google Gemini AI (`gemini-2.5-flash` via `@google/adk` multi-agent orchestration) and the Web Speech API to help clinicians rapidly synthesize patient intake data into structured care plan recommendations.
+Pocket Gall is an Angular v21.1 progressive web application deployed on Google Cloud Run. It combines a Three.js interactive 3D anatomical body map with Google Gemini AI (`gemini-2.5-flash` via `@google/adk` multi-agent orchestration) and the Web Speech API to help clinicians rapidly synthesize patient intake data into structured care plan recommendations.
 
 This application was built for the Gemini Live Agent Challenge hackathon (Category: Live Agents — Real-time Voice & Visual UI).
 
-- Live URL: https://understory-444980566010.us-west1.run.app
-- Repository: https://github.com/philgear/understory
+- Live URL: https://pocket-gall-444980566010.us-west1.run.app
+- Repository: https://github.com/philgear/pocket-gall
 - Developer: https://g.dev/philgear
 
 ## Key Capabilities
@@ -48,7 +48,7 @@ All patient data persists in browser localStorage only. No remote patient databa
 
 ## Responsible AI
 
-Understory is a clinical productivity tool, not a medical device. All AI-generated content requires explicit physician review and approval via Task Bracketing before clinical use. Patient data is processed transiently; no PII is persisted remotely or used for model training. The platform is designed to augment, not replace, licensed clinical judgment.
+Pocket Gall is a clinical productivity tool, not a medical device. All AI-generated content requires explicit physician review and approval via Task Bracketing before clinical use. Patient data is processed transiently; no PII is persisted remotely or used for model training. The platform is designed to augment, not replace, licensed clinical judgment.
 
 ## Data Handling
 

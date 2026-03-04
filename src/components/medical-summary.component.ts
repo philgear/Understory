@@ -6,14 +6,15 @@ import { DraftSummaryItem } from '../services/patient.types';
 import { ExportService } from '../services/export.service';
 import { DictationService } from '../services/dictation.service';
 import { marked } from 'marked';
-import { UnderstoryButtonComponent } from './shared/understory-button.component';
-import { UnderstoryInputComponent } from './shared/understory-input.component';
-import { UnderstoryBadgeComponent } from './shared/understory-badge.component';
+import { PocketGallButtonComponent } from './shared/pocket-gall-button.component';
+import { PocketGallInputComponent } from './shared/pocket-gall-input.component';
+import { PocketGallBadgeComponent } from './shared/pocket-gall-badge.component';
+import { SafeHtmlPipe } from '../pipes/safe-html.pipe';
 
 @Component({
   selector: 'app-medical-summary',
   standalone: true,
-  imports: [CommonModule, UnderstoryButtonComponent, UnderstoryInputComponent, UnderstoryBadgeComponent],
+  imports: [CommonModule, PocketGallButtonComponent, PocketGallInputComponent, PocketGallBadgeComponent, SafeHtmlPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (patient(); as p) {
@@ -28,14 +29,14 @@ import { UnderstoryBadgeComponent } from './shared/understory-badge.component';
               <div class="flex items-center gap-2">
                 <!-- Export Menu -->
                 <div class="relative">
-                  <understory-button 
+                  <pocket-gall-button 
                     (click)="showExportMenu.set(!showExportMenu())"
                     variant="ghost"
                     size="sm"
                     icon="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
                     aria-label="Export patient data">
                     Export
-                  </understory-button>
+                  </pocket-gall-button>
                   @if (showExportMenu()) {
                     <div class="absolute right-0 mt-1 w-48 bg-white rounded-lg shadow-xl ring-1 ring-black/5 py-1 z-50 animate-in fade-in slide-in-from-top-1 duration-150">
                       <button (click)="exportNativeJson()" class="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2.5 transition-colors">
@@ -49,12 +50,12 @@ import { UnderstoryBadgeComponent } from './shared/understory-badge.component';
                     </div>
                   }
                 </div>
-                <understory-button 
+                <pocket-gall-button 
                   (click)="openFinalizePreview()" 
                   variant="primary"
                   size="md">
                   Finalize & Archive
-                </understory-button>
+                </pocket-gall-button>
               </div>
             </div>
 
@@ -66,32 +67,32 @@ import { UnderstoryBadgeComponent } from './shared/understory-badge.component';
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
                         Current Visit / Chief Complaint
                     </h2>
-                    <understory-button 
+                    <pocket-gall-button 
                       variant="ghost" 
                       size="xs" 
                       (click)="dictateVisitNote()" 
                       title="Dictate"
                       ariaLabel="Dictate Visit Note"
                       icon="M12 14q-1.25 0-2.125-.875T9 11V5q0-1.25.875-2.125T12 2q1.25 0 2.125.875T15 5v6q0 1.25-.875 2.125T12 14m-1 7v-3.075q-2.6-.35-4.3-2.325T5 11h2q0 2.075 1.463 3.537T12 16q2.075 0 3.538-1.463T17 11h2q0 2.225-1.7 4.2T13 17.925V21z">
-                    </understory-button>
+                    </pocket-gall-button>
                   </div>
                   <div class="relative group">
-                    <understory-input
+                    <pocket-gall-input
                       type="textarea"
                       [value]="newVisitReason()"
                       (valueChange)="newVisitReason.set($event)"
                       [rows]="3"
                       placeholder="Enter reason for today's visit or primary health goal..."
                       class="w-full">
-                    </understory-input>
+                    </pocket-gall-input>
                   </div>
                   <div class="flex items-center justify-end mt-3">
-                    <understory-button 
+                    <pocket-gall-button 
                       (click)="saveNewVisit()" 
                       [disabled]="!newVisitReason().trim()"
                       size="sm">
                       Save Visit Note
-                    </understory-button>
+                    </pocket-gall-button>
                   </div>
                 </div>
 
@@ -103,81 +104,81 @@ import { UnderstoryBadgeComponent } from './shared/understory-badge.component';
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 border-b border-gray-100 pb-8">
                   <div class="flex flex-col gap-2 p-3 bg-white border border-gray-100 hover:border-gray-200 transition-colors">
                     <span class="text-xs font-bold text-gray-500 uppercase tracking-[0.15em]">BP</span>
-                    <understory-input
+                    <pocket-gall-input
                       id="vitals-bp"
                       variant="minimal"
                       placeholder="120/80"
                       [value]="state.vitals().bp"
                       (valueChange)="state.updateVital('bp', $event)">
-                    </understory-input>
+                    </pocket-gall-input>
                   </div>
                   <div class="flex flex-col gap-2 p-3 bg-white border border-gray-100 hover:border-gray-200 transition-colors">
                     <span class="text-xs font-bold text-gray-500 uppercase tracking-[0.15em]">HR</span>
                     <div class="flex items-baseline gap-1">
-                      <understory-input
+                      <pocket-gall-input
                         id="vitals-hr"
                         variant="minimal"
                         placeholder="--"
                         [value]="state.vitals().hr"
                         (valueChange)="state.updateVital('hr', $event)"
                         class="flex-1 min-w-0">
-                      </understory-input>
+                      </pocket-gall-input>
                       <span class="text-xs text-gray-500 font-bold tracking-tighter shrink-0 uppercase">BPM</span>
                     </div>
                   </div>
                   <div class="flex flex-col gap-2 p-3 bg-white border border-gray-100 hover:border-gray-200 transition-colors">
                     <span class="text-xs font-bold text-gray-500 uppercase tracking-[0.15em]">SpO2</span>
                     <div class="flex items-baseline gap-1">
-                      <understory-input
+                      <pocket-gall-input
                         id="vitals-spo2"
                         variant="minimal"
                         placeholder="--"
                         [value]="state.vitals().spO2"
                         (valueChange)="state.updateVital('spO2', $event)"
                         class="flex-1 min-w-0">
-                      </understory-input>
+                      </pocket-gall-input>
                       <span class="text-xs text-gray-500 font-bold shrink-0">%</span>
                     </div>
                   </div>
                   <div class="flex flex-col gap-2 p-3 bg-white border border-gray-100 hover:border-gray-200 transition-colors">
                     <span class="text-xs font-bold text-gray-500 uppercase tracking-[0.15em]">Temp</span>
                     <div class="flex items-baseline gap-1">
-                      <understory-input
+                      <pocket-gall-input
                         id="vitals-temp"
                         variant="minimal"
                         placeholder="--"
                         [value]="state.vitals().temp"
                         (valueChange)="state.updateVital('temp', $event)"
                         class="flex-1 min-w-0">
-                      </understory-input>
+                      </pocket-gall-input>
                       <span class="text-xs text-gray-500 font-bold shrink-0">°F</span>
                     </div>
                   </div>
                   <div class="flex flex-col gap-2 p-3 bg-white border border-gray-100 hover:border-gray-200 transition-colors">
                     <span class="text-xs font-bold text-gray-500 uppercase tracking-[0.15em]">Weight</span>
                     <div class="flex items-baseline gap-1">
-                      <understory-input
+                      <pocket-gall-input
                         id="vitals-weight"
                         variant="minimal"
                         placeholder="--"
                         [value]="state.vitals().weight"
                         (valueChange)="state.updateVital('weight', $event)"
                         class="flex-1 min-w-0">
-                      </understory-input>
+                      </pocket-gall-input>
                       <span class="text-xs text-gray-500 font-bold shrink-0 uppercase tracking-tighter">LBS</span>
                     </div>
                   </div>
                   <div class="flex flex-col gap-2 p-3 bg-white border border-gray-100 hover:border-gray-200 transition-colors">
                     <span class="text-xs font-bold text-gray-500 uppercase tracking-[0.15em]">Height</span>
                     <div class="flex items-baseline gap-1">
-                      <understory-input
+                      <pocket-gall-input
                         id="vitals-height"
                         variant="minimal"
                         placeholder="--/--"
                         [value]="state.vitals().height"
                         (valueChange)="state.updateVital('height', $event)"
                         class="flex-1 min-w-0">
-                      </understory-input>
+                      </pocket-gall-input>
                       <span class="text-xs text-gray-500 font-bold shrink-0 uppercase tracking-tighter">FT</span>
                     </div>
                   </div>
@@ -214,7 +215,7 @@ import { UnderstoryBadgeComponent } from './shared/understory-badge.component';
                   <section>
                     <h2 class="text-xs font-bold text-gray-500 uppercase tracking-[0.15em] mb-6">Retrospective Data Visualization</h2>
                     <div class="h-64 w-full flex items-center justify-center bg-gray-50/50 border border-dashed border-gray-200 rounded">
-                      <span class="text-xs font-bold uppercase tracking-widest text-gray-400">Scroll to load charts</span>
+                      <span class="text-xs font-bold uppercase tracking-widest text-gray-500">Scroll to load charts</span>
                     </div>
                   </section>
                 }
@@ -225,7 +226,7 @@ import { UnderstoryBadgeComponent } from './shared/understory-badge.component';
                       <h2 class="text-xs font-bold text-gray-500 uppercase tracking-[0.15em] mb-4">Historical Conditions</h2>
                       <div class="flex flex-wrap gap-2">
                           @for(condition of p.preexistingConditions; track condition) {
-                            <understory-badge [label]="condition" severity="neutral"></understory-badge>
+                            <pocket-gall-badge [label]="condition" severity="neutral"></pocket-gall-badge>
                           }
                       </div>
                   </section>
@@ -235,9 +236,9 @@ import { UnderstoryBadgeComponent } from './shared/understory-badge.component';
                 @if (state.draftSummaryItems().length > 0) {
                   <section class="bg-gray-50 p-6 border border-gray-200 rounded">
                     <h2 class="text-xs font-bold text-gray-500 uppercase tracking-[0.15em] mb-4 flex justify-between items-center">
-                      <understory-badge label="Care Recommendation Draft" severity="success" [hasIcon]="true">
+                      <pocket-gall-badge label="Care Recommendation Draft" severity="success" [hasIcon]="true">
                         <div badge-icon class="w-1.5 h-1.5 bg-[#689F38] rounded-full animate-pulse"></div>
-                      </understory-badge>
+                      </pocket-gall-badge>
                     </h2>
                     <ul class="space-y-3 text-[13px] text-[#1C1C1C]">
                       @for (item of state.draftSummaryItems(); track $index) {
@@ -245,26 +246,26 @@ import { UnderstoryBadgeComponent } from './shared/understory-badge.component';
                           <div class="flex justify-between items-start gap-3 group">
                              <div class="w-1 h-4 bg-gray-200 mt-0.5 shrink-0 group-hover:bg-[#689F38] transition-colors"></div>
                             <span class="flex-1 font-medium">{{ item.text }}</span>
-                            <understory-button 
+                            <pocket-gall-button 
                               (click)="removeDraftItem(item)" 
                               variant="ghost" 
                               size="xs" 
                               title="Remove"
                               ariaLabel="Remove Draft Item"
                               icon="M18 6L6 18M6 6l12 12">
-                            </understory-button>
+                            </pocket-gall-button>
                           </div>
                         </li>
                       }
                     </ul>
                     <div class="mt-6 pt-6 border-t border-gray-200 flex justify-end">
-                       <understory-button 
+                       <pocket-gall-button 
                           (click)="finalizeDraftPlan()" 
                           variant="secondary" 
                           size="sm"
                           trailingIcon="M5 12l5 5l10-10">
                           Append to Active Strategics
-                       </understory-button>
+                       </pocket-gall-button>
                     </div>
                   </section>
                 }
@@ -273,7 +274,7 @@ import { UnderstoryBadgeComponent } from './shared/understory-badge.component';
                 @if (activeCarePlanHTML(); as html) {
                   <section>
                     <h2 class="text-xs font-bold text-gray-500 uppercase tracking-[0.15em] mb-4">Active Strategy Overview</h2>
-                    <div class="p-8 bg-white border border-gray-100 rounded prose prose-sm max-w-none prose-p:text-[#1C1C1C] prose-p:font-light prose-headings:text-[11px] prose-headings:font-bold prose-headings:uppercase prose-headings:tracking-[0.1em] prose-headings:text-gray-500" [innerHTML]="html"></div>
+                    <div class="p-8 bg-white border border-gray-100 rounded prose prose-sm max-w-none prose-p:text-[#1C1C1C] prose-p:font-light prose-headings:text-[11px] prose-headings:font-bold prose-headings:uppercase prose-headings:tracking-[0.1em] prose-headings:text-gray-500" [innerHTML]="html | safeHtml"></div>
                   </section>
                 }
       </div>
@@ -293,50 +294,50 @@ import { UnderstoryBadgeComponent } from './shared/understory-badge.component';
               <h2 class="text-lg font-bold text-[#1C1C1C]">Preview & Print Care Plan</h2>
               <p class="text-xs uppercase font-bold text-gray-500 tracking-wider mt-1">Review and edit finalized text before archiving</p>
             </div>
-            <understory-button 
+            <pocket-gall-button 
               variant="ghost" 
               size="sm" 
               (click)="closePreview()" 
               ariaLabel="Close Preview Modal"
               icon="M18 6L6 18M6 6l12 12">
-            </understory-button>
+            </pocket-gall-button>
           </div>
           <div class="flex-1 overflow-y-auto p-6 bg-white">
              <div class="mb-2 flex justify-between items-center">
                 <h3 class="block text-xs font-bold text-[#689F38] uppercase tracking-[0.15em]">Final Care Plan Document</h3>
              </div>
-             <understory-input
+             <pocket-gall-input
                type="textarea"
                [rows]="16"
                [value]="previewText()"
                (valueChange)="previewText.set($event)"
                placeholder="No Active Care Plan recorded for this visit."
                class="w-full">
-             </understory-input>
+             </pocket-gall-input>
              <p class="text-xs text-gray-500 font-bold uppercase tracking-wider mt-3 pl-1">This text will be archived in the patient's chart as the final Care Plan for this visit.</p>
           </div>
           <div class="px-6 py-4 border-t border-gray-100 bg-[#F9FAFB] flex justify-between items-center">
-            <understory-button 
+            <pocket-gall-button 
               (click)="printReport()" 
               variant="secondary" 
               size="sm" 
               icon="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6z">
               Print Plan
-            </understory-button>
+            </pocket-gall-button>
             <div class="flex items-center gap-3">
-              <understory-button 
+              <pocket-gall-button 
                 (click)="closePreview()" 
                 variant="ghost" 
                 size="sm">
                 Cancel
-              </understory-button>
-              <understory-button 
+              </pocket-gall-button>
+              <pocket-gall-button 
                 (click)="confirmFinalize()" 
                 variant="primary" 
                 size="sm" 
                 trailingIcon="M20 6L9 17l-5-5">
                 Commit to Chart
-              </understory-button>
+              </pocket-gall-button>
             </div>
           </div>
         </div>
@@ -760,7 +761,20 @@ export class MedicalChartSummaryComponent {
   }
 
   printReport() {
-    window.print();
+    const p = this.patient();
+    const vitals = this.state.vitals();
+    this.exportService.downloadCarePlanPdf(
+      this.previewText(),
+      p?.name ?? 'Patient',
+      {
+        bp: vitals.bp || undefined,
+        hr: vitals.hr || undefined,
+        temp: vitals.temp || undefined,
+        spO2: vitals.spO2 || undefined,
+        weight: vitals.weight || undefined,
+      },
+      p?.preexistingConditions ?? []
+    );
   }
 
   confirmFinalize() {
