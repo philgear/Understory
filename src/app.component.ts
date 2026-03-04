@@ -47,19 +47,34 @@ import { DEMO_ANALYSIS_REPORT } from './demo-data';
 
       @if (!hasApiKey()) {
         <main class="fixed inset-0 bg-white z-[100] flex flex-col items-center justify-center p-6 text-center landmark-main">
-          <!-- Logo -->
-          <div class="mb-6">
-            <svg width="56" height="56" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" class="mx-auto">
-              <g transform="translate(0, -20)">
-                <rect x="166" y="275" width="180" height="10" rx="2" fill="#76B362" />
-                <path d="M251 270 C200 250 155 200 155 145 C155 180 185 240 251 270Z" fill="#76B362" />
-                <path d="M251 270 C240 210 215 155 185 145 C185 145 230 200 251 270Z" fill="#244626" />
-                <g transform="translate(512, 0) scale(-1, 1)">
-                  <path d="M251 270 C200 250 155 200 155 145 C155 180 185 240 251 270Z" fill="#76B362" />
-                  <path d="M251 270 C240 210 215 155 185 145 C185 145 230 200 251 270Z" fill="#244626" />
-                </g>
-              </g>
-            </svg>
+          <!-- Origami Pocket Splash -->
+          <div class="mb-10 relative w-full h-56 max-w-sm mx-auto flex items-end justify-center">
+             <!-- The Pocket -->
+            <div class="origami-pocket"></div>
+            
+            <!-- The Seagull -->
+            <div class="origami-seagull-container origami-seagull-enter">
+                <div class="origami-paper"></div>
+                <div class="origami-seagull">
+                    <!-- Origami SVG Seagull shape - Braun minimalist palette -->
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Far Wing -->
+                        <polygon points="50,40 65,15 58,45" fill="#d0d0d0" stroke="#b0b0b0" stroke-width="0.5" stroke-linejoin="round" />
+                        <!-- Tail -->
+                        <polygon points="20,50 50,40 10,35" fill="#e0e0e0" stroke="#d0d0d0" stroke-width="0.5" stroke-linejoin="round" />
+                        <!-- Body Base -->
+                        <polygon points="20,50 50,40 58,45 75,55 50,65" fill="#f4f4f4" stroke="#e0e0e0" stroke-width="0.5" stroke-linejoin="round" />
+                        <!-- Near Wing (Upper) -->
+                        <polygon points="50,40 58,45 35,85" fill="#ffffff" stroke="#f0f0f0" stroke-width="0.5" stroke-linejoin="round" />
+                        <!-- Near Wing (Fold) -->
+                        <polygon points="50,40 35,85 20,50" fill="#f9f9f9" stroke="#e0e0e0" stroke-width="0.5" stroke-linejoin="round" />
+                        <!-- Neck/Head -->
+                        <polygon points="75,55 58,45 85,38" fill="#ffffff" stroke="#f0f0f0" stroke-width="0.5" stroke-linejoin="round" />
+                        <!-- Beak - Functional Braun Orange Accent -->
+                        <polygon points="85,38 82,45 95,34" fill="#ff4500" stroke="#df3d00" stroke-width="0.5" stroke-linejoin="round" />
+                    </svg>
+                </div>
+            </div>
           </div>
           <h1 class="text-xl font-bold mb-1 uppercase tracking-[0.2em]">Pocket Gall</h1>
           <p class="text-gray-500 mb-8 text-xs uppercase tracking-widest">Clinical Intelligence Platform</p>

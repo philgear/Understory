@@ -189,23 +189,23 @@ import { SafeHtmlPipe } from '../pipes/safe-html.pipe';
                   <section>
                       <h2 class="text-xs font-bold text-gray-500 uppercase tracking-[0.15em] mb-6">Retrospective Data Visualization</h2>
                       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                          <div class="w-full h-64 bg-white border border-gray-100 rounded p-6 flex flex-col">
+                          <div class="w-full h-64 bg-white border border-gray-100 rounded p-4 sm:p-6 flex flex-col">
                               <h3 class="text-xs font-bold text-gray-500 uppercase tracking-[0.2em] mb-4">Pain Path / 0–10</h3>
                               <div class="relative flex-1 min-h-0"><canvas #painChart></canvas></div>
                           </div>
-                          <div class="w-full h-64 bg-white border border-gray-100 rounded p-6 flex flex-col">
+                          <div class="w-full h-64 bg-white border border-gray-100 rounded p-4 sm:p-6 flex flex-col">
                               <h3 class="text-xs font-bold text-gray-500 uppercase tracking-[0.2em] mb-4">Blood Pressure / Composite</h3>
                               <div class="relative flex-1 min-h-0"><canvas #bpChart></canvas></div>
                           </div>
-                          <div class="w-full h-64 bg-white border border-gray-100 rounded p-6 flex flex-col">
+                          <div class="w-full h-64 bg-white border border-gray-100 rounded p-4 sm:p-6 flex flex-col">
                               <h3 class="text-xs font-bold text-gray-500 uppercase tracking-[0.2em] mb-4">Pulse Rate / BPM</h3>
                               <div class="relative flex-1 min-h-0"><canvas #hrChart></canvas></div>
                           </div>
-                          <div class="w-full h-64 bg-white border border-gray-100 rounded p-6 flex flex-col">
+                          <div class="w-full h-64 bg-white border border-gray-100 rounded p-4 sm:p-6 flex flex-col">
                               <h3 class="text-xs font-bold text-gray-500 uppercase tracking-[0.2em] mb-4">Oxygen Saturation / %</h3>
                               <div class="relative flex-1 min-h-0"><canvas #spo2Chart></canvas></div>
                           </div>
-                          <div class="w-full h-64 bg-white border border-gray-100 rounded p-6 flex flex-col md:col-span-2">
+                          <div class="w-full h-64 bg-white border border-gray-100 rounded p-4 sm:p-6 flex flex-col md:col-span-2">
                               <h3 class="text-xs font-bold text-gray-500 uppercase tracking-[0.2em] mb-4">Core Temperature / Trend</h3>
                               <div class="relative flex-1 min-h-0"><canvas #tempChart></canvas></div>
                           </div>
@@ -234,7 +234,7 @@ import { SafeHtmlPipe } from '../pipes/safe-html.pipe';
 
                 <!-- Draft Care Plan -->
                 @if (state.draftSummaryItems().length > 0) {
-                  <section class="bg-gray-50 p-6 border border-gray-200 rounded">
+                  <section class="bg-gray-50 p-4 sm:p-6 border border-gray-200 rounded">
                     <h2 class="text-xs font-bold text-gray-500 uppercase tracking-[0.15em] mb-4 flex justify-between items-center">
                       <pocket-gall-badge label="Care Recommendation Draft" severity="success" [hasIcon]="true">
                         <div badge-icon class="w-1.5 h-1.5 bg-[#689F38] rounded-full animate-pulse"></div>
@@ -274,7 +274,7 @@ import { SafeHtmlPipe } from '../pipes/safe-html.pipe';
                 @if (activeCarePlanHTML(); as html) {
                   <section>
                     <h2 class="text-xs font-bold text-gray-500 uppercase tracking-[0.15em] mb-4">Active Strategy Overview</h2>
-                    <div class="p-8 bg-white border border-gray-100 rounded prose prose-sm max-w-none prose-p:text-[#1C1C1C] prose-p:font-light prose-headings:text-[11px] prose-headings:font-bold prose-headings:uppercase prose-headings:tracking-[0.1em] prose-headings:text-gray-500" [innerHTML]="html | safeHtml"></div>
+                    <div class="p-4 sm:p-8 bg-white border border-gray-100 rounded prose prose-sm max-w-none prose-p:text-[#1C1C1C] prose-p:font-light prose-headings:text-[11px] prose-headings:font-bold prose-headings:uppercase prose-headings:tracking-[0.1em] prose-headings:text-gray-500" [innerHTML]="html | safeHtml"></div>
                   </section>
                 }
       </div>

@@ -13,8 +13,8 @@ import { DomSanitizer } from '@angular/platform-browser';
         <div class="absolute -top-24 -right-24 w-48 h-48 bg-primary/5 rounded-full blur-3xl"></div>
       </div>
       
-      <div class="px-6 py-4 flex items-center justify-between border-b border-white/10 shrink-0 relative z-10">
-        <div class="flex items-center gap-3">
+      <div class="px-4 py-3 sm:px-6 sm:py-4 flex items-center justify-between border-b border-white/10 shrink-0 relative z-10 min-w-0">
+        <div class="flex items-center gap-2 sm:gap-3 min-w-0">
           @if (icon()) {
             <div class="w-8 h-8 rounded-lg bg-primary-10 flex items-center justify-center text-[#689F38]">
               <div [innerHTML]="iconHtml()"></div>
@@ -25,12 +25,12 @@ import { DomSanitizer } from '@angular/platform-browser';
         <ng-content select="[right-action]"></ng-content>
       </div>
 
-      <div class="flex-grow" [class.p-6]="!noPadding()">
+      <div class="flex-grow min-w-0" [class.p-4]="!noPadding()" [class.sm:p-6]="!noPadding()">
         <ng-content></ng-content>
       </div>
       
       @if (footer()) {
-        <div class="px-6 py-4 border-t border-white/10 text-xs text-gray-500 bg-black/5">
+        <div class="px-4 py-3 sm:px-6 sm:py-4 border-t border-white/10 text-xs text-gray-500 bg-black/5">
           <ng-content select="[card-footer]"></ng-content>
         </div>
       }

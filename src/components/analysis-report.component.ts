@@ -35,7 +35,7 @@ import { RevealDirective } from '../directives/reveal.directive';
   `],
   template: `
     <!--Report Header-->
-    <div class="p-8 pb-4 flex justify-between items-end bg-white shrink-0 z-10 border-b border-[#EEEEEE] no-print">
+    <div class="p-4 sm:p-8 pb-4 flex justify-between items-end bg-white shrink-0 z-10 border-b border-[#EEEEEE] no-print overflow-x-auto">
       <div class="flex-1"></div>
 
       <div class="flex items-center gap-2">
@@ -74,8 +74,8 @@ import { RevealDirective } from '../directives/reveal.directive';
 
     <!--Analysis Tabs-->
     @if (hasAnyReport()) {
-      <div class="px-8 py-3 border-b border-[#EEEEEE] no-print bg-white/50 backdrop-blur-sm">
-        <div class="flex items-center gap-1 border-b border-gray-200">
+      <div class="px-4 sm:px-8 py-2 sm:py-3 border-b border-[#EEEEEE] no-print bg-white/50 backdrop-blur-sm overflow-x-auto">
+        <div class="flex items-center gap-1 border-b border-gray-200 min-w-max">
           <pocket-gall-button (click)="changeLens('Summary Overview')"
             variant="ghost"
             size="sm"
@@ -117,9 +117,9 @@ import { RevealDirective } from '../directives/reveal.directive';
     }
 
     <!--Content Area-->
-    <div #contentArea class="flex-1 overflow-y-auto px-8 pt-8 min-h-0 bg-[#F9FAFB]">
+    <div #contentArea class="flex-1 overflow-y-auto overflow-x-hidden px-2 sm:px-8 pt-4 sm:pt-8 min-h-0 bg-[#F9FAFB]">
       <!--Analysis Engine Body-->
-      <div class="max-w-4xl mx-auto px-6 py-6 pb-24">
+      <div class="max-w-4xl mx-auto px-2 sm:px-6 py-4 sm:py-6 pb-24 min-w-0">
         <!--Clinical Overview Dashboard-->
         @if (intel.analysisMetrics(); as metrics) {
           <div class="mb-10 grid grid-cols-1 md:grid-cols-3 gap-6 no-print">
@@ -150,7 +150,7 @@ import { RevealDirective } from '../directives/reveal.directive';
 
             <!--Trend Sparklines-->
             @if (historicalMetrics().length > 1) {
-              <div class="col-span-full mt-4 p-6 bg-gray-50/50 rounded-2xl border border-gray-100 grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div class="col-span-full mt-4 p-4 sm:p-6 bg-gray-50/50 rounded-2xl border border-gray-100 grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-8">
                 <app-clinical-trend label="Complexity Trend" [values]="getHistoryValues('complexity')" type="complexity"></app-clinical-trend>
                 <app-clinical-trend label="Stability Trend" [values]="getHistoryValues('stability')" type="stability"></app-clinical-trend>
                 <app-clinical-trend label="Certainty Trend" [values]="getHistoryValues('certainty')" type="certainty"></app-clinical-trend>
@@ -181,10 +181,10 @@ import { RevealDirective } from '../directives/reveal.directive';
 
         <!--AI Report Section-->
         @if (reportSections(); as sections) {
-          <div class="flex flex-col gap-6 pb-4 w-full">
+          <div class="flex flex-col gap-4 sm:gap-6 pb-4 w-full min-w-0">
             @for (section of sections; track $index; let i = $index) {
-              <div appReveal [revealDelay]="i * 100" class="w-full shrink-0 flex flex-col min-h-max">
-                <pocket-gall-card [title]="section.title" [icon]="section.icon" class="flex-1">
+              <div appReveal [revealDelay]="i * 100" class="w-full shrink-0 flex flex-col min-h-max min-w-0 overflow-hidden">
+                <pocket-gall-card [title]="section.title" [icon]="section.icon" class="flex-1 min-w-0 overflow-hidden">
                   <div right-action class="flex items-center gap-2">
                     @if (intel.isLoading() && !verificationStatus(section.title)) {
                       <div class="flex items-center gap-1.5 mr-2">

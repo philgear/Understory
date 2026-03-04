@@ -10,6 +10,19 @@ const __dirname = dirname(__filename);
 
 const app = express();
 app.use(compression());
+
+// Trust the Google Cloud Run proxy so req.hostname resolves correctly
+app.set('trust proxy', true);
+
+// Redirect legacy understory URLs to the new pocketgall.app domain
+app.use((req, res, next) => {
+  const host = req.hostname || '';
+  if (host.includes('understory')) {
+    return res.redirect(301, `https://pocketgall.app${req.originalUrl}`);
+  }
+  next();
+});
+
 const port = process.env.PORT || 4200;
 
 // Use process.cwd() to ensure we are looking in the right place
