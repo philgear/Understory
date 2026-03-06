@@ -5,6 +5,7 @@ import { PatientManagementService, HistoryEntry, Patient } from '../services/pat
 import { DraftSummaryItem } from '../services/patient.types';
 import { ExportService } from '../services/export.service';
 import { DictationService } from '../services/dictation.service';
+import { ClinicalIntelligenceService } from '../services/clinical-intelligence.service';
 import { marked } from 'marked';
 import { PocketGallButtonComponent } from './shared/pocket-gall-button.component';
 import { PocketGallInputComponent } from './shared/pocket-gall-input.component';
@@ -302,18 +303,43 @@ import { SafeHtmlPipe } from '../pipes/safe-html.pipe';
               icon="M18 6L6 18M6 6l12 12">
             </pocket-gall-button>
           </div>
-          <div class="flex-1 overflow-y-auto p-6 bg-white">
-             <div class="mb-2 flex justify-between items-center">
+          <div class="flex-1 overflow-y-auto p-6 bg-white relative">
+             <div class="mb-2 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0">
                 <h3 class="block text-xs font-bold text-[#689F38] uppercase tracking-[0.15em]">Final Care Plan Document</h3>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-bold text-gray-500 uppercase tracking-widest">Reading Level</span>
+                  <select 
+                    [value]="selectedReadingLevel()" 
+                    (change)="changeReadingLevel($event)"
+                    [disabled]="isTranslating()"
+                    class="text-xs bg-white text-gray-700 border border-gray-200 rounded px-2 py-1.5 outline-none focus:border-[#689F38] focus:ring-1 focus:ring-[#689F38] transition-colors disabled:opacity-50"
+                  >
+                    <option value="standard">Standard Default</option>
+                    <option value="simplified">Simplified (6th Grade)</option>
+                    <option value="dyslexia">Dyslexia-Friendly</option>
+                  </select>
+                </div>
              </div>
-             <pocket-gall-input
-               type="textarea"
-               [rows]="16"
-               [value]="previewText()"
-               (valueChange)="previewText.set($event)"
-               placeholder="No Active Care Plan recorded for this visit."
-               class="w-full">
-             </pocket-gall-input>
+             
+             <div class="relative">
+               <pocket-gall-input
+                 type="textarea"
+                 [rows]="16"
+                 [value]="previewText()"
+                 (valueChange)="previewText.set($event)"
+                 [disabled]="isTranslating()"
+                 placeholder="No Active Care Plan recorded for this visit."
+                 class="w-full">
+               </pocket-gall-input>
+               
+               @if (isTranslating()) {
+                 <div class="absolute inset-0 bg-white/70 backdrop-blur-[1px] flex flex-col items-center justify-center z-10 rounded">
+                    <div class="w-6 h-6 border-2 border-[#689F38] border-t-transparent rounded-full animate-spin"></div>
+                    <p class="mt-2 text-xs font-bold text-[#689F38] uppercase tracking-wider animate-pulse">Translating...</p>
+                 </div>
+               }
+             </div>
+             
              <p class="text-xs text-gray-500 font-bold uppercase tracking-wider mt-3 pl-1">This text will be archived in the patient's chart as the final Care Plan for this visit.</p>
           </div>
           <div class="px-6 py-4 border-t border-gray-100 bg-[#F9FAFB] flex justify-between items-center">
@@ -350,12 +376,16 @@ export class MedicalChartSummaryComponent {
   patientManager = inject(PatientManagementService);
   exportService = inject(ExportService);
   dictation = inject(DictationService);
+  clinicalAI = inject(ClinicalIntelligenceService);
   today = new Date();
   newVisitReason = signal('');
   showExportMenu = signal(false);
 
   showPreviewModal = signal(false);
   previewText = signal('');
+  originalPreviewText = signal('');
+  selectedReadingLevel = signal<'standard' | 'simplified' | 'dyslexia'>('standard');
+  isTranslating = this.clinicalAI.isLoading;
 
   painChartRef = viewChild<ElementRef<HTMLCanvasElement>>('painChart');
   bpChartRef = viewChild<ElementRef<HTMLCanvasElement>>('bpChart');
@@ -748,12 +778,34 @@ export class MedicalChartSummaryComponent {
       const newContent = draftItems.map(item => `- ${item.text}`).join('\n');
       plan = plan ? `${plan}\n\n### Added ${new Date().toLocaleDateString()}\n${newContent}` : `### Patient Summary\n${newContent}`;
     }
-    this.previewText.set(plan || 'No Active Patient Summary recorded for this visit.');
+    const finalText = plan || 'No Active Patient Summary recorded for this visit.';
+    this.previewText.set(finalText);
+    this.originalPreviewText.set(finalText);
+    this.selectedReadingLevel.set('standard');
     this.showPreviewModal.set(true);
   }
 
   closePreview() {
     this.showPreviewModal.set(false);
+  }
+
+  async changeReadingLevel(event: Event) {
+    const level = (event.target as HTMLSelectElement).value as 'standard' | 'simplified' | 'dyslexia';
+    this.selectedReadingLevel.set(level);
+
+    if (level === 'standard') {
+      this.previewText.set(this.originalPreviewText());
+      return;
+    }
+
+    try {
+      const translated = await this.clinicalAI.translateReadingLevel(this.originalPreviewText(), level);
+      this.previewText.set(translated);
+    } catch (error) {
+      console.error("Translation failed", error);
+      this.selectedReadingLevel.set('standard');
+      this.previewText.set(this.originalPreviewText());
+    }
   }
 
   updatePreviewText(event: Event) {

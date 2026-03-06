@@ -342,4 +342,18 @@ If a section has no relevant source data, output the heading followed by: "*No s
     async clearCache() {
         await this.cache.clear();
     }
+
+    async translateReadingLevel(text: string, targetLevel: 'simplified' | 'dyslexia'): Promise<string> {
+        this.isLoading.set(true);
+        this.error.set(null);
+        try {
+            return await this.ai.translateReadingLevel(text, targetLevel);
+        } catch (e: any) {
+            const errorMsg = String(e?.message ?? e);
+            this.error.set(errorMsg);
+            throw new Error(`Translation failed: ${errorMsg}`);
+        } finally {
+            this.isLoading.set(false);
+        }
+    }
 }

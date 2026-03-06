@@ -139,6 +139,48 @@ export class GeminiProvider implements IntelligenceProvider {
         return await this.verifier.verifyReportSection(lens as any, content, sourceData);
     }
 
+    async translateReadingLevel(text: string, level: 'simplified' | 'dyslexia'): Promise<string> {
+        let systemInstruction = '';
+        if (level === 'simplified') {
+            systemInstruction = `You are an expert clinical copywriter. Your task is to rewrite the provided medical text to improve its Flesch Reading Ease score and lower its Flesch-Kincaid Grade level (target: Grade 6-8). 
+            
+CRITICAL RULES:
+1. Preserve ALL clinical facts, diagnoses, medications, and dosages exactly.
+2. Use shorter sentences.
+3. Replace complex medical jargon with simpler terms where possible, but keep the original term in parentheses if it's important (e.g., "high blood pressure (hypertension)").
+4. Use active voice.
+5. Use bullet points for lists.
+6. Return ONLY the rewritten markdown text, with no introductory or concluding remarks.`;
+        } else if (level === 'dyslexia') {
+            systemInstruction = `You are an expert in accessible communication. Your task is to rewrite the provided medical text to be Dyslexia-friendly and highly readable.
+
+CRITICAL RULES:
+1. Preserve ALL clinical facts, diagnoses, medications, and dosages exactly.
+2. Structure the text with frequent line breaks and very short paragraphs (1-2 sentences max).
+3. Use plain, everyday language. (Target very high Flesch Reading Ease).
+4. Use **bold** text to highlight key points instead of italics or underlining.
+5. Provide clear, step-by-step instructions using bullet points or numbered lists.
+6. Avoid medical jargon; explain concepts simply.
+7. Return ONLY the rewritten markdown text, with no introductory or concluding remarks.`;
+        } else {
+            return text; // Should not happen based on types
+        }
+
+        const prompt = `Please rewrite the following care plan text according to your system instructions:\n\n${text}`;
+
+        const ai = await this.getAi();
+        const response = await ai.models.generateContent({
+            model: this.config.defaultModel.modelId,
+            contents: prompt,
+            config: {
+                systemInstruction: systemInstruction,
+                temperature: 0.2 // Lower temp for more consistent rewriting
+            }
+        });
+
+        return response.text;
+    }
+
     async startChat(patientData: string, context: string): Promise<void> {
         console.log("GeminiProvider: startChat called");
         const systemInstruction = `${context}\n\nPatient Data:\n${patientData}`;

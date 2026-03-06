@@ -31,6 +31,11 @@ export interface IntelligenceProvider {
     verifySection(lens: string, content: string, sourceData: string): Promise<{ status: string, issues: VerificationIssue[] }>;
 
     /**
+     * Translates clinical text to a specific reading or cognition level.
+     */
+    translateReadingLevel(text: string, level: 'simplified' | 'dyslexia'): Promise<string>;
+
+    /**
      * Chat Session Management
      */
     startChat(patientData: string, context: string): Promise<void>;
