@@ -2,13 +2,13 @@ import { Component, ChangeDetectionStrategy, inject, signal, effect, OnDestroy, 
 import { CommonModule } from '@angular/common';
 import { DictationService } from '../services/dictation.service';
 
-import { PocketGallButtonComponent } from './shared/pocket-gall-button.component';
-import { PocketGallInputComponent } from './shared/pocket-gall-input.component';
+import { PocketGullButtonComponent } from './shared/pocket-gull-button.component';
+import { PocketGullInputComponent } from './shared/pocket-gull-input.component';
 
 @Component({
   selector: 'app-dictation-modal',
   standalone: true,
-  imports: [CommonModule, PocketGallButtonComponent, PocketGallInputComponent],
+  imports: [CommonModule, PocketGullButtonComponent, PocketGullInputComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (dictation.isModalOpen()) {
@@ -39,24 +39,24 @@ import { PocketGallInputComponent } from './shared/pocket-gall-input.component';
                 </p>
               </div>
             </div>
-            <pocket-gall-button 
+            <pocket-gull-button 
               variant="ghost" 
               size="sm"
               (click)="cancel()" 
               icon="M18 6L6 18M6 6l12 12">
-            </pocket-gall-button>
+            </pocket-gull-button>
           </div>
 
           <!-- Content -->
           <div class="p-6 relative">
-            <pocket-gall-input
+            <pocket-gull-input
               type="textarea"
               [value]="currentText()"
               (valueChange)="updateTextManual($event)"
               [rows]="10"
               placeholder="Start speaking or type here..."
               class="w-full">
-            </pocket-gall-input>
+            </pocket-gull-input>
             
             @if (interimText()) {
               <div class="absolute bottom-8 left-8 right-8 text-gray-500 text-sm italic truncate pointer-events-none">
@@ -76,31 +76,31 @@ import { PocketGallInputComponent } from './shared/pocket-gall-input.component';
           <!-- Footer -->
           <div class="px-6 py-4 border-t border-gray-100 bg-gray-50/50 flex justify-between items-center">
             <div class="flex items-center gap-2">
-               <pocket-gall-button 
+               <pocket-gull-button 
                  (click)="toggleListening()" 
                  [variant]="dictation.isListening() ? 'secondary' : 'danger'"
                  size="sm"
                  [icon]="dictation.isListening() ? 'M6 4h4v16H6V4zm8 0h4v16h-4V4z' : 'M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zM17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z'">
                  {{ dictation.isListening() ? 'Pause' : 'Resume' }}
-               </pocket-gall-button>
+               </pocket-gull-button>
                @if (dictation.permissionError(); as error) {
                  <span class="text-xs text-red-600">{{ error }}</span>
                }
             </div>
 
             <div class="flex items-center gap-3">
-               <pocket-gall-button 
+               <pocket-gull-button 
                  variant="ghost" 
                  size="sm" 
                  (click)="cancel()">
                  Cancel
-               </pocket-gall-button>
-               <pocket-gall-button 
+               </pocket-gull-button>
+               <pocket-gull-button 
                  variant="primary" 
                  size="sm" 
                  (click)="accept()">
                  Insert Text
-               </pocket-gall-button>
+               </pocket-gull-button>
             </div>
           </div>
 

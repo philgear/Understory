@@ -1,6 +1,6 @@
 /**
- * Centralized registry of clinical and UI icons for Pocket Gall.
- * Used for shared components like PocketGallCard and PocketGallBadge.
+ * Centralized registry of clinical and UI icons for Pocket Gull.
+ * Used for shared components like PocketGullCard and PocketGullBadge.
  */
 export const ClinicalIcons = {
   Assessment: `

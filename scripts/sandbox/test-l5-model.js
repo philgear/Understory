@@ -60,7 +60,7 @@ async function run() {
   await new Promise(r => setTimeout(r, 3000));
 
   console.log("Typing message...");
-  const inputSelector = 'input[placeholder="Ask Pocket Gall..."]';
+  const inputSelector = 'input[placeholder="Ask Pocket Gull..."]';
   await page.waitForSelector(inputSelector, { timeout: 10000 });
   await page.type(inputSelector, "Can i see a 3d model of the L5 Region?");
 

@@ -6,7 +6,7 @@ export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'ghost' | 'outl
 export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg';
 
 @Component({
-  selector: 'pocket-gall-button',
+  selector: 'pocket-gull-button',
   standalone: true,
   imports: [CommonModule],
   template: `
@@ -134,7 +134,7 @@ export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg';
   `],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PocketGallButtonComponent {
+export class PocketGullButtonComponent {
   private sanitizer = inject(DomSanitizer);
 
   variant = input<ButtonVariant>('primary');

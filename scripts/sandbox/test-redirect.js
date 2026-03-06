@@ -5,7 +5,7 @@ app.use((req, res, next) => {
   const host = req.hostname || '';
   console.log('Hostname:', host);
   if (host.includes('understory')) {
-    return res.redirect(301, `https://pocketgall.app${req.originalUrl}`);
+    return res.redirect(301, `https://pocketgull.app${req.originalUrl}`);
   }
   res.send('OK');
 });

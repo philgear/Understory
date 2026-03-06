@@ -7,9 +7,9 @@ import { PatientStateService } from '../services/patient-state.service';
 import { PatientManagementService } from '../services/patient-management.service';
 import { BodyPartIssue, BODY_PART_NAMES, BODY_PART_MAPPING, HistoryEntry } from '../services/patient.types';
 
-import { PocketGallButtonComponent } from './shared/pocket-gall-button.component';
-import { PocketGallInputComponent } from './shared/pocket-gall-input.component';
-import { PocketGallBadgeComponent } from './shared/pocket-gall-badge.component';
+import { PocketGullButtonComponent } from './shared/pocket-gull-button.component';
+import { PocketGullInputComponent } from './shared/pocket-gull-input.component';
+import { PocketGullBadgeComponent } from './shared/pocket-gull-badge.component';
 import { SafeHtmlPipe } from '../pipes/safe-html.pipe';
 
 interface NoteTimelineItem extends BodyPartIssue {
@@ -19,7 +19,7 @@ interface NoteTimelineItem extends BodyPartIssue {
 
 @Component({
   selector: 'app-intake-form',
-  imports: [CommonModule, PocketGallButtonComponent, PocketGallInputComponent, PocketGallBadgeComponent, SafeHtmlPipe],
+  imports: [CommonModule, PocketGullButtonComponent, PocketGullInputComponent, PocketGullBadgeComponent, SafeHtmlPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="h-full flex flex-col bg-[#F9FAFB]">
@@ -30,13 +30,13 @@ interface NoteTimelineItem extends BodyPartIssue {
             <div class="w-2 h-2 rounded-sm bg-[#689F38]"></div>
             <span class="text-xs font-bold uppercase tracking-widest text-gray-500">Assessment Panel</span>
           </div>
-          <pocket-gall-button 
+          <pocket-gull-button 
             variant="ghost" 
             size="sm" 
             (click)="close()"
             ariaLabel="Close Assessment Panel"
             icon="M6 18L18 6M6 6l12 12">
-          </pocket-gall-button>
+          </pocket-gull-button>
         </div>
 
         <div class="flex-1 flex overflow-hidden">
@@ -56,11 +56,11 @@ interface NoteTimelineItem extends BodyPartIssue {
                   <h2 class="text-xl font-medium text-[#1C1C1C]">{{ state.selectedPartName() }}</h2>
                 </div>
                 @if (note.isCurrent) {
-                  <pocket-gall-badge label="Live" severity="success" [hasIcon]="true">
+                  <pocket-gull-badge label="Live" severity="success" [hasIcon]="true">
                     <div badge-icon class="w-1.5 h-1.5 rounded-sm bg-green-500 animate-pulse"></div>
-                  </pocket-gall-badge>
+                  </pocket-gull-badge>
                 } @else {
-                  <pocket-gall-badge [label]="note.date" severity="neutral"></pocket-gall-badge>
+                  <pocket-gull-badge [label]="note.date" severity="neutral"></pocket-gull-badge>
                 }
               </div>
 
@@ -116,7 +116,7 @@ interface NoteTimelineItem extends BodyPartIssue {
 
                 <!-- 2. Notes Section -->
                 <div class="space-y-3">
-                    <pocket-gall-input
+                    <pocket-gull-input
                       type="textarea"
                       label="Integrative Observations"
                       [value]="formState().description"
@@ -129,7 +129,7 @@ interface NoteTimelineItem extends BodyPartIssue {
                       icon="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z">
                       
                       <div class="flex items-center gap-1.5 mt-2 justify-end">
-                        <pocket-gall-button
+                        <pocket-gull-button
                           variant="secondary"
                           size="sm"
                           [disabled]="!formState().description"
@@ -137,10 +137,10 @@ interface NoteTimelineItem extends BodyPartIssue {
                           [icon]="justCopied() ? 'M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z' : 'M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z'"
                           ariaLabel="Copy notes"
                           [title]="justCopied() ? 'Copied!' : 'Copy notes'">
-                        </pocket-gall-button>
+                        </pocket-gull-button>
 
                         @if (note.isCurrent) {
-                          <pocket-gall-button
+                          <pocket-gull-button
                             [variant]="dictation.isListening() ? 'danger' : 'secondary'"
                             size="sm"
                             [disabled]="!!dictation.permissionError()"
@@ -149,10 +149,10 @@ interface NoteTimelineItem extends BodyPartIssue {
                             icon="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"
                             ariaLabel="Dictate notes"
                             title="Dictate Notes">
-                          </pocket-gall-button>
+                          </pocket-gull-button>
                         }
                       </div>
-                    </pocket-gall-input>
+                    </pocket-gull-input>
                   @if(dictation.permissionError(); as error) {
                       <div class="flex items-center gap-2 text-red-600 bg-red-50 px-3 py-2 rounded-md border border-red-100">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
@@ -169,16 +169,16 @@ interface NoteTimelineItem extends BodyPartIssue {
                       Recommendations
                     </label>
                     @if (formState().recommendation && note.isCurrent) {
-                      <pocket-gall-button
+                      <pocket-gull-button
                         variant="ghost"
                         size="xs"
                         (click)="addToPatientSummary()"
                         icon="M12 5v14M5 12h14">
                         Add to Patient Summary
-                      </pocket-gall-button>
+                      </pocket-gull-button>
                     }
                   </div>
-                  <pocket-gall-input
+                  <pocket-gull-input
                     inputId="recommendation-input"
                     type="textarea"
                     [value]="formState().recommendation"
@@ -188,7 +188,7 @@ interface NoteTimelineItem extends BodyPartIssue {
                     placeholder="Suggested treatments, referrals, or next steps...">
                     
                     <div class="flex items-center gap-1.5 mt-2 justify-end">
-                      <pocket-gall-button
+                      <pocket-gull-button
                         variant="secondary"
                         size="sm"
                         [disabled]="!formState().recommendation"
@@ -196,38 +196,38 @@ interface NoteTimelineItem extends BodyPartIssue {
                         [icon]="justCopiedRec() ? 'M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z' : 'M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z'"
                         ariaLabel="Copy recommendation"
                         [title]="justCopiedRec() ? 'Copied!' : 'Copy recommendation'">
-                      </pocket-gall-button>
+                      </pocket-gull-button>
                       @if (note.isCurrent) {
-                        <pocket-gall-button (click)="openRecDictation()" [disabled]="!!dictation.permissionError()"
+                        <pocket-gull-button (click)="openRecDictation()" [disabled]="!!dictation.permissionError()"
                                 variant="secondary"
                                 size="sm"
                                 [loading]="dictation.isListening()"
                                 icon="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"
                                 ariaLabel="Dictate recommendation"
                                 title="Dictate Recommendation">
-                        </pocket-gall-button>
+                        </pocket-gull-button>
                       }
                     </div>
-                  </pocket-gall-input>
+                  </pocket-gull-input>
                 </div>
               </div>
 
               <!-- Bracket Footer -->
               <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-between items-center">
-                <pocket-gall-button 
+                <pocket-gull-button 
                   variant="ghost" 
                   size="sm"
                   (click)="deleteNote(note)" 
                   [disabled]="!note.isCurrent"
                   icon="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
                   Delete
-                </pocket-gall-button>
-                <pocket-gall-button 
+                </pocket-gull-button>
+                <pocket-gull-button 
                   (click)="updateEntry()"
                   [disabled]="!isDirty()"
                   [trailingIcon]="!isDirty() ? 'M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z' : ''">
                   {{ isDirty() ? 'Save Changes' : 'Saved' }}
-                </pocket-gall-button>
+                </pocket-gull-button>
               </div>
             </div>
 
@@ -254,20 +254,20 @@ interface NoteTimelineItem extends BodyPartIssue {
                              <div [innerHTML]="node.rawHtml | safeHtml"></div>
                            }
                            <div class="mt-3 flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                              <pocket-gall-button 
+                              <pocket-gull-button 
                                 variant="secondary" 
                                 size="xs" 
                                 (click)="adoptInsight(node, 'desc')"
                                 icon="M5 12l5 5L20 7">
                                 Adopt as Note
-                              </pocket-gall-button>
-                              <pocket-gall-button 
+                              </pocket-gull-button>
+                              <pocket-gull-button 
                                 variant="secondary" 
                                 size="xs" 
                                 (click)="adoptInsight(node, 'rec')"
                                 icon="M5 12l5 5L20 7">
                                 Adopt as Recommendation
-                              </pocket-gall-button>
+                              </pocket-gull-button>
                            </div>
                         </div>
                       }
@@ -282,14 +282,14 @@ interface NoteTimelineItem extends BodyPartIssue {
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg>
                             History & Context
                         </h3>
-                        <pocket-gall-button 
+                        <pocket-gull-button 
                           variant="ghost" 
                           size="xs" 
                           (click)="addNewNote()" 
                           [disabled]="!canAddNote()"
                           icon="M12 5v14M5 12h14">
                           New Note
-                        </pocket-gall-button>
+                        </pocket-gull-button>
                     </div>
                     
                     <div class="relative pl-2">

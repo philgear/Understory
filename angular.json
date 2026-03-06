@@ -76,7 +76,8 @@
                 "pocket-gall-444980566010.us-west1.run.app",
                 "understory-315235665910.us-west1.run.app",
                 "pocket-gall-315235665910.us-west1.run.app",
-                "pocketgall.app"
+                "pocketgull.app",
+                "pocketgull.com"
               ]
             },
             "server": "src/main.server.ts",

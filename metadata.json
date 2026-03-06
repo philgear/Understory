@@ -1,6 +1,6 @@
 {
-  "name": "Pocket Gall",
-  "description": "Pocket Gall streamlines patient intake with an interactive body map and AI-powered insights. It empowers doctors with rapid data visualization and analysis for proactive care decisions.",
+  "name": "Pocket Gull",
+  "description": "Pocket Gull streamlines patient intake with an interactive body map and AI-powered insights. It empowers doctors with rapid data visualization and analysis for proactive care decisions.",
   "requestFramePermissions": [
     "microphone"
   ]

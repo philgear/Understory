@@ -32,7 +32,7 @@ async function run() {
     await page.waitForTimeout(500);
     
     // The "Ask Agent" button has ClinicalIcons.EvidenceFocus
-    const askButtons = await firstNode.$$('pocket-gall-button');
+    const askButtons = await firstNode.$$('pocket-gull-button');
     // We assume it's the 3rd button based on the template structure
     if (askButtons.length >= 3) {
       await askButtons[2].click();
@@ -61,7 +61,7 @@ async function run() {
     
     // Close the inline chat by clicking the cancel/clear button (should be the third button again)
     console.log("Closing inline chat to save context...");
-    const askButtonsClose = await page.$$('.node-wrapper:nth-child(1) pocket-gall-button');
+    const askButtonsClose = await page.$$('.node-wrapper:nth-child(1) pocket-gull-button');
     if (askButtonsClose.length >= 3) {
        await askButtonsClose[2].click();
        console.log("Closed inline chat");

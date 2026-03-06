@@ -150,7 +150,8 @@ CRITICAL RULES:
 3. Replace complex medical jargon with simpler terms where possible, but keep the original term in parentheses if it's important (e.g., "high blood pressure (hypertension)").
 4. Use active voice.
 5. Use bullet points for lists.
-6. Return ONLY the rewritten markdown text, with no introductory or concluding remarks.`;
+6. Return ONLY the rewritten markdown text, with no introductory or concluding remarks.
+7. Begin your output with "### [START CARE PLAN]" and end it with "### [END CARE PLAN]".`;
         } else if (level === 'dyslexia') {
             systemInstruction = `You are an expert in accessible communication. Your task is to rewrite the provided medical text to be Dyslexia-friendly and highly readable.
 
@@ -161,7 +162,8 @@ CRITICAL RULES:
 4. Use **bold** text to highlight key points instead of italics or underlining.
 5. Provide clear, step-by-step instructions using bullet points or numbered lists.
 6. Avoid medical jargon; explain concepts simply.
-7. Return ONLY the rewritten markdown text, with no introductory or concluding remarks.`;
+7. Return ONLY the rewritten markdown text, with no introductory or concluding remarks.
+8. Begin your output with "### [START CARE PLAN]" and end it with "### [END CARE PLAN]".`;
         } else if (level === 'child') {
             systemInstruction = `You are an expert pediatric communicator and child life specialist. Your task is to rewrite the provided medical text so it is easily understandable, comforting, and engaging for a child (target age: 8-12 years old).
 
@@ -171,12 +173,13 @@ CRITICAL RULES:
 3. Keep the tone encouraging, warm, and not scary.
 4. Preserve the core meaning of diagnoses and treatments, but omit overly complex dosage specifics unless relevant to the child's actions.
 5. Use short sentences and simple formatting.
-6. Return ONLY the rewritten markdown text, with no introductory or concluding remarks.`;
+6. Return ONLY the rewritten markdown text, with no introductory or concluding remarks.
+7. Begin your output with "### [START CARE PLAN]" and end it with "### [END CARE PLAN]".`;
         } else {
             return text; // Should not happen based on types
         }
 
-        const prompt = `Please rewrite the following care plan text according to your system instructions:\n\n${text}`;
+        const prompt = `Please rewrite the following care plan text according to your system instructions:\n\n<clinical_text>\n${text}\n</clinical_text>`;
 
         const ai = await this.getAi();
         const response = await ai.models.generateContent({

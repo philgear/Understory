@@ -2,25 +2,25 @@ import { Component, ChangeDetectionStrategy, inject, signal, HostListener, Eleme
 import { CommonModule } from '@angular/common';
 import { PatientManagementService } from '../services/patient-management.service';
 import { ExportService } from '../services/export.service';
-import { PocketGallButtonComponent } from './shared/pocket-gall-button.component';
+import { PocketGullButtonComponent } from './shared/pocket-gull-button.component';
 
 @Component({
   selector: 'app-patient-dropdown',
   standalone: true,
-  imports: [CommonModule, PocketGallButtonComponent],
+  imports: [CommonModule, PocketGullButtonComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="relative inline-block text-left z-50">
       <div>
       <div>
-        <pocket-gall-button 
+        <pocket-gull-button 
           type="button" 
           (click)="toggleDropdown()" 
           variant="secondary" 
           size="sm"
           [trailingIcon]="isOpen() ? 'M19 15l-7-7-7 7' : 'M5 9l7 7 7-7'">
           {{ currentPatientName() }}
-        </pocket-gall-button>
+        </pocket-gull-button>
       </div>
       </div>
 
@@ -64,22 +64,22 @@ import { PocketGallButtonComponent } from './shared/pocket-gall-button.component
           </div>
           
           <div class="border-t border-gray-100 bg-white shrink-0 p-2 flex flex-col gap-1">
-             <pocket-gall-button 
+             <pocket-gull-button 
                (click)="createNewPatient()" 
                variant="ghost" 
                size="sm" 
                class="w-full"
                icon="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z">
                 New Patient
-             </pocket-gall-button>
-             <pocket-gall-button 
+             </pocket-gull-button>
+             <pocket-gull-button 
                (click)="triggerImport()" 
                variant="ghost" 
                size="sm" 
                class="w-full"
                icon="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12">
                 Import Patient
-             </pocket-gall-button>
+             </pocket-gull-button>
           </div>
         </div>
       }

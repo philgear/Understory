@@ -644,7 +644,7 @@
 
 /* Initial enter animation for the container */
 .origami-seagull-enter {
-    animation: flightEnter 2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    animation: flightEnter 4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 
 /* The Paper */
@@ -657,7 +657,7 @@
     background: #ffffff;
     border: 1px solid #e5e7eb;
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
-    animation: foldPaper 1.2s ease-in forwards;
+    animation: foldPaper 2.4s ease-in forwards;
     transform-origin: center;
 }
 
@@ -684,14 +684,14 @@
 
 .origami-seagull {
     position: absolute;
-    left: -80px;
-    bottom: -25px;
-    width: 160px;
-    height: 160px;
+    left: -120px;
+    bottom: -65px;
+    width: 240px;
+    height: 240px;
     opacity: 0;
     transform: scale(0.1);
-    animation: unfoldBird 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-    animation-delay: 0.2s;
+    animation: unfoldBird 2.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    animation-delay: 0.4s;
     /* Start unfolding slightly after paper folds */
 }
 

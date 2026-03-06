@@ -22,11 +22,11 @@ app.use(compression());
 // Trust the Google Cloud Run proxy so req.hostname resolves correctly
 app.set('trust proxy', true);
 
-// Redirect legacy understory URLs to the new pocketgall.app domain
+// Redirect legacy understory and pocketgull URLs for pocketgull.app domain
 app.use((req, res, next) => {
   const host = req.hostname || '';
-  if (host.includes('understory')) {
-    return res.redirect(301, `https://pocketgall.app${req.originalUrl}`);
+  if (host.includes('understory') || host.includes('pocketgull') || host.includes('pocketgull.com')) {
+    return res.redirect(301, `https://pocketgull.app${req.originalUrl}`);
   }
   next();
 });

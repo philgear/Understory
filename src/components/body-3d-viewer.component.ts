@@ -201,7 +201,7 @@ export class Body3DViewerComponent implements AfterViewInit, OnDestroy {
             if (isSelected) {
                 // "Task Bracketing" active state: Dark with high-contrast accent
                 material.color.setHex(0x1C1C1C);       // Obsidian base
-                material.emissive.setHex(0x76B362);    // PocketGall Green accent
+                material.emissive.setHex(0x76B362);    // PocketGull Green accent
                 material.emissiveIntensity = 0.4;      // Glow effect indicating active focus
                 material.opacity = 0.95;               // Solidify the selected part
             } else {

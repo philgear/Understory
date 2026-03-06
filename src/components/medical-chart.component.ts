@@ -7,14 +7,14 @@ import { BodyViewerComponent } from './body-viewer.component';
 import { PatientHistoryTimelineComponent } from './patient-history-timeline.component';
 import { PatientScansComponent } from './patient-scans.component';
 import { DictationService } from '../services/dictation.service';
-import { PocketGallButtonComponent } from './shared/pocket-gall-button.component';
-import { PocketGallCardComponent } from './shared/pocket-gall-card.component';
+import { PocketGullButtonComponent } from './shared/pocket-gull-button.component';
+import { PocketGullCardComponent } from './shared/pocket-gull-card.component';
 import { MedicalChartSummaryComponent } from './medical-summary.component';
 
 @Component({
   selector: 'app-medical-chart',
   standalone: true,
-  imports: [CommonModule, BodyViewerComponent, PatientHistoryTimelineComponent, PatientScansComponent, PocketGallButtonComponent, PocketGallCardComponent, MedicalChartSummaryComponent],
+  imports: [CommonModule, BodyViewerComponent, PatientHistoryTimelineComponent, PatientScansComponent, PocketGullButtonComponent, PocketGullCardComponent, MedicalChartSummaryComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="w-full min-h-full flex flex-col gap-4 sm:gap-6 p-4 sm:p-8 bg-[#F9FAFB]">
@@ -32,18 +32,18 @@ import { MedicalChartSummaryComponent } from './medical-summary.component';
                      <span class="font-medium text-yellow-900">Reviewing past AI Analysis from <strong class="font-bold">{{ visit.date }}</strong>.</span>
                   }
               </div>
-              <pocket-gall-button 
+              <pocket-gull-button 
                 (click)="returnToCurrent()" 
                 variant="secondary" 
                 size="sm">
                 Return to Current State
-              </pocket-gall-button>
+              </pocket-gull-button>
           </div>
       }
       
 
       <!-- 3D Body Viewer Card -->
-      <pocket-gall-card 
+      <pocket-gull-card 
         title="3D Body Viewer" 
         [icon]="viewerIcon"
         [noPadding]="true">
@@ -66,10 +66,10 @@ import { MedicalChartSummaryComponent } from './medical-summary.component';
             }
           </div>
         }
-      </pocket-gall-card>
+      </pocket-gull-card>
 
       <!-- Medical Summary Card -->
-      <pocket-gall-card 
+      <pocket-gull-card 
         title="Medical Summary" 
         [icon]="summaryIcon"
         [noPadding]="true">
@@ -79,14 +79,14 @@ import { MedicalChartSummaryComponent } from './medical-summary.component';
         </div>
 
         @if(isSummaryExpanded()) {
-          <div class="h-[500px] xl:h-[600px] overflow-hidden bg-white shrink-0 min-h-0 min-w-0 border-b border-gray-100 last:border-0 p-0">
-             <app-medical-summary class="block h-full overflow-y-auto"></app-medical-summary>
+          <div class="bg-white shrink-0 min-h-0 min-w-0 border-b border-gray-100 last:border-0 p-0">
+             <app-medical-summary class="block"></app-medical-summary>
           </div>
         }
-      </pocket-gall-card>
+      </pocket-gull-card>
 
       <!-- Patient History Card -->
-      <pocket-gall-card 
+      <pocket-gull-card 
         title="Patient History" 
         [icon]="historyIcon"
         [noPadding]="true">
@@ -94,19 +94,19 @@ import { MedicalChartSummaryComponent } from './medical-summary.component';
         <div right-action class="flex items-center gap-4">
               @if(historyBodyParts().length > 0) {
                   <div class="flex items-center gap-2">
-                      <pocket-gall-button 
+                      <pocket-gull-button 
                         (click)="$event.stopPropagation(); historyFilter.set(null)"
                         [variant]="!historyFilter() ? 'primary' : 'secondary'"
                         size="xs">
                         ALL
-                      </pocket-gall-button>
+                      </pocket-gull-button>
                       @for(part of historyBodyParts(); track part.id) {
-                          <pocket-gall-button 
+                          <pocket-gull-button 
                             (click)="$event.stopPropagation(); historyFilter.set(part.id)"
                             [variant]="historyFilter() === part.id ? 'primary' : 'secondary'"
                             size="xs">
                             {{ part.name }}
-                          </pocket-gall-button>
+                          </pocket-gull-button>
                       }
                   </div>
               }
@@ -117,7 +117,7 @@ import { MedicalChartSummaryComponent } from './medical-summary.component';
         
         @if(isHistoryExpanded()) {
           <div class="flex flex-col min-h-0">
-            <div #historyContainer class="p-6 overflow-y-auto max-h-[500px] scroll-smooth">
+            <div #historyContainer class="p-6 scroll-smooth">
               @if(selectedPatient()?.history; as history) {
                 <app-patient-history-timeline 
                   [history]="filteredHistory()"
@@ -139,10 +139,10 @@ import { MedicalChartSummaryComponent } from './medical-summary.component';
             </div>
           </div>
         }
-      </pocket-gall-card>
+      </pocket-gull-card>
 
       <!-- Patient Scans Card -->
-      <pocket-gall-card 
+      <pocket-gull-card 
         title="Scans & Diagnostics" 
         [icon]="scansIcon"
         [noPadding]="true">
@@ -156,7 +156,7 @@ import { MedicalChartSummaryComponent } from './medical-summary.component';
              <app-patient-scans [scans]="patientScans()"></app-patient-scans>
           </div>
         }
-      </pocket-gall-card>
+      </pocket-gull-card>
 
     </div>
   `

@@ -6,13 +6,13 @@ import { AiCacheService } from '../services/ai-cache.service';
 import { ClinicalIntelligenceService } from '../services/clinical-intelligence.service';
 import { ExportService } from '../services/export.service';
 import { ClinicalTrendComponent } from './clinical-trend.component';
-import { PocketGallButtonComponent } from './shared/pocket-gall-button.component';
+import { PocketGullButtonComponent } from './shared/pocket-gull-button.component';
 import { PatientManagementService } from '../services/patient-management.service';
 
 @Component({
   selector: 'app-analysis-container',
   standalone: true,
-  imports: [CommonModule, AnalysisReportComponent, ClinicalTrendComponent, PocketGallButtonComponent],
+  imports: [CommonModule, AnalysisReportComponent, ClinicalTrendComponent, PocketGullButtonComponent],
   template: `
     <div class="flex h-full w-full overflow-hidden bg-[#F3F4F6]">
       
@@ -68,19 +68,19 @@ import { PatientManagementService } from '../services/patient-management.service
         <!-- Top Toolbar / Header -->
         <div class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 shrink-0 relative z-10">
           <div class="flex items-center gap-6">
-            <pocket-gall-button 
+            <pocket-gull-button 
                     (click)="showHistory.set(!showHistory())" 
                     [variant]="showHistory() ? 'secondary' : 'ghost'" 
                     size="sm"
                     icon="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z">
                Clinical History
-            </pocket-gall-button>
+            </pocket-gull-button>
             
             <div class="h-6 w-px bg-gray-200 hidden sm:block"></div>
             
             <div class="hidden sm:block">
               <h1 class="text-sm font-bold text-gray-900 leading-tight">AI Clinical Synthesis</h1>
-              <p class="text-[10px] uppercase font-medium tracking-widest text-gray-500">Pocket Gall Intelligence v2.4</p>
+              <p class="text-[10px] uppercase font-medium tracking-widest text-gray-500">Pocket Gull Intelligence v2.4</p>
             </div>
           </div>
 
@@ -92,37 +92,35 @@ import { PatientManagementService } from '../services/patient-management.service
                  <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-700">Analysis Complete</span>
               </div>
               
-              <div class="flex gap-2">
-                <pocket-gall-button 
-                  (click)="exportPdf()" 
-                  variant="secondary" 
-                  size="sm" 
-                  icon="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z">
-                  Export PDF
-                </pocket-gall-button>
-                <pocket-gall-button 
-                  (click)="exportSimplifiedPdf()" 
+              <div class="relative">
+                <pocket-gull-button 
+                  (click)="showExportMenu.set(!showExportMenu())"
                   variant="secondary" 
                   size="sm"
-                  [disabled]="isSimplifying()"
-                  icon="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z">
-                  {{ isSimplifying() ? 'Translating...' : 'Cognition Export' }}
-                </pocket-gall-button>
-                <pocket-gall-button 
-                  (click)="exportChildPdf()" 
-                  variant="secondary" 
-                  size="sm"
-                  [disabled]="isSimplifyingChild()"
-                  icon="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
-                  {{ isSimplifyingChild() ? 'Translating...' : 'Child Export' }}
-                </pocket-gall-button>
-                <pocket-gall-button 
-                  (click)="exportFhir()" 
-                  variant="secondary" 
-                  size="sm" 
-                  icon="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4">
-                  Export FHIR
-                </pocket-gall-button>
+                  icon="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4">
+                  Export Options
+                </pocket-gull-button>
+                
+                @if (showExportMenu()) {
+                  <div class="absolute right-0 mt-1 w-56 bg-white rounded-lg shadow-xl ring-1 ring-black/5 py-1 z-50 animate-in fade-in slide-in-from-top-1 duration-150">
+                    <button (click)="exportPdf(); showExportMenu.set(false)" class="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2.5 transition-colors">
+                      <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                      Standard PDF
+                    </button>
+                    <button (click)="exportSimplifiedPdf(); showExportMenu.set(false)" [disabled]="isSimplifying()" class="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2.5 transition-colors disabled:opacity-50">
+                      <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
+                      {{ isSimplifying() ? 'Translating...' : 'Cognition PDF' }}
+                    </button>
+                    <button (click)="exportChildPdf(); showExportMenu.set(false)" [disabled]="isSimplifyingChild()" class="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2.5 transition-colors disabled:opacity-50">
+                      <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                      {{ isSimplifyingChild() ? 'Translating...' : 'Child PDF' }}
+                    </button>
+                    <button (click)="exportFhir(); showExportMenu.set(false)" class="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2.5 transition-colors">
+                      <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+                      Export FHIR
+                    </button>
+                  </div>
+                }
               </div>
             } @else {
                <div class="hidden md:flex items-center gap-2 mr-2">
@@ -145,7 +143,7 @@ import { PatientManagementService } from '../services/patient-management.service
             <div class="shrink-0 mt-2 pt-6 border-t border-black/10 grid grid-cols-1 md:grid-cols-3 gap-6 font-['Inter'] no-print opacity-80 hover:opacity-100 transition-opacity">
               <div class="space-y-1">
                 <div class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#000000]">System Identification</div>
-                <div class="text-[10px] font-medium text-black/60 uppercase tracking-widest">Pocket Gall Analysis Engine v2.4.0</div>
+                <div class="text-[10px] font-medium text-black/60 uppercase tracking-widest">Pocket Gull Analysis Engine v2.4.0</div>
               </div>
               <div class="space-y-1">
                 <div class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#000000]">Analysis Metadata</div>
@@ -181,6 +179,9 @@ export class AnalysisContainerComponent implements OnInit {
   historyEntries = signal<any[]>([]);
   isSimplifying = signal(false);
   isSimplifyingChild = signal(false);
+
+  showExportMenu = signal(false);
+  isExportingPhilosophical = signal(false);
 
   ngOnInit() {
     this.refreshHistory();
@@ -240,7 +241,7 @@ export class AnalysisContainerComponent implements OnInit {
       this.export.downloadAsPdf({
         report: results,
         summary: simplifiedSummary
-      }, patientName + ' (Dyslexia Friendly)');
+      }, patientName + ' (Cognition)');
     } catch (e) {
       console.error("Failed to generate simplified PDF", e);
       alert("Failed to generated simplified export. " + (e as Error).message);

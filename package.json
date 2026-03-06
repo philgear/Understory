@@ -1,5 +1,5 @@
 {
-  "name": "pocket-gall",
+  "name": "pocket-gull",
   "version": "0.1.0",
   "description": "Insight beneath the surface. Real-time medical Care Plan Strategy and Live AI Consult engine powered by Google Gemini.",
   "author": "Phil Gear",
@@ -16,7 +16,7 @@
   "private": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/philgear/pocket-gall.git"
+    "url": "https://github.com/philgear/pocket-gull.git"
   },
   "engines": {
     "node": ">=20.0.0"

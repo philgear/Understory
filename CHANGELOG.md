@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Evidence Focus Iconography**: Introduced a custom "Interrobang" clinical icon for the Evidence Focus feature, replacing generic indicators.
 
 ### Changed
-- **Application Rename**: Renamed the application from Understory to Pocket Gall across the entire codebase.
+- **Application Rename**: Renamed the application from Understory to Pocket Gull across the entire codebase.
 - **Node Toolbar Accessibility**: Increased touch target padding and visual persistence delays on the summary node toolbar to dramatically improve mobile and touch interactions.
 
 ## [0.2.0] - 2026-02-28

@@ -7,15 +7,15 @@ import { ExportService } from '../services/export.service';
 import { DictationService } from '../services/dictation.service';
 import { ClinicalIntelligenceService } from '../services/clinical-intelligence.service';
 import { marked } from 'marked';
-import { PocketGallButtonComponent } from './shared/pocket-gall-button.component';
-import { PocketGallInputComponent } from './shared/pocket-gall-input.component';
-import { PocketGallBadgeComponent } from './shared/pocket-gall-badge.component';
+import { PocketGullButtonComponent } from './shared/pocket-gull-button.component';
+import { PocketGullInputComponent } from './shared/pocket-gull-input.component';
+import { PocketGullBadgeComponent } from './shared/pocket-gull-badge.component';
 import { SafeHtmlPipe } from '../pipes/safe-html.pipe';
 
 @Component({
   selector: 'app-medical-summary',
   standalone: true,
-  imports: [CommonModule, PocketGallButtonComponent, PocketGallInputComponent, PocketGallBadgeComponent, SafeHtmlPipe],
+  imports: [CommonModule, PocketGullButtonComponent, PocketGullInputComponent, PocketGullBadgeComponent, SafeHtmlPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (patient(); as p) {
@@ -30,14 +30,14 @@ import { SafeHtmlPipe } from '../pipes/safe-html.pipe';
               <div class="flex items-center gap-2">
                 <!-- Export Menu -->
                 <div class="relative">
-                  <pocket-gall-button 
+                  <pocket-gull-button 
                     (click)="showExportMenu.set(!showExportMenu())"
                     variant="ghost"
                     size="sm"
                     icon="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
                     aria-label="Export patient data">
                     Export
-                  </pocket-gall-button>
+                  </pocket-gull-button>
                   @if (showExportMenu()) {
                     <div class="absolute right-0 mt-1 w-48 bg-white rounded-lg shadow-xl ring-1 ring-black/5 py-1 z-50 animate-in fade-in slide-in-from-top-1 duration-150">
                       <button (click)="exportNativeJson()" class="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2.5 transition-colors">
@@ -51,12 +51,12 @@ import { SafeHtmlPipe } from '../pipes/safe-html.pipe';
                     </div>
                   }
                 </div>
-                <pocket-gall-button 
+                <pocket-gull-button 
                   (click)="openFinalizePreview()" 
                   variant="primary"
                   size="md">
                   Finalize & Archive
-                </pocket-gall-button>
+                </pocket-gull-button>
               </div>
             </div>
 
@@ -68,32 +68,32 @@ import { SafeHtmlPipe } from '../pipes/safe-html.pipe';
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
                         Current Visit / Chief Complaint
                     </h2>
-                    <pocket-gall-button 
+                    <pocket-gull-button 
                       variant="ghost" 
                       size="xs" 
                       (click)="dictateVisitNote()" 
                       title="Dictate"
                       ariaLabel="Dictate Visit Note"
                       icon="M12 14q-1.25 0-2.125-.875T9 11V5q0-1.25.875-2.125T12 2q1.25 0 2.125.875T15 5v6q0 1.25-.875 2.125T12 14m-1 7v-3.075q-2.6-.35-4.3-2.325T5 11h2q0 2.075 1.463 3.537T12 16q2.075 0 3.538-1.463T17 11h2q0 2.225-1.7 4.2T13 17.925V21z">
-                    </pocket-gall-button>
+                    </pocket-gull-button>
                   </div>
                   <div class="relative group">
-                    <pocket-gall-input
+                    <pocket-gull-input
                       type="textarea"
                       [value]="newVisitReason()"
                       (valueChange)="newVisitReason.set($event)"
                       [rows]="3"
                       placeholder="Enter reason for today's visit or primary health goal..."
                       class="w-full">
-                    </pocket-gall-input>
+                    </pocket-gull-input>
                   </div>
                   <div class="flex items-center justify-end mt-3">
-                    <pocket-gall-button 
+                    <pocket-gull-button 
                       (click)="saveNewVisit()" 
                       [disabled]="!newVisitReason().trim()"
                       size="sm">
                       Save Visit Note
-                    </pocket-gall-button>
+                    </pocket-gull-button>
                   </div>
                 </div>
 
@@ -105,81 +105,81 @@ import { SafeHtmlPipe } from '../pipes/safe-html.pipe';
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 border-b border-gray-100 pb-8">
                   <div class="flex flex-col gap-2 p-3 bg-white border border-gray-100 hover:border-gray-200 transition-colors">
                     <span class="text-xs font-bold text-gray-500 uppercase tracking-[0.15em]">BP</span>
-                    <pocket-gall-input
+                    <pocket-gull-input
                       id="vitals-bp"
                       variant="minimal"
                       placeholder="120/80"
                       [value]="state.vitals().bp"
                       (valueChange)="state.updateVital('bp', $event)">
-                    </pocket-gall-input>
+                    </pocket-gull-input>
                   </div>
                   <div class="flex flex-col gap-2 p-3 bg-white border border-gray-100 hover:border-gray-200 transition-colors">
                     <span class="text-xs font-bold text-gray-500 uppercase tracking-[0.15em]">HR</span>
                     <div class="flex items-baseline gap-1">
-                      <pocket-gall-input
+                      <pocket-gull-input
                         id="vitals-hr"
                         variant="minimal"
                         placeholder="--"
                         [value]="state.vitals().hr"
                         (valueChange)="state.updateVital('hr', $event)"
                         class="flex-1 min-w-0">
-                      </pocket-gall-input>
+                      </pocket-gull-input>
                       <span class="text-xs text-gray-500 font-bold tracking-tighter shrink-0 uppercase">BPM</span>
                     </div>
                   </div>
                   <div class="flex flex-col gap-2 p-3 bg-white border border-gray-100 hover:border-gray-200 transition-colors">
                     <span class="text-xs font-bold text-gray-500 uppercase tracking-[0.15em]">SpO2</span>
                     <div class="flex items-baseline gap-1">
-                      <pocket-gall-input
+                      <pocket-gull-input
                         id="vitals-spo2"
                         variant="minimal"
                         placeholder="--"
                         [value]="state.vitals().spO2"
                         (valueChange)="state.updateVital('spO2', $event)"
                         class="flex-1 min-w-0">
-                      </pocket-gall-input>
+                      </pocket-gull-input>
                       <span class="text-xs text-gray-500 font-bold shrink-0">%</span>
                     </div>
                   </div>
                   <div class="flex flex-col gap-2 p-3 bg-white border border-gray-100 hover:border-gray-200 transition-colors">
                     <span class="text-xs font-bold text-gray-500 uppercase tracking-[0.15em]">Temp</span>
                     <div class="flex items-baseline gap-1">
-                      <pocket-gall-input
+                      <pocket-gull-input
                         id="vitals-temp"
                         variant="minimal"
                         placeholder="--"
                         [value]="state.vitals().temp"
                         (valueChange)="state.updateVital('temp', $event)"
                         class="flex-1 min-w-0">
-                      </pocket-gall-input>
+                      </pocket-gull-input>
                       <span class="text-xs text-gray-500 font-bold shrink-0">°F</span>
                     </div>
                   </div>
                   <div class="flex flex-col gap-2 p-3 bg-white border border-gray-100 hover:border-gray-200 transition-colors">
                     <span class="text-xs font-bold text-gray-500 uppercase tracking-[0.15em]">Weight</span>
                     <div class="flex items-baseline gap-1">
-                      <pocket-gall-input
+                      <pocket-gull-input
                         id="vitals-weight"
                         variant="minimal"
                         placeholder="--"
                         [value]="state.vitals().weight"
                         (valueChange)="state.updateVital('weight', $event)"
                         class="flex-1 min-w-0">
-                      </pocket-gall-input>
+                      </pocket-gull-input>
                       <span class="text-xs text-gray-500 font-bold shrink-0 uppercase tracking-tighter">LBS</span>
                     </div>
                   </div>
                   <div class="flex flex-col gap-2 p-3 bg-white border border-gray-100 hover:border-gray-200 transition-colors">
                     <span class="text-xs font-bold text-gray-500 uppercase tracking-[0.15em]">Height</span>
                     <div class="flex items-baseline gap-1">
-                      <pocket-gall-input
+                      <pocket-gull-input
                         id="vitals-height"
                         variant="minimal"
                         placeholder="--/--"
                         [value]="state.vitals().height"
                         (valueChange)="state.updateVital('height', $event)"
                         class="flex-1 min-w-0">
-                      </pocket-gall-input>
+                      </pocket-gull-input>
                       <span class="text-xs text-gray-500 font-bold shrink-0 uppercase tracking-tighter">FT</span>
                     </div>
                   </div>
@@ -227,7 +227,7 @@ import { SafeHtmlPipe } from '../pipes/safe-html.pipe';
                       <h2 class="text-xs font-bold text-gray-500 uppercase tracking-[0.15em] mb-4">Historical Conditions</h2>
                       <div class="flex flex-wrap gap-2">
                           @for(condition of p.preexistingConditions; track condition) {
-                            <pocket-gall-badge [label]="condition" severity="neutral"></pocket-gall-badge>
+                            <pocket-gull-badge [label]="condition" severity="neutral"></pocket-gull-badge>
                           }
                       </div>
                   </section>
@@ -237,9 +237,9 @@ import { SafeHtmlPipe } from '../pipes/safe-html.pipe';
                 @if (state.draftSummaryItems().length > 0) {
                   <section class="bg-gray-50 p-4 sm:p-6 border border-gray-200 rounded">
                     <h2 class="text-xs font-bold text-gray-500 uppercase tracking-[0.15em] mb-4 flex justify-between items-center">
-                      <pocket-gall-badge label="Care Recommendation Draft" severity="success" [hasIcon]="true">
+                      <pocket-gull-badge label="Care Recommendation Draft" severity="success" [hasIcon]="true">
                         <div badge-icon class="w-1.5 h-1.5 bg-[#689F38] rounded-full animate-pulse"></div>
-                      </pocket-gall-badge>
+                      </pocket-gull-badge>
                     </h2>
                     <ul class="space-y-3 text-[13px] text-[#1C1C1C]">
                       @for (item of state.draftSummaryItems(); track $index) {
@@ -247,26 +247,26 @@ import { SafeHtmlPipe } from '../pipes/safe-html.pipe';
                           <div class="flex justify-between items-start gap-3 group">
                              <div class="w-1 h-4 bg-gray-200 mt-0.5 shrink-0 group-hover:bg-[#689F38] transition-colors"></div>
                             <span class="flex-1 font-medium">{{ item.text }}</span>
-                            <pocket-gall-button 
+                            <pocket-gull-button 
                               (click)="removeDraftItem(item)" 
                               variant="ghost" 
                               size="xs" 
                               title="Remove"
                               ariaLabel="Remove Draft Item"
                               icon="M18 6L6 18M6 6l12 12">
-                            </pocket-gall-button>
+                            </pocket-gull-button>
                           </div>
                         </li>
                       }
                     </ul>
                     <div class="mt-6 pt-6 border-t border-gray-200 flex justify-end">
-                       <pocket-gall-button 
+                       <pocket-gull-button 
                           (click)="finalizeDraftPlan()" 
                           variant="secondary" 
                           size="sm"
                           trailingIcon="M5 12l5 5l10-10">
                           Append to Active Strategics
-                       </pocket-gall-button>
+                       </pocket-gull-button>
                     </div>
                   </section>
                 }
@@ -295,13 +295,13 @@ import { SafeHtmlPipe } from '../pipes/safe-html.pipe';
               <h2 class="text-lg font-bold text-[#1C1C1C]">Preview & Print Care Plan</h2>
               <p class="text-xs uppercase font-bold text-gray-500 tracking-wider mt-1">Review and edit finalized text before archiving</p>
             </div>
-            <pocket-gall-button 
+            <pocket-gull-button 
               variant="ghost" 
               size="sm" 
               (click)="closePreview()" 
               ariaLabel="Close Preview Modal"
               icon="M18 6L6 18M6 6l12 12">
-            </pocket-gall-button>
+            </pocket-gull-button>
           </div>
           <div class="flex-1 overflow-y-auto p-6 bg-white relative">
              <div class="mb-2 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0">
@@ -315,14 +315,17 @@ import { SafeHtmlPipe } from '../pipes/safe-html.pipe';
                     class="text-xs bg-white text-gray-700 border border-gray-200 rounded px-2 py-1.5 outline-none focus:border-[#689F38] focus:ring-1 focus:ring-[#689F38] transition-colors disabled:opacity-50"
                   >
                     <option value="standard">Standard Default</option>
-                    <option value="simplified">Simplified (6th Grade)</option>
-                    <option value="dyslexia">Dyslexia-Friendly</option>
+                    <optgroup label="Cognition Modes">
+                      <option value="simplified">Simplified (6th Grade)</option>
+                      <option value="dyslexia">Cognition (Dyslexia-Friendly)</option>
+                      <option value="child">Child (Pediatric)</option>
+                    </optgroup>
                   </select>
                 </div>
              </div>
              
              <div class="relative">
-               <pocket-gall-input
+               <pocket-gull-input
                  type="textarea"
                  [rows]="16"
                  [value]="previewText()"
@@ -330,7 +333,7 @@ import { SafeHtmlPipe } from '../pipes/safe-html.pipe';
                  [disabled]="isTranslating()"
                  placeholder="No Active Care Plan recorded for this visit."
                  class="w-full">
-               </pocket-gall-input>
+               </pocket-gull-input>
                
                @if (isTranslating()) {
                  <div class="absolute inset-0 bg-white/70 backdrop-blur-[1px] flex flex-col items-center justify-center z-10 rounded">
@@ -343,27 +346,27 @@ import { SafeHtmlPipe } from '../pipes/safe-html.pipe';
              <p class="text-xs text-gray-500 font-bold uppercase tracking-wider mt-3 pl-1">This text will be archived in the patient's chart as the final Care Plan for this visit.</p>
           </div>
           <div class="px-6 py-4 border-t border-gray-100 bg-[#F9FAFB] flex justify-between items-center">
-            <pocket-gall-button 
+            <pocket-gull-button 
               (click)="printReport()" 
               variant="secondary" 
               size="sm" 
               icon="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6z">
               Print Plan
-            </pocket-gall-button>
+            </pocket-gull-button>
             <div class="flex items-center gap-3">
-              <pocket-gall-button 
+              <pocket-gull-button 
                 (click)="closePreview()" 
                 variant="ghost" 
                 size="sm">
                 Cancel
-              </pocket-gall-button>
-              <pocket-gall-button 
+              </pocket-gull-button>
+              <pocket-gull-button 
                 (click)="confirmFinalize()" 
                 variant="primary" 
                 size="sm" 
                 trailingIcon="M20 6L9 17l-5-5">
                 Commit to Chart
-              </pocket-gall-button>
+              </pocket-gull-button>
             </div>
           </div>
         </div>
@@ -384,7 +387,7 @@ export class MedicalChartSummaryComponent {
   showPreviewModal = signal(false);
   previewText = signal('');
   originalPreviewText = signal('');
-  selectedReadingLevel = signal<'standard' | 'simplified' | 'dyslexia'>('standard');
+  selectedReadingLevel = signal<'standard' | 'simplified' | 'dyslexia' | 'child'>('standard');
   isTranslating = this.clinicalAI.isLoading;
 
   painChartRef = viewChild<ElementRef<HTMLCanvasElement>>('painChart');
@@ -790,7 +793,7 @@ export class MedicalChartSummaryComponent {
   }
 
   async changeReadingLevel(event: Event) {
-    const level = (event.target as HTMLSelectElement).value as 'standard' | 'simplified' | 'dyslexia';
+    const level = (event.target as HTMLSelectElement).value as 'standard' | 'simplified' | 'dyslexia' | 'child';
     this.selectedReadingLevel.set(level);
 
     if (level === 'standard') {

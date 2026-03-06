@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy, inject, input, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PocketGallButtonComponent } from './shared/pocket-gall-button.component';
-import { PocketGallBadgeComponent } from './shared/pocket-gall-badge.component';
+import { PocketGullButtonComponent } from './shared/pocket-gull-button.component';
+import { PocketGullBadgeComponent } from './shared/pocket-gull-badge.component';
 import { PatientStateService } from '../services/patient-state.service';
 import { HistoryEntry, BodyPartIssue } from '../services/patient.types';
 
@@ -14,7 +14,7 @@ interface NotesByPart {
 @Component({
   selector: 'app-visit-review',
   standalone: true,
-  imports: [CommonModule, PocketGallButtonComponent, PocketGallBadgeComponent],
+  imports: [CommonModule, PocketGullButtonComponent, PocketGullBadgeComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="h-full flex flex-col bg-white">
@@ -24,12 +24,12 @@ interface NotesByPart {
            <span class="text-xs font-bold uppercase tracking-widest text-gray-500">Visit Review</span>
            <span class="text-xs text-gray-500">Read-only view of notes from {{ visit().date }}</span>
         </div>
-        <pocket-gall-button 
+        <pocket-gull-button 
            (click)="close()" 
            variant="ghost" 
            size="sm"
            icon='<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>'>
-        </pocket-gall-button>
+        </pocket-gull-button>
       </div>
 
       <div class="flex-1 overflow-y-auto p-8 space-y-8">
@@ -44,18 +44,18 @@ interface NotesByPart {
                     <h3 class="text-sm font-bold text-[#1C1C1C] mb-3">{{ part.partName }}</h3>
                     <div class="space-y-2">
                         @for(note of part.notes; track note.noteId) {
-                            <pocket-gall-button 
+                            <pocket-gull-button 
                                     (click)="selectNote(note)"
                                     variant="secondary"
                                     size="md"
                                     class="w-full text-left">
                                 <div class="flex justify-between items-center w-full">
                                     <p class="font-medium text-gray-800 flex-1 pr-4 text-xs text-left normal-case tracking-normal">{{ note.description || 'No description provided.' }}</p>
-                                    <pocket-gall-badge [severity]="note.painLevel > 7 ? 'danger' : note.painLevel > 4 ? 'warning' : 'neutral'" size="sm">
+                                    <pocket-gull-badge [severity]="note.painLevel > 7 ? 'danger' : note.painLevel > 4 ? 'warning' : 'neutral'" size="sm">
                                         {{ note.painLevel }}/10
-                                    </pocket-gall-badge>
+                                    </pocket-gull-badge>
                                 </div>
-                            </pocket-gall-button>
+                            </pocket-gull-button>
                         }
                     </div>
                 </div>

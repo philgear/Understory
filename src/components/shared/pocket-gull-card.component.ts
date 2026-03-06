@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
-  selector: 'pocket-gall-card',
+  selector: 'pocket-gull-card',
   standalone: true,
   imports: [CommonModule],
   template: `
@@ -53,7 +53,7 @@ import { DomSanitizer } from '@angular/platform-browser';
   `],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PocketGallCardComponent {
+export class PocketGullCardComponent {
   private sanitizer = inject(DomSanitizer);
 
   title = input<string>();

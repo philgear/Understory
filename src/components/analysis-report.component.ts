@@ -12,19 +12,19 @@ import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 declare var webkitSpeechRecognition: any;
 import { SummaryNode, SummaryNodeItem, ReportSection, ParsedTranscriptEntry, NodeAnnotation, LensAnnotations, VerificationIssue } from './analysis-report.types';
 import { SummaryNodeComponent } from './summary-node.component';
-import { PocketGallCardComponent } from './shared/pocket-gall-card.component';
-import { PocketGallBadgeComponent } from './shared/pocket-gall-badge.component';
+import { PocketGullCardComponent } from './shared/pocket-gull-card.component';
+import { PocketGullBadgeComponent } from './shared/pocket-gull-badge.component';
 import { ClinicalGaugeComponent } from './clinical-gauge.component';
 import { ClinicalIcons } from '../assets/clinical-icons';
 import { ClinicalTrendComponent } from './clinical-trend.component';
 import { AiCacheService } from '../services/ai-cache.service';
-import { PocketGallButtonComponent } from './shared/pocket-gall-button.component';
+import { PocketGullButtonComponent } from './shared/pocket-gull-button.component';
 import { RevealDirective } from '../directives/reveal.directive';
 
 @Component({
   selector: 'app-analysis-report',
   standalone: true,
-  imports: [CommonModule, SummaryNodeComponent, PocketGallCardComponent, PocketGallBadgeComponent, ClinicalGaugeComponent, ClinicalTrendComponent, PocketGallButtonComponent, RevealDirective, SafeHtmlPipe],
+  imports: [CommonModule, SummaryNodeComponent, PocketGullCardComponent, PocketGullBadgeComponent, ClinicalGaugeComponent, ClinicalTrendComponent, PocketGullButtonComponent, RevealDirective, SafeHtmlPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   host: {
@@ -41,33 +41,33 @@ import { RevealDirective } from '../directives/reveal.directive';
       <div class="flex items-center gap-2">
         <!--Voice Assistant — Always Visible-->
         @if (state.isLiveAgentActive()) {
-          <pocket-gall-button variant="danger" size="sm" (click)="endLiveConsult()">
+          <pocket-gull-button variant="danger" size="sm" (click)="endLiveConsult()">
             Close Assistant
-          </pocket-gall-button>
+          </pocket-gull-button>
         } @else {
-          <pocket-gall-button
+          <pocket-gull-button
             (click)="openVoicePanel()"
             variant="secondary"
             size="sm"
             icon="M12 14q-1.25 0-2.125-.875T9 11V5q0-1.25.875-2.125T12 2q1.25 0 2.125.875T15 5v6q0 1.25-.875 2.125T12 14m-1 7v-3.075q-2.6-.35-4.3-2.325T5 11h2q0 2.075 1.463 3.537T12 16q2.075 0 3.538-1.463T17 11h2q0 2.225-1.7 4.2T13 17.925V21z">
             Voice Assistant
-          </pocket-gall-button>
+          </pocket-gull-button>
         }
 
         <!--Actions gated on loading state-->
         @if (!intel.isLoading()) {
-          <pocket-gall-button (click)="intel.clearCache()"
+          <pocket-gull-button (click)="intel.clearCache()"
             variant="ghost"
             size="sm"
             ariaLabel="Clear AI Cache"
             [icon]="ClinicalIcons.Clear">
-          </pocket-gall-button>
-          <pocket-gall-button (click)="generate()" [disabled]="!state.hasIssues()"
+          </pocket-gull-button>
+          <pocket-gull-button (click)="generate()" [disabled]="!state.hasIssues()"
             variant="primary"
             size="sm"
             [icon]="hasAnyReport() ? 'M17.65 6.35A7.95 7.95 0 0 0 12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.66-.67 3.17-1.76 4.24l1.42 1.42A9.92 9.92 0 0 0 22 12c0-2.76-1.12-5.26-2.35-7.65z' : 'M14 5l7 7m0 0l-7 7m7-7H3'">
             {{ hasAnyReport() ? 'Refresh Analysis' : 'Generate Patient Summary' }}
-          </pocket-gall-button>
+          </pocket-gull-button>
         }
       </div>
     </div>
@@ -76,7 +76,7 @@ import { RevealDirective } from '../directives/reveal.directive';
     @if (hasAnyReport()) {
       <div class="px-4 sm:px-8 py-2 sm:py-3 border-b border-[#EEEEEE] no-print bg-white/50 backdrop-blur-sm overflow-x-auto">
         <div class="flex items-center gap-1 border-b border-gray-200 min-w-max">
-          <pocket-gall-button (click)="changeLens('Summary Overview')"
+          <pocket-gull-button (click)="changeLens('Summary Overview')"
             variant="ghost"
             size="sm"
             [class.border-b-2]="activeLens() === 'Summary Overview'"
@@ -84,8 +84,8 @@ import { RevealDirective } from '../directives/reveal.directive';
             [class.text-[#1C1C1C]]="activeLens() === 'Summary Overview'"
             class="rounded-none px-4 -mb-px shadow-none">
             Overview
-          </pocket-gall-button>
-          <pocket-gall-button (click)="changeLens('Functional Protocols')"
+          </pocket-gull-button>
+          <pocket-gull-button (click)="changeLens('Functional Protocols')"
             variant="ghost"
             size="sm"
             [class.border-b-2]="activeLens() === 'Functional Protocols'"
@@ -93,8 +93,8 @@ import { RevealDirective } from '../directives/reveal.directive';
             [class.text-[#1C1C1C]]="activeLens() === 'Functional Protocols'"
             class="rounded-none px-4 -mb-px shadow-none">
             Interventions
-          </pocket-gall-button>
-          <pocket-gall-button (click)="changeLens('Monitoring & Follow-up')"
+          </pocket-gull-button>
+          <pocket-gull-button (click)="changeLens('Monitoring & Follow-up')"
             variant="ghost"
             size="sm"
             [class.border-b-2]="activeLens() === 'Monitoring & Follow-up'"
@@ -102,8 +102,8 @@ import { RevealDirective } from '../directives/reveal.directive';
             [class.text-[#1C1C1C]]="activeLens() === 'Monitoring & Follow-up'"
             class="rounded-none px-4 -mb-px shadow-none">
             Monitoring
-          </pocket-gall-button>
-          <pocket-gall-button (click)="changeLens('Patient Education')"
+          </pocket-gull-button>
+          <pocket-gull-button (click)="changeLens('Patient Education')"
             variant="ghost"
             size="sm"
             [class.border-b-2]="activeLens() === 'Patient Education'"
@@ -111,7 +111,7 @@ import { RevealDirective } from '../directives/reveal.directive';
             [class.text-[#1C1C1C]]="activeLens() === 'Patient Education'"
             class="rounded-none px-4 -mb-px shadow-none">
             Education
-          </pocket-gall-button>
+          </pocket-gull-button>
         </div>
       </div>
     }
@@ -184,7 +184,7 @@ import { RevealDirective } from '../directives/reveal.directive';
           <div class="flex flex-col gap-4 sm:gap-6 pb-4 w-full min-w-0">
             @for (section of sections; track $index; let i = $index) {
               <div appReveal [revealDelay]="i * 100" class="w-full shrink-0 flex flex-col min-h-max min-w-0 overflow-hidden">
-                <pocket-gall-card [title]="section.title" [icon]="section.icon" class="flex-1 min-w-0 overflow-hidden">
+                <pocket-gull-card [title]="section.title" [icon]="section.icon" class="flex-1 min-w-0 overflow-hidden">
                   <div right-action class="flex items-center gap-2">
                     @if (intel.isLoading() && !verificationStatus(section.title)) {
                       <div class="flex items-center gap-1.5 mr-2">
@@ -193,9 +193,9 @@ import { RevealDirective } from '../directives/reveal.directive';
                       </div>
                     }
                     @if (verificationStatus(section.title); as status) {
-                      <pocket-gall-badge [label]="status" [severity]="statusSeverity(status)">
+                      <pocket-gull-badge [label]="status" [severity]="statusSeverity(status)">
                         <div badge-icon [innerHTML]="ClinicalIcons.Verified | safeHtml"></div>
-                      </pocket-gall-badge>
+                      </pocket-gull-badge>
                     }
                   </div>
 
@@ -253,7 +253,7 @@ import { RevealDirective } from '../directives/reveal.directive';
                       }
                     }
                   </div>
-                </pocket-gall-card>
+                </pocket-gull-card>
               </div>
             }
           </div>

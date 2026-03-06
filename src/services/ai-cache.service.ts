@@ -10,7 +10,7 @@ interface CacheEntry {
     providedIn: 'root'
 })
 export class AiCacheService {
-    private readonly DB_NAME = 'pocket-gall-cache';
+    private readonly DB_NAME = 'pocket-gull-cache';
     private readonly STORE_NAME = 'ai-responses';
     private readonly DB_VERSION = 1;
     private readonly MAX_ENTRIES = 50;
@@ -28,7 +28,7 @@ export class AiCacheService {
         }
 
         // In production, this would be a user-specific secret or managed via Key Vault.
-        const secret = 'pocket-gall-clinical-vault-key-poc';
+        const secret = 'pocket-gull-clinical-vault-key-poc';
         const enc = new TextEncoder();
         const keyMaterial = await crypto.subtle.importKey(
             'raw',
@@ -41,7 +41,7 @@ export class AiCacheService {
         return crypto.subtle.deriveKey(
             {
                 name: 'PBKDF2',
-                salt: enc.encode('pocket-gall-static-salt'),
+                salt: enc.encode('pocket-gull-static-salt'),
                 iterations: 100000,
                 hash: 'SHA-256'
             },

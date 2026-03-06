@@ -7,7 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { ClinicalIntelligenceService } from '../services/clinical-intelligence.service';
 import { PatientStateService } from '../services/patient-state.service';
 import { MarkdownService } from '../services/markdown.service';
-import { PocketGallButtonComponent } from './shared/pocket-gall-button.component';
+import { PocketGullButtonComponent } from './shared/pocket-gull-button.component';
 import { ClinicalIcons } from '../assets/clinical-icons';
 import { SafeHtmlPipe } from '../pipes/safe-html.pipe';
 
@@ -27,7 +27,7 @@ interface ChatEntry {
 @Component({
     selector: 'app-node-agent-dialog',
     standalone: true,
-    imports: [CommonModule, FormsModule, PocketGallButtonComponent, SafeHtmlPipe],
+    imports: [CommonModule, FormsModule, PocketGullButtonComponent, SafeHtmlPipe],
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None,
     template: `
@@ -52,13 +52,13 @@ interface ChatEntry {
                     @if (isLoading()) {
                         <div class="w-4 h-4 border-2 border-[#EEEEEE] border-t-[#689F38] rounded-full animate-spin"></div>
                     }
-                    <pocket-gall-button
+                    <pocket-gull-button
                         variant="ghost"
                         size="sm"
                         ariaLabel="Close"
                         icon="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
                         (click)="close()">
-                    </pocket-gall-button>
+                    </pocket-gull-button>
                 </div>
             </div>
 
@@ -594,7 +594,7 @@ export class NodeAgentDialogComponent implements OnInit, AfterViewChecked {
             const nodeText = this.data().nodeText;
             const section = this.data().sectionTitle;
 
-            const systemContext = `You are a focused clinical evidence assistant embedded in the Pocket Gall Clinical Intelligence Platform.
+            const systemContext = `You are a focused clinical evidence assistant embedded in the Pocket Gull Clinical Intelligence Platform.
 A clinician is reviewing a specific recommendation from the "${section}" section of an AI-generated care plan and wants to understand or challenge it.
 
 Patient context is available. The recommendation under review is:

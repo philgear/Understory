@@ -1,4 +1,4 @@
-# Pocket Gall
+# Pocket Gull
 
 > Insight beneath the surface.
 
@@ -12,9 +12,9 @@
 > **Note:** This application was created for the purposes of entering the Gemini Live Agent Challenge hackathon.
 > **Category:** Live Agents 🗣️ (Real-time Interaction Voice & Visual UI)
 
-![Pocket Gall Dashboard](./docs/images/pocket-gall_dashboard.png)
+![Pocket Gull Dashboard](./docs/images/pocket-gull_dashboard.png)
 
-Pocket Gall streamlines patient intake with an interactive 3D body map and AI-powered clinical intelligence. It empowers practitioners with rapid data visualization and strategy synthesis for proactive care decisions, acting as an interruptible voice-first clinical co-pilot.
+Pocket Gull streamlines patient intake with an interactive 3D body map and AI-powered clinical intelligence. It empowers practitioners with rapid data visualization and strategy synthesis for proactive care decisions, acting as an interruptible voice-first clinical co-pilot.
 
 **#GeminiLiveAgentChallenge**
 
@@ -38,7 +38,7 @@ A highly interactive, aesthetically minimal user interface (Industrial Grace) de
 ## 📃 Text Description
 
 **What it does:**
-Pocket Gall is a next-generation "Live Agent" orchestrator. By combining real-time human-in-the-loop web speech interaction with a diagnostic 3D surface model and Gemini's deep reasoning (`gemini-2.5-flash` natively and via `@google/adk`), it processes a patient's multimodal symptom data to instantly produce synthesized, actionable clinical strategies.
+Pocket Gull is a next-generation "Live Agent" orchestrator. By combining real-time human-in-the-loop web speech interaction with a diagnostic 3D surface model and Gemini's deep reasoning (`gemini-2.5-flash` natively and via `@google/adk`), it processes a patient's multimodal symptom data to instantly produce synthesized, actionable clinical strategies.
 
 **Core Features:**
 - **Live AI Consult & Multi-Agent Orchestration:** Powered by `@google/adk` and the Web Speech API. Specialized `LlmAgent` experts synthesize clinical data into actionable insights through an interruptible, natural conversational UI with **context-aware memory** of recently discussed report nodes.
@@ -69,21 +69,21 @@ Pocket Gall is a next-generation "Live Agent" orchestrator. By combining real-ti
 Primary inputs consist of manual demographics, biometric body map interaction, and voice-to-text dictation. Auxiliary real-time clinical context is gathered securely without persistent DB tracking using Google Programmable Search Engine API and NCBI PubMed E-utilities XML parsing algorithms. Patient state data is strictly locally persisted between active sessions.
 
 **Findings and Learnings:**
-Reflecting on the development of Pocket Gall, my commitment is to continuously embrace the complexity of multi-agent architectures and rigorous frontend performance optimization. Building this platform taught me the profound importance of balancing bleeding-edge AI orchestration—like implementing `@google/adk`'s `InMemoryRunner` to stabilize clinical generations—with the strict UX demands of a modern progressive web application. I commit to changing how I approach state management in future projects by prioritizing granular, reactive UI signals from day one, and to never settle for "good enough" when a top-tier mobile performance score (100/100 Lighthouse) is attainable through diligent layout unblocking and dynamic asset loading. Further, this project deepened my respect for CSS—from mastering viewport units (`100dvh`) to restore native scrolling on complex mobile constraints, to implementing robust `@media print` rules for structured offline clinical stationery.
+Reflecting on the development of Pocket Gull, my commitment is to continuously embrace the complexity of multi-agent architectures and rigorous frontend performance optimization. Building this platform taught me the profound importance of balancing bleeding-edge AI orchestration—like implementing `@google/adk`'s `InMemoryRunner` to stabilize clinical generations—with the strict UX demands of a modern progressive web application. I commit to changing how I approach state management in future projects by prioritizing granular, reactive UI signals from day one, and to never settle for "good enough" when a top-tier mobile performance score (100/100 Lighthouse) is attainable through diligent layout unblocking and dynamic asset loading. Further, this project deepened my respect for CSS—from mastering viewport units (`100dvh`) to restore native scrolling on complex mobile constraints, to implementing robust `@media print` rules for structured offline clinical stationery.
 
 ---
 
 ## 👨‍💻 Public Code Repository & Spin-Up Instructions
 
 **Developer Profile:** [g.dev/philgear](https://g.dev/philgear)  
-**Repository:** [github.com/philgear/pocket-gall](https://github.com/philgear/pocket-gall)
+**Repository:** [github.com/philgear/pocket-gull](https://github.com/philgear/pocket-gull)
 
 To run this project in a local development environment:
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/philgear/pocket-gall.git
-    cd pocket-gall
+    git clone https://github.com/philgear/pocket-gull.git
+    cd pocket-gull
     ```
 
 2.  **Install dependencies:**
@@ -106,9 +106,9 @@ To run this project in a local development environment:
 
 ## 🖥️ Proof of Google Cloud Deployment
 
-Pocket Gall's backend service and Express proxy layer is architecturally designed to deploy directly to **Google Cloud Run**.
+Pocket Gull's backend service and Express proxy layer is architecturally designed to deploy directly to **Google Cloud Run**.
 
-- **Proof of Action:** Successfully deployed to Google Cloud Run! The live application is available at: [https://pocketgall.app](https://pocketgall.app) (and [https://pocket-gall-444980566010.us-west1.run.app](https://pocket-gall-444980566010.us-west1.run.app))
+- **Proof of Action:** Successfully deployed to Google Cloud Run! The live application is available at: [https://pocketgull.app](https://pocketgull.app) (and [https://pocket-gall-444980566010.us-west1.run.app](https://pocket-gall-444980566010.us-west1.run.app))
 - **Repository Proof:** See `./server.js` and `./src/services/clinical-intelligence.service.ts` for Google Cloud infrastructure integrations.
 
 ---
@@ -171,7 +171,7 @@ graph TD
 
 ## 🌱 Kaizen Philosophy
 
-Pocket Gall is built on the **Kaizen** principle of *continuous, incremental improvement*. We believe that clinical tools should never be "finished," but rather evolve alongside the practitioners who use them.
+Pocket Gull is built on the **Kaizen** principle of *continuous, incremental improvement*. We believe that clinical tools should never be "finished," but rather evolve alongside the practitioners who use them.
 
 - **Incremental Intelligence**: Every clinical analysis is a baseline for refinement. We use interactive bracketing to allow doctors to continuously improve the AI's output.
 - **Iterative Design**: Our UI is constantly polished to reduce cognitive load, ensuring that every pixel serves a clinical purpose.
@@ -181,16 +181,16 @@ Pocket Gall is built on the **Kaizen** principle of *continuous, incremental imp
 
 ## 🗂️ Data Card
 
-Understanding how clinical information flows through Pocket Gall is critical for building practitioner trust.
+Understanding how clinical information flows through Pocket Gull is critical for building practitioner trust.
 
 **Data Type & Processing:**
-Pocket Gall operates as a localized Clinical Data processor. It does not train core foundation models on user data. The primary data inputs include:
+Pocket Gull operates as a localized Clinical Data processor. It does not train core foundation models on user data. The primary data inputs include:
 - **Patient Intake:** Demographics, chief complaints, and historical medical notes entered manually or via Web Speech recognition.
 - **Biometric Selection:** Anatomical regions pinpointed interactively via the 3D body map viewer.
 - **Vitals & Telemetry:** Standard health metrics (Heart rate, Blood pressure, SpO2).
 
 **Medical Data Sources:**
-To augment clinical reasoning without compromising patient privacy, Pocket Gall integrates with external authoritative semantic data sources:
+To augment clinical reasoning without compromising patient privacy, Pocket Gull integrates with external authoritative semantic data sources:
 - **NCBI PubMed E-utilities:** Queries peer-reviewed medical literature and abstracts for evidence-based context.
 - **Google Programmable Search Engine API:** Surfaces relevant differential diagnostic information and treatment pathways from indexed medical domains.
 *(Note: Queries sent to these external sources are anonymized and stripped of protected health information [PHI] prior to transmission.)*
@@ -208,27 +208,27 @@ To augment clinical reasoning without compromising patient privacy, Pocket Gall 
 
 ## 🌍 Impact Statement
 
-### Societal Impact Statement: Pocket Gall & AI-Augmented Clinical Strategy
+### Societal Impact Statement: Pocket Gull & AI-Augmented Clinical Strategy
 
 **Overview**  
-Pocket Gall is designed to transform the initial clinical encounter by shifting the burden of data synthesis from the physician to an AI-augmented workflow. By evolving generic medical analysis into a "Care Plan Recommendation Engine," the platform aims to reclaim clinical time for direct patient interaction, ultimately strengthening the doctor-patient relationship through increased presence and empathy.
+Pocket Gull is designed to transform the initial clinical encounter by shifting the burden of data synthesis from the physician to an AI-augmented workflow. By evolving generic medical analysis into a "Care Plan Recommendation Engine," the platform aims to reclaim clinical time for direct patient interaction, ultimately strengthening the doctor-patient relationship through increased presence and empathy.
 
 **Societal and Ethical Implications**
 - **Autonomy and Dignity**: The platform prioritizes physician autonomy by acting as a "Live Consult" co-pilot rather than an automated decision-maker. Interactive "Task Bracketing" ensures that every medical recommendation is manually vetted and adjusted by a human clinician.
-- **Fairness and Community Well-being**: By streamlining complex data ingestion—vitals, history, and chief complaint—Pocket Gall reduces the cognitive load on healthcare providers, mitigating physician burnout.
+- **Fairness and Community Well-being**: By streamlining complex data ingestion—vitals, history, and chief complaint—Pocket Gull reduces the cognitive load on healthcare providers, mitigating physician burnout.
 - **Data Integrity**: The commitment to FHIR standards ensures that patient data remains portable, interoperable, and owned by the clinical institution, preventing proprietary data silos.
 
 **Environmental Impact**  
-By facilitating rapid, data-driven synthesis in a paperless environment, Pocket Gall promotes resource efficiency within clinics. The use of efficient models (Gemini Flash) ensures that the computational footprint remains optimized for sustainable growth.
+By facilitating rapid, data-driven synthesis in a paperless environment, Pocket Gull promotes resource efficiency within clinics. The use of efficient models (Gemini Flash) ensures that the computational footprint remains optimized for sustainable growth.
 
 ---
 
 ## 🤖 Responsible AI Statement
 
-Pocket Gall is built with a firm commitment to the responsible development and deployment of AI in clinical settings. The following principles guide every design and engineering decision on this platform:
+Pocket Gull is built with a firm commitment to the responsible development and deployment of AI in clinical settings. The following principles guide every design and engineering decision on this platform:
 
 **Human-in-the-Loop Oversight**  
-Pocket Gall is a clinical *co-pilot*, not an autonomous decision-maker. Every AI-generated insight, care plan recommendation, or synthesized summary is explicitly presented as a draft for physician review. The interactive "Task Bracketing" system ensures that no recommendation can be acted upon without deliberate, manual clinician validation.
+Pocket Gull is a clinical *co-pilot*, not an autonomous decision-maker. Every AI-generated insight, care plan recommendation, or synthesized summary is explicitly presented as a draft for physician review. The interactive "Task Bracketing" system ensures that no recommendation can be acted upon without deliberate, manual clinician validation.
 
 **Transparency & Explainability**  
 The application clearly surfaces which data points (vitals, chief complaint, annotated body regions, medical history) were used to construct each recommendation. Clinicians are never presented with a "black box" output — the reasoning lens is visible (Overview, Interventions, Monitoring, Education), and the source data is always traceable.
@@ -237,7 +237,7 @@ The application clearly surfaces which data points (vitals, chief complaint, ann
 Patient data is processed transiently. No personally identifiable clinical information is persisted to a remote database. All session state is stored locally within the clinician's browser. Data transmitted to the Gemini API for inference is used solely for generating the immediate clinical response and is not retained for model training by this application.
 
 **Limitation Awareness**  
-Pocket Gall is not a medical device and is not a substitute for professional clinical judgment, licensure, or established diagnostic procedures. It is a productivity and synthesis tool. Users are expected to apply their clinical expertise when interpreting and acting upon any AI-generated content.
+Pocket Gull is not a medical device and is not a substitute for professional clinical judgment, licensure, or established diagnostic procedures. It is a productivity and synthesis tool. Users are expected to apply their clinical expertise when interpreting and acting upon any AI-generated content.
 
 **Fairness & Bias Mitigation**  
 Clinical inputs are structured and physician-directed, reducing the risk of biased outputs driven by incomplete demographic proxies. The platform is designed to augment — not replace — the human clinical assessment, ensuring the physician's direct observation remains the primary diagnostic instrument.

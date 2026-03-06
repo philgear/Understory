@@ -8,10 +8,10 @@ import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { SummaryNode, SummaryNodeItem } from './analysis-report.types';
 import { DictationService } from '../services/dictation.service';
-import { PocketGallBadgeComponent } from './shared/pocket-gall-badge.component';
+import { PocketGullBadgeComponent } from './shared/pocket-gull-badge.component';
 import { ClinicalIcons } from '../assets/clinical-icons';
-import { PocketGallButtonComponent } from './shared/pocket-gall-button.component';
-import { PocketGallInputComponent } from './shared/pocket-gall-input.component';
+import { PocketGullButtonComponent } from './shared/pocket-gull-button.component';
+import { PocketGullInputComponent } from './shared/pocket-gull-input.component';
 import { ClinicalIntelligenceService } from '../services/clinical-intelligence.service';
 import { MarkdownService } from '../services/markdown.service';
 import { RichMediaService, RichMediaCard } from '../services/rich-media.service';
@@ -87,7 +87,7 @@ function parseHtmlToClaims(html: string): ClaimUnit[] {
 @Component({
   selector: 'app-summary-node',
   standalone: true,
-  imports: [CommonModule, FormsModule, PocketGallBadgeComponent, PocketGallButtonComponent, PocketGallInputComponent, Medical3DViewerComponent, SafeHtmlPipe],
+  imports: [CommonModule, FormsModule, PocketGullBadgeComponent, PocketGullButtonComponent, PocketGullInputComponent, Medical3DViewerComponent, SafeHtmlPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   styles: [`
@@ -361,20 +361,20 @@ function parseHtmlToClaims(html: string): ClaimUnit[] {
 
       <!-- ─── Hover Toolbar ─────────────────── -->
       <div class="node-toolbar no-print">
-        <pocket-gall-button (click)="toggleBracket()" variant="ghost" size="sm"
+        <pocket-gull-button (click)="toggleBracket()" variant="ghost" size="sm"
           class="bg-white shadow-sm border border-gray-200" ariaLabel="Finalize"
           [icon]="ClinicalIcons.Verified">
-        </pocket-gall-button>
-        <pocket-gall-button (click)="onDoubleClick()" variant="ghost" size="sm"
+        </pocket-gull-button>
+        <pocket-gull-button (click)="onDoubleClick()" variant="ghost" size="sm"
           class="bg-white shadow-sm border border-gray-200" ariaLabel="Add Note"
           [icon]="ClinicalIcons.Assessment">
-        </pocket-gall-button>
-        <pocket-gall-button (click)="toggleChat()" variant="ghost" size="sm"
+        </pocket-gull-button>
+        <pocket-gull-button (click)="toggleChat()" variant="ghost" size="sm"
           class="bg-white shadow-sm border border-gray-200"
           [class.text-green-600]="!showChat()" [class.text-gray-400]="showChat()"
           [ariaLabel]="showChat() ? 'Close Agent' : 'Ask Agent'"
           [icon]="showChat() ? ClinicalIcons.Clear : ClinicalIcons.EvidenceFocus">
-        </pocket-gall-button>
+        </pocket-gull-button>
       </div>
 
       <!-- ─── Suggestions & Proposals ─────────── -->
@@ -384,11 +384,11 @@ function parseHtmlToClaims(html: string): ClaimUnit[] {
             <div class="flex flex-wrap gap-1.5 align-center">
               <span class="text-xs font-bold text-gray-400 uppercase tracking-widest mr-1 mt-1">Suggestions:</span>
               @for (sugg of node().suggestions; track sugg) {
-                <pocket-gall-badge [label]="sugg" severity="info" [hasIcon]="true"
+                <pocket-gull-badge [label]="sugg" severity="info" [hasIcon]="true"
                   class="cursor-pointer hover:scale-105 transition-transform"
                   (click)="insertSuggestion(sugg)">
                   <div badge-icon [innerHTML]="ClinicalIcons.Suggestion | safeHtml"></div>
-                </pocket-gall-badge>
+                </pocket-gull-badge>
               }
             </div>
           }
@@ -396,10 +396,10 @@ function parseHtmlToClaims(html: string): ClaimUnit[] {
             <div class="bg-amber-50 border border-amber-100 rounded-sm p-3 text-sm">
               <div class="flex items-center justify-between mb-2">
                 <span class="text-xs font-bold text-amber-700 uppercase tracking-widest">Proposed Improvement:</span>
-                <pocket-gall-button (click)="acceptProposal()" variant="primary" size="sm"
+                <pocket-gull-button (click)="acceptProposal()" variant="primary" size="sm"
                   icon="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z">
                   Accept Change
-                </pocket-gall-button>
+                </pocket-gull-button>
               </div>
               <p class="text-amber-900 italic">"{{ node().proposedText }}"</p>
             </div>
@@ -415,11 +415,11 @@ function parseHtmlToClaims(html: string): ClaimUnit[] {
              [class.bg-amber-50/50]="node().verificationStatus === 'warning'"
              [class.border-amber-100]="node().verificationStatus === 'warning'">
           <div class="flex items-center gap-2">
-            <pocket-gall-badge
+            <pocket-gull-badge
               [label]="node().verificationStatus === 'error' ? 'Critical Accuracy Error' : 'Accuracy Warning'"
               [severity]="node().verificationStatus === 'error' ? 'error' : 'warning'" [hasIcon]="true">
               <div badge-icon [innerHTML]="ClinicalIcons.Risk | safeHtml"></div>
-            </pocket-gall-badge>
+            </pocket-gull-badge>
             <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">Medical Audit Result</span>
           </div>
           <div class="pl-1 flex flex-col gap-1">
@@ -437,9 +437,9 @@ function parseHtmlToClaims(html: string): ClaimUnit[] {
       <!-- ─── Note Editor ────────────────────── -->
       @if (node().showNote) {
         <div class="mt-2 ml-4 p-3 bg-[#f9fbf7] border-l-2 border-[#416B1F] rounded-r-sm">
-          <pocket-gall-input type="textarea" [rows]="2" [placeholder]="'Add medical rationale...'"
+          <pocket-gull-input type="textarea" [rows]="2" [placeholder]="'Add medical rationale...'"
             [value]="node().note || ''" (valueChange)="updateNote($event)">
-          </pocket-gall-input>
+          </pocket-gull-input>
         </div>
       }
 
@@ -693,20 +693,20 @@ function parseHtmlToClaims(html: string): ClaimUnit[] {
           @if (showSuggestions() && !chatIsLoading() && chatHistory().length > 0 && drillStack().length === 0) {
             <div class="inline-pills">
               @for (s of suggestionPills(); track s) {
-                <pocket-gall-button variant="outline" size="xs" [icon]="ClinicalIcons.Suggestion" (clicked)="sendPill(s)">
+                <pocket-gull-button variant="outline" size="xs" [icon]="ClinicalIcons.Suggestion" (clicked)="sendPill(s)">
                   {{ s }}
-                </pocket-gall-button>
+                </pocket-gull-button>
               }
               <!-- Rich media action pills -->
-              <pocket-gall-button variant="secondary" size="xs" [icon]="ClinicalIcons.Image" (clicked)="requestImage()">
+              <pocket-gull-button variant="secondary" size="xs" [icon]="ClinicalIcons.Image" (clicked)="requestImage()">
                 Request Image
-              </pocket-gall-button>
-              <pocket-gall-button variant="secondary" size="xs" [icon]="ClinicalIcons.Model3D" (clicked)="request3DModel()">
+              </pocket-gull-button>
+              <pocket-gull-button variant="secondary" size="xs" [icon]="ClinicalIcons.Model3D" (clicked)="request3DModel()">
                 3D Model
-              </pocket-gall-button>
-              <pocket-gall-button variant="secondary" size="xs" [icon]="ClinicalIcons.Research" (clicked)="requestResearch()">
+              </pocket-gull-button>
+              <pocket-gull-button variant="secondary" size="xs" [icon]="ClinicalIcons.Research" (clicked)="requestResearch()">
                 Research
-              </pocket-gall-button>
+              </pocket-gull-button>
             </div>
           }
 
@@ -898,7 +898,7 @@ export class SummaryNodeComponent implements AfterViewChecked {
       const nodeText = this.listItemHtml().replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
       const section = this.sectionTitle();
       const patient = this.intel.lastPatientData() ?? '';
-      const context = `You are a focused clinical evidence assistant embedded in the PocketGall Clinical Intelligence Platform.
+      const context = `You are a focused clinical evidence assistant embedded in the PocketGull Clinical Intelligence Platform.
 A clinician is reviewing a specific recommendation from the "${section}" section of an AI-generated care plan.
 
 The recommendation under review:

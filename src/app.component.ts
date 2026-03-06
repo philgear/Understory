@@ -76,7 +76,7 @@ import { initializeWebMCPPolyfill } from '@mcp-b/webmcp-polyfill';
                 </div>
             </div>
           </div>
-          <h1 class="text-xl font-bold mb-1 uppercase tracking-[0.2em]">Pocket Gall</h1>
+          <h1 class="text-xl font-bold mb-1 uppercase tracking-[0.2em]">Pocket Gull</h1>
           <p class="text-gray-500 mb-8 text-xs uppercase tracking-widest">Clinical Intelligence Platform</p>
 
           <!-- API Key Input -->
@@ -155,7 +155,7 @@ import { initializeWebMCPPolyfill } from '@mcp-b/webmcp-polyfill';
                       </g>
                     </g>
                   </svg>
-                  <span class="font-medium text-[#1C1C1C] tracking-[0.15em] text-sm hidden sm:inline">POCKET GALL</span>
+                  <span class="font-medium text-[#1C1C1C] tracking-[0.15em] text-sm hidden sm:inline">POCKET GULL</span>
               </div>
             <div class="h-4 w-px bg-[#EEEEEE] hidden sm:block"></div>
             <div class="text-xs text-gray-500 font-medium mr-4 hidden sm:block">INTAKE MODULE 01</div>

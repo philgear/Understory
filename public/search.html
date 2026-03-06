@@ -14,7 +14,7 @@
             /* bg-gray-100 */
         }
 
-        /* Customizing Google Search Results to match Pocket Gall */
+        /* Customizing Google Search Results to match Pocket Gull */
         .gsc-control-cse {
             padding: 1rem !important;
             background: transparent !important;
@@ -60,7 +60,7 @@
         }
 
         /* Button injected via Javascript */
-        .pocket-gall-btn {
+        .pocket-gull-btn {
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
@@ -75,7 +75,7 @@
             cursor: pointer;
         }
 
-        .pocket-gall-btn:hover {
+        .pocket-gull-btn:hover {
             background-color: #1d4ed8;
         }
     </style>
@@ -85,7 +85,7 @@
 
     <!-- Google Custom Search Engine -->
     <script async src="https://cse.google.com/cse.js?cx=631456b3b98e3415b"></script>
-    <div class="gcse-searchresults-only" data-gname="pocket-gall-search"></div>
+    <div class="gcse-searchresults-only" data-gname="pocket-gull-search"></div>
 
     <script>
         // Listen for messages from the parent Angular application
@@ -98,7 +98,7 @@
                 const checkExist = setInterval(function () {
                     if (window.google && window.google.search && window.google.search.cse) {
                         clearInterval(checkExist);
-                        const element = google.search.cse.element.getElement('pocket-gall-search');
+                        const element = google.search.cse.element.getElement('pocket-gull-search');
                         if (element) {
                             element.execute(query);
                         }
@@ -116,7 +116,7 @@
             }
 
             // Handle the custom inject 'Bookmark' button
-            if (e.target.closest('.pocket-gall-btn')) {
+            if (e.target.closest('.pocket-gull-btn')) {
                 e.preventDefault();
                 const resultDiv = e.target.closest('.gsc-result');
                 const titleEl = resultDiv.querySelector('a.gs-title');
@@ -138,9 +138,9 @@
                 if (mutation.addedNodes) {
                     mutation.addedNodes.forEach((node) => {
                         if (node.nodeType === 1 && node.classList) { // ELEMENT_NODE
-                            if (node.classList.contains('gsc-webResult') && !node.querySelector('.pocket-gall-btn')) {
+                            if (node.classList.contains('gsc-webResult') && !node.querySelector('.pocket-gull-btn')) {
                                 const btn = document.createElement('button');
-                                btn.className = 'pocket-gall-btn';
+                                btn.className = 'pocket-gull-btn';
                                 btn.innerHTML = `
                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>

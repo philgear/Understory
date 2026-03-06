@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 export type BadgeSeverity = 'info' | 'success' | 'warning' | 'error' | 'neutral';
 
 @Component({
-  selector: 'pocket-gall-badge',
+  selector: 'pocket-gull-badge',
   standalone: true,
   imports: [CommonModule],
   template: `
@@ -48,7 +48,7 @@ export type BadgeSeverity = 'info' | 'success' | 'warning' | 'error' | 'neutral'
   `],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PocketGallBadgeComponent {
+export class PocketGullBadgeComponent {
   label = input.required<string>();
   severity = input<BadgeSeverity>('neutral');
   hasIcon = input<boolean>(false);

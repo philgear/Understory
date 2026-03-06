@@ -6,8 +6,8 @@ import { ClinicalIntelligenceService } from '../services/clinical-intelligence.s
 import { DictationService } from '../services/dictation.service';
 import { PatientManagementService } from '../services/patient-management.service';
 import { SafeHtmlPipe } from '../pipes/safe-html.pipe';
-import { PocketGallButtonComponent } from './shared/pocket-gall-button.component';
-import { PocketGallInputComponent } from './shared/pocket-gall-input.component';
+import { PocketGullButtonComponent } from './shared/pocket-gull-button.component';
+import { PocketGullInputComponent } from './shared/pocket-gull-input.component';
 import { MarkdownService } from '../services/markdown.service';
 import { RichMediaService, RichMediaCard } from '../services/rich-media.service';
 import { Medical3DViewerComponent } from './medical-3d-viewer.component';
@@ -22,7 +22,7 @@ export interface ChatEntry {
 
 @Component({
     selector: 'app-voice-assistant',
-    imports: [CommonModule, FormsModule, PocketGallButtonComponent, PocketGallInputComponent, SafeHtmlPipe, Medical3DViewerComponent],
+    imports: [CommonModule, FormsModule, PocketGullButtonComponent, PocketGullInputComponent, SafeHtmlPipe, Medical3DViewerComponent],
     changeDetection: ChangeDetectionStrategy.OnPush,
     template: `
         <div class="h-full bg-white z-10 flex flex-col no-print w-full">
@@ -43,7 +43,7 @@ export interface ChatEntry {
                              </g>
                            </g>
                         </svg>
-                        <span class="font-medium text-[#1C1C1C] tracking-[0.1em] sm:tracking-[0.15em] text-[10px] sm:text-sm uppercase truncate">Pocket Gall Intelligence</span>
+                        <span class="font-medium text-[#1C1C1C] tracking-[0.1em] sm:tracking-[0.15em] text-[10px] sm:text-sm uppercase truncate">Pocket Gull Intelligence</span>
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
@@ -209,9 +209,9 @@ export interface ChatEntry {
                                             }
 
                                             <div class="flex items-center gap-2 mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                                                <pocket-gall-button variant="ghost" size="xs" (click)="actionCopy(entry.text)" icon="M9 9h13v13H9V9zm-4 6H4v-9h9v1z" ariaLabel="Copy Message">Copy</pocket-gall-button>
-                                                <pocket-gall-button variant="ghost" size="xs" (click)="actionDictate(entry.text)" icon="M11 5L6 9H2v6h4l5 4V5zm8.07-.07a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" ariaLabel="Speak Aloud">Speak</pocket-gall-button>
-                                                <pocket-gall-button variant="ghost" size="xs" (click)="actionInsert(entry.text)" icon="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" ariaLabel="Insert into Clinical Notes">Insert</pocket-gall-button>
+                                                <pocket-gull-button variant="ghost" size="xs" (click)="actionCopy(entry.text)" icon="M9 9h13v13H9V9zm-4 6H4v-9h9v1z" ariaLabel="Copy Message">Copy</pocket-gull-button>
+                                                <pocket-gull-button variant="ghost" size="xs" (click)="actionDictate(entry.text)" icon="M11 5L6 9H2v6h4l5 4V5zm8.07-.07a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" ariaLabel="Speak Aloud">Speak</pocket-gull-button>
+                                                <pocket-gull-button variant="ghost" size="xs" (click)="actionInsert(entry.text)" icon="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" ariaLabel="Insert into Clinical Notes">Insert</pocket-gull-button>
                                             </div>
                                         </div>
                                     } @else {
@@ -290,16 +290,16 @@ export interface ChatEntry {
                                 <input type="file" #fileInput (change)="onFileSelected($event)" multiple accept="image/*,video/*" class="hidden" style="display: none;">
 
                                 <div class="flex-1 py-1">
-                                    <pocket-gall-input
+                                    <pocket-gull-input
                                         #chatInput
                                         type="text"
                                         [value]="messageText()"
                                         (valueChange)="messageText.set($event)"
-                                        placeholder="Ask Pocket Gall..."
+                                        placeholder="Ask Pocket Gull..."
                                         className="!border-transparent !bg-transparent !shadow-none !px-0 !py-2 text-base"
                                         [disabled]="agentState() !== 'idle'"
                                         (keydown)="handleKeydown($event)">
-                                    </pocket-gall-input>
+                                    </pocket-gull-input>
                                 </div>
 
                                 <button 
