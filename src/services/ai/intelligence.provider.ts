@@ -33,7 +33,7 @@ export interface IntelligenceProvider {
     /**
      * Translates clinical text to a specific reading, cognition, or philosophical level.
      */
-    translateReadingLevel(text: string, level: 'simplified' | 'dyslexia' | 'child' | 'bagua' | 'ikigai' | 'purusarthas'): Promise<string>;
+    translateReadingLevel(text: string, level: 'simplified' | 'dyslexia' | 'child'): Promise<string>;
 
     /**
      * Chat Session Management

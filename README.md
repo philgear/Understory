@@ -189,6 +189,12 @@ Pocket Gall operates as a localized Clinical Data processor. It does not train c
 - **Biometric Selection:** Anatomical regions pinpointed interactively via the 3D body map viewer.
 - **Vitals & Telemetry:** Standard health metrics (Heart rate, Blood pressure, SpO2).
 
+**Medical Data Sources:**
+To augment clinical reasoning without compromising patient privacy, Pocket Gall integrates with external authoritative semantic data sources:
+- **NCBI PubMed E-utilities:** Queries peer-reviewed medical literature and abstracts for evidence-based context.
+- **Google Programmable Search Engine API:** Surfaces relevant differential diagnostic information and treatment pathways from indexed medical domains.
+*(Note: Queries sent to these external sources are anonymized and stripped of protected health information [PHI] prior to transmission.)*
+
 **Data Storage & Privacy:**
 - **Local Persistence:** All patient states, clinical brackets, and historical visit notes are stored strictly within the client's local session.
 - **No Remote Database:** There is no centralized remote database storing persistent patient records.

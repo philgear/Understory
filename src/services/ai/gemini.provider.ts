@@ -139,7 +139,7 @@ export class GeminiProvider implements IntelligenceProvider {
         return await this.verifier.verifyReportSection(lens as any, content, sourceData);
     }
 
-    async translateReadingLevel(text: string, level: 'simplified' | 'dyslexia' | 'child' | 'bagua' | 'ikigai' | 'purusarthas'): Promise<string> {
+    async translateReadingLevel(text: string, level: 'simplified' | 'dyslexia' | 'child'): Promise<string> {
         let systemInstruction = '';
         if (level === 'simplified') {
             systemInstruction = `You are an expert clinical copywriter. Your task is to rewrite the provided medical text to improve its Flesch Reading Ease score and lower its Flesch-Kincaid Grade level (target: Grade 6-8). 
@@ -172,36 +172,6 @@ CRITICAL RULES:
 4. Preserve the core meaning of diagnoses and treatments, but omit overly complex dosage specifics unless relevant to the child's actions.
 5. Use short sentences and simple formatting.
 6. Return ONLY the rewritten markdown text, with no introductory or concluding remarks.`;
-        } else if (level === 'bagua') {
-            systemInstruction = `You are a holistic wellness interpreter guided by the principles of the Bagua (the eight symbols of Taoist philosophy). Your task is to reinterpret the provided medical text through this framework, focusing on balance, energy flow, and the interconnectedness of life areas.
-
-CRITICAL RULES:
-1. Reframe medical diagnoses and treatments in terms of harmony and balance (e.g., addressing excesses or deficiencies).
-2. Connect the health conditions or care plan to relevant areas of the Bagua (Health/Center, Family/Community, Wealth/Prosperity, Career/Life Path, Knowledge/Cultivation, etc.).
-3. Maintain clinical accuracy of the core problems and treatments, but present them as pathways to restoring equilibrium.
-4. Use poetic but practical language, emphasizing natural cycles and energetic flow.
-5. Return ONLY the rewritten markdown text, with no introductory or concluding remarks.`;
-        } else if (level === 'ikigai') {
-            systemInstruction = `You are a philosophical mentor guided by the Japanese concept of Ikigai (a reason for being). Your task is to reinterpret the provided medical text by focusing on how health impacts purpose, passion, mission, vocation, and profession.
-
-CRITICAL RULES:
-1. Reframe the care plan as a vital bridge to reclaiming the patient's Ikigai.
-2. Discuss healing not just as symptom reduction, but as an enabler of joy, social contribution, and personal fulfillment.
-3. Link treatments and lifestyle changes to the four pillars: what you love, what the world needs, what you are good at, and what you can be paid for.
-4. Maintain clinical accuracy while wrapping it in a deeply motivating, purpose-driven narrative.
-5. Return ONLY the rewritten markdown text, with no introductory or concluding remarks.`;
-        } else if (level === 'purusarthas') {
-            systemInstruction = `You are a philosophical interpreter guided by the Hindu concept of the Four Purusarthas (the four proper goals or aims of a human life). Your task is to reinterpret the provided medical text through this ethical and spiritual framework.
-
-CRITICAL RULES:
-1. Categorize the clinical insights and care plan according to:
-   - **Dharma (Righteousness/Duty)**: Managing health as a foundational duty to oneself and society.
-   - **Artha (Prosperity/Wealth)**: Acknowledging health as the ultimate wealth that enables livelihood and physical security.
-   - **Kama (Pleasure/Desire)**: Addressing how managing symptoms leads to physical ease, well-being, and capacity for joy.
-   - **Moksha (Liberation)**: Cultivating peace of mind and freedom from suffering despite physical ailments.
-2. Emphasize treatments and lifestyle changes as practices aligning with these four goals.
-3. Maintain strict clinical accuracy for all interventions while elevating the discourse to these philosophical aims.
-4. Return ONLY the rewritten markdown text, carefully structured, with no introductory or concluding remarks.`;
         } else {
             return text; // Should not happen based on types
         }

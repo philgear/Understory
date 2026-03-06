@@ -2,7 +2,7 @@ import { Component, ChangeDetectionStrategy, inject, computed, signal, viewChild
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PatientDropdownComponent } from './components/patient-dropdown.component';
-import { PatientStateService } from './services/patient-state.service';
+import { PatientStateService, BODY_PART_NAMES } from './services/patient-state.service';
 import { ResearchFrameComponent } from './components/research-frame.component';
 import { MedicalChartComponent } from './components/medical-chart.component';
 import { VisitReviewComponent } from './components/visit-review.component';
@@ -18,6 +18,8 @@ import { ClinicalIntelligenceService } from './services/clinical-intelligence.se
 import { PatientManagementService } from './services/patient-management.service';
 import { RevealDirective } from './directives/reveal.directive';
 import { DEMO_ANALYSIS_REPORT } from './demo-data';
+
+import { initializeWebMCPPolyfill } from '@mcp-b/webmcp-polyfill';
 
 @Component({
   selector: 'app-root',
@@ -462,6 +464,167 @@ export class AppComponent implements OnDestroy {
       // Set up window resize listener for responsive layout
       this.boundOnWindowResize = this.onWindowResize.bind(this);
       window.addEventListener('resize', this.boundOnWindowResize);
+
+      // Initialize WebMCP Polyfill
+      initializeWebMCPPolyfill();
+
+      if (navigator.modelContext) {
+        // Register generate_medical_summary
+        navigator.modelContext.registerTool({
+          name: 'generate_medical_summary',
+          description: 'Generates a medical summary for the current patient based on the provided clinical notes and current patient data.',
+          inputSchema: {
+            type: 'object',
+            properties: {}
+          },
+          execute: async (params: any) => {
+            try {
+              const patientDataStr = this.state.getAllDataForPrompt();
+              const report = await this.clinicalIntelligence.generateComprehensiveReport(patientDataStr);
+              return {
+                content: [{ type: 'text', text: JSON.stringify(report) }]
+              };
+            } catch (e: any) {
+              return {
+                content: [{ type: 'text', text: `Failed to generate summary: ${e.message}` }],
+                isError: true
+              };
+            }
+          }
+        });
+
+        // Register translate_clinical_text
+        navigator.modelContext.registerTool({
+          name: 'translate_clinical_text',
+          description: 'Translates a clinical text to a specific reading level (e.g. simplified, child, dyslexia).',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              text: { type: 'string', description: 'The clinical text to translate.' },
+              targetLevel: { type: 'string', enum: ['simplified', 'child', 'dyslexia'], description: 'The target reading level.' }
+            },
+            required: ['text', 'targetLevel']
+          },
+          execute: async (params: any) => {
+            try {
+              // Validate targetLevel
+              if (!['simplified', 'child', 'dyslexia'].includes(params.targetLevel)) {
+                throw new Error("Invalid targetLevel. Must be one of: 'simplified', 'child', 'dyslexia'.");
+              }
+              const translation = await this.clinicalIntelligence.translateReadingLevel(params.text, params.targetLevel);
+              return {
+                content: [{ type: 'text', text: translation }]
+              };
+            } catch (e: any) {
+              return {
+                content: [{ type: 'text', text: `Failed to translate text: ${e.message}` }],
+                isError: true
+              };
+            }
+          }
+        });
+
+        // Register get_current_patient_data
+        navigator.modelContext.registerTool({
+          name: 'get_current_patient_data',
+          description: 'Retrieves the current patient data context being viewed in the application.',
+          inputSchema: {
+            type: 'object',
+            properties: {}
+          },
+          execute: async () => {
+            const patientData = this.state.getCurrentState();
+            return {
+              content: [{ type: 'text', text: JSON.stringify(patientData, null, 2) }]
+            };
+          }
+        });
+
+        // Register navigate_to_body_part
+        navigator.modelContext.registerTool({
+          name: 'navigate_to_body_part',
+          description: 'Navigates the UI to focus on a specific body part and opens the analysis tab.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              partId: { type: 'string', description: 'The ID of the body part to navigate to (e.g., "head", "right_knee").' }
+            },
+            required: ['partId']
+          },
+          execute: async (params: any) => {
+            try {
+              if (BODY_PART_NAMES[params.partId]) {
+                this.ngZone.run(() => {
+                  this.state.selectPart(params.partId);
+                  this.mobileActiveTab.set('analysis');
+                });
+                return { content: [{ type: 'text', text: `Successfully navigated to ${BODY_PART_NAMES[params.partId]}` }] };
+              } else {
+                throw new Error(`Invalid body part ID: ${params.partId}`);
+              }
+            } catch (e: any) {
+              return { content: [{ type: 'text', text: `Failed to navigate: ${e.message}` }], isError: true };
+            }
+          }
+        });
+
+        // Register inject_clinical_note
+        navigator.modelContext.registerTool({
+          name: 'inject_clinical_note',
+          description: 'Injects structured clinical data (a note) for a specific body part.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              partId: { type: 'string', description: 'The ID of the body part (e.g., "right_knee").' },
+              painLevel: { type: 'number', description: 'Pain level from 0 to 10.' },
+              description: { type: 'string', description: 'Clinical observations or description of the issue.' },
+              recommendation: { type: 'string', description: 'Recommended treatments or next steps.' }
+            },
+            required: ['partId', 'painLevel', 'description']
+          },
+          execute: async (params: any) => {
+            try {
+              const partName = BODY_PART_NAMES[params.partId] || 'Selection';
+              const newNoteId = `note_${Date.now()}`;
+              const newNote = {
+                id: params.partId,
+                noteId: newNoteId,
+                name: partName.toUpperCase(),
+                painLevel: params.painLevel,
+                description: params.description,
+                symptoms: [],
+                recommendation: params.recommendation || ''
+              };
+              this.ngZone.run(() => {
+                this.state.updateIssue(params.partId, newNote);
+                this.state.selectPart(params.partId);
+                this.state.selectNote(newNoteId);
+                this.mobileActiveTab.set('tasks');
+              });
+              return { content: [{ type: 'text', text: `Successfully injected clinical note for ${partName}` }] };
+            } catch (e: any) {
+              return { content: [{ type: 'text', text: `Failed to inject note: ${e.message}` }], isError: true };
+            }
+          }
+        });
+
+        // Register trigger_sync
+        navigator.modelContext.registerTool({
+          name: 'trigger_sync',
+          description: 'Triggers a data sync to the mobile application cloud backend.',
+          inputSchema: { type: 'object', properties: {} },
+          execute: async () => {
+            try {
+              this.ngZone.run(() => {
+                this.syncToMobile();
+              });
+              return { content: [{ type: 'text', text: 'Sync process initiated successfully.' }] };
+            } catch (e: any) {
+              return { content: [{ type: 'text', text: `Failed to initiate sync: ${e.message}` }], isError: true };
+            }
+          }
+        });
+      }
     });
 
     // Auto-expand analysis when a part is selected or clicked
@@ -655,4 +818,3 @@ export class AppComponent implements OnDestroy {
     document.removeEventListener('mousemove', this.boundDoVoiceColDrag);
   }
 }
-

@@ -116,23 +116,6 @@ import { PatientManagementService } from '../services/patient-management.service
                   icon="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
                   {{ isSimplifyingChild() ? 'Translating...' : 'Child Export' }}
                 </pocket-gall-button>
-                <div class="relative">
-                  <pocket-gall-button 
-                    (click)="showPhilMenu.set(!showPhilMenu())"
-                    variant="secondary" 
-                    size="sm"
-                    [disabled]="isExportingPhilosophical()"
-                    icon="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z">
-                    {{ isExportingPhilosophical() ? 'Translating...' : 'Alt Modes' }}
-                  </pocket-gall-button>
-                  @if (showPhilMenu()) {
-                    <div class="absolute right-0 mt-1 w-48 bg-white rounded-lg shadow-xl ring-1 ring-black/5 py-1 z-50 animate-in fade-in slide-in-from-top-1 duration-150">
-                      <button (click)="exportPhilosophicalPdf('bagua')" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">Bagua (Balance & Flow)</button>
-                      <button (click)="exportPhilosophicalPdf('ikigai')" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">Ikigai (Purpose)</button>
-                      <button (click)="exportPhilosophicalPdf('purusarthas')" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">Four Purusarthas</button>
-                    </div>
-                  }
-                </div>
                 <pocket-gall-button 
                   (click)="exportFhir()" 
                   variant="secondary" 
@@ -198,9 +181,6 @@ export class AnalysisContainerComponent implements OnInit {
   historyEntries = signal<any[]>([]);
   isSimplifying = signal(false);
   isSimplifyingChild = signal(false);
-
-  showPhilMenu = signal(false);
-  isExportingPhilosophical = signal(false);
 
   ngOnInit() {
     this.refreshHistory();
@@ -288,35 +268,6 @@ export class AnalysisContainerComponent implements OnInit {
       alert("Failed to generated child export. " + (e as Error).message);
     } finally {
       this.isSimplifyingChild.set(false);
-    }
-  }
-
-  async exportPhilosophicalPdf(mode: 'bagua' | 'ikigai' | 'purusarthas') {
-    this.isExportingPhilosophical.set(true);
-    this.showPhilMenu.set(false);
-    try {
-      const results = this.intelligence.analysisResults();
-      const patient = this.patientMgmt.selectedPatient();
-      const patientName = patient?.name || 'Clinical User';
-
-      const originalSummary = results['Summary Overview'] || 'No summary available.';
-      const philosophicalSummary = await this.intelligence.translateReadingLevel(originalSummary, mode);
-
-      const displayNames = {
-        'bagua': 'Bagua Mode',
-        'ikigai': 'Ikigai Mode',
-        'purusarthas': 'Four Purusarthas Mode'
-      };
-
-      this.export.downloadAsPdf({
-        report: results,
-        summary: philosophicalSummary
-      }, patientName + ` (${displayNames[mode]})`);
-    } catch (e) {
-      console.error(`Failed to generate ${mode} PDF`, e);
-      alert(`Failed to generated ${mode} export. ` + (e as Error).message);
-    } finally {
-      this.isExportingPhilosophical.set(false);
     }
   }
 

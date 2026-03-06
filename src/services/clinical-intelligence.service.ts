@@ -335,7 +335,7 @@ If a section has no relevant source data, output the heading followed by: "*No s
         await this.cache.clear();
     }
 
-    async translateReadingLevel(text: string, targetLevel: 'simplified' | 'dyslexia' | 'child' | 'bagua' | 'ikigai' | 'purusarthas'): Promise<string> {
+    async translateReadingLevel(text: string, targetLevel: 'simplified' | 'dyslexia' | 'child'): Promise<string> {
         this.isLoading.set(true);
         this.error.set(null);
         try {

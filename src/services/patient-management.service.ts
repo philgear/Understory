@@ -22,7 +22,7 @@ const MOCK_PATIENTS: Patient[] = [
     age: 58,
     gender: 'Male',
     lastVisit: '2024.11.20',
-    preexistingConditions: ['Obesity (BMI 42)', 'Severe Obstructive Sleep Apnea', 'Metabolic Syndrome'],
+    preexistingConditions: ['Essential Hypertension', 'Type 2 Diabetes Mellitus', 'Obesity (BMI 42)', 'Severe Obstructive Sleep Apnea', 'Metabolic Syndrome'],
     patientGoals: 'Discuss CPAP compliance issues and weight management strategies.',
     vitals: { bp: '152/95', hr: '88', temp: '98.4°F', spO2: '94%', weight: '295 lbs', height: `5'10"` },
     issues: {
@@ -61,7 +61,7 @@ const MOCK_PATIENTS: Patient[] = [
     age: 42,
     gender: 'Female',
     lastVisit: '2024.12.01',
-    preexistingConditions: ['Chronic Lower Back Pain', 'Opioid Use Disorder (in remission)', 'Depression'],
+    preexistingConditions: ['Asthma', 'Anxiety Disorder', 'Chronic Lower Back Pain', 'Opioid Use Disorder (in remission)', 'Depression'],
     patientGoals: 'Seeking alternative pain management options to avoid opioid relapse.',
     vitals: { bp: '118/72', hr: '76', temp: '98.2°F', spO2: '99%', weight: '145 lbs', height: `5'5"` },
     issues: {
@@ -111,7 +111,7 @@ const MOCK_PATIENTS: Patient[] = [
     age: 81,
     gender: 'Male',
     lastVisit: '2024.12.05',
-    preexistingConditions: ["Mild Cognitive Impairment / Early Alzheimer's", 'Osteoarthritis', 'Fall Risk'],
+    preexistingConditions: ['Ischemic Heart Disease', 'Chronic Kidney Disease', "Mild Cognitive Impairment / Early Alzheimer's", 'Osteoarthritis', 'Fall Risk'],
     patientGoals: 'Family requested evaluation for increased confusion and recent fall at home.',
     vitals: { bp: '135/82', hr: '68', temp: '97.9°F', spO2: '97%', weight: '162 lbs', height: `5'9"` },
     issues: {
@@ -144,6 +144,177 @@ const MOCK_PATIENTS: Patient[] = [
         imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/X-Ray_of_Colles_Fracture.jpg/640px-X-Ray_of_Colles_Fracture.jpg'
       }
     ]
+  },
+  {
+    id: 'p004',
+    name: 'Global Sentinel',
+    age: 72,
+    gender: 'Other',
+    lastVisit: new Date().toISOString().split('T')[0].replace(/-/g, '.'),
+    preexistingConditions: [],
+    patientGoals: 'Evaluate global mortality risks and complex multimorbidity presentation.',
+    vitals: { bp: '155/95', hr: '88', temp: '98.6°F', spO2: '92%', weight: '185 lbs', height: `5'8"` },
+    issues: {
+      'full_body': [{
+        id: 'full_body',
+        noteId: 'note_p004_full_1',
+        name: 'Systemic Health',
+        painLevel: 5,
+        description: 'Patient exhibits clinical signs or risks associated with the top 10 global causes of death based on WHO 2021 estimates.',
+        symptoms: [
+          { name: 'Ischaemic heart disease', type: 'Cardiovascular', verified: true, timeline: 'Chronic' },
+          { name: 'COVID-19', type: 'Respiratory/Infectious', verified: true, timeline: 'Acute/Chronic' },
+          { name: 'Stroke', type: 'Neurological/Cardiovascular', verified: true, timeline: 'Acute' },
+          { name: 'Chronic obstructive pulmonary disease (COPD)', type: 'Respiratory', verified: true, timeline: 'Chronic' },
+          { name: 'Lower respiratory infections', type: 'Respiratory/Infectious', verified: true, timeline: 'Acute' },
+          { name: 'Trachea, bronchus, and lung cancers', type: 'Oncology', verified: true, timeline: 'Chronic' },
+          { name: 'Alzheimer\'s disease and other dementias', type: 'Neurological', verified: true, timeline: 'Progressive' },
+          { name: 'Diabetes mellitus', type: 'Metabolic', verified: true, timeline: 'Chronic' },
+          { name: 'Kidney diseases', type: 'Renal', verified: true, timeline: 'Chronic' },
+          { name: 'Hypertensive heart disease', type: 'Cardiovascular', verified: true, timeline: 'Chronic' }
+        ]
+      }]
+    },
+    history: [
+      {
+        type: 'Visit',
+        date: new Date().toISOString().split('T')[0].replace(/-/g, '.'),
+        summary: 'Comprehensive review of multimorbidity indicators.',
+        state: {
+          patientGoals: 'Evaluate global mortality risks.',
+          vitals: { bp: '155/95', hr: '88', temp: '98.6°F', spO2: '92%', weight: '185 lbs', height: `5'8"` },
+          issues: {}
+        }
+      }
+    ],
+    bookmarks: [],
+    scans: []
+  },
+  {
+    id: 'p005',
+    name: 'CDC Sentinel',
+    age: 78,
+    gender: 'Other',
+    lastVisit: new Date().toISOString().split('T')[0].replace(/-/g, '.'),
+    preexistingConditions: [],
+    patientGoals: 'Evaluate US mortality risks and complex multimorbidity presentation.',
+    vitals: { bp: '148/92', hr: '82', temp: '98.4°F', spO2: '94%', weight: '195 lbs', height: `5'9"` },
+    issues: {
+      'full_body': [{
+        id: 'full_body',
+        noteId: 'note_p005_full_1',
+        name: 'Systemic Health',
+        painLevel: 6,
+        description: 'Patient exhibits clinical signs or risks associated with the top 10 leading causes of death in the US based on CDC 2023 provisional data.',
+        symptoms: [
+          { name: 'Heart disease', type: 'Cardiovascular', verified: true, timeline: 'Chronic' },
+          { name: 'Cancer', type: 'Oncology', verified: true, timeline: 'Chronic' },
+          { name: 'Unintentional injuries', type: 'Trauma', verified: true, timeline: 'Acute' },
+          { name: 'Stroke (cerebrovascular diseases)', type: 'Neurological/Cardiovascular', verified: true, timeline: 'Acute' },
+          { name: 'Chronic lower respiratory diseases', type: 'Respiratory', verified: true, timeline: 'Chronic' },
+          { name: 'Alzheimer\'s disease', type: 'Neurological', verified: true, timeline: 'Progressive' },
+          { name: 'Diabetes mellitus', type: 'Metabolic', verified: true, timeline: 'Chronic' },
+          { name: 'Nephritis, nephrotic syndrome, and nephrosis', type: 'Renal', verified: true, timeline: 'Chronic' },
+          { name: 'Chronic liver disease and cirrhosis', type: 'Hepatic', verified: true, timeline: 'Chronic' },
+          { name: 'COVID-19', type: 'Respiratory/Infectious', verified: true, timeline: 'Acute/Chronic' }
+        ]
+      }]
+    },
+    history: [
+      {
+        type: 'Visit',
+        date: new Date().toISOString().split('T')[0].replace(/-/g, '.'),
+        summary: 'Comprehensive review of leading national mortality indicators.',
+        state: {
+          patientGoals: 'Evaluate national mortality risks.',
+          vitals: { bp: '148/92', hr: '82', temp: '98.4°F', spO2: '94%', weight: '195 lbs', height: `5'9"` },
+          issues: {}
+        }
+      }
+    ],
+    bookmarks: [],
+    scans: []
+  },
+  {
+    id: 'p006',
+    name: 'Pediatric Sentinel',
+    age: 4,
+    gender: 'Male',
+    lastVisit: new Date().toISOString().split('T')[0].replace(/-/g, '.'),
+    preexistingConditions: [],
+    patientGoals: 'Evaluate global pediatric mortality risks (Under 5).',
+    vitals: { bp: '95/60', hr: '110', temp: '99.1°F', spO2: '96%', weight: '35 lbs', height: `3'4"` },
+    issues: {
+      'full_body': [{
+        id: 'full_body',
+        noteId: 'note_p006_full_1',
+        name: 'Systemic Health',
+        painLevel: 4,
+        description: 'Patient exhibits clinical signs or risks associated with the top causes of global under-5 child mortality.',
+        symptoms: [
+          { name: 'Preterm birth complications', type: 'Neonatal', verified: true, timeline: 'Chronic' },
+          { name: 'Lower respiratory infections (Pneumonia)', type: 'Respiratory/Infectious', verified: true, timeline: 'Acute' },
+          { name: 'Intrapartum-related events (Birth Asphyxia/Trauma)', type: 'Neonatal/Trauma', verified: true, timeline: 'Acute' },
+          { name: 'Diarrhoeal diseases', type: 'Gastrointestinal/Infectious', verified: true, timeline: 'Acute' },
+          { name: 'Congenital anomalies', type: 'Congenital', verified: true, timeline: 'Chronic' },
+          { name: 'Malaria', type: 'Infectious', verified: true, timeline: 'Acute' }
+        ]
+      }]
+    },
+    history: [
+      {
+        type: 'Visit',
+        date: new Date().toISOString().split('T')[0].replace(/-/g, '.'),
+        summary: 'Comprehensive review of leading pediatric mortality indicators.',
+        state: {
+          patientGoals: 'Evaluate pediatric mortality risks.',
+          vitals: { bp: '95/60', hr: '110', temp: '99.1°F', spO2: '96%', weight: '35 lbs', height: `3'4"` },
+          issues: {}
+        }
+      }
+    ],
+    bookmarks: [],
+    scans: []
+  },
+  {
+    id: 'p007',
+    name: 'Maternal Sentinel',
+    age: 28,
+    gender: 'Female',
+    lastVisit: new Date().toISOString().split('T')[0].replace(/-/g, '.'),
+    preexistingConditions: [],
+    patientGoals: 'Evaluate global maternal mortality risks.',
+    vitals: { bp: '135/85', hr: '90', temp: '98.8°F', spO2: '98%', weight: '165 lbs', height: `5'6"` },
+    issues: {
+      'full_body': [{
+        id: 'full_body',
+        noteId: 'note_p007_full_1',
+        name: 'Systemic Health',
+        painLevel: 7,
+        description: 'Patient exhibits clinical signs or risks associated with the top causes of maternal mortality.',
+        symptoms: [
+          { name: 'Severe bleeding (Hemorrhage)', type: 'Obstetric/Cardiovascular', verified: true, timeline: 'Acute' },
+          { name: 'Infections (Sepsis)', type: 'Infectious', verified: true, timeline: 'Acute' },
+          { name: 'Gestational Hypertension (Pre-eclampsia/Eclampsia)', type: 'Cardiovascular/Obstetric', verified: true, timeline: 'Acute/Chronic' },
+          { name: 'Complications from delivery', type: 'Obstetric', verified: true, timeline: 'Acute' },
+          { name: 'Unsafe abortion complications', type: 'Obstetric/Trauma', verified: true, timeline: 'Acute' }
+        ]
+      }]
+    },
+    history: [
+      {
+        type: 'Visit',
+        date: new Date().toISOString().split('T')[0].replace(/-/g, '.'),
+        summary: 'Comprehensive review of leading maternal mortality indicators.',
+        state: {
+          patientGoals: 'Evaluate maternal mortality risks.',
+          vitals: { bp: '135/85', hr: '90', temp: '98.8°F', spO2: '98%', weight: '165 lbs', height: `5'6"` },
+          issues: {}
+        }
+      }
+    ],
+    bookmarks: [],
+    scans: []
   }
 ];
 

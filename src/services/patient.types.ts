@@ -77,13 +77,21 @@ export const BODY_PART_MAPPING: Record<string, string> = {
     'bottom': 'glutes'
 };
 
+export interface PatientSymptom {
+    name: string;
+    type?: string;
+    verified?: boolean;
+    timeline?: string;
+    [key: string]: any;
+}
+
 export interface BodyPartIssue {
     id: string; // body part id
     noteId: string; // unique note id
     name: string;
     painLevel: number; // 1-10
     description: string;
-    symptoms: string[];
+    symptoms: (string | PatientSymptom)[];
     recommendation?: string;
 }
 
