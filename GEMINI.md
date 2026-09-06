@@ -188,3 +188,36 @@ Every new feature, component, API endpoint, or clinical model shipped in Pocket-
 - **Exact Identifier Matching (Anti-Heuristic CodeQL Substring Warnings)**: Never perform bare substring containment (`"storage.googleapis.com" in collection`) on domain or service identifiers. Use exact equality matching (`any(svc == _GCS_SERVICE_NAME ... for svc in collection)`) to satisfy CodeQL URL substring sanitization rules.
 - **Continuous Monorepo Workspace Lockfile Sync**: Sub-workspace manifests (`companion-apps/avs-therapy/package.json`, `pocketgull_api/package.json`) MUST keep their `overrides` synchronized with root `package.json`. Pre-commit checks enforce `npm audit --audit-level=high` across all workspaces to prevent transitive dependency drift before pushing to GitHub.
 - **Tiered E2E Matrix & 30m CI Execution**: E2E Playwright tests enforce a 30-minute ceiling in CI workflows. Fast PR runs focus on primary browser targets while full multi-device matrices run on release gates.
+
+## PocketGull Typeface Superfamily & Multi-Script "Zero-Tofu" Governance Standard
+- **The 4-Master Superfamily Taxonomy**:
+  - `PocketGull-Chiseltip` (900 Black Display): Parametric physical chisel nib simulation ($w(\varphi) = \sqrt{(a \cos(\varphi - \theta))^2 + (b \sin(\varphi - \theta))^2}$ at $45^\circ$ angle, 1000 UPM) for brand marks and monumental headings.
+  - `PocketGull-Bold` (700 Bold Clinical): High-contrast optical anchor for emergency alerts, telemetry headers, and Snellen 20/20 optotype verification.
+  - `PocketGull-Fineliner` (400 Regular Text): Proportional clinical reading face with deep inktraps, wide apertures, and generous counters for sustained diagnostic intake.
+  - `PocketGullMono-Regular` (400 Monospace Telemetry): Strict 600 UPM fixed pitch with slashed zero, tabular alignment, and zero jitter for biometrics and dosage readouts.
+- **Vision Science & Optotypic Invariants**:
+  - **Louise Sloan 5:1 Aspect Ratio (LogMAR 0.0)**: All critical diagnostic letterforms and numerals resolve cleanly at 5-arcminute visual angle with 1-arcminute stroke details at 50–70 cm viewing distances.
+  - **Herman Bouma Anti-Crowding Spacing ($0.12\text{em}$)**: Inter-character tracking prevents lateral foveal crowding during rapid peripheral scanning.
+- **Universal Multi-Script ISMP Disambiguation Invariants**:
+  - **Latin & Alphanumeric**: Enforce slashed zero (`cv08`), curved lowercase `l` (`cv05`), and serifed capital `I` (`ss02`).
+  - **Canadian Aboriginal Syllabics (UCAS - Inuktitut / Cree)**: Enforce $\Delta$ Rotational Cardinality Invariant ($>30^\circ$ angular separation between orientations), Diacritic Superdot clearance ($1.2\times$ baseline elevation), Coda Final upper-40% elevation, and polysynthetic morphological wrapping.
+  - **Chinuk Pipa / Duployan Shorthand**: Enforce Euclidean Vector Angle Invariant ($>15^\circ$ between phonemic strokes), Circle Vowel Counter-Dilation ($\ge 2.2\times$ stroke width), Kamloops Crossed Saltire delimiter (`𛲟` `U+1BC9F`), and protected LTR BiDi numerals.
+  - **Right-to-Left (Arabic / Hebrew)**: Enforce `<bdi dir="ltr">` dosage isolation to prevent clinical digit reversals (`10 mg` vs `01 mg`).
+  - **Indic & Devanagari**: Enforce unified Shirorekha hanging baseline ($y = 720$) with explicit sub-baseline conjunct clearance.
+  - **Cyrillic**: Enforce anti-homoglyph disambiguation for cross-alphabet pairs (e.g. Cyrillic `а`, `е`, `о`, `р`, `с`, `х` vs Latin counterparts).
+- **Open Science & Permanent Attribution**: The superfamily is released under the SIL Open Font License 1.1 with immutable CERN Zenodo DOI provenance (`10.5281/zenodo.18882512`).
+
+## Type Margin Containment & Multi-Line Wrapping Standard
+- **Zero Horizontal Blowout Invariant**: Typography, testing canvases, specimen cards, and clinical telemetry containers MUST NEVER expand past their container bounds or trigger unconstrained horizontal scrolling.
+- **Mandatory CSS Property Stack**: All text display containers, interactive testers, specimen viewports, and clinical cards MUST strictly enforce:
+  ```css
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  white-space: pre-wrap;
+  text-wrap: pretty;
+  ```
+- **Interactive Testing Areas**: All `contenteditable` inputs and interactive typography sandboxes MUST include `overflow-x: hidden;` and explicit container width caps to ensure multiline line wrapping onto subsequent lines during live typing or multi-script pasting.
+

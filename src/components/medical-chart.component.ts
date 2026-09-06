@@ -260,9 +260,7 @@ import { PatientScansComponent } from './patient-scans.component';
 
           @if(isViewerExpanded()) {
             <div class="body-viewer-container min-h-[500px] sm:min-h-[540px] xl:min-h-[580px] overflow-hidden bg-white dark:bg-black/20 shrink-0 flex flex-col">
-              @defer (on immediate) {
-                <app-body-viewer class="shrink-0 flex-1 flex flex-col"></app-body-viewer>
-              }
+              <app-body-viewer class="shrink-0 flex-1 flex flex-col"></app-body-viewer>
             </div>
           }
         </pocket-gull-card>

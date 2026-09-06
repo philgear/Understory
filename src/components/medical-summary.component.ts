@@ -248,7 +248,7 @@ import { DocDrillService } from '../services/doc-drill.service';
                             </div>
                             <div class="flex items-center gap-2">
                               <span class="text-3xl font-light tracking-tight text-gray-900 dark:text-zinc-100">
-                                {{ (risk.risk_score * 100) | number:'1.0-1' }}%
+                                {{ ((risk.risk_score ?? 0) * 100) | number:'1.0-1' }}%
                               </span>
                               <span class="text-xs text-gray-400 dark:text-zinc-500 font-medium">score</span>
                             </div>

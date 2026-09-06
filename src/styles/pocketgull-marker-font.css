@@ -168,7 +168,7 @@
    ========================================================================== */
 
 :root {
-  --font-pocketgull-notofu: 'PocketGull VF', 'PocketGull', 'Atkinson Hyperlegible', 'Inter', 'Noto Sans', 'WenQuanYi Zen Hei', 'IPA Gothic', 'Noto Sans CJK KR', 'Malgun Gothic', 'Noto Sans Thai', 'Loma', 'Noto Sans Devanagari', 'Noto Sans Bengali', 'Noto Sans Tamil', 'Noto Sans Arabic', 'Noto Sans Hebrew', 'Noto Sans Ethiopic', 'FreeSans', 'Unifont', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-pocketgull-notofu: 'PocketGull VF', 'PocketGull', 'Atkinson Hyperlegible', 'Inter', 'Noto Sans', 'Gadugi', 'Euphemia', 'Noto Sans Canadian Aboriginal', 'SansSerifCollection', 'Noto Sans Duployan', 'WenQuanYi Zen Hei', 'IPA Gothic', 'Noto Sans CJK KR', 'Malgun Gothic', 'Noto Sans Thai', 'Loma', 'Noto Sans Devanagari', 'Noto Sans Bengali', 'Noto Sans Tamil', 'Noto Sans Arabic', 'Noto Sans Hebrew', 'Noto Sans Ethiopic', 'FreeSans', 'Unifont', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-pocketgull-sans: 'PocketGull VF', 'PocketGull', 'Atkinson Hyperlegible', 'Inter', 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 

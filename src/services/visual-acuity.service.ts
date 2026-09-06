@@ -4,6 +4,8 @@
  * ISO 8596:2017 & ANSI Z80.21 visual acuity geometry.
  */
 
+import { Injectable } from '@angular/core';
+
 export interface IOptotypeLine {
   snellenFraction: string; // e.g. "20/200", "20/100", "20/50", "20/40", "20/20", "20/15"
   logMarScore: number;     // e.g. 1.0, 0.7, 0.4, 0.3, 0.0, -0.1
@@ -35,6 +37,9 @@ export interface IExamResult {
   clinicalRecommendations: string[];
 }
 
+@Injectable({
+  providedIn: 'root'
+})
 export class VisualAcuityService {
   /**
    * ETDRS Standard Optotype Scale

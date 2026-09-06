@@ -154,7 +154,8 @@ import { DocDrillService } from '../services/doc-drill.service';
           <div class="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-[#2AA4A0]/40 via-[#F6B12B]/40 to-[#EF6658]/40 border-b border-amber-300/40 dark:border-zinc-700/50"></div>
           
           <div class="text-center mb-3 mt-1 flex flex-col items-center">
-            <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/10 dark:bg-amber-500/20 border border-amber-400/30 text-amber-800 dark:text-amber-300 text-[9.5px] font-bold uppercase tracking-widest mb-2 shadow-2xs">
+            <h1 class="sr-only">PocketGull Clinical Suite</h1>
+            <div role="heading" aria-level="1" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/10 dark:bg-amber-500/20 border border-amber-400/30 text-amber-800 dark:text-amber-300 text-[9.5px] font-bold uppercase tracking-widest mb-2 shadow-2xs">
               <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
               Pocket-Gull Clinician Suite
               <span class="px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-700 dark:text-blue-300 border border-blue-400/40 text-[9px] font-mono font-bold tracking-normal">v{{ appVersion }}</span>
@@ -1495,6 +1496,11 @@ import { DocDrillService } from '../services/doc-drill.service';
     </main>
   `,
   styles: [`
+    :host {
+        display: block;
+        width: 100%;
+        height: 100%;
+    }
     @keyframes origami-unfold {
         0% { transform: scaleY(0.1) rotateX(80deg) rotateZ(-10deg); opacity: 0; }
         60% { transform: scaleY(1.1) rotateX(-15deg) rotateZ(5deg); opacity: 1; }

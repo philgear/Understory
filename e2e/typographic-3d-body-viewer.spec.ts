@@ -8,6 +8,12 @@ test.describe('3D Body Viewer, Typographic Calligramme & Quad-Philosophy Suite',
     await enterDemoMode(page);
     await selectPatientByName(page, 'Alexander Vance');
     await page.setViewportSize({ width: 1440, height: 900 });
+
+    const anatomyTab = page.locator('button', { hasText: /Anatomy/i }).first();
+    if (await anatomyTab.isVisible().catch(() => false)) {
+      await anatomyTab.click().catch(() => {});
+      await page.waitForTimeout(300);
+    }
   });
 
   test('should render 3D Body Viewer with WebGL Canvas and toggle 2D/3D lenses', async ({ page }) => {

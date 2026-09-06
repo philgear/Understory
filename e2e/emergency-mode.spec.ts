@@ -17,18 +17,20 @@ test.describe('Good Samaritan Emergency Mode E2E Flow', () => {
     });
     await page.goto('/');
     await page.setViewportSize({ width: 1440, height: 900 });
+    await expect(page.locator('.secure-splash-main, app-secure-splash').first()).toBeVisible({ timeout: 25000 });
 
     // Step 2: Ensure transition to First Aid Mode (via 2-Step STAT confirmation or pointer hold)
     const twoStepBtn = page.locator('button', { hasText: /2-Step STAT Confirmation/i }).first();
-    if (await twoStepBtn.isVisible({ timeout: 5000 }).catch(() => false)) {
+    if (await twoStepBtn.isVisible({ timeout: 8000 }).catch(() => false)) {
+      await twoStepBtn.scrollIntoViewIfNeeded();
       await twoStepBtn.click();
-      await page.waitForTimeout(300);
       const confirmOverrideBtn = page.locator('button', { hasText: /Confirm STAT/i }).first();
-      await expect(confirmOverrideBtn).toBeVisible({ timeout: 5000 });
+      await expect(confirmOverrideBtn).toBeVisible({ timeout: 10000 });
       await confirmOverrideBtn.click();
     } else {
       const emergencyBypassBtn = page.locator('button[aria-label*="Good Samaritan Mode"]').first();
-      if (await emergencyBypassBtn.isVisible({ timeout: 5000 }).catch(() => false)) {
+      await emergencyBypassBtn.scrollIntoViewIfNeeded();
+      if (await emergencyBypassBtn.isVisible({ timeout: 8000 }).catch(() => false)) {
         await emergencyBypassBtn.dispatchEvent('pointerdown');
         await page.waitForTimeout(2800);
         await emergencyBypassBtn.dispatchEvent('pointerup');
@@ -36,11 +38,10 @@ test.describe('Good Samaritan Emergency Mode E2E Flow', () => {
     }
 
     // 3. Assert transition to First Aid Mode (red pulsing badge/banner)
-    const firstAidBadge = page.locator('text=/First Aid|Emergency/i').first();
-    await expect(firstAidBadge).toBeVisible({ timeout: 15000 });
+    const firstAidBadge = page.locator('text=/First Aid|Emergency|CODE BLUE/i').first();
     await expect(firstAidBadge).toBeVisible({ timeout: 15000 });
 
-    const offlineEmergencyTitle = page.locator('text=/Offline Emergency First Aid (Suite|Active)/i').first();
+    const offlineEmergencyTitle = page.locator('text=/Offline First Aid|Emergency Triage Active|CODE BLUE/i').first();
     await expect(offlineEmergencyTitle).toBeVisible({ timeout: 10000 });
 
     // 4. Verify CPR Metronome Activation

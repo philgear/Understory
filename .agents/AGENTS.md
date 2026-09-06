@@ -118,6 +118,8 @@ Agents MUST delegate specialized and compute/context-heavy tasks according to th
 | **SWE Architecture & Code Review** | `swe-code-reviewer` | • New Angular 22 standalone component additions.<br>• Angular Signal reactive graph design reviews.<br>• Hyrum's Law & Google SWE Book conformance audits. | Verifies single-directional reactive data flow and zero memory leaks. |
 | **Accessibility & Mobile Review** | `flutter_a11y_agent` | • Touch target size validation (<44px hitboxes strictly flagged).<br>• WCAG AAA contrast audits against dark obsidian backgrounds.<br>• ARIA state binding (`[attr.aria-describedby]`, `[attr.aria-invalid]`). | Required for all public-facing UI and mobile screen components. |
 | **K8s & Cloud FinOps Guard** | `k8s-infra-guard` | • Any modification to `k8s/` manifests, `charts/pocketgull/` Helm values, or Agones fleet scaling.<br>• Enforcing `minReplicas: 0` scale-to-zero.<br>• Hardened non-root security contexts and CNCF compliance. | Must run `.agents/skills/gke-finops-optimizer/scripts/audit_k8s_finops.py` to ensure 100% compliance. |
+| **Typefoundry & Vector Engineering** | `typefoundry-engineer` | • OpenType font binary inspection, UPM grid calibration, and TrueType bytecode verification.<br>• Generating 300 DPI master print specimen plates (Triad).<br>• Running OTS / Google Fonts preflight tests. | Must enforce 1000 UPM grid, 0 duplicate nodes, and zero composite glyphs. |
+| **Multi-Script & Sovereign Linguistics** | `multi-script-linguist` | • Authoring phonological matrices and glyph mapping specs.<br>• Verifying rotational symmetry and diacritic elevation clearance (UCAS / Duployan).<br>• Enforcing UAX #9 BiDi numeric dosage isolation. | Prohibits un-grounded phonetic distortion or cultural appropriation. |
 
 ### Subagent Escalation Invariants:
 1. **Single-Turn Synthesis**: Subagents must return actionable conclusions, verified diffs, or structured findings in a single response. Prohibit multi-turn ping-pong loops between subagents.
@@ -228,6 +230,31 @@ Every new feature, component, API endpoint, or clinical model shipped in Pocket-
 | **Falsifiability (Skeptical CDS)** | The system MUST warn clinicians when empirical evidence is weak ($p \ge 0.05$) or risk of bias is high rather than hallucinating false certainty. | `SkepticalEpistemologyService` & `SkepticalEpistemologyHud` ($H_0$ rejection tests). |
 | **Interoperability (Zero Lock-In)** | Patient data and clinical plans MUST be exportable in open, standard formats that any competitor, hospital, or open-source EHR can parse. | Universal **HL7 FHIR R4 Bundle** export (`fhir.serializer.ts`) & WebMCP OpenAPI schemas. |
 | **Safety Boundary (Human-in-the-Loop)** | High-impact actions, prescriptions, and financial transactions $\ge \$500$ MUST require affirmative clinician review and digital attestation. | FDA CDSR Notice & `MandiantClinicalDefenseService` Dual-Custody M-of-N signatures. |
+
+## Typefoundry Procedural Engineering & Font Tooling Hygiene Standard (Randal L. Schwartz Standard)
+- **Directory-Pinned Environment Execution (`uv` Isolation)**: Root and host workspaces do not contain font compiler binaries (`fonttools`, `ots`). All font engineering, binary inspection, and validation commands MUST explicitly specify the typeface directory environment:
+  ```powershell
+  uv --directory ../pocketgull-typeface run python sources/validate_fonts.py
+  ```
+- **Dart Raw String Template Invariant**: When generating vector specimens, SVG layouts, or XML documents via Dart scripts (`dart run tool/...`), ALWAYS declare multiline strings using raw template delimiters (`r'''...'''`) or escape every literal dollar sign (`\$`). Unescaped `$` inside standard Dart strings triggers compile-time interpolation crashes.
+- **Headless Vector Rasterization (Inkscape CLI)**:
+  - Never include SVG `<filter>` tags with `<feDropShadow>` in SVGs intended for headless CLI rasterization (`inkscape --export-filename=...`); headless CLI render engines drop these elements or crash. Use geometric SVG shadow rect primitives.
+  - Rely exclusively on fontconfig system font families or explicit path declarations in SVG `@style` blocks.
+
+## Typographic SemVer 2.0.0 & 5-Phase Zero-Tofu Release Protocol
+- **SemVer 2.0.0 for Typefoundry Software**:
+  - **Major (`X.0.0`)**: Any breaking metric shift altering baseline, UPM (1000), ascenders/descenders (`hhea`, `OS/2`), or advance widths of existing characters causing reflow in existing documents. Also denotes major script tier milestones (e.g. Tier 1 complete).
+  - **Minor (`x.Y.0`)**: Purely additive language additions (e.g., Inuktitut `v2.1.0`, Chinuk Pipa `v2.2.0`), new script coverage, or new OpenType features (`ss03`, `dlig`).
+  - **Patch (`x.y.Z`)**: Optical vector smoothing, inktrap depth calibrations, kerning pair adjustments, and validator rule updates.
+- **The 5-Phase Zero-Tofu Release Gate**:
+  1. *Phonological Matrix Definition*: Codify the complete orthography, phoneme mappings, and Unicode block range into `fonts/<lang>_matrix.json`.
+  2. *Procedural Vector Synthesis*: Generate TTF contours via parametric physical equations adhering to 1000 UPM grid, 0 duplicate nodes, and integer coordinates.
+  3. *34/34 Pre-Flight Verification*: Run `sources/validate_fonts.py` ensuring 100% pass rate across OpenType tables, cmap coverage, and OTS memory safety.
+  4. *300 DPI Landmark Architectural Triad*: Produce high-resolution master print plates:
+     - Plate 1: *Type Engineering Specimen* (UPM grid, bezier vectors, inktrap optics)
+     - Plate 2: *Telemetry Type Specimen* (Dark HUD, biometric telemetry, ISMP disambiguation)
+     - Plate 3: *Pedagogical Typeface Plate* (Washi parchment, cultural sovereignty, phonological matrix)
+  5. *CERN Zenodo Immutable Archival*: Tag release commit, generate GitHub release asset bundle, and mint/update persistent DOI (`10.5281/zenodo.18882512`).
 
 ## Clinical, Typographic & Security Canonical Reference
 - For core clinical & ophthalmological standards (LogMAR 0.0, ISMP/FDA dosage disambiguation, WCAG AAA 7:1), Marker font brand boundary, Amazon affiliate egress limits, anti-whaling dual-custody protocols, Tailwind CSS tokens, Five Eyes regulatory mapping, institutional thin-client resilience, and "Tell, Don't Ask" domain encapsulation, refer to the canonical root [GEMINI.md](file:///c:/Users/philg/Pocketgull/pocketgull/GEMINI.md).

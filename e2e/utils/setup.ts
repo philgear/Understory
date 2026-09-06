@@ -30,7 +30,11 @@ export async function setupE2ePage(page: Page, options: { mockClinician?: boolea
       try {
         const val = await arg.jsonValue();
         if (val && typeof val === 'object') {
-          parts.push(JSON.stringify(val));
+          if (val.message || val.stack) {
+            parts.push(`${val.name || 'Error'}: ${val.message}\n${val.stack || ''}`);
+          } else {
+            parts.push(JSON.stringify(val));
+          }
         } else {
           parts.push(val);
         }
@@ -113,11 +117,13 @@ export async function setupE2ePage(page: Page, options: { mockClinician?: boolea
         status: 200,
         contentType: 'application/json',
         body: JSON.stringify({
-          score: 0.35,
+          risk_score: 0.15,
+          score: 0.15,
           confidence: 0.95,
-          risk_level: 'MODERATE',
-          model_version: 'nnx_v1',
-          risk_factors: ['Borderline SBP'],
+          risk_level: 'low',
+          contributing_factors: ['Normal baseline vitals'],
+          risk_factors: ['Normal baseline vitals'],
+          note: 'Routine monitoring',
           recommendations: ['Routine monitoring']
         })
       });

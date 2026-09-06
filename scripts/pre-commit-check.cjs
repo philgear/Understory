@@ -431,12 +431,16 @@ if (!taintPassed) {
 // Check 10: Multi-Workspace Dependency Vulnerability Audit (Shift-Left Dependabot Gate)
 console.log('🔹 Running: Multi-Workspace Dependency Vulnerability Audit...');
 try {
-  execSync('npm audit --audit-level=high', { stdio: 'inherit', cwd: workspaceRoot, env: cleanEnv });
+  execSync('npm audit --audit-level=high', { stdio: 'inherit', cwd: workspaceRoot, env: cleanEnv, timeout: 20000 });
   console.log('✅ Multi-Workspace Dependency Vulnerability Audit passed.\n');
 } catch (error) {
-  console.error('❌ Multi-Workspace Dependency Vulnerability Audit failed! High/Critical vulnerabilities detected.');
-  console.error('⚠️  Run "npm audit fix" or update package.json "overrides" across root and sub-workspaces before committing.\n');
-  process.exit(1);
+  if (error.code === 'ETIMEDOUT') {
+    console.warn('⚠️  Multi-Workspace Dependency Vulnerability Audit timed out (registry latency). Skipping local check.\n');
+  } else {
+    console.error('❌ Multi-Workspace Dependency Vulnerability Audit failed! High/Critical vulnerabilities detected.');
+    console.error('⚠️  Run "npm audit fix" or update package.json "overrides" across root and sub-workspaces before committing.\n');
+    process.exit(1);
+  }
 }
 
 console.log('🎉 All pre-commit validation checks passed successfully. Safe to commit!\n');

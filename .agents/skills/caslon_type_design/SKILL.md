@@ -39,25 +39,35 @@ This skill establishes the **Type Design Department** for PocketGull, inspired b
 ## 🎨 Master Font Stack Hierarchy
 
 ```css
-/* 1. Clinical Sans-Serif Body & UI Elements */
-font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+/* 1. PocketGull Native Clinical & Telemetry Superfamily */
+/* Display Headings & Brand Mark: PocketGull-Chiseltip (900) */
+font-family: 'PocketGull-Chiseltip', 'Outfit', sans-serif;
+font-weight: 900;
+letter-spacing: -0.025em;
+line-height: 1.2;
+
+/* High-Contrast Clinical Alerts: PocketGull-Bold (700) */
+font-family: 'PocketGull-Bold', 'Inter', sans-serif;
+font-weight: 700;
+letter-spacing: -0.015em;
+line-height: 1.35;
+
+/* Primary Clinical Body & Diagnostic Intake: PocketGull-Fineliner (400) */
+font-family: 'PocketGull-Fineliner', 'Inter', -apple-system, sans-serif;
+font-weight: 400;
 line-height: 1.55;
 letter-spacing: -0.011em;
 
-/* 2. Display Headings & Branding Marks */
-font-family: 'Outfit', 'Plus Jakarta Sans', 'Inter', sans-serif;
-font-weight: 800;
-letter-spacing: -0.025em;
-line-height: 1.25;
+/* Telemetry, Biometrics & Dosage Readouts: PocketGullMono-Regular (400 fixed 600 UPM) */
+font-family: 'PocketGullMono-Regular', 'JetBrains Mono', monospace;
+font-feature-settings: "cv08", "cv05", "ss02", "tnum";
+font-variant-numeric: tabular-nums;
+line-height: 1.4;
 
-/* 3. Formal Clinical & Heritage Reports (Caslon Serif) */
+/* 2. Formal Clinical & Heritage Reports (Caslon Serif) */
 font-family: 'Libre Caslon Text', 'Georgia', 'Times New Roman', serif;
 line-height: 1.65;
 letter-spacing: -0.012em;
-
-/* 4. Telemetry & Monospace Readouts */
-font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
-font-feature-settings: "zero", "ss01", "ss02";
 ```
 
 ---

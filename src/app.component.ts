@@ -551,11 +551,7 @@ import { DocDrillDrawerComponent } from './components/shared/doc-drill-drawer.co
                [class.hidden]="isChartCollapsed()"
                [class.max-md:hidden]="mobileActiveTab() !== 'chart' && !state.isSparkModeActive()">
                <div class="md:h-full w-full md:overflow-hidden flex-1 flex flex-col min-h-0">
-                 @defer {
-                   <app-medical-chart class="no-print md:h-full block md:overflow-y-auto w-full max-md:overflow-visible"></app-medical-chart>
-                 } @placeholder {
-                   <div class="h-full w-full flex items-center justify-center text-zinc-400 text-xs uppercase tracking-widest font-bold">Loading Chart Engine...</div>
-                 }
+                  <app-medical-chart class="no-print md:h-full block md:overflow-y-auto w-full max-md:overflow-visible"></app-medical-chart>
                </div>
             </div>
 
