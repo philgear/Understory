@@ -2,7 +2,7 @@
 # Optimized Serverless WordPress Container for Google Cloud Run
 # Target Project: gen-lang-client-0540208645
 
-FROM wordpress:6.5-php8.2-apache
+FROM wordpress:7.1-php8.2-apache
 
 # Configure Apache port for Google Cloud Run (default port 8080)
 RUN sed -i 's/80/8080/g' /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf
