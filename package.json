@@ -168,7 +168,7 @@
     "@genkit-ai/google-genai": "^1.42.0",
     "@google-cloud/agones-sdk": "^1.58.0",
     "@google-cloud/bigquery": "^8.3.1",
-    "@google-cloud/secret-manager": "^6.3.0",
+    "@google-cloud/secret-manager": "^7.0.0",
     "@google/adk": "^2.0.0",
     "@google/genai": "^2.21.0",
     "@mcp-b/webmcp-polyfill": "^2.2.0",
