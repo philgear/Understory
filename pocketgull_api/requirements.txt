@@ -5,7 +5,7 @@
 fastapi==0.141.1
 uvicorn==0.52.0
 pydantic==2.13.4
-numpy==2.5.1
+numpy==2.5.2
 
 # JAX & Deep Learning Stack
 jax>=0.4.30
