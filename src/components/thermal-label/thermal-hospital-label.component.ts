@@ -134,6 +134,18 @@ import { ClinicalProvenanceService, IClinicalTranslationReceipt } from '../../se
                 </span>
               </div>
               <div class="flex justify-between items-center">
+                <span class="text-[10px] font-bold text-zinc-600">🇮🇳 Devanagari:</span>
+                <span class="font-bold text-zinc-900 text-[13px] leading-tight" style="font-family: 'PocketGull Devanagari', 'Nirmala UI', sans-serif;">
+                  मात्रा: <bdi dir="ltr" class="font-mono">2000 mg</bdi> प्रति 8 घंटे • ⌀18G
+                </span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-[10px] font-bold text-zinc-600">🌲 Cree (UCAS):</span>
+                <span class="font-bold text-zinc-900 text-[12.5px] leading-tight" style="font-family: 'PocketGull Inuktitut', 'Euphemia', sans-serif;">
+                  ᒥᓂᑫᐧᐃᐧᐣ: 2000 mg 8 ᑎᐸᐦᐃᑲᐣ • ⌀18G
+                </span>
+              </div>
+              <div class="flex justify-between items-center">
                 <span class="text-[10px] font-bold text-zinc-600">🇨🇳 中文:</span>
                 <span class="font-bold text-zinc-900 text-[11px]" style="font-family: 'PocketGull', sans-serif;">
                   头孢唑林 2克 静脉注射 • 剂量: 2000 mg
