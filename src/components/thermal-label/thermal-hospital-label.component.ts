@@ -101,30 +101,42 @@ import { ClinicalProvenanceService, IClinicalTranslationReceipt } from '../../se
               </div>
             </div>
 
-            <!-- Multilingual Emergency Crosswalks -->
-            <div class="border-t border-dashed border-zinc-400 pt-1.5 text-[11px] space-y-1">
+            <!-- Multilingual Emergency Crosswalks (ETDRS 1:5 Apertures Survive Thermal Bleed) -->
+            <div class="border-t border-dashed border-zinc-400 pt-1.5 text-[11px] space-y-1.5">
               <div class="flex justify-between items-center">
-                <span class="text-[10px] font-bold text-zinc-600">🇨🇳 中文:</span>
-                <span class="font-bold text-zinc-900" style="font-family: 'PocketGull', sans-serif;">
-                  头孢唑林 2克 静脉注射 • 血压 120/80
+                <span class="text-[10px] font-bold text-zinc-600">🇨🇦 Inuktitut:</span>
+                <span class="font-bold text-zinc-900 text-[12px] leading-tight" style="font-family: 'PocketGull', 'Euphemia', sans-serif;">
+                  ᑐᓂᔭᐅᓂᖓ: 2000 mg 8 ᐃᑲᕐᕋᓂᒃ • ⌀18G IV
                 </span>
               </div>
-              <div class="flex justify-between items-center" dir="rtl">
-                <span class="text-[10px] font-bold text-zinc-600 font-sans">🇸🇦 عربي:</span>
-                <span class="font-bold text-zinc-900" style="font-family: 'PocketGull', sans-serif;">
-                  سيفازولين 2 غرام وريديا • ضغط: <bdi dir="ltr" class="font-mono">120/80</bdi>
+              <div class="flex justify-between items-center">
+                <span class="text-[10px] font-bold text-zinc-600">🪶 Cherokee:</span>
+                <span class="font-bold text-zinc-900 text-[12.5px] leading-tight" style="font-family: 'PocketGull', 'Gadugi', sans-serif;">
+                  ᎠᏟᎶᎥᎢ: 2000 mg 8 ᎢᏳᏟᎶᏛ • ⌀18G ᎩᎦ
+                </span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-[10px] font-bold text-zinc-600">ⵣ Tifinagh:</span>
+                <span class="font-bold text-zinc-900 text-[12px] leading-tight" style="font-family: 'PocketGull', 'Ebrima', sans-serif;">
+                  ⵜⴰⵙⴽⴼⵍⵜ: 2000 mg 8 ⵜⵙⵔⴰⴳⵉⵏ • ⌀18G IV
                 </span>
               </div>
               <div class="flex justify-between items-center" dir="rtl">
                 <span class="text-[10px] font-bold text-zinc-600 font-sans">🇮🇱 עברית:</span>
-                <span class="font-bold text-zinc-900" style="font-family: 'PocketGull', sans-serif;">
-                  צפזולין 2 גרם דרך הוריד • דם (90° ד)
+                <span class="font-bold text-zinc-900 text-[12px] leading-tight" style="font-family: 'PocketGull', 'Noto Sans Hebrew', sans-serif;">
+                  מינון: <bdi dir="ltr" class="font-mono">2000 mg</bdi> כל 8 שעות • ⌀18G
+                </span>
+              </div>
+              <div class="flex justify-between items-center" dir="rtl">
+                <span class="text-[10px] font-bold text-zinc-600 font-sans">🇸🇦 عربي:</span>
+                <span class="font-bold text-zinc-900 text-[12px] leading-tight" style="font-family: 'Noto Sans Arabic', 'PocketGull', sans-serif;">
+                  الجرعة: <bdi dir="ltr" class="font-mono">2000 mg</bdi> كل 8 ساعات • ⌀18G
                 </span>
               </div>
               <div class="flex justify-between items-center">
-                <span class="text-[10px] font-bold text-zinc-600">🌐 Cyrillic:</span>
-                <span class="font-bold text-zinc-900" style="font-family: 'PocketGull', sans-serif;">
-                  Цефазолин 2 г в/в • Сердце • АД 120/80
+                <span class="text-[10px] font-bold text-zinc-600">🇨🇳 中文:</span>
+                <span class="font-bold text-zinc-900 text-[11px]" style="font-family: 'PocketGull', sans-serif;">
+                  头孢唑林 2克 静脉注射 • 剂量: 2000 mg
                 </span>
               </div>
             </div>
