@@ -3296,17 +3296,19 @@ export class AnalysisReportComponent implements OnDestroy {
         this.hoverTimerId = null;
       }
 
-      if (partId) {
-        this.cancelCloseTimer();
-        this.hoverTimerId = window.setTimeout(() => {
-          this.state.selectedPartId.set(partId);
-          if (viewMode) {
-            this.state.anatomyViewMode.set(viewMode);
-          }
-          this.showFloating3dOverlay.set(true);
-        }, 5000);
-      } else {
-        this.startCloseTimer();
+      if (typeof window !== 'undefined') {
+        if (partId) {
+          this.cancelCloseTimer();
+          this.hoverTimerId = window.setTimeout(() => {
+            this.state.selectedPartId.set(partId);
+            if (viewMode) {
+              this.state.anatomyViewMode.set(viewMode);
+            }
+            this.showFloating3dOverlay.set(true);
+          }, 5000);
+        } else {
+          this.startCloseTimer();
+        }
       }
     });
 
@@ -3392,9 +3394,11 @@ export class AnalysisReportComponent implements OnDestroy {
 
   startCloseTimer() {
     this.cancelCloseTimer();
-    this.closeTimerId = window.setTimeout(() => {
-      this.closeOverlay();
-    }, 2000);
+    if (typeof window !== 'undefined') {
+      this.closeTimerId = window.setTimeout(() => {
+        this.closeOverlay();
+      }, 2000);
+    }
   }
 
   cancelCloseTimer() {
