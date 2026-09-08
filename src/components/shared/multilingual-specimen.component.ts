@@ -299,7 +299,8 @@ export interface IGlyphAnalysis {
               </div>
 
               <div 
-                class="font-pocketgull-notofu text-zinc-100 transition-all selection:bg-amber-500 selection:text-zinc-950"
+                class="font-pocketgull-notofu text-zinc-100 transition-all selection:bg-amber-500 selection:text-zinc-950 break-words [unicode-bidi:isolate]"
+                [attr.dir]="item.direction"
                 [style.font-size.px]="fontSize()"
                 [style.font-weight]="weight()"
                 [style.letter-spacing.em]="letterSpacing()"
@@ -626,7 +627,7 @@ export class MultilingualSpecimenComponent {
       flag: '🇸🇦',
       fallback: 'FreeSans / Noto Sans Arabic',
       direction: 'rtl',
-      text: 'العلامات الحيوية للمريض طبيعية: نبض القلب 72 دقيقة، ضغط الدم 120/80 ملم زئبق، تشبع الأكسجين 99%. لا توجد علامات نقص تروية حاد. تم تحديث خطة الرعاية.'
+      text: 'العلامات الحيوية للمريض طبيعية: معدل نبض القلب 72 نبضة في الدقيقة، ضغط الدم 120/80 ملم زئبق، تشبع الأكسجين 99%. لا توجد علامات نقص تروية حاد. تم تحديث خطة الرعاية.'
     },
     {
       id: 'he',

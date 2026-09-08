@@ -288,13 +288,13 @@ export class EnvironmentalExposomicsToxicologyComponent {
           antidoteOrders: [
             {
               drug: 'Atropine Sulfate',
-              dose: '2.0 mg IV push every 3-5 min',
+              dose: '2 mg IV push every 3-5 min',
               route: 'IV',
               endpoint: 'Clearance of bronchial secretions & HR > 60 bpm'
             },
             {
               drug: 'Pralidoxime Chloride (2-PAM)',
-              dose: '1.0 - 2.0 g in 100 mL NS over 15-30 min',
+              dose: '1 - 2 g in 100 mL NS over 15-30 min',
               route: 'IV Infusion',
               endpoint: 'Reversal of skeletal muscle fasciculations & neuromuscular blockade'
             }
@@ -320,7 +320,7 @@ export class EnvironmentalExposomicsToxicologyComponent {
           antidoteOrders: [
             {
               drug: 'Magnesium Sulfate',
-              dose: '2.0 g in 50 mL D5W over 10 min',
+              dose: '2 g in 50 mL D5W over 10 min',
               route: 'IV',
               endpoint: 'Suppression of polymorphic VT / Torsades de pointes'
             },
@@ -350,7 +350,7 @@ export class EnvironmentalExposomicsToxicologyComponent {
           antidoteOrders: [
             {
               drug: 'Naloxone HCl',
-              dose: '0.4 - 2.0 mg IV / IM / IN',
+              dose: '0.4 - 2 mg IV / IM / IN',
               route: 'IN / IV',
               endpoint: 'Spontaneous respiratory rate > 12/min without precipitating acute withdrawal storm'
             }
@@ -376,13 +376,13 @@ export class EnvironmentalExposomicsToxicologyComponent {
           antidoteOrders: [
             {
               drug: 'Physostigmine Salicylate',
-              dose: '0.5 - 2.0 mg slow IV over 5 min',
+              dose: '0.5 - 2 mg slow IV over 5 min',
               route: 'IV',
               endpoint: 'Reversal of severe peripheral & central anticholinergic delirium (confirm normal ECG QTc first)'
             },
             {
               drug: 'Lorazepam',
-              dose: '1.0 - 2.0 mg IV every 15 min PRN',
+              dose: '1 - 2 mg IV every 15 min PRN',
               route: 'IV',
               endpoint: 'Agitation control and seizure prevention'
             }

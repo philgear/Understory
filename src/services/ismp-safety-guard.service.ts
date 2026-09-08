@@ -103,6 +103,11 @@ export class IsmpSafetyGuardService {
       pattern: /\bMgSO4\b/g,
       replacement: 'magnesium sulfate',
       description: 'Confused with MSO4. Write "magnesium sulfate".'
+    },
+    {
+      pattern: /\b(\d+(?:\.\d+)?)\s*(?:µg|ug)\b/gi,
+      replacement: '$1 mcg',
+      description: 'Mistaken as mg (milligrams), causing 1,000-fold overdose. Write "mcg".'
     }
   ];
 
