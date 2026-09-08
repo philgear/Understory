@@ -673,8 +673,8 @@ export type MolecularParadigm = 'llps' | 'protac' | 'quantum' | 'mof' | 'microtu
                      class="w-full accent-teal-500 cursor-pointer" />
               <div class="flex justify-between text-[10px] text-zinc-500 font-mono">
                 <span>0.1 μM (Physiological)</span>
-                <span>5.0 μM (Therapeutic)</span>
-                <span>20.0 μM (Saturation)</span>
+                <span>5 μM (Therapeutic)</span>
+                <span>20 μM (Saturation)</span>
               </div>
             </div>
 

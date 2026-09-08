@@ -146,7 +146,7 @@ export const CANNABINOID_MICROTUBULE_PROFILES: Record<CannabinoidCompoundType, I
     chemicalFormula: 'C₂₁H₃₀O₂',
     molecularWeightGPerMol: 314.47,
     pubchemCid: 644019,
-    receptorTarget: 'TRPV1 (EC50=1.0 μM), 5-HT1A, GPR55, VDAC1 & Direct Microtubule Lattice Intercalation',
+    receptorTarget: 'TRPV1 (EC50=1 μM), 5-HT1A, GPR55, VDAC1 & Direct Microtubule Lattice Intercalation',
     mechanismOfAction: 'Direct high-affinity intercalator at the inter-dimer interface; potent antioxidant and SIRT2 regulator maintaining α-tubulin Lys40 acetylation.',
     directTubulinKdMicroMolar: 2.8,
     gsk3BetaInhibitionPercent: 74.5,

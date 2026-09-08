@@ -53,7 +53,13 @@ describe('IsmpSafetyGuardService - ISMP / FDA Pharmacological Safety Suite', () 
     expect(audit.sanitizedText).toContain('hydrALAZINE 25 mg daily with morPHINE sulfate 0.5 mg');
   });
 
-  it('6. Passes clean prescription orders without false-positive violation flags', () => {
+  it('6. Normalizes dangerous microgram abbreviations (ug and µg) to mcg', () => {
+    const input = 'Administer levothyroxine 50 ug and fentanyl 25 µg IV';
+    const output = service.sanitizeClinicalDosage(input);
+    expect(output).toBe('Administer levothyroxine 50 mcg and fentanyl 25 mcg IV');
+  });
+
+  it('7. Passes clean prescription orders without false-positive violation flags', () => {
     const cleanOrder = 'Give metFORMIN 500 mg daily with dinner';
     const audit = service.auditPrescription(cleanOrder);
 
