@@ -6,7 +6,6 @@ import { PatientDropdownComponent } from './components/patient-dropdown.componen
 import { PatientStateService, BODY_PART_NAMES } from './services/patient-state.service';
 import { ResearchFrameComponent } from './components/research-frame.component';
 import { MedicalChartComponent } from './components/medical-chart.component';
-import { VisitReviewComponent } from './components/visit-review.component';
 import { AnalysisContainerComponent } from './components/analysis-container.component';
 import { DictationModalComponent } from './components/modals/dictation-modal.component';
 import { TaskFlowComponent } from './components/task-flow.component';
@@ -42,7 +41,6 @@ import { WebMcpRegistrationService } from './services/webmcp-registration.servic
 import { PetAuditoryService } from './services/pet-auditory.service';
 import { StressInterventionService } from './services/stress-intervention.service';
 import { CollaborationService } from './services/collaboration.service';
-import { CollaborationDockComponent } from './components/collaboration-dock.component';
 import { GamificationService } from './services/gamification.service';
 import { SwUpdate, VersionEvent } from '@angular/service-worker';
 import { FitbitService } from './services/hardware/fitbit.service';
