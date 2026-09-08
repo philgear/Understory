@@ -87,6 +87,9 @@ import { ClinicalTrajectoryReaderModalComponent } from './components/modals/clin
 import { AustereResearchHudComponent } from './components/austere-research-hud/austere-research-hud.component';
 import { AppLicensingGuardService } from './services/app-licensing-guard.service';
 import { DocDrillDrawerComponent } from './components/shared/doc-drill-drawer.component';
+import { CollaborationDockComponent } from './components/collaboration-dock.component';
+import { KneeHologramHudComponent } from './components/knee-hologram-hud.component';
+import { ResearchDataDividendComponent } from './components/research-data-dividend.component';
 
 @Component({
   selector: 'app-root',
@@ -150,7 +153,10 @@ import { DocDrillDrawerComponent } from './components/shared/doc-drill-drawer.co
     CmsRpmSuperbillModalComponent,
     ClinicalTrajectoryReaderModalComponent,
     AustereResearchHudComponent,
-    DocDrillDrawerComponent
+    DocDrillDrawerComponent,
+    CollaborationDockComponent,
+    KneeHologramHudComponent,
+    ResearchDataDividendComponent
   ],
   providers: [],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -456,6 +462,9 @@ import { DocDrillDrawerComponent } from './components/shared/doc-drill-drawer.co
 
         <app-main-header-nav
           (openTuringSuite)="navShell.selectTab('analysis')"
+          (openSocraticRounds)="navShell.selectTab('analysis')"
+          (openKneeHologram)="showKneeHologramModal.set(true)"
+          (openResearchDividend)="showResearchDividendModal.set(true)"
           (openBarrowsWorkbench)="navShell.openBarrowsWorkbench()"
           (openSocraticIntake)="state.toggleSocraticIntake(true)"
           (openModelGarden)="showModelGardenModal.set(true)"
@@ -1301,6 +1310,44 @@ import { DocDrillDrawerComponent } from './components/shared/doc-drill-drawer.co
         <app-austere-research-hud (close)="showAustereHudModal.set(false); navShell.closeAustereHud()"></app-austere-research-hud>
       </div>
     }
+
+    <!-- 3D Joint Hologram & Tri-Plane Slicer Modal -->
+    @if (showKneeHologramModal()) {
+      <div class="fixed inset-0 z-[9999] bg-black/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto animate-in fade-in duration-200 no-print" role="dialog" aria-modal="true" aria-label="3D Holographic Joint Viewer">
+        <div class="relative w-full max-w-5xl my-auto">
+          <button
+            type="button"
+            (click)="showKneeHologramModal.set(false)"
+            class="absolute -top-3 -right-3 sm:-top-4 sm:-right-4 w-9 h-9 rounded-full bg-zinc-900 text-zinc-300 hover:text-white border border-zinc-700 flex items-center justify-center text-sm font-bold shadow-2xl z-10 cursor-pointer focus-visible:ring-2 focus-visible:ring-cyan-400"
+            aria-label="Close 3D Hologram">
+            ✕
+          </button>
+          <app-knee-hologram-hud />
+        </div>
+      </div>
+    }
+
+    <!-- Ethical Patient Research Data Dividend Modal -->
+    @if (showResearchDividendModal()) {
+      <div class="fixed inset-0 z-[9999] bg-black/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto animate-in fade-in duration-200 no-print" role="dialog" aria-modal="true" aria-label="Ethical Research Data Dividend">
+        <div class="relative w-full max-w-5xl my-auto">
+          <button
+            type="button"
+            (click)="showResearchDividendModal.set(false)"
+            class="absolute -top-3 -right-3 sm:-top-4 sm:-right-4 w-9 h-9 rounded-full bg-zinc-900 text-zinc-300 hover:text-white border border-zinc-700 flex items-center justify-center text-sm font-bold shadow-2xl z-10 cursor-pointer focus-visible:ring-2 focus-visible:ring-emerald-400"
+            aria-label="Close Research Dividend">
+            ✕
+          </button>
+          <app-research-data-dividend />
+        </div>
+      </div>
+    }
+
+    <!-- Real-Time Clinician Collaboration Dock -->
+    @if (!showSplash()) {
+      <app-collaboration-dock />
+    }
+
     <app-clinical-cds-disclaimer-banner></app-clinical-cds-disclaimer-banner>
     <app-zamecznik-canvas></app-zamecznik-canvas>
   `,
@@ -1329,6 +1376,8 @@ export class AppComponent implements OnDestroy {
   showDoctorShiftSalesDemoModal = signal(false);
   showGreenRoomLoungeModal = signal(false);
   showAustereHudModal = signal(false);
+  showKneeHologramModal = signal(false);
+  showResearchDividendModal = signal(false);
   readonly showGlossaryModal = signal<boolean>(false);
   private _translateTimer: ReturnType<typeof setTimeout> | null = null;
   readonly zamecznikCanvas = viewChild(ZamecznikCanvasComponent);

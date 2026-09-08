@@ -26,6 +26,7 @@ import { EdgeMlHudComponent } from './edge-ml-hud/edge-ml-hud.component';
 import { SteeepQualityHudComponent } from './steeep-quality-hud/steeep-quality-hud.component';
 import { LensBiomolecularPhysicsComponent } from './turing/lens-biomolecular-physics.component';
 import { LensPhysicalGenomicsComponent } from './turing/lens-physical-genomics.component';
+import { HobbyDomainCompanionComponent } from './hobby-domain-companion.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -50,7 +51,8 @@ import { LensPhysicalGenomicsComponent } from './turing/lens-physical-genomics.c
     EdgeMlHudComponent,
     SteeepQualityHudComponent,
     LensBiomolecularPhysicsComponent,
-    LensPhysicalGenomicsComponent
+    LensPhysicalGenomicsComponent,
+    HobbyDomainCompanionComponent
   ],
   template: `
     <div class="flex flex-col flex-1 h-full w-full overflow-hidden max-md:h-full max-md:min-h-[calc(100dvh-140px)] bg-[#F3F4F6] dark:bg-zinc-950">
@@ -233,6 +235,11 @@ import { LensPhysicalGenomicsComponent } from './turing/lens-physical-genomics.c
                       class="w-full text-left px-3 py-2 text-indigo-300 hover:bg-zinc-900 hover:text-white transition flex items-center justify-between cursor-pointer">
                       <span>📐 NN/g Usability HUD</span>
                     </button>
+                    <button (click)="showHobbyCompanionModal.set(!showHobbyCompanionModal()); showToolsMenu.set(false)"
+                      class="w-full text-left px-3 py-2 text-amber-300 hover:bg-zinc-900 hover:text-white transition flex items-center justify-between cursor-pointer">
+                      <span>🎨 SNO-10 Craft Confidant</span>
+                      @if (showHobbyCompanionModal()) { <span class="text-amber-400">✓</span> }
+                    </button>
                     <button (click)="syncGcpHealthcare(); showToolsMenu.set(false)"
                       class="w-full text-left px-3 py-2 text-zinc-300 hover:bg-zinc-900 hover:text-white transition flex items-center justify-between cursor-pointer">
                       <span>☁️ GCP Healthcare Sync</span>
@@ -247,6 +254,13 @@ import { LensPhysicalGenomicsComponent } from './turing/lens-physical-genomics.c
         <div class="flex-1 flex flex-col min-w-0 min-h-0 h-full overflow-hidden relative">
           <div class="flex-1 min-h-0 min-w-0 h-full flex flex-col overflow-y-auto transition-all duration-300 p-4 sm:p-6">
             
+            <!-- SNO-10 Craft & Passion Confidant Studio Panel -->
+            @if (showHobbyCompanionModal()) {
+              <div class="mb-4 w-full shrink-0">
+                <app-hobby-domain-companion />
+              </div>
+            }
+
             <!-- Edge AI & ONNX WebGPU Continuous Risk Scoring Panel -->
             @if (showEdgeAiModal()) {
               <div class="mb-4 w-full shrink-0">
@@ -469,6 +483,7 @@ export class AnalysisContainerComponent {
   showCohortMatrixModal = signal(false);
   showHipaaPdfModal = signal(false);
   showEvaluationHubModal = signal(false);
+  showHobbyCompanionModal = signal(false);
   showMyChartModal = signal(false);
   showPedigreeModal = signal(false);
   showStoryModal = signal(false);

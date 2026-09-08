@@ -440,6 +440,18 @@ import { NavigationShellService } from '../services/navigation-shell.service';
               <span class="text-base">🎵</span> <span>Ambient Flow Music Player</span>
             </button>
 
+            <button type="button" (click)="openSocraticRounds.emit(); isMobileMenuOpen.set(false);" class="w-full min-h-[48px] flex items-center gap-3 px-4 py-3 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-800 dark:text-indigo-200 border border-indigo-200 dark:border-indigo-800 font-bold text-xs uppercase tracking-wider active:scale-[0.98] transition cursor-pointer">
+              <span class="text-base">👨‍⚕️</span> <span>Socratic Rounds (House M.D.)</span>
+            </button>
+
+            <button type="button" (click)="openKneeHologram.emit(); isMobileMenuOpen.set(false);" class="w-full min-h-[48px] flex items-center gap-3 px-4 py-3 rounded-xl bg-cyan-50 dark:bg-cyan-950/40 text-cyan-800 dark:text-cyan-200 border border-cyan-200 dark:border-cyan-800 font-bold text-xs uppercase tracking-wider active:scale-[0.98] transition cursor-pointer">
+              <span class="text-base">🩻</span> <span>3D Joint Hologram HUD</span>
+            </button>
+
+            <button type="button" (click)="openResearchDividend.emit(); isMobileMenuOpen.set(false);" class="w-full min-h-[48px] flex items-center gap-3 px-4 py-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-200 border border-emerald-200 dark:border-emerald-800 font-bold text-xs uppercase tracking-wider active:scale-[0.98] transition cursor-pointer">
+              <span class="text-base">🧬</span> <span>Ethical Research Dividend</span>
+            </button>
+
             <button type="button" (click)="openSocraticIntake.emit(); isMobileMenuOpen.set(false);" class="w-full min-h-[48px] flex items-center gap-3 px-4 py-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-200 border border-emerald-200 dark:border-emerald-800 font-bold text-xs uppercase tracking-wider active:scale-[0.98] transition cursor-pointer">
               <span class="text-base">✨</span> <span>Socratic Intake Studio</span>
             </button>
