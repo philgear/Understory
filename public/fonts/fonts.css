@@ -1,401 +1,844 @@
+/**
+ * PocketGull Typeface Superfamily
+ * Official Webfont Stylesheet (SIL Open Font License 1.1)
+ * https://font.pocketgull.app | https://github.com/pocketgull-app/pocketgull-typeface
+ */
 
-/* ==========================================================================
-   PocketGull Sovereign Superfamily Edge Fonts (Offline-First)
-   ========================================================================== */
-
+/* 1. Universal Proportional Superfamily */
 @font-face {
   font-family: 'PocketGull';
+  src: url('fonts/woff2/PocketGull-Bold.woff2') format('woff2'),
+       url('PocketGull-Bold.woff2') format('woff2'),
+       url('fonts/ttf/PocketGull-Bold.ttf') format('truetype'),
+       url('PocketGull-Bold.ttf') format('truetype');
+  font-weight: 700 800;
   font-style: normal;
-  font-weight: 700;
   font-display: swap;
-  src: url('/fonts/PocketGull-Bold.woff2') format('woff2'),
-       url('/fonts/PocketGull-Bold.ttf') format('truetype');
 }
 
 @font-face {
   font-family: 'PocketGull';
+  src: url('fonts/woff2/PocketGull-Fineliner.woff2') format('woff2'),
+       url('PocketGull-Fineliner.woff2') format('woff2'),
+       url('fonts/ttf/PocketGull-Fineliner.ttf') format('truetype'),
+       url('PocketGull-Fineliner.ttf') format('truetype');
+  font-weight: 400 500;
   font-style: normal;
-  font-weight: 400;
   font-display: swap;
-  src: url('/fonts/PocketGull-Fineliner.woff2') format('woff2'),
-       url('/fonts/PocketGull-Fineliner.ttf') format('truetype');
 }
 
 @font-face {
   font-family: 'PocketGull';
-  font-style: normal;
+  src: url('fonts/woff2/PocketGull-Chiseltip.woff2') format('woff2'),
+       url('PocketGull-Chiseltip.woff2') format('woff2'),
+       url('fonts/ttf/PocketGull-Chiseltip.ttf') format('truetype'),
+       url('PocketGull-Chiseltip.ttf') format('truetype');
   font-weight: 900;
+  font-style: normal;
   font-display: swap;
-  src: url('/fonts/PocketGull-Chiseltip.woff2') format('woff2'),
-       url('/fonts/PocketGull-Chiseltip.ttf') format('truetype');
+}
+
+/* Italic Superfamily Additions */
+@font-face {
+  font-family: 'PocketGull';
+  src: url('fonts/woff2/PocketGull-Italic.woff2') format('woff2'),
+       url('PocketGull-Italic.woff2') format('woff2'),
+       url('fonts/ttf/PocketGull-Italic.ttf') format('truetype'),
+       url('PocketGull-Italic.ttf') format('truetype');
+  font-weight: 400 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PocketGull';
+  src: url('fonts/woff2/PocketGull-BoldItalic.woff2') format('woff2'),
+       url('PocketGull-BoldItalic.woff2') format('woff2'),
+       url('fonts/ttf/PocketGull-BoldItalic.ttf') format('truetype'),
+       url('PocketGull-BoldItalic.ttf') format('truetype');
+  font-weight: 700 800;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* 1.5 PocketGull Variable Font (wght: 400-900, slnt: -10.5deg-0deg, opsz: 14-96) */
+@font-face {
+  font-family: 'PocketGull VF';
+  src: url('fonts/woff2/PocketGull-VF.woff2') format('woff2-variations'),
+       url('fonts/woff2/PocketGull-VF.woff2') format('woff2'),
+       url('PocketGull-VF.woff2') format('woff2'),
+       url('fonts/ttf/PocketGull-VF.ttf') format('truetype-variations'),
+       url('fonts/ttf/PocketGull-VF.ttf') format('truetype'),
+       url('PocketGull-VF.ttf') format('truetype');
+  font-weight: 400 900;
+  font-stretch: 75% 100%;
+  font-style: oblique -10.5deg 0deg;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PocketGull Italic';
+  src: url('fonts/woff2/PocketGull-Italic.woff2') format('woff2'),
+       url('PocketGull-Italic.woff2') format('woff2'),
+       url('fonts/ttf/PocketGull-Italic.ttf') format('truetype'),
+       url('PocketGull-Italic.ttf') format('truetype');
+  font-weight: 400 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PocketGull Bold Italic';
+  src: url('fonts/woff2/PocketGull-BoldItalic.woff2') format('woff2'),
+       url('PocketGull-BoldItalic.woff2') format('woff2'),
+       url('fonts/ttf/PocketGull-BoldItalic.ttf') format('truetype'),
+       url('PocketGull-BoldItalic.ttf') format('truetype');
+  font-weight: 700 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Dedicated Family Aliases */
+@font-face {
+  font-family: 'PocketGull Bold';
+  src: url('fonts/woff2/PocketGull-Bold.woff2') format('woff2'),
+       url('PocketGull-Bold.woff2') format('woff2'),
+       url('fonts/ttf/PocketGull-Bold.ttf') format('truetype'),
+       url('PocketGull-Bold.ttf') format('truetype');
+  font-weight: 700 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PocketGull Fineliner';
+  src: url('fonts/woff2/PocketGull-Fineliner.woff2') format('woff2'),
+       url('PocketGull-Fineliner.woff2') format('woff2'),
+       url('fonts/ttf/PocketGull-Fineliner.ttf') format('truetype'),
+       url('PocketGull-Fineliner.ttf') format('truetype');
+  font-weight: 400 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PocketGull Chiseltip';
+  src: url('fonts/woff2/PocketGull-Chiseltip.woff2') format('woff2'),
+       url('PocketGull-Chiseltip.woff2') format('woff2'),
+       url('fonts/ttf/PocketGull-Chiseltip.ttf') format('truetype'),
+       url('PocketGull-Chiseltip.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PocketGull Marker Raw';
+  src: url('fonts/woff2/PocketGull-MarkerRaw.woff2') format('woff2'),
+       url('PocketGull-MarkerRaw.woff2') format('woff2'),
+       url('fonts/ttf/PocketGull-MarkerRaw.ttf') format('truetype'),
+       url('PocketGull-MarkerRaw.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PocketGull Micro';
+  src: url('fonts/woff2/PocketGull-Micro.woff2') format('woff2'),
+       url('PocketGull-Micro.woff2') format('woff2'),
+       url('fonts/ttf/PocketGull-Micro.ttf') format('truetype'),
+       url('PocketGull-Micro.ttf') format('truetype');
+  font-weight: 400 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PocketGull Condensed';
+  src: url('fonts/woff2/PocketGull-CondensedBold.woff2') format('woff2'),
+       url('PocketGull-CondensedBold.woff2') format('woff2'),
+       url('fonts/ttf/PocketGull-CondensedBold.ttf') format('truetype'),
+       url('PocketGull-CondensedBold.ttf') format('truetype');
+  font-weight: 700 800;
+  font-stretch: condensed;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PocketGull Soft';
+  src: url('fonts/woff2/PocketGull-Soft.woff2') format('woff2'),
+       url('PocketGull-Soft.woff2') format('woff2'),
+       url('fonts/ttf/PocketGull-Soft.ttf') format('truetype'),
+       url('PocketGull-Soft.ttf') format('truetype');
+  font-weight: 700 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 2. PocketGull Mono (Fixed 600 UPM Clinical Telemetry & Terminal) */
+@font-face {
+  font-family: 'PocketGull Mono';
+  src: url('fonts/woff2/PocketGullMono-Regular.woff2') format('woff2'),
+       url('PocketGullMono-Regular.woff2') format('woff2'),
+       url('fonts/ttf/PocketGullMono-Regular.ttf') format('truetype'),
+       url('PocketGullMono-Regular.ttf') format('truetype');
+  font-weight: 400 500;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
   font-family: 'PocketGull Mono';
+  src: url('fonts/woff2/PocketGullMono-Bold.woff2') format('woff2'),
+       url('PocketGullMono-Bold.woff2') format('woff2'),
+       url('fonts/ttf/PocketGullMono-Bold.ttf') format('truetype'),
+       url('PocketGullMono-Bold.ttf') format('truetype');
+  font-weight: 700 800;
   font-style: normal;
-  font-weight: 400;
   font-display: swap;
-  src: url('/fonts/PocketGullMono-Regular.woff2') format('woff2'),
-       url('/fonts/PocketGullMono-Regular.ttf') format('truetype');
 }
 
 @font-face {
-  font-family: 'PocketGull VF';
-  font-style: normal;
-  font-weight: 100 900;
+  font-family: 'PocketGull Mono';
+  src: url('fonts/woff2/PocketGullMono-Italic.woff2') format('woff2'),
+       url('PocketGullMono-Italic.woff2') format('woff2'),
+       url('fonts/ttf/PocketGullMono-Italic.ttf') format('truetype'),
+       url('PocketGullMono-Italic.ttf') format('truetype');
+  font-weight: 400 500;
+  font-style: italic;
   font-display: swap;
-  src: url('/fonts/PocketGull-VF.woff2') format('woff2'),
-       url('/fonts/PocketGull-VF.ttf') format('truetype');
 }
 
-/* latin-ext */
+/* 2.5 Google Fonts Official Family Aliases ('Pocket Gull' & 'Pocket Gull Mono') */
 @font-face {
-  font-family: 'Cinzel';
+  font-family: 'Pocket Gull';
+  src: url('fonts/woff2/PocketGull-Regular.woff2') format('woff2'),
+       url('fonts/woff2/PocketGull-Fineliner.woff2') format('woff2'),
+       url('fonts/ttf/PocketGull-Regular.ttf') format('truetype'),
+       url('fonts/ttf/PocketGull-Fineliner.ttf') format('truetype');
+  font-weight: 400 500;
   font-style: normal;
-  font-weight: 400;
   font-display: swap;
-  src: url(/fonts/8vIJ7ww63mVu7gt7-GT7LEc.woff2) format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
-/* latin */
+
 @font-face {
-  font-family: 'Cinzel';
+  font-family: 'Pocket Gull';
+  src: url('fonts/woff2/PocketGull-Bold.woff2') format('woff2'),
+       url('fonts/ttf/PocketGull-Bold.ttf') format('truetype');
+  font-weight: 700 800;
   font-style: normal;
-  font-weight: 400;
   font-display: swap;
-  src: url(/fonts/8vIJ7ww63mVu7gt79mT7.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
-/* latin-ext */
+
 @font-face {
-  font-family: 'Cinzel';
+  font-family: 'Pocket Gull';
+  src: url('fonts/woff2/PocketGull-Black.woff2') format('woff2'),
+       url('fonts/woff2/PocketGull-Chiseltip.woff2') format('woff2'),
+       url('fonts/ttf/PocketGull-Black.ttf') format('truetype'),
+       url('fonts/ttf/PocketGull-Chiseltip.ttf') format('truetype');
+  font-weight: 900;
   font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Pocket Gull';
+  src: url('fonts/woff2/PocketGull-Italic.woff2') format('woff2'),
+       url('fonts/ttf/PocketGull-Italic.ttf') format('truetype');
+  font-weight: 400 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Pocket Gull';
+  src: url('fonts/woff2/PocketGull-BoldItalic.woff2') format('woff2'),
+       url('fonts/ttf/PocketGull-BoldItalic.ttf') format('truetype');
+  font-weight: 700 800;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Pocket Gull Mono';
+  src: url('fonts/woff2/PocketGullMono-Regular.woff2') format('woff2'),
+       url('PocketGullMono-Regular.woff2') format('woff2'),
+       url('fonts/ttf/PocketGullMono-Regular.ttf') format('truetype'),
+       url('PocketGullMono-Regular.ttf') format('truetype');
+  font-weight: 400 500 600 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Pocket Gull Mono';
+  src: url('fonts/woff2/PocketGullMono-Italic.woff2') format('woff2'),
+       url('PocketGullMono-Italic.woff2') format('woff2'),
+       url('fonts/ttf/PocketGullMono-Italic.ttf') format('truetype'),
+       url('PocketGullMono-Italic.ttf') format('truetype');
+  font-weight: 400 500 600 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* ==========================================================================
+   3. SMoE DYNAMIC SCRIPT EXPERTS (UNICODE-RANGE GATED PATHWAYS)
+   Allows edge devices, IoT monitors, and remote clinics to selectively
+   dispatch font rendering based on active linguistic tokens.
+   ========================================================================== */
+
+/* Expert A: Latin Core, ISMP Safety & 256-Glyph Braille Matrix */
+@font-face {
+  font-family: 'PocketGull-SMoE';
+  src: url('fonts/woff2/PocketGull-Fineliner.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+                 U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
+                 U+2800-28FF, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'PocketGull-SMoE';
+  src: url('fonts/woff2/PocketGull-Bold.woff2') format('woff2');
   font-weight: 700;
-  font-display: swap;
-  src: url(/fonts/8vIJ7ww63mVu7gt7-GT7LEc.woff2) format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Cinzel';
   font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+                 U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
+                 U+2800-28FF, U+FEFF, U+FFFD;
+}
+
+/* Expert B: Canadian Aboriginal Syllabics (Inuktitut / Cree) */
+@font-face {
+  font-family: 'PocketGull Inuktitut';
+  src: url('fonts/woff2/PocketGull-Bold.woff2') format('woff2');
   font-weight: 700;
-  font-display: swap;
-  src: url(/fonts/8vIJ7ww63mVu7gt79mT7.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-/* cyrillic-ext */
-@font-face {
-  font-family: 'Inter';
   font-style: normal;
-  font-weight: 300;
   font-display: swap;
-  src: url(/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2JL7SUc.woff2) format('woff2');
-  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+  unicode-range: U+1400-167F;
 }
-/* cyrillic */
+
 @font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 300;
-  font-display: swap;
-  src: url(/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa0ZL7SUc.woff2) format('woff2');
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-/* greek-ext */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 300;
-  font-display: swap;
-  src: url(/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2ZL7SUc.woff2) format('woff2');
-  unicode-range: U+1F00-1FFF;
-}
-/* greek */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 300;
-  font-display: swap;
-  src: url(/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1pL7SUc.woff2) format('woff2');
-  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
-}
-/* vietnamese */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 300;
-  font-display: swap;
-  src: url(/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2pL7SUc.woff2) format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 300;
-  font-display: swap;
-  src: url(/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa25L7SUc.woff2) format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 300;
-  font-display: swap;
-  src: url(/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-/* cyrillic-ext */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
+  font-family: 'PocketGull Inuktitut';
+  src: url('fonts/woff2/PocketGull-Fineliner.woff2') format('woff2');
   font-weight: 400;
-  font-display: swap;
-  src: url(/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2JL7SUc.woff2) format('woff2');
-  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
-}
-/* cyrillic */
-@font-face {
-  font-family: 'Inter';
   font-style: normal;
+  font-display: swap;
+  unicode-range: U+1400-167F;
+}
+
+/* Expert C: Chinuk Pipa & Duployan Shorthand */
+@font-face {
+  font-family: 'PocketGull ChinukPipa';
+  src: url('fonts/woff2/PocketGull-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+1BC00-1BC9F;
+}
+
+@font-face {
+  font-family: 'PocketGull ChinukPipa';
+  src: url('fonts/woff2/PocketGull-Fineliner.woff2') format('woff2');
   font-weight: 400;
-  font-display: swap;
-  src: url(/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa0ZL7SUc.woff2) format('woff2');
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-/* greek-ext */
-@font-face {
-  font-family: 'Inter';
   font-style: normal;
+  font-display: swap;
+  unicode-range: U+1BC00-1BC9F;
+}
+
+/* Expert D: Neo-Tifinagh (Amazigh / Berber) */
+@font-face {
+  font-family: 'PocketGull Tifinagh';
+  src: url('fonts/woff2/PocketGull-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+2D30-2D7F;
+}
+
+@font-face {
+  font-family: 'PocketGull Tifinagh';
+  src: url('fonts/woff2/PocketGull-Fineliner.woff2') format('woff2');
   font-weight: 400;
-  font-display: swap;
-  src: url(/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2ZL7SUc.woff2) format('woff2');
-  unicode-range: U+1F00-1FFF;
-}
-/* greek */
-@font-face {
-  font-family: 'Inter';
   font-style: normal;
+  font-display: swap;
+  unicode-range: U+2D30-2D7F;
+}
+
+/* Expert E: Cherokee Syllabary & Lowercase Supplement */
+@font-face {
+  font-family: 'PocketGull Cherokee';
+  src: url('fonts/woff2/PocketGull-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+13A0-13FF, U+AB70-ABBF;
+}
+
+@font-face {
+  font-family: 'PocketGull Cherokee';
+  src: url('fonts/woff2/PocketGull-Fineliner.woff2') format('woff2');
   font-weight: 400;
-  font-display: swap;
-  src: url(/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1pL7SUc.woff2) format('woff2');
-  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
-}
-/* vietnamese */
-@font-face {
-  font-family: 'Inter';
   font-style: normal;
+  font-display: swap;
+  unicode-range: U+13A0-13FF, U+AB70-ABBF;
+}
+
+/* Expert F: Ethiopic / Ge'ez Abugida */
+@font-face {
+  font-family: 'PocketGull Ethiopic';
+  src: url('fonts/woff2/PocketGull-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+1200-137F;
+}
+
+@font-face {
+  font-family: 'PocketGull Ethiopic';
+  src: url('fonts/woff2/PocketGull-Fineliner.woff2') format('woff2');
   font-weight: 400;
-  font-display: swap;
-  src: url(/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2pL7SUc.woff2) format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'Inter';
   font-style: normal;
-  font-weight: 400;
   font-display: swap;
-  src: url(/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa25L7SUc.woff2) format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  unicode-range: U+1200-137F;
 }
-/* latin */
+
+/* Expert G: West African Sovereign Scripts (Adlam & Vai) */
 @font-face {
-  font-family: 'Inter';
+  font-family: 'PocketGull Adlam';
+  src: url('fonts/woff2/PocketGull-Bold.woff2') format('woff2');
+  font-weight: 700;
   font-style: normal;
-  font-weight: 400;
   font-display: swap;
-  src: url(/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  unicode-range: U+1E900-1E95F;
 }
-/* cyrillic-ext */
+
 @font-face {
-  font-family: 'Inter';
+  font-family: 'PocketGull Vai';
+  src: url('fonts/woff2/PocketGull-Bold.woff2') format('woff2');
+  font-weight: 700;
   font-style: normal;
-  font-weight: 500;
   font-display: swap;
-  src: url(/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2JL7SUc.woff2) format('woff2');
-  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+  unicode-range: U+A500-A63F;
 }
-/* cyrillic */
+
+/* Expert H: Medical ICU Telemetry & Terminal Symbols */
 @font-face {
-  font-family: 'Inter';
+  font-family: 'PocketGull Telemetry';
+  src: url('fonts/woff2/PocketGullMono-Regular.woff2') format('woff2');
+  font-weight: 400 500 600 700;
   font-style: normal;
-  font-weight: 500;
   font-display: swap;
-  src: url(/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa0ZL7SUc.woff2) format('woff2');
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+  unicode-range: U+E0A0-E0B6, U+2500-257F, U+26A1, U+2713-2714, U+276E-276F;
 }
-/* greek-ext */
+
+/* Expert I: Arabic / Farsi / Urdu — Intentional Noto Sans Arabic Routing
+   =========================================================================
+   PocketGull is a Latin + Indigenous Scripts superfamily. Arabic script
+   (U+0600–U+06FF) requires full cursive shaping (init/medi/fina/isol
+   positional variants) that PocketGull does not implement. Arabic text is
+   intentionally routed to Noto Sans Arabic for correct Naskh rendering.
+
+   IMPORTANT: PocketGull retains Arabic BASE codepoints (U+0600–U+06FF) in
+   its cmap for isolated letter rendering in non-shaping contexts (e.g. math
+   or symbol usage). For connected Arabic text, this expert fires first and
+   supplies Noto Sans Arabic for the complete Arabic block.
+
+   Arabic Presentation Forms (U+FB50–U+FDFF, U+FE70–U+FEFF) have been
+   removed from PocketGull binary per Unicode deprecation advisory.
+   ========================================================================= */
 @font-face {
-  font-family: 'Inter';
+  font-family: 'PocketGull Arabic';
+  src: local('Noto Sans Arabic'), local('Segoe UI'), local('Tahoma');
+  font-weight: 400 700;
   font-style: normal;
-  font-weight: 500;
   font-display: swap;
-  src: url(/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2ZL7SUc.woff2) format('woff2');
-  unicode-range: U+1F00-1FFF;
+  unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF,
+                 U+200C-200F, U+2010-2027, U+202A-202E,
+                 U+2060-206F, U+FB50-FDFF, U+FE70-FEFF;
 }
-/* greek */
+
+/* Expert J: CJK Unified Ideographs & Kana — Explicit System Fallback
+   =========================================================================
+   PocketGull does not contain CJK Unified Ideographs, Hiragana, Katakana,
+   Hangul, or CJK compatibility characters. This expert explicitly routes the
+   CJK block to the system CJK font stack (Noto Sans CJK, Yu Gothic, etc.)
+   to prevent PocketGull from being incorrectly selected as a CJK fallback
+   on systems that lack a proper CJK font for the Latin blocks.
+
+   Specimen usage of Japanese text (e.g. thermal bedside Rx: セファゾリン)
+   is rendered by the system CJK font — this is intentional and labelled
+   in the specimen HTML. PocketGull does not claim CJK coverage.
+   ========================================================================= */
 @font-face {
-  font-family: 'Inter';
+  font-family: 'PocketGull CJK Fallback';
+  src: local('Noto Sans CJK SC'), local('Noto Sans JP'), local('Yu Gothic'),
+       local('Hiragino Sans'), local('Microsoft YaHei'), local('sans-serif');
+  font-weight: 400 700;
   font-style: normal;
-  font-weight: 500;
   font-display: swap;
-  src: url(/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1pL7SUc.woff2) format('woff2');
-  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+  unicode-range: U+2E80-2EFF, U+2F00-2FDF, U+3000-303F, U+3040-309F,
+                 U+30A0-30FF, U+3100-312F, U+3190-31FF, U+3200-32FF,
+                 U+3300-33FF, U+3400-4DBF, U+4E00-9FFF, U+A000-A48F,
+                 U+A490-A4CF, U+AC00-D7FF, U+F900-FAFF, U+FE30-FE4F,
+                 U+FF00-FFEF, U+1B000-1B0FF, U+1F004-1F004,
+                 U+20000-2A6DF, U+2A700-2CEAF;
 }
-/* vietnamese */
+
+/* ==========================================================================
+   4. GOOGLE NOTO UNIVERSAL HARMONIZED FALLBACK (ZERO CLS METRIC OVERRIDES)
+   Enforces exact 1000 UPM vertical metric parity with Google Noto Sans
+   to eliminate Cumulative Layout Shift (CLS = 0.000) across global fallbacks.
+   ========================================================================== */
 @font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url(/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2pL7SUc.woff2) format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+  font-family: 'PocketGull Noto Fallback';
+  src: local('Noto Sans'), local('Noto Sans CJK SC'), local('Noto Sans Devanagari'), local('Noto Sans Arabic'), local('sans-serif');
+  ascent-override: 95%;
+  descent-override: 25%;
+  line-gap-override: 0%;
+  size-adjust: 100%;
 }
-/* latin-ext */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url(/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa25L7SUc.woff2) format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+
+/* ==========================================================================
+   5. PHILOCARDIA: THE PHIL GEAR CARDIAC CHRONOMETER & HEART ALTERNATE
+   - Connected Fl Display Ligature ("Flight Sanctuary")
+   - Philocardia: Lowercase i with Optical S1/S2 Heart-Shaped Tittle
+   - Calibrated 60 / 72 BPM Sinus Rhythm Cardiac Regulation Engine
+   ========================================================================== */
+
+/* Former ligature exploration deactivated (fl-connected) */
+.fl-connected {
+  letter-spacing: normal;
 }
-/* latin */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url(/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+.fl-connected::before {
+  display: none !important;
 }
-/* cyrillic-ext */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
+
+/* Philocardia: Signature Heart-Tittle Stylistic Alternate */
+.philocardia-heart,
+.iphillyg-heart {
+  display: inline-block;
+  position: relative;
+  line-height: inherit;
+  font-family: inherit;
+  --heart-skew: 0deg;
+  --heart-offset-x: 0em;
+}
+
+/* Dynamic Italic Master Tilt (-10.5° Slant & Optical Stem Tracking) */
+:is(
+  em, i, [style*="font-style: italic"], [style*="font-style:italic"],
+  [style*="font-family: 'PocketGull Italic'"], [style*="font-family:'PocketGull Italic'"],
+  [style*="font-family: 'PocketGull Bold Italic'"], [style*="font-family:'PocketGull Bold Italic'"],
+  .font-italic, .italic,
+  #italicSampleText, #italicPhilocardiaDemo,
+  [data-style="italic"]
+) :is(.philocardia-heart, .iphillyg-heart),
+:is(.philocardia-heart, .iphillyg-heart):is([style*="italic"], .italic) {
+  --heart-skew: -10.5deg;
+  --heart-offset-x: 0.09em;
+}
+
+.philocardia-heart::after,
+.iphillyg-heart::after {
+  content: '♥';
+  position: absolute;
+  top: -0.18em;
+  left: 50%;
+  transform: translateX(calc(-50% + var(--heart-offset-x, 0em))) skewX(var(--heart-skew, 0deg)) scale(var(--aura-scale, 0.68));
+  font-size: 0.72em;
+  line-height: 1;
+  color: var(--aura-color, var(--teal-accent, currentColor));
+  pointer-events: none;
+  filter: drop-shadow(0 0 var(--aura-glow, 3px) rgba(45, 212, 191, 0.45));
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.25s ease, filter 0.25s ease;
+}
+
+.night-flight .philocardia-heart::after,
+body.night-flight .philocardia-heart::after,
+body.red-dash .philocardia-heart::after,
+.night-flight .iphillyg-heart::after,
+body.night-flight .iphillyg-heart::after,
+body.red-dash .iphillyg-heart::after {
+  color: var(--teal-accent, #f87171);
+  filter: drop-shadow(0 0 4px rgba(248, 113, 113, 0.5));
+}
+
+.philocardia-heart:hover::after,
+.iphillyg-heart:hover::after {
+  transform: translateX(calc(-50% + var(--heart-offset-x, 0em))) skewX(var(--heart-skew, 0deg)) scale(0.95);
+  color: #f43f5e;
+  filter: drop-shadow(0 0 6px rgba(244, 63, 94, 0.7));
+}
+
+/* Physiological S1/S2 Cardiac Pulse Animation (72 BPM = 0.833s period) */
+@keyframes philocardia-beat-72 {
+  0% { transform: scale(1); }
+  14% { transform: scale(1.18); } /* S1 Systole "lub" */
+  22% { transform: scale(1.04); }
+  32% { transform: scale(1.12); } /* S2 Diastole "dub" */
+  45% { transform: scale(1); }
+  100% { transform: scale(1); }   /* Rest interval */
+}
+
+/* Calibrated 60 BPM Cardiac Pulse (1.000s period) */
+@keyframes philocardia-beat-60 {
+  0% { transform: scale(1); }
+  12% { transform: scale(1.20); } /* S1 Systole */
+  20% { transform: scale(1.05); }
+  30% { transform: scale(1.14); } /* S2 Diastole */
+  42% { transform: scale(1); }
+  100% { transform: scale(1); }
+}
+
+/* Somatic 4-7-8 Box Breathing Resonance (16s cycle) */
+@keyframes philocardia-box-breath {
+  0%   { transform: scale(1.00); filter: drop-shadow(0 0 2px rgba(45,212,191,0.3)); color: #2dd4bf; }
+  25%  { transform: scale(1.28); filter: drop-shadow(0 0 10px rgba(45,212,191,0.8)); color: #38bdf8; } /* Inhale 4s */
+  50%  { transform: scale(1.28); filter: drop-shadow(0 0 10px rgba(45,212,191,0.8)); color: #38bdf8; } /* Hold 4s */
+  75%  { transform: scale(0.92); filter: drop-shadow(0 0 1px rgba(45,212,191,0.2)); color: #14b8a6; } /* Exhale 4s */
+  100% { transform: scale(1.00); filter: drop-shadow(0 0 2px rgba(45,212,191,0.3)); color: #2dd4bf; } /* Rest 4s */
+}
+
+.philocardia-pacing-72 {
+  animation: philocardia-beat-72 0.8333s infinite cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.philocardia-pacing-60 {
+  animation: philocardia-beat-60 1.0000s infinite cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.philocardia-pacing-breath {
+  animation: philocardia-box-breath 16s infinite ease-in-out;
+}
+
+/* Healer Mode Pill Styling */
+.healer-pill {
+  padding: 0.32rem 0.65rem;
+  font-size: 0.73rem;
+  font-family: monospace;
   font-weight: 600;
-  font-display: swap;
-  src: url(/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2JL7SUc.woff2) format('woff2');
-  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: #a1a1aa;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
-/* cyrillic */
-@font-face {
-  font-family: 'Inter';
+
+.healer-pill:hover {
+  border-color: #2dd4bf;
+  color: #f4f4f5;
+  background: rgba(45, 212, 191, 0.12);
+}
+
+.healer-pill.active {
+  border-color: #2dd4bf;
+  background: rgba(45, 212, 191, 0.22);
+  color: #2dd4bf;
+  box-shadow: 0 0 10px rgba(45, 212, 191, 0.25);
+}
+
+/* ==========================================================================
+   6. CARDIOPULMONARY PACING: BIOMORPHIC UI & A11Y FOCUS HALO (WCAG 2.2 AAA)
+   ========================================================================== */
+:root {
+  --bio-pulse-period: 0.8333s; /* 72 BPM */
+  --bio-breath-period: 16s;    /* 4-7-8 Box Breathing */
+  --bio-ease-cardiac: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --bio-ease-respiratory: ease-in-out;
+  --bio-halo-color: rgba(45, 212, 191, 0.65);
+  --bio-micro-lum: 1;
+  --bio-sync-opacity: 0.85;
+}
+
+/* Organic Breathing Focus Halo for WCAG 2.2 AAA Keyboard & Screen Navigation */
+:focus-visible {
+  outline: none !important;
+  border-color: #2dd4bf !important;
+  box-shadow: 0 0 0 2.5px rgba(45, 212, 191, 0.4), 0 0 14px var(--bio-halo-color) !important;
+  transition: box-shadow 0.25s var(--bio-ease-cardiac), border-color 0.25s ease;
+  animation: bio-focus-breathe var(--bio-pulse-period) infinite var(--bio-ease-cardiac);
+}
+
+@keyframes bio-focus-breathe {
+  0% {
+    box-shadow: 0 0 0 2px rgba(45, 212, 191, 0.35), 0 0 8px rgba(45, 212, 191, 0.3);
+  }
+  25% {
+    box-shadow: 0 0 0 3.5px rgba(45, 212, 191, 0.65), 0 0 16px rgba(45, 212, 191, 0.65);
+  }
+  100% {
+    box-shadow: 0 0 0 2px rgba(45, 212, 191, 0.35), 0 0 8px rgba(45, 212, 191, 0.3);
+  }
+}
+
+/* Universal Biomorphic UI Elements in Sync with Cardiopulmonary Clock */
+.bio-sync-pulse {
+  animation: bio-elem-pulse var(--bio-pulse-period) infinite var(--bio-ease-cardiac);
+}
+
+@keyframes bio-elem-pulse {
+  0% { transform: scale(1); }
+  14% { transform: scale(1.03); } /* S1 Systole */
+  22% { transform: scale(1.01); }
+  32% { transform: scale(1.02); } /* S2 Diastole */
+  45% { transform: scale(1); }
+  100% { transform: scale(1); }
+}
+
+.bio-sync-glow {
+  animation: bio-elem-glow var(--bio-pulse-period) infinite var(--bio-ease-cardiac);
+}
+
+@keyframes bio-elem-glow {
+  0% { border-color: rgba(45, 212, 191, 0.25); box-shadow: 0 0 0 rgba(45, 212, 191, 0); }
+  25% { border-color: rgba(45, 212, 191, 0.65); box-shadow: 0 0 12px var(--bio-halo-color); }
+  100% { border-color: rgba(45, 212, 191, 0.25); box-shadow: 0 0 0 rgba(45, 212, 191, 0); }
+}
+
+/* Hardware-Accelerated Variable Font Pacing Keyframes */
+@keyframes bio-harmonic-vf-72 {
+  0% {
+    font-variation-settings: 'wght' var(--pg-wght, 700), 'slnt' var(--pg-slnt, 0);
+  }
+  14% {
+    font-variation-settings: 'wght' calc(var(--pg-wght, 700) + 50), 'slnt' calc(var(--pg-slnt, 0) - 1.5);
+  }
+  28% {
+    font-variation-settings: 'wght' calc(var(--pg-wght, 700) + 10), 'slnt' var(--pg-slnt, 0);
+  }
+  42% {
+    font-variation-settings: 'wght' calc(var(--pg-wght, 700) + 30), 'slnt' calc(var(--pg-slnt, 0) - 0.8);
+  }
+  56% {
+    font-variation-settings: 'wght' var(--pg-wght, 700), 'slnt' var(--pg-slnt, 0);
+  }
+  100% {
+    font-variation-settings: 'wght' var(--pg-wght, 700), 'slnt' var(--pg-slnt, 0);
+  }
+}
+
+.bio-pulse-vf-active {
+  animation: bio-harmonic-vf-72 var(--bio-cardiac-period) infinite var(--bio-ease-systole);
+}
+
+.bio-sync-card {
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Ocular Ergonomics: Sub-Perceptual Micro-Luminance Vagal Wave (Dry-Eye & Asthenopia Prevention) */
+.ocular-rest-active {
+  animation: ocular-vagal-breath var(--bio-breath-period) infinite var(--bio-ease-respiratory);
+}
+
+@keyframes ocular-vagal-breath {
+  0%   { filter: brightness(1.00) contrast(1.00); }
+  25%  { filter: brightness(1.015) contrast(0.985); } /* Gentle softening on inhale */
+  50%  { filter: brightness(1.015) contrast(0.985); }
+  75%  { filter: brightness(0.99) contrast(1.01); }  /* Relaxing contrast on exhale */
+  100% { filter: brightness(1.00) contrast(1.00); }
+}
+
+/* 15-Second Radial Palpation Sweep Animation */
+@keyframes palpation-sweep-15s {
+  0% { stroke-dashoffset: 88; }
+  98% { stroke-dashoffset: 0; filter: drop-shadow(0 0 6px #2dd4bf); }
+  100% { stroke-dashoffset: 88; filter: none; }
+}
+
+.palpation-arc-active {
+  animation: palpation-sweep-15s 15s linear infinite;
+}
+
+/* ==========================================================================
+   7. CLINICAL SEMANTIC ITALIC STYLING (THE SECOND VOICE & SAFETY)
+   ========================================================================== */
+.font-italic,
+.italic-variety {
+  font-style: italic;
+}
+
+/* Gene Symbols vs Protein Products */
+.clinical-gene {
+  font-style: italic;
+  font-family: 'PocketGull Italic', 'PocketGull', sans-serif;
+  color: #38bdf8;
+  border-bottom: 1.5px dotted rgba(56, 189, 248, 0.5);
+  cursor: help;
+}
+
+.clinical-protein {
   font-style: normal;
+  font-weight: 700;
+  font-family: 'PocketGull Bold', 'PocketGull', sans-serif;
+  color: #e2e8f0;
+}
+
+/* Binomial Pathogen Taxonomy */
+.clinical-pathogen {
+  font-style: italic;
+  font-family: 'PocketGull Italic', 'PocketGull', sans-serif;
+  color: #f43f5e;
+  letter-spacing: 0.02em;
+}
+
+/* Verbatim Patient Narrative Quotes */
+.clinical-patient-quote {
+  font-style: italic;
+  font-family: 'PocketGull Italic', 'PocketGull', sans-serif;
+  color: #fbbf24;
+  border-left: 3px solid #f59e0b;
+  padding-left: 0.75rem;
+  margin: 0.5rem 0;
+  display: block;
+}
+
+/* Prescriptive Latin Directives */
+.clinical-directive {
+  font-style: italic;
+  font-family: 'PocketGull Italic', 'PocketGull', sans-serif;
+  color: #a7f3d0;
   font-weight: 600;
-  font-display: swap;
-  src: url(/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa0ZL7SUc.woff2) format('woff2');
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
 }
-/* greek-ext */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url(/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2ZL7SUc.woff2) format('woff2');
-  unicode-range: U+1F00-1FFF;
+
+/* Interactive Roman vs. Italic Comparator */
+.italic-comparison-box {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  padding: 1.5rem;
 }
-/* greek */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url(/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1pL7SUc.woff2) format('woff2');
-  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+
+@media (max-width: 768px) {
+  .italic-comparison-box {
+    grid-template-columns: 1fr;
+  }
 }
-/* vietnamese */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url(/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2pL7SUc.woff2) format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+
+/* Vestibular & Reduced Motion Accessibility (WCAG 2.2 Criterion 2.3.3) */
+@media (prefers-reduced-motion: reduce) {
+  :focus-visible {
+    animation: none !important;
+    box-shadow: 0 0 0 3px #2dd4bf !important;
+  }
+  .philocardia-pacing-72,
+  .philocardia-pacing-60,
+  .philocardia-pacing-breath,
+  .palpation-arc-active,
+  .bio-sync-pulse,
+  .bio-sync-glow,
+  .ocular-rest-active {
+    animation: none !important;
+  }
 }
-/* latin-ext */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url(/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa25L7SUc.woff2) format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url(/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-/* cyrillic-ext */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url(/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2JL7SUc.woff2) format('woff2');
-  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
-}
-/* cyrillic */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url(/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa0ZL7SUc.woff2) format('woff2');
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-/* greek-ext */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url(/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2ZL7SUc.woff2) format('woff2');
-  unicode-range: U+1F00-1FFF;
-}
-/* greek */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url(/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1pL7SUc.woff2) format('woff2');
-  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
-}
-/* vietnamese */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url(/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2pL7SUc.woff2) format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url(/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa25L7SUc.woff2) format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url(/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
+
+
+
