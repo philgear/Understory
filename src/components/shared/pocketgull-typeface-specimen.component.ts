@@ -216,7 +216,7 @@ export interface IGlyphSpec {
             <div class="p-4 bg-zinc-900/80 border border-slate-800 rounded-xl space-y-3 font-mono">
               <div class="text-xs font-bold text-emerald-400 uppercase">Optical Ligatures &amp; Tabular Units</div>
               <div class="flex flex-wrap items-center gap-6 text-sm">
-                <div class="flex items-center gap-2"><span class="text-zinc-400">Micrograms:</span> <strong class="text-cyan-300 text-lg">µg</strong></div>
+                <div class="flex items-center gap-2"><span class="text-zinc-400">Micrograms:</span> <strong class="text-cyan-300 text-lg">mcg <span class="text-xs text-rose-400 font-normal">[ISMP: avoid µg]</span></strong></div>
                 <div class="flex items-center gap-2"><span class="text-zinc-400">Milligrams per dL:</span> <strong class="text-cyan-300 text-lg">mg/dL</strong></div>
                 <div class="flex items-center gap-2"><span class="text-zinc-400">Blood Pressure:</span> <strong class="text-cyan-300 text-lg">mmHg</strong></div>
                 <div class="flex items-center gap-2"><span class="text-zinc-400">Heart Rate:</span> <strong class="text-rose-400 text-lg">72 bpm</strong></div>
