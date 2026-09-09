@@ -4,7 +4,31 @@
   <meta charset="UTF-8">
   <title>PocketGull Clinical Typefoundry — Master Optical Specimen</title>
   <link rel="stylesheet" href="/fonts/pocketgull.css">
-  <style>
+<style>
+    @font-face {
+      font-family: 'PocketGull';
+      src: url('fonts/PocketGull-Regular.woff2') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'PocketGull Bold';
+      src: url('fonts/PocketGull-Bold.woff2') format('woff2');
+      font-weight: 700;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'PocketGull Fineliner';
+      src: url('fonts/PocketGull-Fineliner.woff2') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'PocketGull Mono';
+      src: url('fonts/PocketGullMono-Regular.woff2') format('woff2');
+      font-weight: 400 700;
+      font-style: normal;
+    }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       background-color: #09090b;
@@ -13,6 +37,7 @@
       padding: 40px;
       width: 1000px;
       min-height: 800px;
+      font-feature-settings: "cv08" 1, "zero" 1, "cv05" 1, "ss02" 1, "kern" 1;
     }
     .specimen-card {
       border: 2px solid #14b8a6;
@@ -178,18 +203,18 @@
         <span>eGFR: 64 mL/min</span>
       </div>
       <div class="telemetry-row" style="color: #38bdf8; font-size: 17px; border-top: 1px dashed #27272a; margin-top: 8px; padding-top: 10px;">
-        <span>ACL: 0.418</span>
-        <span>MCL: 0.339</span>
-        <span>Meniscus: 0.769</span>
-        <span>Effusion: 0.677</span>
-        <span>Contusion: 0.669</span>
+        <span>ACL: 0.42</span>
+        <span>MCL: 0.34</span>
+        <span>Meniscus: 0.77</span>
+        <span>Effusion: 0.68</span>
+        <span>Contusion: 0.67</span>
       </div>
     </div>
 
     <!-- Section 4: Optical Kerning Pairs -->
     <div class="grid-block">
       <div class="grid-title">4. Optical Kerning Stress Pairs (PocketGull Display)</div>
-      <div class="kerning-line">AV  AW  Te  To  Ta  Tu  Va  Vo  Ya  f)  r.  P.  Rx</div>
+      <div class="kerning-line" style="letter-spacing: 0.16em; word-spacing: 0.6em;">AV &nbsp; AW &nbsp; Te &nbsp; To &nbsp; Ta &nbsp; Tu &nbsp; Va &nbsp; Vo &nbsp; Ya &nbsp; f) &nbsp; r. &nbsp; P. &nbsp; Rx</div>
     </div>
 
     <div class="footer-seal">

@@ -11,7 +11,9 @@ import 'foundry/glyph_inspector.dart';
 import 'foundry/font_surgeon.dart';
 
 const fontStems = [
+  'PocketGull-Regular',
   'PocketGull-Bold',
+  'PocketGull-Black',
   'PocketGull-Fineliner',
   'PocketGull-Chiseltip',
   'PocketGull-Antigravity',
@@ -134,8 +136,10 @@ void runCompile() {
   if (typefaceRoot.existsSync()) {
     print('\n  [5/5] Realigning and sanitizing complete production superfamily in Dart...');
     final weightMap = {
-      'PocketGull-Fineliner.ttf': 400,
+      'PocketGull-Regular.ttf': 400,
       'PocketGull-Bold.ttf': 700,
+      'PocketGull-Black.ttf': 900,
+      'PocketGull-Fineliner.ttf': 400,
       'PocketGull-Chiseltip.ttf': 900,
       'PocketGull-Antigravity.ttf': 400,
       'PocketGull-Numerics.ttf': 600,
@@ -144,7 +148,10 @@ void runCompile() {
     };
 
     for (final entry in weightMap.entries) {
-      final ttfFile = File('${typefaceRoot.path}${Platform.pathSeparator}${entry.key}');
+      var ttfFile = File('${typefaceRoot.path}${Platform.pathSeparator}fonts${Platform.pathSeparator}ttf${Platform.pathSeparator}${entry.key}');
+      if (!ttfFile.existsSync()) {
+        ttfFile = File('${typefaceRoot.path}${Platform.pathSeparator}${entry.key}');
+      }
       if (ttfFile.existsSync()) {
         stdout.write('    • Transforming ${entry.key} (wght: ${entry.value}) ... ');
         try {
