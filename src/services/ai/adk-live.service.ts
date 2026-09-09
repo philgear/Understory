@@ -6,6 +6,7 @@ import { Injectable, signal, NgZone, inject } from '@angular/core';
 import { sanitizeLogInput } from '../../utils/security-helper';
 import { ISpatialLesion } from '../spatial-lesion-markup.service';
 import { PhysicalGenomicsService } from '../physical-genomics.service';
+import { MdcpDomainService, ISkSaiAssessment, IEEE_11073_NOMENCLATURE } from '../mdcp/mdcp-domain.service';
 
 import type { IOccupationalHazardProfile } from '../actuarial-longevity.service';
 
@@ -93,6 +94,56 @@ export const PHYSICAL_GENOMICS_FUNCTION_DECLARATIONS = [
   }
 ];
 
+export const MDCP_FUNCTION_DECLARATIONS = [
+  {
+    name: 'evaluate_pediatric_mdcp_waiver',
+    description: 'Evaluates Medicaid 1915(c) Medically Dependent Children Program (MDCP) eligibility under Texas STAR Kids / Louisiana DOH standards, computes de-institutionalization score, authorizes Form 2603 ISP Private Duty Nursing (PDN) and respite hours, and generates physician attestation.',
+    parameters: {
+      type: 'OBJECT',
+      properties: {
+        ventilatorDependent: { type: 'BOOLEAN', description: 'Patient is dependent on mechanical ventilation' },
+        tracheostomyDependent: { type: 'BOOLEAN', description: 'Patient has a functioning tracheostomy' },
+        enteralFeedingTube: { type: 'BOOLEAN', description: 'G-tube, J-tube, or NG-tube dependent for nutrition' },
+        intravenousTherapyOrTpn: { type: 'BOOLEAN', description: 'Requires daily IV medications or TPN' },
+        continuousOxygenTherapy: { type: 'BOOLEAN', description: 'Requires continuous oxygen delivery' },
+        dailySeizureActivity: { type: 'BOOLEAN', description: 'Refractory seizures occurring on daily basis' },
+        caregiverStrainIndex: { type: 'NUMBER', description: 'Caregiver strain index from 0 to 10' }
+      }
+    }
+  },
+  {
+    name: 'synchronize_hospital_mdcp_milestones',
+    description: 'Queries or updates inpatient Multi-Disciplinary Care Plan (MDCP) milestones across Attending MD, Bedside RN, Speech-Language Pathology (SLP), PT/OT, and Clinical Pharmacology, including telemetry weaning and dysphagia precautions.',
+    parameters: {
+      type: 'OBJECT',
+      properties: {
+        milestoneId: { type: 'STRING', description: 'Optional milestone ID to toggle or update' },
+        status: { type: 'STRING', enum: ['ACHIEVED', 'IN_PROGRESS', 'PENDING'], description: 'New milestone status' }
+      }
+    }
+  },
+  {
+    name: 'query_ieee11073_telemetry',
+    description: 'Retrieves live ISO/IEEE 11073-10101 Rosetta Terminology Mapping (RTMMS) physiological telemetry metrics (MDC_ECG_HEART_RATE, MDC_PULS_OXIM_SAT_O2, MDC_RESP_RATE, MDC_PRESS_BLD_SYS), vendor device origins, and alarm condition status.',
+    parameters: {
+      type: 'OBJECT',
+      properties: {
+        includeHistoricalWindow: { type: 'BOOLEAN', description: 'Whether to include recent sliding window samples' }
+      }
+    }
+  },
+  {
+    name: 'audit_ita_standards_compliance',
+    description: 'Audits U.S. International Trade Administration Market Development Cooperator Program (15 U.S.C. § 4723) compliance, Five Eyes data sovereignty, and SHA-256 electronic integrity seal.',
+    parameters: {
+      type: 'OBJECT',
+      properties: {
+        auditLevel: { type: 'STRING', enum: ['SUMMARY', 'FULL_REGULATORY'], description: 'Depth of compliance audit report' }
+      }
+    }
+  }
+];
+
 /**
  * Zero-copy chunked Base64 encoding helper.
  * Eliminates per-byte string allocation overhead during live audio streaming.
@@ -155,6 +206,14 @@ export class AdkLiveService {
       return inject(PhysicalGenomicsService, { optional: true }) || new PhysicalGenomicsService();
     } catch {
       return new PhysicalGenomicsService();
+    }
+  })();
+
+  private mdcpService = (() => {
+    try {
+      return inject(MdcpDomainService, { optional: true });
+    } catch {
+      return null;
     }
   })();
   
@@ -292,6 +351,31 @@ Clinical Grounding Directive for 3D Lesions:
     }
   }
 
+  public buildMdcpPromptSegment(): string {
+    const service = this.mdcpService;
+    if (!service) return '';
+    const waiver = service.currentWaiverPlan();
+    const hospital = service.currentHospitalPlan();
+    const telemetry = service.liveDeviceTelemetry();
+    const ita = service.itaStandardsLedger();
+
+    return `
+
+📋 MDCP (4-PILLAR CLINICAL & STANDARDS GOVERNANCE CONTEXT):
+1. Pediatric Waiver (Medically Dependent Children Program - Medicaid 1915c Form 2603):
+   - Medical Necessity Score: ${waiver?.medicalNecessityScore ?? 0}/100 | De-institutionalization: ${waiver?.institutionalDiversionAttested ? 'CERTIFIED' : 'PENDING'}
+   - Authorized PDN Nursing: ${waiver?.authorizedServices?.privateDutyNursingHoursPerWeek ?? 0} hrs/week | Respite: ${waiver?.authorizedServices?.respiteCareHoursPerYear ?? 0} hrs/year
+   - Attesting Physician: ${waiver?.attendingPhysicianAttestation?.physicianName} (NPI: ${waiver?.attendingPhysicianAttestation?.npi})
+2. Hospital Multi-Disciplinary Care Plan (Inpatient MDCP):
+   - Primary Diagnosis: ${hospital?.primaryDiagnosis || 'N/A'} | Dysphagia: ${hospital?.dysphagiaDietStage || 'N/A'} | Weaning: ${hospital?.telemetryWeaningStatus || 'N/A'}
+   - Caregiver Readiness: ${hospital?.caregiverReadinessScore ?? 0}%
+   - Active Milestones: ${hospital?.milestones?.length ?? 0} synchronized across MD, RN, SLP, PT/OT, PharmD.
+3. ISO/IEEE 11073 Biomedical Device Telemetry (MDC):
+   - Active Channels: ${telemetry.map(t => `${t.mdcCode}=${t.metricValue}${t.unit} (${t.alarmState})`).join(', ')}
+4. U.S. ITA Market Development Cooperator Program (15 U.S.C. § 4723):
+   - Award: ${ita.awardIdentifier} | Five Eyes Sovereignty: Conformant | Status: Certified.`;
+  }
+
   async connect(
     apiKey: string = '',
     systemInstruction: string,
@@ -310,9 +394,10 @@ Clinical Grounding Directive for 3D Lesions:
     const pedSegment = this.buildPediatricPromptSegment(isPediatric, childName, age);
     const occSegment = this.buildOccupationalPromptSegment(occupationalProfile);
     const lesionSegment = this.buildSpatialLesionPromptSegment(spatialLesions);
+    const mdcpSegment = this.buildMdcpPromptSegment();
 
-    // Enhance system instruction with vocal prosody directives, Child Life Pediatric Context, 3D Spatial Lesion Telemetry & Macro Fleet Sentinel Context
-    const enhancedInstruction = `${systemInstruction}${pedSegment}${occSegment}${lesionSegment}
+    // Enhance system instruction with vocal prosody directives, Child Life Pediatric Context, 3D Spatial Lesion Telemetry & MDCP Governance Context
+    const enhancedInstruction = `${systemInstruction}${pedSegment}${occSegment}${lesionSegment}${mdcpSegment}
 
 Vocal & Speech Delivery Style:
 - Speak in a warm, kind, conversational, and uplifting voice with a gentle, good-natured smile in your tone.
@@ -436,7 +521,7 @@ Macro Fleet Sentinel Context (Full-Duplex Diagnostics):
                 }
               },
               tools: [
-                { functionDeclarations: PHYSICAL_GENOMICS_FUNCTION_DECLARATIONS }
+                { functionDeclarations: [...PHYSICAL_GENOMICS_FUNCTION_DECLARATIONS, ...MDCP_FUNCTION_DECLARATIONS] }
               ]
             }
           }));
@@ -622,6 +707,36 @@ Macro Fleet Sentinel Context (Full-Duplex Diagnostics):
             args?.ecmStiffnessKPa || 8.5,
             args?.actinTensionNn || 2.4
           );
+        } else if (name === 'evaluate_pediatric_mdcp_waiver') {
+          const service = this.mdcpService || new MdcpDomainService();
+          const assessment: ISkSaiAssessment = {
+            cognitiveAdaptiveScore: 40,
+            ventilatorDependent: !!args?.ventilatorDependent,
+            tracheostomyDependent: !!args?.tracheostomyDependent,
+            enteralFeedingTube: !!args?.enteralFeedingTube,
+            intravenousTherapyOrTpn: !!args?.intravenousTherapyOrTpn,
+            continuousOxygenTherapy: !!args?.continuousOxygenTherapy,
+            dailySeizureActivity: !!args?.dailySeizureActivity,
+            unassistedMobilityScore: 2,
+            caregiverStrainIndex: args?.caregiverStrainIndex ?? 8,
+            engagedSubspecialties: ['Pediatric Pulmonology', 'Complex Care Management']
+          };
+          result = service.calculatePediatricWaiverIsp('live-consult-patient', assessment);
+        } else if (name === 'synchronize_hospital_mdcp_milestones') {
+          const service = this.mdcpService || new MdcpDomainService();
+          if (args?.milestoneId && args?.status) {
+            service.updateMultidisciplinaryMilestone(args.milestoneId, args.status);
+          }
+          result = service.currentHospitalPlan();
+        } else if (name === 'query_ieee11073_telemetry') {
+          const service = this.mdcpService || new MdcpDomainService();
+          result = {
+            samples: service.liveDeviceTelemetry(),
+            nomenclature: IEEE_11073_NOMENCLATURE
+          };
+        } else if (name === 'audit_ita_standards_compliance') {
+          const service = this.mdcpService || new MdcpDomainService();
+          result = service.verifyItaComplianceStatus();
         }
       } catch (err: any) {
         result = { error: err.message || 'Execution error' };

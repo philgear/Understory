@@ -25,6 +25,8 @@ import { AmbientSoapParserService, IStructuredSoapNote } from '../services/ambie
 import { CoppaPrivacyShieldService } from '../services/coppa-privacy-shield.service';
 import { ActuarialLongevityService } from '../services/actuarial-longevity.service';
 import { SpatialLesionMarkupService } from '../services/spatial-lesion-markup.service';
+import { MdcpDomainService } from '../services/mdcp/mdcp-domain.service';
+import { NavigationShellService } from '../services/navigation-shell.service';
 
 export interface IChatEntry {
     role: 'user' | 'model';
@@ -381,6 +383,9 @@ export interface IChatEntry {
                                                     <button (click)="openDrilldown('qaly'); $event.stopPropagation()" class="px-2.5 py-1 rounded bg-purple-500/10 hover:bg-purple-500/20 text-purple-600 dark:text-purple-300 border border-purple-500/30 font-bold transition flex items-center gap-1">
                                                       <span>⏳</span> <span>QALY Longevity</span>
                                                     </button>
+                                                    <button (click)="openMdcpHub(); $event.stopPropagation()" class="px-2.5 py-1 rounded bg-teal-500/10 hover:bg-teal-500/20 text-teal-600 dark:text-teal-300 border border-teal-500/30 font-bold transition flex items-center gap-1 cursor-pointer">
+                                                      <span>📋</span> <span>MDCP Governance Hub</span>
+                                                    </button>
                                                   </div>
                                                 }
 
@@ -409,6 +414,7 @@ export interface IChatEntry {
                                                         <p><strong>Gemini Engine:</strong> Gemini 2.5 Flash Multimodal Audio (REST WebSocket Live)</p>
                                                         <p><strong>Audio Buffer:</strong> 16kHz PCM Web Audio API Input &bull; Latency: 240ms</p>
                                                         <p><strong>Evidence Trail:</strong> FHIR R4 Bundle State Verified &bull; DOMPurify HIPAA Clean</p>
+                                                        <p><strong>MDCP Standards:</strong> IEEE 11073-10101 RTMMS &bull; Form 2603 ISP &bull; ITA 15 U.S.C. § 4723</p>
                                                     </div>
                                                 </div>
                                                 <div class="pt-1.5 border-t border-purple-900 font-mono text-[9px] text-purple-400 flex justify-between">
@@ -453,6 +459,30 @@ export interface IChatEntry {
                                   <button type="button" (click)="messageText.set('What are the key lab biomarker targets for this patient?'); sendMessage()" class="px-3 py-1.5 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 text-xs font-medium text-zinc-700 dark:text-zinc-300 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all shadow-sm">
                                       🧬 Biomarker Targets
                                   </button>
+                                </div>
+
+                                <!-- 📋 MDCP 4-Pillar Clinical & Standards Command Bar -->
+                                <div class="flex items-center justify-between gap-1.5 w-full px-3 py-1.5 bg-teal-950/20 dark:bg-teal-950/40 border border-teal-500/20 rounded-2xl text-[11px] font-mono overflow-x-auto no-scrollbar animate-in fade-in duration-300">
+                                  <div class="flex items-center gap-1.5 shrink-0 text-teal-600 dark:text-teal-400 font-bold">
+                                    <span>📋 MDCP:</span>
+                                  </div>
+                                  <div class="flex items-center gap-1.5 shrink-0">
+                                    <button type="button" (click)="sendMdcpQuickPrompt('Evaluate pediatric MDCP waiver requirements, SK-SAI nursing acuity, and Form 2603 PDN hours for this patient.')" class="px-2.5 py-1 rounded-xl bg-teal-500/10 hover:bg-teal-500/20 text-teal-700 dark:text-teal-300 border border-teal-500/30 transition flex items-center gap-1 whitespace-nowrap cursor-pointer">
+                                      <span>🧸</span> <span>Waiver & PDN</span>
+                                    </button>
+                                    <button type="button" (click)="sendMdcpQuickPrompt('Synchronize hospital multi-disciplinary care plan milestones, weaning goals, and 3-act plain language trajectory.')" class="px-2.5 py-1 rounded-xl bg-teal-500/10 hover:bg-teal-500/20 text-teal-700 dark:text-teal-300 border border-teal-500/30 transition flex items-center gap-1 whitespace-nowrap cursor-pointer">
+                                      <span>🏥</span> <span>Inpatient MDCP</span>
+                                    </button>
+                                    <button type="button" (click)="sendMdcpQuickPrompt('Query live ISO/IEEE 11073 medical device communication telemetry, MDC codes, and alarm confidence scores.')" class="px-2.5 py-1 rounded-xl bg-teal-500/10 hover:bg-teal-500/20 text-teal-700 dark:text-teal-300 border border-teal-500/30 transition flex items-center gap-1 whitespace-nowrap cursor-pointer">
+                                      <span>📡</span> <span>IEEE 11073</span>
+                                    </button>
+                                    <button type="button" (click)="sendMdcpQuickPrompt('Audit ITA Market Development Cooperator Program compliance, 15 U.S.C. 4723 statutory alignment, and Five Eyes data sovereignty.')" class="px-2.5 py-1 rounded-xl bg-teal-500/10 hover:bg-teal-500/20 text-teal-700 dark:text-teal-300 border border-teal-500/30 transition flex items-center gap-1 whitespace-nowrap cursor-pointer">
+                                      <span>🌐</span> <span>ITA Standards</span>
+                                    </button>
+                                    <button type="button" (click)="openMdcpHub()" class="px-3 py-1 rounded-xl bg-teal-600 text-white hover:bg-teal-500 font-bold transition flex items-center gap-1 whitespace-nowrap cursor-pointer shadow-xs">
+                                      <span>⚙️</span> <span>Hub</span>
+                                    </button>
+                                  </div>
                                 </div>
                             }
 
@@ -665,6 +695,17 @@ export class VoiceAssistantComponent implements OnDestroy {
     bionicReading = inject(BionicReadingService);
     telemetryService = inject(OcularVocalTelemetryService);
     opticalVision = inject(OpticalCameraVisionService);
+    mdcpService = inject(MdcpDomainService, { optional: true });
+    navShell = inject(NavigationShellService, { optional: true });
+
+    openMdcpHub(): void {
+      this.navShell?.openMdcpHub();
+    }
+
+    sendMdcpQuickPrompt(prompt: string): void {
+      this.messageText.set(prompt);
+      this.sendMessage();
+    }
 
     getFormattedChatText(entry: IChatEntry): string {
       const rawContent = entry.htmlContent || entry.text;
@@ -1257,11 +1298,32 @@ Only include a rich-media block when the user explicitly requests visual or rese
         this.scrollToBottom();
     }
     
+    private static readonly MAX_CHAT_HISTORY_ENTRIES = 24;
+
+    private _pruneSlidingEpisodicHistory() {
+        const history = this.chatHistory();
+        if (history.length <= VoiceAssistantComponent.MAX_CHAT_HISTORY_ENTRIES) return;
+
+        const anchor = history.slice(0, 2);
+        const recent = history.slice(-18);
+        const prunedCount = history.length - (anchor.length + recent.length);
+
+        if (prunedCount > 0) {
+            const divider: IChatEntry = {
+                role: 'model',
+                text: `*ℹ️ [Episodic Clinical Memory: ${prunedCount} intermediate consultation turn(s) archived to preserve low-latency edge performance & HIPAA bounds]*`,
+                htmlContent: `<p class="text-[11px] font-mono text-zinc-500 dark:text-zinc-400 italic border-l-2 border-zinc-700 pl-2">ℹ️ Episodic Memory: ${prunedCount} intermediate consult turn(s) archived to preserve edge latency & HIPAA session bounds.</p>`
+            };
+            this.chatHistory.set([...anchor, divider, ...recent]);
+        }
+    }
+
     private _finalizeModelTurn() {
         this.agentState.set('idle');
         this._liveModelText = '';
         this._liveCardsResolved = false;
         this._liveUserText = ''; // Reset user STT tracking for the next turn
+        this._pruneSlidingEpisodicHistory();
         
         // Restart UI STT if still listening
         if (this.live.isListening() && this.recognition) {
@@ -1426,6 +1488,54 @@ Our primary therapeutic strategy focuses on:
 * **Western Clinical:** Focuses on oral daily dose of prescription Metformin & Statin therapy for direct glycemic and vascular control.
 * **Eastern (TCM) Lens:** Recommends 2x weekly seasonal acupuncture and Xiao Ke Wan (herbs) to address meridian congestions and peripheral nerve sensation.
 * **Ayurvedic Paradigm:** Recommends daily morning Dinacharya (circadian routines), Nisha Amalaki (curcumin/amla) for antioxidant defense, and daily yoga to reduce cortisol-driven glucose spikes.`;
+        }
+
+        if (lower.includes('waiver') || lower.includes('pediatric mdcp') || lower.includes('2603') || lower.includes('sk-sai')) {
+            return `**🧸 Pediatric MDCP Waiver & Form 2603 ISP Determination:**
+
+* **SK-SAI Complexity Tier:** Level 4 (High Acuity Tracheostomy/Ventilator Support)
+* **Form 2603 Authorization:**
+  * **Private Duty Nursing (PDN):** **36.0 hrs/week** (Direct Pediatric RN/LVN)
+  * **Respite Care Pool:** **240.0 hrs/calendar year**
+  * **Adaptive Aids & Vehicle Mod Budget:** **\$10,000.00**
+* **De-Institutionalization Cost Benchmark:**
+  * **Home Care Plan:** \$98,400.00/yr
+  * **Institutional Nursing Facility Cap:** \$184,200.00/yr
+  * **Net Cost Neutrality Margin:** **-\$85,800.00/yr (53.4% Savings)**
+* **Statutory Authority:** Texas HHS STAR Kids / Louisiana DOH Title XIX Section 1915(c) Home and Community-Based Waiver.`;
+        }
+
+        if (lower.includes('inpatient mdcp') || lower.includes('multi-disciplinary') || lower.includes('milestone')) {
+            return `**🏥 Inpatient Multi-Disciplinary Care Plan (Hospital MDCP):**
+
+* **Interdisciplinary Sync:** Attending Pediatrician, Bedside RN, SLP, PT/OT, Clinical Pharmacology.
+* **Active Care Trajectory (3-Act Arc):**
+  1. *Past Arc:* Severe acute respiratory exacerbation; high-flow oxygen and initial telemetry instability.
+  2. *Present Arc:* Stabilized on room air; telemetry weaning ongoing (SpO₂ 97%, HR 102 bpm, respiratory rate 22/min).
+  3. *Future Arc:* Discharge target 48 hours; dysphagia pureed diet clearance; outpatient DME home ventilator backup confirmed.
+* **Adverse Event Guard:** Zero drug-drug interactions flagged; renal dosage adjustments validated.`;
+        }
+
+        if (lower.includes('ieee') || lower.includes('11073') || lower.includes('device communication') || lower.includes('mdc')) {
+            return `**📡 ISO/IEEE 11073 Medical Device Communication Profile (MDCP):**
+
+* **Rosetta Terminology Mapping (RTMMS):**
+  * \`MDC_PULS_OXIM_SAT_O2\`: **98.0%** (Alarm Confidence: 99.4%)
+  * \`MDC_PULS_OXIM_PULS_RATE\`: **104.0 bpm** (Alarm Confidence: 98.8%)
+  * \`MDC_VENT_PRESS_AWAY\`: **18.5 cmH2O** (Alarm Confidence: 99.9%)
+  * \`MDC_CONC_GLU_PANC\`: **112.0 mg/dL** (Alarm Confidence: 97.5%)
+* **FHIR Ingestion:** Validated as \`DeviceMetric\` and \`Observation\` resources with vendor-neutral MDCP containment.`;
+        }
+
+        if (lower.includes('ita') || lower.includes('market development') || lower.includes('standards') || lower.includes('cooperator')) {
+            return `**🌐 ITA Market Development Cooperator Program (MDCP) Standards Audit:**
+
+* **Statutory Authority:** 15 U.S.C. § 4723 (International Trade Administration MDCP Cooperative Agreement).
+* **Cross-Border Harmonization:**
+  * **US:** FDA 21 CFR Part 11 & NIST SP 800-90A CSPRNG Hardware Entropy Sealed.
+  * **EU/UK:** CE Mark MDR Class IIa SaMD & UK-GDPR / DSPT Data Sovereignty.
+  * **Canada / Australia / NZ:** PIPEDA, TGA SaMD & Five Eyes (FVEY) Cryptographic Envelope.
+* **Commercialization Status:** Verified export-compliant with zero unvetted cross-border telemetry egress.`;
         }
 
         return `This is a simulated response in **Demo Mode**. 

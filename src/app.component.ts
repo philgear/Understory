@@ -90,6 +90,7 @@ import { DocDrillDrawerComponent } from './components/shared/doc-drill-drawer.co
 import { CollaborationDockComponent } from './components/collaboration-dock.component';
 import { KneeHologramHudComponent } from './components/knee-hologram-hud.component';
 import { ResearchDataDividendComponent } from './components/research-data-dividend.component';
+import { MdcpGovernanceHubComponent } from './components/clinical/mdcp-governance-hub.component';
 
 @Component({
   selector: 'app-root',
@@ -156,7 +157,8 @@ import { ResearchDataDividendComponent } from './components/research-data-divide
     DocDrillDrawerComponent,
     CollaborationDockComponent,
     KneeHologramHudComponent,
-    ResearchDataDividendComponent
+    ResearchDataDividendComponent,
+    MdcpGovernanceHubComponent
   ],
   providers: [],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -253,6 +255,11 @@ import { ResearchDataDividendComponent } from './components/research-data-divide
         <app-clinical-trajectory-reader-modal
           (close)="navShell.closeTrajectoryReader()">
         </app-clinical-trajectory-reader-modal>
+      }
+
+      <!-- MDCP Strategic Clinical & Standards Governance Hub Modal -->
+      @if (navShell.showMdcpHubModal()) {
+        <app-mdcp-governance-hub></app-mdcp-governance-hub>
       }
 
       @defer (on idle) {

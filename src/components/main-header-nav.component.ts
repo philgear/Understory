@@ -319,6 +319,13 @@ import { NavigationShellService } from '../services/navigation-shell.service';
                       <div class="text-[10px] text-zinc-400 font-normal">Zero-Egress HIPAA Safe Harbor HUD</div>
                     </div>
                   </button>
+                  <button type="button" (click)="openMdcpHub(); isAppsHubOpen.set(false)" class="w-full text-left p-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition flex items-center gap-2 text-xs font-bold text-zinc-800 dark:text-zinc-200 cursor-pointer border border-transparent hover:border-zinc-200 dark:hover:border-zinc-800">
+                    <span class="text-sm">📋</span>
+                    <div>
+                      <div>MDCP Clinical &amp; Standards Hub</div>
+                      <div class="text-[10px] text-teal-600 dark:text-teal-400 font-normal">Pediatric Waiver • CarePlan • IEEE 11073 • ITA</div>
+                    </div>
+                  </button>
                 </div>
               </div>
             </div>
@@ -435,6 +442,11 @@ import { NavigationShellService } from '../services/navigation-shell.service';
 
           <!-- Clinical Navigation Links (Fitts's Law 48px+ touch targets) -->
           <div class="space-y-2.5">
+            <!-- MDCP Governance Hub -->
+            <button type="button" (click)="openMdcpHub(); isMobileMenuOpen.set(false);" class="w-full min-h-[48px] flex items-center gap-3 px-4 py-3 rounded-xl bg-teal-50 dark:bg-teal-950/40 text-teal-800 dark:text-teal-200 border border-teal-200 dark:border-teal-800 font-bold text-xs uppercase tracking-wider active:scale-[0.98] transition cursor-pointer">
+              <span class="text-base">📋</span> <span>MDCP Governance Hub</span>
+            </button>
+
             <!-- Ambient Flow Background Music Player -->
             <button type="button" (click)="showAmbientPlayer.set(true); isMobileMenuOpen.set(false);" class="w-full min-h-[48px] flex items-center gap-3 px-4 py-3 rounded-xl bg-teal-50 dark:bg-teal-950/40 text-teal-800 dark:text-teal-200 border border-teal-200 dark:border-teal-800 font-bold text-xs uppercase tracking-wider active:scale-[0.98] transition cursor-pointer">
               <span class="text-base">🎵</span> <span>Ambient Flow Music Player</span>
@@ -580,6 +592,10 @@ export class MainHeaderNavComponent {
   openGreenRoom = output<void>();
   openAustereHud = output<void>();
   triggerSomaticGrounding = output<void>();
+
+  openMdcpHub(): void {
+    this.navShell?.openMdcpHub();
+  }
 }
 
 

@@ -7,6 +7,8 @@ import { YbocsService } from '../ybocs/ybocs.service';
 import { AcronymExpanderService } from '../acronym-expander.service';
 import { ActuarialLongevityService } from '../actuarial-longevity.service';
 import { ResearchLecturesService } from '../research-lectures.service';
+import { MdcpDomainService } from '../mdcp/mdcp-domain.service';
+import { IEpsdtAppealPackage } from '../mdcp/epsdt-advocacy.service';
 
 export interface IFhirResource {
   resourceType: string;
@@ -46,6 +48,14 @@ export class FhirExportStrategyService {
   private laafFhir = (() => {
     try {
       return inject(LaafFhirHapticScheduleService, { optional: true });
+    } catch {
+      return null;
+    }
+  })();
+
+  private mdcpService = (() => {
+    try {
+      return inject(MdcpDomainService, { optional: true });
     } catch {
       return null;
     }
@@ -213,4 +223,215 @@ export class FhirExportStrategyService {
       console.error('[FhirExportStrategyService] FHIR Bundle export error:', error);
     }
   }
+
+  public exportMdcpBundle(patient: Partial<IPatient> | IPatient): void {
+    try {
+      const service = this.mdcpService || new MdcpDomainService();
+      const bundle = service.buildUnifiedMdcpFhirBundle(patient);
+      const json = JSON.stringify(bundle, null, 2);
+      const blob = new Blob([json], { type: 'application/fhir+json' });
+      const url = URL.createObjectURL(blob);
+      const cleanName = (patient.name || 'patient').toLowerCase().replace(/[^a-z0-9]/g, '-');
+      const filename = `${cleanName}-mdcp-four-domain-bundle-${new Date().toISOString().slice(0, 10)}.json`;
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('[FhirExportStrategyService] MDCP Bundle export error:', error);
+    }
+  }
+
+  public generateEpsdtFhirBundle(patient: Partial<IPatient> | IPatient, pkg: IEpsdtAppealPackage): IFhirBundle {
+    const cleanId = this.sanitizeForExport(patient.id || 'pat-pediatric-01');
+    const timestamp = new Date().toISOString();
+    const sanitize = (val: string) => this.sanitizeForExport(val);
+
+    const entries: { resource: IFhirResource }[] = [];
+
+    // 1. Patient Resource
+    entries.push({
+      resource: {
+        resourceType: 'Patient',
+        id: cleanId,
+        active: true,
+        name: [{ text: sanitize(patient.name || 'Jordan Rivera') }],
+        gender: this.toFhirGender(patient.gender),
+        birthDate: patient.age ? `${new Date().getFullYear() - patient.age}-01-01` : undefined
+      }
+    });
+
+    // 2. Practitioner Resource (Ordering Complex Care Physician)
+    entries.push({
+      resource: {
+        resourceType: 'Practitioner',
+        id: `practitioner-epsdt-${cleanId}`,
+        active: true,
+        identifier: [{ system: 'http://hl7.org/fhir/sid/us-npi', value: '1982736450' }],
+        name: [{ text: 'Dr. Eleanor Vance, MD, FAAP' }]
+      }
+    });
+
+    // 3. ServiceRequest Resource (Private Duty Nursing under 42 U.S.C. § 1396d(r)(5))
+    entries.push({
+      resource: {
+        resourceType: 'ServiceRequest',
+        id: `srv-epsdt-pdn-${cleanId}`,
+        status: 'active',
+        intent: 'order',
+        priority: pkg.isStatExpedited ? 'stat' : 'urgent',
+        category: [
+          {
+            coding: [
+              {
+                system: 'https://pocketgull.app/fhir/cs/epsdt',
+                code: 'mandatory-treatment-order',
+                display: '42 U.S.C. § 1396d(r)(5) EPSDT Mandatory Treatment'
+              }
+            ]
+          }
+        ],
+        code: {
+          coding: [
+            {
+              system: 'http://www.ama-assn.org/go/cpt',
+              code: 'S9123',
+              display: 'Nursing care, in the home; by RN, per hour'
+            },
+            {
+              system: 'http://snomed.info/sct',
+              code: '307818003',
+              display: 'Private duty nursing service (procedure)'
+            }
+          ],
+          text: 'Continuous In-Home Skilled Private Duty Nursing (RN/LPN)'
+        },
+        subject: { reference: `Patient/${cleanId}` },
+        requester: { reference: `Practitioner/practitioner-epsdt-${cleanId}` },
+        authoredOn: pkg.generatedAtIso,
+        extension: [
+          {
+            url: 'https://pocketgull.app/fhir/StructureDefinition/epsdt-dispute-category',
+            valueString: pkg.disputeCategory
+          },
+          {
+            url: 'https://pocketgull.app/fhir/StructureDefinition/aid-paid-pending-deadline',
+            valueString: pkg.aidPaidPendingDeadlineIso
+          },
+          {
+            url: 'https://pocketgull.app/fhir/StructureDefinition/sha256-integrity-digest',
+            valueString: pkg.cryptographicIntegrityDigest
+          },
+          {
+            url: 'https://pocketgull.app/fhir/StructureDefinition/administering-agency',
+            valueString: pkg.administeringAgency
+          }
+        ]
+      }
+    });
+
+    // 4. DocumentReference Resource (Full Appeal Dossier with SHA-256 seal)
+    const dossierText = `${pkg.physicianLetterOfMedicalNecessity}\n\n---\n\n${pkg.fairHearingPetition}\n\n---\n\n${pkg.federalCaseLawBrief}`;
+    let encodedData = '';
+    try {
+      if (typeof btoa === 'function') {
+        encodedData = btoa(unescape(encodeURIComponent(dossierText)));
+      }
+    } catch {
+      encodedData = '';
+    }
+
+    entries.push({
+      resource: {
+        resourceType: 'DocumentReference',
+        id: `docref-epsdt-${cleanId}`,
+        status: 'current',
+        type: {
+          coding: [
+            {
+              system: 'http://loinc.org',
+              code: '11488-4',
+              display: 'Consultation note'
+            }
+          ],
+          text: 'EPSDT Federal Appeal & Mandatory Skilled Nursing Order Package'
+        },
+        subject: { reference: `Patient/${cleanId}` },
+        date: pkg.generatedAtIso,
+        description: `EPSDT Appeal & Physician Order (${pkg.stateCode} - ${pkg.stateName})`,
+        content: [
+          {
+            attachment: {
+              contentType: 'text/markdown',
+              title: `EPSDT_Appeal_Package_${pkg.stateCode}.md`,
+              hash: pkg.cryptographicIntegrityDigest,
+              ...(encodedData ? { data: encodedData } : {})
+            }
+          }
+        ]
+      }
+    });
+
+    // 5. CoverageEligibilityRequest Resource (Statutory Preemption Notice)
+    entries.push({
+      resource: {
+        resourceType: 'CoverageEligibilityRequest',
+        id: `cov-req-epsdt-${cleanId}`,
+        status: 'active',
+        purpose: ['benefits', 'validation'],
+        patient: { reference: `Patient/${cleanId}` },
+        created: pkg.generatedAtIso,
+        insurer: { display: pkg.administeringAgency },
+        facility: { display: 'In-Home Community Care (Institutional Diversion)' }
+      }
+    });
+
+    return {
+      resourceType: 'Bundle',
+      id: `bundle-epsdt-${cleanId}-${Date.now()}`,
+      type: 'collection',
+      timestamp,
+      meta: {
+        tag: [
+          {
+            system: 'https://pocketgull.app/fhir/tags',
+            code: 'epsdt-appeal-bundle',
+            display: 'Title XIX 42 U.S.C. § 1396d(r)(5) EPSDT Federal Appeal'
+          },
+          {
+            system: 'https://pocketgull.app/fhir/tags',
+            code: pkg.stateCode,
+            display: pkg.stateName
+          }
+        ]
+      },
+      entry: entries
+    };
+  }
+
+  public exportEpsdtAppealBundle(patient: Partial<IPatient> | IPatient, pkg: IEpsdtAppealPackage): void {
+    try {
+      const bundle = this.generateEpsdtFhirBundle(patient, pkg);
+      const json = JSON.stringify(bundle, null, 2);
+      const blob = new Blob([json], { type: 'application/fhir+json' });
+      const url = URL.createObjectURL(blob);
+      const cleanName = (patient.name || 'patient').toLowerCase().replace(/[^a-z0-9]/g, '-');
+      const filename = `${cleanName}-epsdt-appeal-fhir-r4-${pkg.stateCode}-${new Date().toISOString().slice(0, 10)}.json`;
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('[FhirExportStrategyService] EPSDT FHIR export error:', error);
+    }
+  }
 }
+

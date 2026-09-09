@@ -89,12 +89,14 @@ import { AvsEngineService, AvsBitrateTier } from '../services/avs-engine.service
 import { PositivePsychologyFlourishingHubComponent } from './positive-psychology-flourishing-hub.component';
 import { SystemsEquilibriumHudComponent, SystemsNavMode } from './analysis-report/systems-equilibrium-hud.component';
 import { InterSystemCrosstalkCardComponent } from './analysis-report/inter-system-crosstalk-card.component';
+import { DynamicPreconditionAlertBannerComponent } from './shared/dynamic-precondition-alert-banner.component';
 
 @Component({
   selector: 'app-analysis-report',
   standalone: true,
   imports: [
     CommonModule,
+    DynamicPreconditionAlertBannerComponent,
     SystemsEquilibriumHudComponent,
     InterSystemCrosstalkCardComponent,
     PositivePsychologyFlourishingHubComponent,
@@ -381,7 +383,7 @@ import { InterSystemCrosstalkCardComponent } from './analysis-report/inter-syste
       <!--Analysis Engine Body-->
       <div class="max-w-4xl mx-auto px-4 sm:px-8 py-6 sm:py-8 pb-24 min-w-0">
         
-
+        <app-dynamic-precondition-alert-banner class="block w-full mb-4" />
 
         @if (hasAnyReport() && activeLens() !== 'EMT Handoff' && !state.isEmergencyMode()) {
           <div class="mb-6 p-4 rounded-xl border transition-all duration-300"

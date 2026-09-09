@@ -7,10 +7,10 @@
 /* 1. Universal Proportional Superfamily */
 @font-face {
   font-family: 'PocketGull';
-  src: url('fonts/woff2/PocketGull-Bold.woff2') format('woff2'),
-       url('PocketGull-Bold.woff2') format('woff2'),
-       url('fonts/ttf/PocketGull-Bold.ttf') format('truetype'),
-       url('PocketGull-Bold.ttf') format('truetype');
+  src: url('fonts/woff2/PocketGull-Bold.woff2?v=3.3.0') format('woff2'),
+       url('PocketGull-Bold.woff2?v=3.3.0') format('woff2'),
+       url('fonts/ttf/PocketGull-Bold.ttf?v=3.3.0') format('truetype'),
+       url('PocketGull-Bold.ttf?v=3.3.0') format('truetype');
   font-weight: 700 800;
   font-style: normal;
   font-display: swap;
@@ -18,10 +18,10 @@
 
 @font-face {
   font-family: 'PocketGull';
-  src: url('fonts/woff2/PocketGull-Fineliner.woff2') format('woff2'),
-       url('PocketGull-Fineliner.woff2') format('woff2'),
-       url('fonts/ttf/PocketGull-Fineliner.ttf') format('truetype'),
-       url('PocketGull-Fineliner.ttf') format('truetype');
+  src: url('fonts/woff2/PocketGull-Fineliner.woff2?v=3.3.0') format('woff2'),
+       url('PocketGull-Fineliner.woff2?v=3.3.0') format('woff2'),
+       url('fonts/ttf/PocketGull-Fineliner.ttf?v=3.3.0') format('truetype'),
+       url('PocketGull-Fineliner.ttf?v=3.3.0') format('truetype');
   font-weight: 400 500;
   font-style: normal;
   font-display: swap;
@@ -29,10 +29,10 @@
 
 @font-face {
   font-family: 'PocketGull';
-  src: url('fonts/woff2/PocketGull-Chiseltip.woff2') format('woff2'),
-       url('PocketGull-Chiseltip.woff2') format('woff2'),
-       url('fonts/ttf/PocketGull-Chiseltip.ttf') format('truetype'),
-       url('PocketGull-Chiseltip.ttf') format('truetype');
+  src: url('fonts/woff2/PocketGull-Chiseltip.woff2?v=3.3.0') format('woff2'),
+       url('PocketGull-Chiseltip.woff2?v=3.3.0') format('woff2'),
+       url('fonts/ttf/PocketGull-Chiseltip.ttf?v=3.3.0') format('truetype'),
+       url('PocketGull-Chiseltip.ttf?v=3.3.0') format('truetype');
   font-weight: 900;
   font-style: normal;
   font-display: swap;
@@ -41,10 +41,10 @@
 /* Italic Superfamily Additions */
 @font-face {
   font-family: 'PocketGull';
-  src: url('fonts/woff2/PocketGull-Italic.woff2') format('woff2'),
-       url('PocketGull-Italic.woff2') format('woff2'),
-       url('fonts/ttf/PocketGull-Italic.ttf') format('truetype'),
-       url('PocketGull-Italic.ttf') format('truetype');
+  src: url('fonts/woff2/PocketGull-Italic.woff2?v=3.3.0') format('woff2'),
+       url('PocketGull-Italic.woff2?v=3.3.0') format('woff2'),
+       url('fonts/ttf/PocketGull-Italic.ttf?v=3.3.0') format('truetype'),
+       url('PocketGull-Italic.ttf?v=3.3.0') format('truetype');
   font-weight: 400 500;
   font-style: italic;
   font-display: swap;
@@ -52,10 +52,10 @@
 
 @font-face {
   font-family: 'PocketGull';
-  src: url('fonts/woff2/PocketGull-BoldItalic.woff2') format('woff2'),
-       url('PocketGull-BoldItalic.woff2') format('woff2'),
-       url('fonts/ttf/PocketGull-BoldItalic.ttf') format('truetype'),
-       url('PocketGull-BoldItalic.ttf') format('truetype');
+  src: url('fonts/woff2/PocketGull-BoldItalic.woff2?v=3.3.0') format('woff2'),
+       url('PocketGull-BoldItalic.woff2?v=3.3.0') format('woff2'),
+       url('fonts/ttf/PocketGull-BoldItalic.ttf?v=3.3.0') format('truetype'),
+       url('PocketGull-BoldItalic.ttf?v=3.3.0') format('truetype');
   font-weight: 700 800;
   font-style: italic;
   font-display: swap;
@@ -64,12 +64,12 @@
 /* 1.5 PocketGull Variable Font (wght: 400-900, slnt: -10.5deg-0deg, opsz: 14-96) */
 @font-face {
   font-family: 'PocketGull VF';
-  src: url('fonts/woff2/PocketGull-VF.woff2') format('woff2-variations'),
-       url('fonts/woff2/PocketGull-VF.woff2') format('woff2'),
-       url('PocketGull-VF.woff2') format('woff2'),
-       url('fonts/ttf/PocketGull-VF.ttf') format('truetype-variations'),
-       url('fonts/ttf/PocketGull-VF.ttf') format('truetype'),
-       url('PocketGull-VF.ttf') format('truetype');
+  src: url('fonts/woff2/PocketGull-VF.woff2?v=3.3.0') format('woff2-variations'),
+       url('fonts/woff2/PocketGull-VF.woff2?v=3.3.0') format('woff2'),
+       url('PocketGull-VF.woff2?v=3.3.0') format('woff2'),
+       url('fonts/ttf/PocketGull-VF.ttf?v=3.3.0') format('truetype-variations'),
+       url('fonts/ttf/PocketGull-VF.ttf?v=3.3.0') format('truetype'),
+       url('PocketGull-VF.ttf?v=3.3.0') format('truetype');
   font-weight: 400 900;
   font-stretch: 75% 100%;
   font-style: oblique -10.5deg 0deg;
@@ -78,33 +78,55 @@
 
 @font-face {
   font-family: 'PocketGull Italic';
-  src: url('fonts/woff2/PocketGull-Italic.woff2') format('woff2'),
-       url('PocketGull-Italic.woff2') format('woff2'),
-       url('fonts/ttf/PocketGull-Italic.ttf') format('truetype'),
-       url('PocketGull-Italic.ttf') format('truetype');
+  src: url('fonts/woff2/PocketGull-Italic.woff2?v=3.3.0') format('woff2'),
+       url('PocketGull-Italic.woff2?v=3.3.0') format('woff2'),
+       url('fonts/ttf/PocketGull-Italic.ttf?v=3.3.0') format('truetype'),
+       url('PocketGull-Italic.ttf?v=3.3.0') format('truetype');
   font-weight: 400 500;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
+  font-family: 'PocketGull Italic';
+  src: url('fonts/woff2/PocketGull-Italic.woff2?v=3.3.0') format('woff2'),
+       url('PocketGull-Italic.woff2?v=3.3.0') format('woff2'),
+       url('fonts/ttf/PocketGull-Italic.ttf?v=3.3.0') format('truetype'),
+       url('PocketGull-Italic.ttf?v=3.3.0') format('truetype');
+  font-weight: 400 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
   font-family: 'PocketGull Bold Italic';
-  src: url('fonts/woff2/PocketGull-BoldItalic.woff2') format('woff2'),
-       url('PocketGull-BoldItalic.woff2') format('woff2'),
-       url('fonts/ttf/PocketGull-BoldItalic.ttf') format('truetype'),
-       url('PocketGull-BoldItalic.ttf') format('truetype');
+  src: url('fonts/woff2/PocketGull-BoldItalic.woff2?v=3.3.0') format('woff2'),
+       url('PocketGull-BoldItalic.woff2?v=3.3.0') format('woff2'),
+       url('fonts/ttf/PocketGull-BoldItalic.ttf?v=3.3.0') format('truetype'),
+       url('PocketGull-BoldItalic.ttf?v=3.3.0') format('truetype');
   font-weight: 700 800;
   font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PocketGull Bold Italic';
+  src: url('fonts/woff2/PocketGull-BoldItalic.woff2?v=3.3.0') format('woff2'),
+       url('PocketGull-BoldItalic.woff2?v=3.3.0') format('woff2'),
+       url('fonts/ttf/PocketGull-BoldItalic.ttf?v=3.3.0') format('truetype'),
+       url('PocketGull-BoldItalic.ttf?v=3.3.0') format('truetype');
+  font-weight: 700 800;
+  font-style: italic;
   font-display: swap;
 }
 
 /* Dedicated Family Aliases */
 @font-face {
   font-family: 'PocketGull Bold';
-  src: url('fonts/woff2/PocketGull-Bold.woff2') format('woff2'),
-       url('PocketGull-Bold.woff2') format('woff2'),
-       url('fonts/ttf/PocketGull-Bold.ttf') format('truetype'),
-       url('PocketGull-Bold.ttf') format('truetype');
+  src: url('fonts/woff2/PocketGull-Bold.woff2?v=3.3.0') format('woff2'),
+       url('PocketGull-Bold.woff2?v=3.3.0') format('woff2'),
+       url('fonts/ttf/PocketGull-Bold.ttf?v=3.3.0') format('truetype'),
+       url('PocketGull-Bold.ttf?v=3.3.0') format('truetype');
   font-weight: 700 800;
   font-style: normal;
   font-display: swap;
@@ -112,10 +134,32 @@
 
 @font-face {
   font-family: 'PocketGull Fineliner';
-  src: url('fonts/woff2/PocketGull-Fineliner.woff2') format('woff2'),
-       url('PocketGull-Fineliner.woff2') format('woff2'),
-       url('fonts/ttf/PocketGull-Fineliner.ttf') format('truetype'),
-       url('PocketGull-Fineliner.ttf') format('truetype');
+  src: url('fonts/woff2/PocketGull-Fineliner.woff2?v=3.3.0') format('woff2'),
+       url('PocketGull-Fineliner.woff2?v=3.3.0') format('woff2'),
+       url('fonts/ttf/PocketGull-Fineliner.ttf?v=3.3.0') format('truetype'),
+       url('PocketGull-Fineliner.ttf?v=3.3.0') format('truetype');
+  font-weight: 400 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PocketGull Fineliner Italic';
+  src: url('fonts/woff2/PocketGull-Italic.woff2?v=3.3.0') format('woff2'),
+       url('PocketGull-Italic.woff2?v=3.3.0') format('woff2'),
+       url('fonts/ttf/PocketGull-Italic.ttf?v=3.3.0') format('truetype'),
+       url('PocketGull-Italic.ttf?v=3.3.0') format('truetype');
+  font-weight: 400 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PocketGull Fineliner Italic';
+  src: url('fonts/woff2/PocketGull-Italic.woff2?v=3.3.0') format('woff2'),
+       url('PocketGull-Italic.woff2?v=3.3.0') format('woff2'),
+       url('fonts/ttf/PocketGull-Italic.ttf?v=3.3.0') format('truetype'),
+       url('PocketGull-Italic.ttf?v=3.3.0') format('truetype');
   font-weight: 400 500;
   font-style: normal;
   font-display: swap;
@@ -123,10 +167,10 @@
 
 @font-face {
   font-family: 'PocketGull Chiseltip';
-  src: url('fonts/woff2/PocketGull-Chiseltip.woff2') format('woff2'),
-       url('PocketGull-Chiseltip.woff2') format('woff2'),
-       url('fonts/ttf/PocketGull-Chiseltip.ttf') format('truetype'),
-       url('PocketGull-Chiseltip.ttf') format('truetype');
+  src: url('fonts/woff2/PocketGull-Chiseltip.woff2?v=3.3.0') format('woff2'),
+       url('PocketGull-Chiseltip.woff2?v=3.3.0') format('woff2'),
+       url('fonts/ttf/PocketGull-Chiseltip.ttf?v=3.3.0') format('truetype'),
+       url('PocketGull-Chiseltip.ttf?v=3.3.0') format('truetype');
   font-weight: 900;
   font-style: normal;
   font-display: swap;
@@ -134,32 +178,54 @@
 
 @font-face {
   font-family: 'PocketGull Marker Raw';
-  src: url('fonts/woff2/PocketGull-MarkerRaw.woff2') format('woff2'),
-       url('PocketGull-MarkerRaw.woff2') format('woff2'),
-       url('fonts/ttf/PocketGull-MarkerRaw.ttf') format('truetype'),
-       url('PocketGull-MarkerRaw.ttf') format('truetype');
+  src: url('fonts/woff2/PocketGull-MarkerRaw.woff2?v=3.3.0') format('woff2'),
+       url('PocketGull-MarkerRaw.woff2?v=3.3.0') format('woff2'),
+       url('fonts/ttf/PocketGull-MarkerRaw.ttf?v=3.3.0') format('truetype'),
+       url('PocketGull-MarkerRaw.ttf?v=3.3.0') format('truetype');
   font-weight: 900;
   font-style: normal;
   font-display: swap;
 }
 
+/* PocketGull Serif (Long-Form Clinical Reading & Informed Consent) */
 @font-face {
-  font-family: 'PocketGull Micro';
-  src: url('fonts/woff2/PocketGull-Micro.woff2') format('woff2'),
-       url('PocketGull-Micro.woff2') format('woff2'),
-       url('fonts/ttf/PocketGull-Micro.ttf') format('truetype'),
-       url('PocketGull-Micro.ttf') format('truetype');
+  font-family: 'PocketGull Serif';
+  src: url('fonts/woff2/PocketGull-Serif-Regular.woff2?v=3.3.0') format('woff2'),
+       url('PocketGull-Serif-Regular.woff2?v=3.3.0') format('woff2'),
+       url('fonts/ttf/PocketGull-Serif-Regular.ttf?v=3.3.0') format('truetype'),
+       url('PocketGull-Serif-Regular.ttf?v=3.3.0') format('truetype');
   font-weight: 400 500;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
+  font-family: 'PocketGull Serif';
+  src: url('fonts/woff2/PocketGull-Serif-Bold.woff2?v=3.3.0') format('woff2'),
+       url('PocketGull-Serif-Bold.woff2?v=3.3.0') format('woff2'),
+       url('fonts/ttf/PocketGull-Serif-Bold.ttf?v=3.3.0') format('truetype'),
+       url('PocketGull-Serif-Bold.ttf?v=3.3.0') format('truetype');
+  font-weight: 700 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* PocketGull Micro (203 DPI Bedside Master) — Core Latin & Punctuation (18.1 KB) */
+@font-face {
+  font-family: 'PocketGull Micro';
+  src: url('fonts/woff2/PocketGull-Micro-Core.woff2?v=3.3.0') format('woff2'),
+       url('PocketGull-Micro-Core.woff2?v=3.3.0') format('woff2');
+  font-weight: 400 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
   font-family: 'PocketGull Condensed';
-  src: url('fonts/woff2/PocketGull-CondensedBold.woff2') format('woff2'),
-       url('PocketGull-CondensedBold.woff2') format('woff2'),
-       url('fonts/ttf/PocketGull-CondensedBold.ttf') format('truetype'),
-       url('PocketGull-CondensedBold.ttf') format('truetype');
+  src: url('fonts/woff2/PocketGull-CondensedBold.woff2?v=3.3.0') format('woff2'),
+       url('PocketGull-CondensedBold.woff2?v=3.3.0') format('woff2'),
+       url('fonts/ttf/PocketGull-CondensedBold.ttf?v=3.3.0') format('truetype'),
+       url('PocketGull-CondensedBold.ttf?v=3.3.0') format('truetype');
   font-weight: 700 800;
   font-stretch: condensed;
   font-style: normal;
@@ -168,10 +234,10 @@
 
 @font-face {
   font-family: 'PocketGull Soft';
-  src: url('fonts/woff2/PocketGull-Soft.woff2') format('woff2'),
-       url('PocketGull-Soft.woff2') format('woff2'),
-       url('fonts/ttf/PocketGull-Soft.ttf') format('truetype'),
-       url('PocketGull-Soft.ttf') format('truetype');
+  src: url('fonts/woff2/PocketGull-Soft.woff2?v=3.3.0') format('woff2'),
+       url('PocketGull-Soft.woff2?v=3.3.0') format('woff2'),
+       url('fonts/ttf/PocketGull-Soft.ttf?v=3.3.0') format('truetype'),
+       url('PocketGull-Soft.ttf?v=3.3.0') format('truetype');
   font-weight: 700 800;
   font-style: normal;
   font-display: swap;
@@ -180,10 +246,10 @@
 /* 2. PocketGull Mono (Fixed 600 UPM Clinical Telemetry & Terminal) */
 @font-face {
   font-family: 'PocketGull Mono';
-  src: url('fonts/woff2/PocketGullMono-Regular.woff2') format('woff2'),
-       url('PocketGullMono-Regular.woff2') format('woff2'),
-       url('fonts/ttf/PocketGullMono-Regular.ttf') format('truetype'),
-       url('PocketGullMono-Regular.ttf') format('truetype');
+  src: url('fonts/woff2/PocketGullMono-Regular.woff2?v=3.3.0') format('woff2'),
+       url('PocketGullMono-Regular.woff2?v=3.3.0') format('woff2'),
+       url('fonts/ttf/PocketGullMono-Regular.ttf?v=3.3.0') format('truetype'),
+       url('PocketGullMono-Regular.ttf?v=3.3.0') format('truetype');
   font-weight: 400 500;
   font-style: normal;
   font-display: swap;
@@ -191,10 +257,10 @@
 
 @font-face {
   font-family: 'PocketGull Mono';
-  src: url('fonts/woff2/PocketGullMono-Bold.woff2') format('woff2'),
-       url('PocketGullMono-Bold.woff2') format('woff2'),
-       url('fonts/ttf/PocketGullMono-Bold.ttf') format('truetype'),
-       url('PocketGullMono-Bold.ttf') format('truetype');
+  src: url('fonts/woff2/PocketGullMono-Bold.woff2?v=3.3.0') format('woff2'),
+       url('PocketGullMono-Bold.woff2?v=3.3.0') format('woff2'),
+       url('fonts/ttf/PocketGullMono-Bold.ttf?v=3.3.0') format('truetype'),
+       url('PocketGullMono-Bold.ttf?v=3.3.0') format('truetype');
   font-weight: 700 800;
   font-style: normal;
   font-display: swap;
@@ -202,10 +268,10 @@
 
 @font-face {
   font-family: 'PocketGull Mono';
-  src: url('fonts/woff2/PocketGullMono-Italic.woff2') format('woff2'),
-       url('PocketGullMono-Italic.woff2') format('woff2'),
-       url('fonts/ttf/PocketGullMono-Italic.ttf') format('truetype'),
-       url('PocketGullMono-Italic.ttf') format('truetype');
+  src: url('fonts/woff2/PocketGullMono-Italic.woff2?v=3.3.0') format('woff2'),
+       url('PocketGullMono-Italic.woff2?v=3.3.0') format('woff2'),
+       url('fonts/ttf/PocketGullMono-Italic.ttf?v=3.3.0') format('truetype'),
+       url('PocketGullMono-Italic.ttf?v=3.3.0') format('truetype');
   font-weight: 400 500;
   font-style: italic;
   font-display: swap;
@@ -214,10 +280,10 @@
 /* 2.5 Google Fonts Official Family Aliases ('Pocket Gull' & 'Pocket Gull Mono') */
 @font-face {
   font-family: 'Pocket Gull';
-  src: url('fonts/woff2/PocketGull-Regular.woff2') format('woff2'),
-       url('fonts/woff2/PocketGull-Fineliner.woff2') format('woff2'),
-       url('fonts/ttf/PocketGull-Regular.ttf') format('truetype'),
-       url('fonts/ttf/PocketGull-Fineliner.ttf') format('truetype');
+  src: url('fonts/woff2/PocketGull-Regular.woff2?v=3.3.0') format('woff2'),
+       url('fonts/woff2/PocketGull-Fineliner.woff2?v=3.3.0') format('woff2'),
+       url('fonts/ttf/PocketGull-Regular.ttf?v=3.3.0') format('truetype'),
+       url('fonts/ttf/PocketGull-Fineliner.ttf?v=3.3.0') format('truetype');
   font-weight: 400 500;
   font-style: normal;
   font-display: swap;
@@ -225,8 +291,8 @@
 
 @font-face {
   font-family: 'Pocket Gull';
-  src: url('fonts/woff2/PocketGull-Bold.woff2') format('woff2'),
-       url('fonts/ttf/PocketGull-Bold.ttf') format('truetype');
+  src: url('fonts/woff2/PocketGull-Bold.woff2?v=3.3.0') format('woff2'),
+       url('fonts/ttf/PocketGull-Bold.ttf?v=3.3.0') format('truetype');
   font-weight: 700 800;
   font-style: normal;
   font-display: swap;
@@ -234,10 +300,10 @@
 
 @font-face {
   font-family: 'Pocket Gull';
-  src: url('fonts/woff2/PocketGull-Black.woff2') format('woff2'),
-       url('fonts/woff2/PocketGull-Chiseltip.woff2') format('woff2'),
-       url('fonts/ttf/PocketGull-Black.ttf') format('truetype'),
-       url('fonts/ttf/PocketGull-Chiseltip.ttf') format('truetype');
+  src: url('fonts/woff2/PocketGull-Black.woff2?v=3.3.0') format('woff2'),
+       url('fonts/woff2/PocketGull-Chiseltip.woff2?v=3.3.0') format('woff2'),
+       url('fonts/ttf/PocketGull-Black.ttf?v=3.3.0') format('truetype'),
+       url('fonts/ttf/PocketGull-Chiseltip.ttf?v=3.3.0') format('truetype');
   font-weight: 900;
   font-style: normal;
   font-display: swap;
@@ -245,8 +311,8 @@
 
 @font-face {
   font-family: 'Pocket Gull';
-  src: url('fonts/woff2/PocketGull-Italic.woff2') format('woff2'),
-       url('fonts/ttf/PocketGull-Italic.ttf') format('truetype');
+  src: url('fonts/woff2/PocketGull-Italic.woff2?v=3.3.0') format('woff2'),
+       url('fonts/ttf/PocketGull-Italic.ttf?v=3.3.0') format('truetype');
   font-weight: 400 500;
   font-style: italic;
   font-display: swap;
@@ -254,8 +320,8 @@
 
 @font-face {
   font-family: 'Pocket Gull';
-  src: url('fonts/woff2/PocketGull-BoldItalic.woff2') format('woff2'),
-       url('fonts/ttf/PocketGull-BoldItalic.ttf') format('truetype');
+  src: url('fonts/woff2/PocketGull-BoldItalic.woff2?v=3.3.0') format('woff2'),
+       url('fonts/ttf/PocketGull-BoldItalic.ttf?v=3.3.0') format('truetype');
   font-weight: 700 800;
   font-style: italic;
   font-display: swap;
@@ -263,10 +329,10 @@
 
 @font-face {
   font-family: 'Pocket Gull Mono';
-  src: url('fonts/woff2/PocketGullMono-Regular.woff2') format('woff2'),
-       url('PocketGullMono-Regular.woff2') format('woff2'),
-       url('fonts/ttf/PocketGullMono-Regular.ttf') format('truetype'),
-       url('PocketGullMono-Regular.ttf') format('truetype');
+  src: url('fonts/woff2/PocketGullMono-Regular.woff2?v=3.3.0') format('woff2'),
+       url('PocketGullMono-Regular.woff2?v=3.3.0') format('woff2'),
+       url('fonts/ttf/PocketGullMono-Regular.ttf?v=3.3.0') format('truetype'),
+       url('PocketGullMono-Regular.ttf?v=3.3.0') format('truetype');
   font-weight: 400 500 600 700;
   font-style: normal;
   font-display: swap;
@@ -274,10 +340,10 @@
 
 @font-face {
   font-family: 'Pocket Gull Mono';
-  src: url('fonts/woff2/PocketGullMono-Italic.woff2') format('woff2'),
-       url('PocketGullMono-Italic.woff2') format('woff2'),
-       url('fonts/ttf/PocketGullMono-Italic.ttf') format('truetype'),
-       url('PocketGullMono-Italic.ttf') format('truetype');
+  src: url('fonts/woff2/PocketGullMono-Italic.woff2?v=3.3.0') format('woff2'),
+       url('PocketGullMono-Italic.woff2?v=3.3.0') format('woff2'),
+       url('fonts/ttf/PocketGullMono-Italic.ttf?v=3.3.0') format('truetype'),
+       url('PocketGullMono-Italic.ttf?v=3.3.0') format('truetype');
   font-weight: 400 500 600 700;
   font-style: italic;
   font-display: swap;
@@ -292,7 +358,7 @@
 /* Expert A: Latin Core, ISMP Safety & 256-Glyph Braille Matrix */
 @font-face {
   font-family: 'PocketGull-SMoE';
-  src: url('fonts/woff2/PocketGull-Fineliner.woff2') format('woff2');
+  src: url('fonts/woff2/PocketGull-Fineliner.woff2?v=3.3.0') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -303,7 +369,7 @@
 
 @font-face {
   font-family: 'PocketGull-SMoE';
-  src: url('fonts/woff2/PocketGull-Bold.woff2') format('woff2');
+  src: url('fonts/woff2/PocketGull-Bold.woff2?v=3.3.0') format('woff2');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -315,7 +381,7 @@
 /* Expert B: Canadian Aboriginal Syllabics (Inuktitut / Cree) */
 @font-face {
   font-family: 'PocketGull Inuktitut';
-  src: url('fonts/woff2/PocketGull-Bold.woff2') format('woff2');
+  src: url('fonts/woff2/PocketGull-Bold.woff2?v=3.3.0') format('woff2');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -324,7 +390,7 @@
 
 @font-face {
   font-family: 'PocketGull Inuktitut';
-  src: url('fonts/woff2/PocketGull-Fineliner.woff2') format('woff2');
+  src: url('fonts/woff2/PocketGull-Fineliner.woff2?v=3.3.0') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -334,7 +400,7 @@
 /* Expert C: Chinuk Pipa & Duployan Shorthand */
 @font-face {
   font-family: 'PocketGull ChinukPipa';
-  src: url('fonts/woff2/PocketGull-Bold.woff2') format('woff2');
+  src: url('fonts/woff2/PocketGull-Bold.woff2?v=3.3.0') format('woff2');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -343,7 +409,7 @@
 
 @font-face {
   font-family: 'PocketGull ChinukPipa';
-  src: url('fonts/woff2/PocketGull-Fineliner.woff2') format('woff2');
+  src: url('fonts/woff2/PocketGull-Fineliner.woff2?v=3.3.0') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -353,7 +419,7 @@
 /* Expert D: Neo-Tifinagh (Amazigh / Berber) */
 @font-face {
   font-family: 'PocketGull Tifinagh';
-  src: url('fonts/woff2/PocketGull-Bold.woff2') format('woff2');
+  src: url('fonts/woff2/PocketGull-Bold.woff2?v=3.3.0') format('woff2');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -362,7 +428,7 @@
 
 @font-face {
   font-family: 'PocketGull Tifinagh';
-  src: url('fonts/woff2/PocketGull-Fineliner.woff2') format('woff2');
+  src: url('fonts/woff2/PocketGull-Fineliner.woff2?v=3.3.0') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -372,7 +438,7 @@
 /* Expert E: Cherokee Syllabary & Lowercase Supplement */
 @font-face {
   font-family: 'PocketGull Cherokee';
-  src: url('fonts/woff2/PocketGull-Bold.woff2') format('woff2');
+  src: url('fonts/woff2/PocketGull-Bold.woff2?v=3.3.0') format('woff2');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -381,7 +447,7 @@
 
 @font-face {
   font-family: 'PocketGull Cherokee';
-  src: url('fonts/woff2/PocketGull-Fineliner.woff2') format('woff2');
+  src: url('fonts/woff2/PocketGull-Fineliner.woff2?v=3.3.0') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -391,7 +457,7 @@
 /* Expert F: Ethiopic / Ge'ez Abugida */
 @font-face {
   font-family: 'PocketGull Ethiopic';
-  src: url('fonts/woff2/PocketGull-Bold.woff2') format('woff2');
+  src: url('fonts/woff2/PocketGull-Bold.woff2?v=3.3.0') format('woff2');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -400,7 +466,7 @@
 
 @font-face {
   font-family: 'PocketGull Ethiopic';
-  src: url('fonts/woff2/PocketGull-Fineliner.woff2') format('woff2');
+  src: url('fonts/woff2/PocketGull-Fineliner.woff2?v=3.3.0') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -410,7 +476,7 @@
 /* Expert G: West African Sovereign Scripts (Adlam & Vai) */
 @font-face {
   font-family: 'PocketGull Adlam';
-  src: url('fonts/woff2/PocketGull-Bold.woff2') format('woff2');
+  src: url('fonts/woff2/PocketGull-Bold.woff2?v=3.3.0') format('woff2');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -419,7 +485,7 @@
 
 @font-face {
   font-family: 'PocketGull Vai';
-  src: url('fonts/woff2/PocketGull-Bold.woff2') format('woff2');
+  src: url('fonts/woff2/PocketGull-Bold.woff2?v=3.3.0') format('woff2');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -429,7 +495,7 @@
 /* Expert H: Medical ICU Telemetry & Terminal Symbols */
 @font-face {
   font-family: 'PocketGull Telemetry';
-  src: url('fonts/woff2/PocketGullMono-Regular.woff2') format('woff2');
+  src: url('fonts/woff2/PocketGullMono-Regular.woff2?v=3.3.0') format('woff2');
   font-weight: 400 500 600 700;
   font-style: normal;
   font-display: swap;
@@ -489,6 +555,30 @@
                  U+20000-2A6DF, U+2A700-2CEAF;
 }
 
+/* Expert K: Southeast Asian (Thai, Lao, Khmer, Burmese, Tibetan) — Zero-CLS Metric Harmonized Fallback
+   =========================================================================
+   Southeast Asian scripts (Thai, Lao, Khmer, Burmese, Tibetan) are complex
+   multi-level stacking scripts requiring sophisticated GPOS mark-to-base
+   and mark-to-mark attachment. In compliance with the Living Typographic
+   Charter and Responsible Typography (zero false claims), complex continuous
+   text in these scripts routes through metric-matched Noto / OS system
+   shapers (Leelawadee UI, DokChampa, Khmer UI, Myanmar Text, Microsoft Himalaya)
+   with zero Cumulative Layout Shift (CLS = 0.000) while native GPOS anchors
+   are engineered for v4.0.
+   ========================================================================= */
+@font-face {
+  font-family: 'PocketGull SE Asian';
+  src: local('Leelawadee UI'), local('Noto Sans Thai'), local('DokChampa'),
+       local('Noto Sans Lao'), local('Khmer UI'), local('Noto Sans Khmer'),
+       local('Myanmar Text'), local('Noto Sans Myanmar'),
+       local('Microsoft Himalaya'), local('Noto Sans Tibetan'),
+       local('sans-serif');
+  font-weight: 400 900;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0E00-0E7F, U+0E80-0EFF, U+0F00-0FFF, U+1000-109F, U+1780-17FF;
+}
+
 /* ==========================================================================
    4. GOOGLE NOTO UNIVERSAL HARMONIZED FALLBACK (ZERO CLS METRIC OVERRIDES)
    Enforces exact 1000 UPM vertical metric parity with Google Noto Sans
@@ -510,6 +600,87 @@
    - Calibrated 60 / 72 BPM Sinus Rhythm Cardiac Regulation Engine
    ========================================================================== */
 
+/* ==========================================================================
+   TITTLE VARIETIES SUITE & PHILOCARDIA CARDIOPULMONARY RESONANCE
+   Strictly Bounded to Square Dimensions of Classic Clinical Dot (164 x 147 UPM)
+   ========================================================================== */
+:root {
+  --tittle-glyph: '●';
+  --tittle-box-width: 1em;
+  --tittle-box-height: 1em;
+  --tittle-font-size: 0.28em;
+  --tittle-top-i: 13%;
+  --tittle-top-j: 13%;
+  --tittle-bottom-excl: 0.08em;
+  --tittle-base-scale: 1;
+}
+
+[data-tittle-variety="heart"], .tittle-variety-heart {
+  --tittle-glyph: '♥';
+  --tittle-box-width: 1em;
+  --tittle-box-height: 1em;
+  --tittle-font-size: 0.32em;
+  --tittle-top-i: 13%;
+  --tittle-top-j: 13%;
+  --tittle-bottom-excl: 0.08em;
+  --tittle-base-scale: 1;
+}
+
+[data-tittle-variety="blossom"], .tittle-variety-blossom {
+  --tittle-glyph: '✤';
+  --tittle-box-width: 1em;
+  --tittle-box-height: 1em;
+  --tittle-font-size: 0.32em;
+  --tittle-top-i: 13%;
+  --tittle-top-j: 13%;
+  --tittle-bottom-excl: 0.08em;
+  --tittle-base-scale: 1;
+}
+
+[data-tittle-variety="nuqta"], .tittle-variety-nuqta {
+  --tittle-glyph: '◆';
+  --tittle-box-width: 1em;
+  --tittle-box-height: 1em;
+  --tittle-font-size: 0.28em;
+  --tittle-top-i: 13%;
+  --tittle-top-j: 13%;
+  --tittle-bottom-excl: 0.08em;
+  --tittle-base-scale: 1;
+}
+
+[data-tittle-variety="star"], .tittle-variety-star {
+  --tittle-glyph: '✦';
+  --tittle-box-width: 1em;
+  --tittle-box-height: 1em;
+  --tittle-font-size: 0.32em;
+  --tittle-top-i: 13%;
+  --tittle-top-j: 13%;
+  --tittle-bottom-excl: 0.08em;
+  --tittle-base-scale: 1;
+}
+
+[data-tittle-variety="droplet"], .tittle-variety-droplet {
+  --tittle-glyph: '💧';
+  --tittle-box-width: 1em;
+  --tittle-box-height: 1em;
+  --tittle-font-size: 0.28em;
+  --tittle-top-i: 13%;
+  --tittle-top-j: 13%;
+  --tittle-bottom-excl: 0.07em;
+  --tittle-base-scale: 1;
+}
+
+[data-tittle-variety="dot"], .tittle-variety-dot {
+  --tittle-glyph: '●';
+  --tittle-box-width: 1em;
+  --tittle-box-height: 1em;
+  --tittle-font-size: 0.28em;
+  --tittle-top-i: 13%;
+  --tittle-top-j: 13%;
+  --tittle-bottom-excl: 0.08em;
+  --tittle-base-scale: 1;
+}
+
 /* Former ligature exploration deactivated (fl-connected) */
 .fl-connected {
   letter-spacing: normal;
@@ -518,44 +689,120 @@
   display: none !important;
 }
 
-/* Philocardia: Signature Heart-Tittle Stylistic Alternate */
+/* Philocardia: Signature Heart-Tittle & Tittle Variety Stylistic Alternate */
 .philocardia-heart,
 .iphillyg-heart {
   display: inline-block;
   position: relative;
-  line-height: inherit;
+  line-height: 1;
+  vertical-align: baseline;
   font-family: inherit;
-  --heart-skew: 0deg;
-  --heart-offset-x: 0em;
-}
-
-/* Dynamic Italic Master Tilt (-10.5° Slant & Optical Stem Tracking) */
-:is(
-  em, i, [style*="font-style: italic"], [style*="font-style:italic"],
-  [style*="font-family: 'PocketGull Italic'"], [style*="font-family:'PocketGull Italic'"],
-  [style*="font-family: 'PocketGull Bold Italic'"], [style*="font-family:'PocketGull Bold Italic'"],
-  .font-italic, .italic,
-  #italicSampleText, #italicPhilocardiaDemo,
-  [data-style="italic"]
-) :is(.philocardia-heart, .iphillyg-heart),
-:is(.philocardia-heart, .iphillyg-heart):is([style*="italic"], .italic) {
-  --heart-skew: -10.5deg;
-  --heart-offset-x: 0.09em;
 }
 
 .philocardia-heart::after,
 .iphillyg-heart::after {
-  content: '♥';
+  content: var(--tittle-glyph, '●');
   position: absolute;
-  top: -0.18em;
+  top: var(--tittle-top-i, 13%);
   left: 50%;
-  transform: translateX(calc(-50% + var(--heart-offset-x, 0em))) skewX(var(--heart-skew, 0deg)) scale(var(--aura-scale, 0.68));
-  font-size: 0.72em;
+  width: var(--tittle-box-width, 1em);
+  height: var(--tittle-box-height, 1em);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transform: translate(-50%, -50%) scale(calc(var(--aura-scale, 1) * var(--tittle-base-scale, 1)));
+  font-size: var(--tittle-font-size, 0.32em);
   line-height: 1;
   color: var(--aura-color, var(--teal-accent, currentColor));
+  -webkit-text-fill-color: initial;
   pointer-events: none;
-  filter: drop-shadow(0 0 var(--aura-glow, 3px) rgba(45, 212, 191, 0.45));
-  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.25s ease, filter 0.25s ease;
+  filter: drop-shadow(0 0 var(--aura-glow, 1.5px) rgba(45, 212, 191, 0.45));
+  transition: transform 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.2s ease, filter 0.2s ease;
+}
+
+/* Lowercase j (dotless ȷ U+0237): Centered over the straight upper stem */
+.philocardia-j {
+  display: inline-block;
+  position: relative;
+  line-height: 1;
+  vertical-align: baseline;
+  font-family: inherit;
+}
+
+.philocardia-j::after {
+  content: var(--tittle-glyph, '●');
+  position: absolute;
+  top: var(--tittle-top-j, 13%);
+  left: 50%;
+  width: var(--tittle-box-width, 1em);
+  height: var(--tittle-box-height, 1em);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transform: translate(-50%, -50%) scale(calc(var(--aura-scale, 1) * var(--tittle-base-scale, 1)));
+  font-size: var(--tittle-font-size, 0.32em);
+  line-height: 1;
+  color: var(--aura-color, var(--teal-accent, currentColor));
+  -webkit-text-fill-color: initial;
+  pointer-events: none;
+  filter: drop-shadow(0 0 var(--aura-glow, 1.5px) rgba(45, 212, 191, 0.45));
+  transition: transform 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.2s ease, filter 0.2s ease;
+}
+
+/* Exclamation Mark Terminal Heart/Tittle: Replaces baseline period dot */
+.philocardia-excl {
+  display: inline-block;
+  position: relative;
+  line-height: inherit;
+  font-family: inherit;
+}
+
+.philocardia-excl::after {
+  content: var(--tittle-glyph, '●');
+  position: absolute;
+  bottom: var(--tittle-bottom-excl, 0.08em);
+  left: 50%;
+  width: var(--tittle-box-width, 1em);
+  height: var(--tittle-box-height, 1em);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateX(-50%) scale(calc(var(--aura-scale, 1) * var(--tittle-base-scale, 1)));
+  font-size: var(--tittle-font-size, 0.28em);
+  line-height: 1;
+  color: var(--aura-color, var(--teal-accent, currentColor));
+  -webkit-text-fill-color: initial;
+  pointer-events: none;
+  filter: drop-shadow(0 0 var(--aura-glow, 1.5px) rgba(45, 212, 191, 0.45));
+  transition: transform 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.2s ease, filter 0.2s ease;
+}
+
+/* Arabic Heart Nuqṭa (خ, ج, غ, ف, ن): Placed above apex of letterhead */
+.philocardia-arabic-heart {
+  display: inline-block;
+  position: relative;
+  line-height: inherit;
+  font-family: inherit;
+}
+
+.philocardia-arabic-heart::after {
+  content: var(--tittle-glyph, '●');
+  position: absolute;
+  top: var(--tittle-top-i, -0.04em);
+  right: 32%;
+  width: var(--tittle-box-width, 1em);
+  height: var(--tittle-box-height, 1em);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateX(50%) scale(calc(var(--aura-scale, 1) * var(--tittle-base-scale, 1)));
+  font-size: var(--tittle-font-size, 0.28em);
+  line-height: 1;
+  color: var(--aura-color, var(--teal-accent, currentColor));
+  -webkit-text-fill-color: initial;
+  pointer-events: none;
+  filter: drop-shadow(0 0 var(--aura-glow, 1.5px) rgba(45, 212, 191, 0.45));
+  transition: transform 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.2s ease, filter 0.2s ease;
 }
 
 .night-flight .philocardia-heart::after,
@@ -569,51 +816,123 @@ body.red-dash .iphillyg-heart::after {
 }
 
 .philocardia-heart:hover::after,
-.iphillyg-heart:hover::after {
-  transform: translateX(calc(-50% + var(--heart-offset-x, 0em))) skewX(var(--heart-skew, 0deg)) scale(0.95);
+.iphillyg-heart:hover::after,
+.philocardia-j:hover::after {
+  transform: translate(-50%, -50%) scale(1.22);
   color: #f43f5e;
-  filter: drop-shadow(0 0 6px rgba(244, 63, 94, 0.7));
+  filter: drop-shadow(0 0 5px rgba(244, 63, 94, 0.8));
+}
+
+.philocardia-arabic-heart:hover::after {
+  transform: translateX(50%) scale(1.22);
+  color: #f43f5e;
+  filter: drop-shadow(0 0 5px rgba(244, 63, 94, 0.8));
 }
 
 /* Physiological S1/S2 Cardiac Pulse Animation (72 BPM = 0.833s period) */
 @keyframes philocardia-beat-72 {
-  0% { transform: scale(1); }
-  14% { transform: scale(1.18); } /* S1 Systole "lub" */
-  22% { transform: scale(1.04); }
-  32% { transform: scale(1.12); } /* S2 Diastole "dub" */
-  45% { transform: scale(1); }
-  100% { transform: scale(1); }   /* Rest interval */
+  0%, 100% { transform: translate(-50%, -50%) scale(calc(var(--aura-scale, 1) * var(--tittle-base-scale, 1))); }
+  14%      { transform: translate(-50%, -50%) scale(calc(var(--aura-scale, 1) * var(--tittle-base-scale, 1) * 1.15)); } /* S1 Systole "lub" */
+  22%      { transform: translate(-50%, -50%) scale(calc(var(--aura-scale, 1) * var(--tittle-base-scale, 1) * 1.03)); }
+  32%      { transform: translate(-50%, -50%) scale(calc(var(--aura-scale, 1) * var(--tittle-base-scale, 1) * 1.09)); } /* S2 Diastole "dub" */
+  45%      { transform: translate(-50%, -50%) scale(calc(var(--aura-scale, 1) * var(--tittle-base-scale, 1))); }
 }
 
 /* Calibrated 60 BPM Cardiac Pulse (1.000s period) */
 @keyframes philocardia-beat-60 {
-  0% { transform: scale(1); }
-  12% { transform: scale(1.20); } /* S1 Systole */
-  20% { transform: scale(1.05); }
-  30% { transform: scale(1.14); } /* S2 Diastole */
-  42% { transform: scale(1); }
-  100% { transform: scale(1); }
+  0%, 100% { transform: translate(-50%, -50%) scale(calc(var(--aura-scale, 1) * var(--tittle-base-scale, 1))); }
+  12%      { transform: translate(-50%, -50%) scale(calc(var(--aura-scale, 1) * var(--tittle-base-scale, 1) * 1.15)); }
+  20%      { transform: translate(-50%, -50%) scale(calc(var(--aura-scale, 1) * var(--tittle-base-scale, 1) * 1.04)); }
+  30%      { transform: translate(-50%, -50%) scale(calc(var(--aura-scale, 1) * var(--tittle-base-scale, 1) * 1.10)); }
+  42%      { transform: translate(-50%, -50%) scale(calc(var(--aura-scale, 1) * var(--tittle-base-scale, 1))); }
 }
 
 /* Somatic 4-7-8 Box Breathing Resonance (16s cycle) */
 @keyframes philocardia-box-breath {
-  0%   { transform: scale(1.00); filter: drop-shadow(0 0 2px rgba(45,212,191,0.3)); color: #2dd4bf; }
-  25%  { transform: scale(1.28); filter: drop-shadow(0 0 10px rgba(45,212,191,0.8)); color: #38bdf8; } /* Inhale 4s */
-  50%  { transform: scale(1.28); filter: drop-shadow(0 0 10px rgba(45,212,191,0.8)); color: #38bdf8; } /* Hold 4s */
-  75%  { transform: scale(0.92); filter: drop-shadow(0 0 1px rgba(45,212,191,0.2)); color: #14b8a6; } /* Exhale 4s */
-  100% { transform: scale(1.00); filter: drop-shadow(0 0 2px rgba(45,212,191,0.3)); color: #2dd4bf; } /* Rest 4s */
+  0%, 100% { transform: translate(-50%, -50%) scale(calc(var(--aura-scale, 1) * var(--tittle-base-scale, 1))); filter: drop-shadow(0 0 2px rgba(45,212,191,0.3)); color: #2dd4bf; }
+  25%, 50% { transform: translate(-50%, -50%) scale(calc(var(--aura-scale, 1) * var(--tittle-base-scale, 1) * 1.18)); filter: drop-shadow(0 0 6px rgba(45,212,191,0.8)); color: #38bdf8; }
+  75%      { transform: translate(-50%, -50%) scale(calc(var(--aura-scale, 1) * var(--tittle-base-scale, 1) * 0.95)); filter: drop-shadow(0 0 1px rgba(45,212,191,0.2)); color: #14b8a6; }
 }
 
-.philocardia-pacing-72 {
+@keyframes philocardia-vagal-sanctuary {
+  0%, 100% { transform: translate(-50%, -50%) scale(calc(var(--aura-scale, 1) * var(--tittle-base-scale, 1))); filter: drop-shadow(0 0 2px rgba(45,212,191,0.25)); color: #2dd4bf; }
+  50%      { transform: translate(-50%, -50%) scale(calc(var(--aura-scale, 1) * var(--tittle-base-scale, 1) * 1.15)); filter: drop-shadow(0 0 8px rgba(45,212,191,0.85)); color: #34d399; }
+}
+
+/* Sporty Spice HIIT Cardio Sprint: 140 BPM Explosive Athletic Cadence (0.428s period) */
+@keyframes philocardia-hiit-sprint {
+  0%, 100% { transform: translate(-50%, -50%) scale(calc(var(--aura-scale, 1) * var(--tittle-base-scale, 1))); }
+  18%      { transform: translate(-50%, -50%) scale(calc(var(--aura-scale, 1) * var(--tittle-base-scale, 1) * 1.25)); color: #fb7185; filter: drop-shadow(0 0 6px rgba(251, 113, 133, 0.9)); }
+  35%      { transform: translate(-50%, -50%) scale(calc(var(--aura-scale, 1) * var(--tittle-base-scale, 1) * 0.95)); }
+  52%      { transform: translate(-50%, -50%) scale(calc(var(--aura-scale, 1) * var(--tittle-base-scale, 1) * 1.15)); color: #2dd4bf; filter: drop-shadow(0 0 5px rgba(45, 212, 191, 0.8)); }
+  70%      { transform: translate(-50%, -50%) scale(calc(var(--aura-scale, 1) * var(--tittle-base-scale, 1))); }
+}
+
+.philocardia-pacing-hiit::after {
+  animation: philocardia-hiit-sprint 0.428s infinite cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.philocardia-pacing-72::after {
   animation: philocardia-beat-72 0.8333s infinite cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-.philocardia-pacing-60 {
+.philocardia-pacing-60::after {
   animation: philocardia-beat-60 1.0000s infinite cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-.philocardia-pacing-breath {
+.philocardia-pacing-breath::after {
   animation: philocardia-box-breath 16s infinite ease-in-out;
+}
+
+.philocardia-pacing-sanctuary::after {
+  animation: philocardia-vagal-sanctuary 10s infinite ease-in-out;
+}
+
+body.philocardia-sanctuary-active {
+  --bio-pulse-period: 10s;
+  --bio-breath-period: 10s;
+  --bio-halo-color: rgba(45, 212, 191, 0.7);
+  transition: background-color 0.8s ease, color 0.8s ease;
+}
+
+/* Y-BOCS & Philocardia Telemetry Modal */
+.ybocs-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: rgba(9, 14, 23, 0.85);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ybocs-modal-backdrop.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.ybocs-modal-card {
+  max-width: 820px;
+  width: 100%;
+  max-height: 88vh;
+  overflow-y: auto;
+  background: #090e17;
+  border: 1.5px solid rgba(45, 212, 191, 0.4);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.75), 0 0 35px rgba(45, 212, 191, 0.15);
+  position: relative;
+  transform: scale(0.96);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ybocs-modal-backdrop.active .ybocs-modal-card {
+  transform: scale(1);
 }
 
 /* Healer Mode Pill Styling */
@@ -832,6 +1151,7 @@ body.red-dash .iphillyg-heart::after {
   .philocardia-pacing-72,
   .philocardia-pacing-60,
   .philocardia-pacing-breath,
+  .philocardia-pacing-sanctuary,
   .palpation-arc-active,
   .bio-sync-pulse,
   .bio-sync-glow,
@@ -840,5 +1160,71 @@ body.red-dash .iphillyg-heart::after {
   }
 }
 
+/* ==========================================================================
+   ECOLOGICAL REGENERATION & PLANETARY TELEMETRY SUITE
+   - CARB: Carbon-Responsive Variable Font Axis (0 -> 100)
+   - ss01: Regenerative Ink-Saving Spore Traps (-22% ink deposition)
+   - ss12: Wildlife Sanctuary Dark Canopy (Zero Blue Light > 600nm)
+   - ss15: Slow Typography Cognitive De-Escalation (Vagal 0.10 Hz Breathing)
+   - calt: Ecological Contextual Alternates (IUCN Red List & Unit Badges)
+   ========================================================================== */
 
+:root {
+  --eco-grid-carb: 0;
+  --eco-solar-albd: 100;
+}
 
+/* Regenerative Ink-Saving Spore Traps (ss01) */
+.eco-spore-traps {
+  font-feature-settings: "ss01" 1, "zero" 1;
+}
+
+/* Wildlife Sanctuary Dark Canopy (ss12) — Low-photopic amber mode */
+.eco-dark-canopy,
+body.eco-dark-canopy {
+  --teal-accent: #f59e0b !important;
+  --text-main: #fbbf24 !important;
+  background-color: #06080d !important;
+  color: #f59e0b !important;
+}
+.eco-dark-canopy * {
+  border-color: rgba(245, 158, 11, 0.25) !important;
+}
+
+/* Slow Typography Cognitive De-Escalation (ss15) */
+.eco-slow-reading {
+  font-feature-settings: "ss15" 1;
+  letter-spacing: 0.04em !important;
+  line-height: 1.85 !important;
+  transition: letter-spacing 0.5s ease, line-height 0.5s ease;
+}
+
+/* Carbon-Responsive Grid Telemetry Styling */
+[data-eco-grid="fossil"] {
+  --eco-grid-carb: 92;
+}
+[data-eco-grid="balanced"] {
+  --eco-grid-carb: 45;
+}
+[data-eco-grid="solar"] {
+  --eco-grid-carb: 0;
+}
+
+/* IUCN Red List Badges styling */
+.iucn-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.1em 0.4em;
+  font-size: 0.75em;
+  font-weight: 800;
+  font-family: monospace;
+  border-radius: 4px;
+  line-height: 1;
+  letter-spacing: 0.05em;
+  vertical-align: 0.1em;
+  margin: 0 0.2em;
+}
+.iucn-badge-cr { background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid #ef4444; }
+.iucn-badge-en { background: rgba(249, 115, 22, 0.2); color: #f97316; border: 1px solid #f97316; }
+.iucn-badge-vu { background: rgba(234, 179, 8, 0.2); color: #eab308; border: 1px solid #eab308; }
+.iucn-badge-lc { background: rgba(34, 197, 94, 0.2); color: #22c55e; border: 1px solid #22c55e; }

@@ -1214,6 +1214,90 @@ Feel free to reference their research areas and publications if it supports the 
             return fallback;
         }
     }
+
+    /**
+     * Audits AI-generated clinical recommendations using CARS-style eliminative skeptical reasoning.
+     * Screens for:
+     * 1. EXTREME_SCOPE: flags un-qualified absolute words ("always", "never", "completely", "must immediately discontinue")
+     *    unless accompanied by STAT/FDA black-box contraindication.
+     * 2. KEYWORD_DECOY: flags superficial medication or allergy bans without mechanistic causality.
+     * 3. POLARITY_INVERSION: flags potential reversal of compensatory physiology vs primary etiology.
+     * 4. STALE_SNAPSHOT: warns if recommendation depends on vitals that have drifted.
+     */
+    public auditClinicalRecommendationWithCarsRules(
+        recommendationText: string,
+        currentVitals?: { hr?: number; spO2?: number; systolicBp?: number }
+    ): {
+        isValid: boolean;
+        issues: IVerificationIssue[];
+        auditedText: string;
+        suggestedCorrections: string[];
+    } {
+        const issues: IVerificationIssue[] = [];
+        const suggestions: string[] = [];
+        const lower = recommendationText.toLowerCase();
+
+        // 1. Extreme Scope Check
+        const extremePatterns = [
+            { word: 'always', fix: 'indicated in most presentations' },
+            { word: 'never', fix: 'generally contraindicated unless clinically indicated' },
+            { word: 'completely', fix: 'substantially' },
+            { word: 'must immediately discontinue', fix: 'consider titrating or discontinuing under supervision' }
+        ];
+
+        for (const ep of extremePatterns) {
+            const regex = new RegExp(`\\b${ep.word}\\b`, 'i');
+            if (regex.test(recommendationText) && !lower.includes('stat emergency') && !lower.includes('black box')) {
+                issues.push({
+                    severity: 'medium',
+                    message: `CARS Extreme Scope Warning: Absolute qualifier "${ep.word}" detected without explicit STAT or black-box emergency indication.`,
+                    suggestedFix: `Replace "${ep.word}" with measured clinical phrasing (e.g. "${ep.fix}").`,
+                    claim: ep.word
+                });
+                suggestions.push(`Avoid dogmatic claim "${ep.word}"; qualify with patient-specific monitoring criteria.`);
+            }
+        }
+
+        // 2. Keyword Decoy / Cross-Reactivity Check (e.g. Penicillin allergy blanket cephalosporin ban)
+        if (lower.includes('penicillin allergy') && (lower.includes('contraindicates all cephalosporins') || lower.includes('avoid all cephalosporins'))) {
+            issues.push({
+                severity: 'high',
+                message: 'CARS Keyword Decoy Trap: Blanket avoidance of all cephalosporins due to penicillin allergy ignores low (<1%) 3rd/4th generation cross-reactivity.',
+                suggestedFix: 'Differentiate cephalosporins by R1 side-chain similarity rather than issuing a blanket class ban.',
+                claim: 'avoid all cephalosporins'
+            });
+            suggestions.push('Evaluate specific cephalosporin generations: Cefazolin and 3rd/4th generation agents share minimal side-chain cross-reactivity with penicillin.');
+        }
+
+        // 3. Compensatory Tachycardia vs Primary Arrhythmia Polarity Check
+        if (lower.includes('tachycardia') && lower.includes('fever') && lower.includes('beta-blocker')) {
+            issues.push({
+                severity: 'high',
+                message: 'CARS Polarity Inversion Warning: Initiating beta-blockade for physiologic compensatory sinus tachycardia in active febrile infection risks hemodynamic collapse.',
+                suggestedFix: 'Treat underlying infection/pyrexia rather than pharmacologically blunting compensatory tachycardia.',
+                claim: 'beta-blocker for tachycardia with fever'
+            });
+            suggestions.push('Verify whether tachycardia is compensatory (fever, hypovolemia, hypoxia) before prescribing rate-control agents.');
+        }
+
+        // 4. Stale Vitals Snapshot Check
+        if (currentVitals?.spO2 && currentVitals.spO2 < 90 && lower.includes('wean') && lower.includes('oxygen')) {
+            issues.push({
+                severity: 'high',
+                message: `Stale Snapshot Warning: Current SpO2 is ${currentVitals.spO2}% (<90%), but recommendation advises oxygen weaning.`,
+                suggestedFix: 'Halt oxygen weaning immediately. Titrate supplemental O2 to maintain SpO2 >= 92%.',
+                claim: 'wean oxygen'
+            });
+            suggestions.push('Recommendation was formulated under older vitals and is now clinically invalid.');
+        }
+
+        return {
+            isValid: issues.filter(i => i.severity === 'high').length === 0,
+            issues,
+            auditedText: recommendationText,
+            suggestedCorrections: suggestions
+        };
+    }
 }
 
 

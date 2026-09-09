@@ -51,4 +51,28 @@ describe('AiConfidenceCalibrationService', () => {
     service.calibrateText('AHA/ACC Guidelines first-line therapy standard of care [PMID: 12345678] Cochrane CD005678 Level A Evidence Class I recommendation');
     expect(service.confidenceBadgeClass()).toContain('emerald');
   });
+
+  it('should recognize AAP, Texas HHS, and ISO/IEEE 11073 citations', () => {
+    const pediatricText = `
+      Under AAP Guidelines and Texas HHS Criteria, tracheostomy care requires Form 2603 ISP authorized PDN hours.
+      Device telemetry conforms to ISO/IEEE 11073 with RTMMS nomenclature and NIST SP 800-90A security.
+    `;
+    const metrics = service.calibrateText(pediatricText);
+    expect(metrics.citationCount).toBeGreaterThanOrEqual(3);
+    expect(metrics.verifiableCitations.some(c => c.includes('AAP'))).toBe(true);
+    expect(metrics.verifiableCitations.some(c => c.includes('ISO/IEEE 11073'))).toBe(true);
+  });
+
+  it('should compute valid Brier scores and Wilson confidence intervals', () => {
+    const bs = service.calculateBrierScore(0.9, true);
+    expect(bs).toBeCloseTo(0.01, 2);
+
+    const bss = service.calculateBrierSkillScore(bs, 0.25);
+    expect(bss).toBeGreaterThan(0.9);
+
+    const interval = service.calculateWilsonConfidenceInterval(18, 20, 0.95);
+    expect(interval.lower).toBeGreaterThan(0.65);
+    expect(interval.upper).toBeLessThanOrEqual(1.0);
+    expect(interval.lower).toBeLessThan(interval.upper);
+  });
 });

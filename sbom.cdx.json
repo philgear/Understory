@@ -1,10 +1,10 @@
 {
   "bomFormat": "CycloneDX",
   "specVersion": "1.6",
-  "serialNumber": "urn:uuid:cf7a1485-fe34-46af-b586-0e579e485e37",
+  "serialNumber": "urn:uuid:187e5cf9-d6ea-4dbc-a0ac-25d75cf2e605",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-09-03T18:28:41.743Z",
+    "timestamp": "2026-09-09T16:18:29.063Z",
     "tools": {
       "components": [
         {
@@ -111,8 +111,8 @@
     {
       "type": "library",
       "name": "@angular-devkit/architect",
-      "version": "0.2201.5",
-      "purl": "pkg:npm/@angular-devkit%2Farchitect@0.2201.5",
+      "version": "0.2201.7",
+      "purl": "pkg:npm/@angular-devkit%2Farchitect@0.2201.7",
       "scope": "required",
       "licenses": [
         {
@@ -124,15 +124,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "0c0b6271c276b70dccf83d421f81e194280c2b9b406f40b04ac9dcccd30907d42042c042fc984ea33413be09f20af6a08ad5fdbbee34f18730116fd6a36a67cc"
+          "content": "a9f7c2841d3edd6b8b7300e4f60c77a7f565df36090e89b07ae8b9cec2c4483333bc9f33b1b291920a214e278e9e06a3c7e5c1b24969d2029cc638959f836f59"
         }
       ]
     },
     {
       "type": "library",
       "name": "@angular-devkit/core",
-      "version": "22.1.5",
-      "purl": "pkg:npm/@angular-devkit%2Fcore@22.1.5",
+      "version": "22.1.7",
+      "purl": "pkg:npm/@angular-devkit%2Fcore@22.1.7",
       "scope": "required",
       "licenses": [
         {
@@ -144,7 +144,7 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "1e263a77976421d26ce60acff4e1ef8247f5e1039c0c8a3e85bb93ed82ae2c8b50fbe6710b051a6c930b0822794742abb2d13936a103d1d35cca4e560f4d6de5"
+          "content": "44a6b278e3a385c21efe204e3357e6b48e698d7c0110987ebb9e559d2788c18bc5357cb1234fe3751c384faba1c2eb10fb56f3cb26b877cab5993f6868e43fe4"
         }
       ]
     },
@@ -171,8 +171,8 @@
     {
       "type": "library",
       "name": "@angular-devkit/schematics",
-      "version": "22.1.5",
-      "purl": "pkg:npm/@angular-devkit%2Fschematics@22.1.5",
+      "version": "22.1.7",
+      "purl": "pkg:npm/@angular-devkit%2Fschematics@22.1.7",
       "scope": "required",
       "licenses": [
         {
@@ -184,7 +184,7 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "1d39a8f72f308d72ad2465536289938d9b235b3862ae9bb5a4f440cec5686f77a260ebb1bf5a834408168875cd1a9e42a676c7ba767079763f59f7cd18e151c8"
+          "content": "28e715793e0c0aca0fb7a00c9d71fb01b5999f394a5e1332b9ad884d68a3e146cb68d5820f07c8ba0ff1ad9b2c60b1d417079b088aac47c8ae1bf04f1fc0b3db"
         }
       ]
     },
@@ -211,8 +211,8 @@
     {
       "type": "library",
       "name": "@angular/animations",
-      "version": "22.1.3",
-      "purl": "pkg:npm/@angular%2Fanimations@22.1.3",
+      "version": "22.1.5",
+      "purl": "pkg:npm/@angular%2Fanimations@22.1.5",
       "scope": "required",
       "licenses": [
         {
@@ -224,15 +224,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "1202f506b3dc9f7c9a45a9abfd1f4d958955ea1673cca446c55a7f7277e4633cd6286e16727a3b964184a3a780d95af2eba009b9752ee0cd4133284727deb3ce"
+          "content": "956c5b6d9eefd89dd5abf1536f78ac46c11bdac42d23db5c483b99ce1219a4e4bd91d19fe9683f1827f5bb8d6937a089038fbe893410dbd82a55b94046a41fa6"
         }
       ]
     },
     {
       "type": "library",
       "name": "@angular/build",
-      "version": "22.1.5",
-      "purl": "pkg:npm/@angular%2Fbuild@22.1.5",
+      "version": "22.1.7",
+      "purl": "pkg:npm/@angular%2Fbuild@22.1.7",
       "scope": "required",
       "licenses": [
         {
@@ -244,15 +244,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "62ab1b1d92b7fc71662cb870c5ae52a4dfb7001a15a391852d5d1f8845c2420d8a0bb830da92f5e71ebdda3c6babc8041b34fb3b6edb9e35a4bc56746c11c29f"
+          "content": "60d64bdd1d984b5a99b9df736c97d6dd949e101d3101444124413471fed64420b0927ecd1651fbc572d6ff347e591070b5c08146c2eb336fe2c7763c168297f4"
         }
       ]
     },
     {
       "type": "library",
       "name": "@angular/cli",
-      "version": "22.1.5",
-      "purl": "pkg:npm/@angular%2Fcli@22.1.5",
+      "version": "22.1.7",
+      "purl": "pkg:npm/@angular%2Fcli@22.1.7",
       "scope": "required",
       "licenses": [
         {
@@ -264,15 +264,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "61992123ae083501c9919d778769f4ff43c1ad0e5966f1468a9aeb0e208e2c00f4cb57de860b8bd0f1a9f47c45dd959ffb1591c8ffffb48b5eda09b201a8962f"
+          "content": "76c38000f1d35d2ad3bc7e6321d66c161aa672b4d4f7e68b5cf4984a443569f3313d44ff2438d61f6dbcc5445898268cde6974bd5693f51da9eff16b4bb0899a"
         }
       ]
     },
     {
       "type": "library",
       "name": "@angular/common",
-      "version": "22.1.3",
-      "purl": "pkg:npm/@angular%2Fcommon@22.1.3",
+      "version": "22.1.5",
+      "purl": "pkg:npm/@angular%2Fcommon@22.1.5",
       "scope": "required",
       "licenses": [
         {
@@ -284,15 +284,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "42d3248e189177412798a479d1bc3759b0966138ba0a603bda79d2cf504b40fa5a2d28b68289680ab3cf9e21f3f1f3fec36112ae69a5396c6cd436b708e82742"
+          "content": "2a007e3130e8b654e7ebb60ae2c0933452e36be1be10c0aa1e8e5b07572f44ac3b19df40b408b99200e6633324edfb49f6a2763b7d335d1e7a1e9c37ec9d824d"
         }
       ]
     },
     {
       "type": "library",
       "name": "@angular/compiler",
-      "version": "22.1.3",
-      "purl": "pkg:npm/@angular%2Fcompiler@22.1.3",
+      "version": "22.1.5",
+      "purl": "pkg:npm/@angular%2Fcompiler@22.1.5",
       "scope": "required",
       "licenses": [
         {
@@ -304,15 +304,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "2fc330dabedb186fe86ea8100be454de674527736d2e03b98168440b5ca5707a4b08c3c801762c30a2482fc7674bbf12d705e8fe8997c262781622250b059a86"
+          "content": "1af334a0d0ae234f54a792e4d194025f9c80d9c1b21d807fad9b1afc41939f3c2ec602c396138e6b5f506956a8c430a8f6f3b8dc8c7dac6ed22e9a44bfea9dd7"
         }
       ]
     },
     {
       "type": "library",
       "name": "@angular/compiler-cli",
-      "version": "22.1.3",
-      "purl": "pkg:npm/@angular%2Fcompiler-cli@22.1.3",
+      "version": "22.1.5",
+      "purl": "pkg:npm/@angular%2Fcompiler-cli@22.1.5",
       "scope": "required",
       "licenses": [
         {
@@ -324,15 +324,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "dfb94b683a74447599fe5989a8298812bd0738cd83e6e947cbad60a93066eca463dd8e996b147c07f26a666788a4fcca1482d5b206be350e00f1aa4152499ecf"
+          "content": "5f278b942aa78148992bc10c428d8315f0f10e815d96c39ef7c78aefef8df42b3ba844d368c3379aef2265b4f6a3a2a1130ce369b5be9aa8a9b6cd7f79c121c9"
         }
       ]
     },
     {
       "type": "library",
       "name": "@angular/core",
-      "version": "22.1.3",
-      "purl": "pkg:npm/@angular%2Fcore@22.1.3",
+      "version": "22.1.5",
+      "purl": "pkg:npm/@angular%2Fcore@22.1.5",
       "scope": "required",
       "licenses": [
         {
@@ -344,15 +344,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "df5dfe5e47fdef40264ad244d04ff33495bff71bc3131406fba4cd96d04197e289b16d2ae5d7df2b6c363d07d5e26b53aae06a628787491b26b385a08c128bf2"
+          "content": "ba22fec552f8dbae0d12e73713920b77a99e4aff48e17b7cd95407bd894055895c8c7956638f7255ed3f6a9ce7714386c542b3bcaf3f1836f21441fb59f25817"
         }
       ]
     },
     {
       "type": "library",
       "name": "@angular/elements",
-      "version": "22.1.3",
-      "purl": "pkg:npm/@angular%2Felements@22.1.3",
+      "version": "22.1.5",
+      "purl": "pkg:npm/@angular%2Felements@22.1.5",
       "scope": "required",
       "licenses": [
         {
@@ -364,7 +364,7 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "95a141fcb0f4c437f91ac7687333727c43f63267cce74c62a53970ff92f5e7782b497fec9078a56b390b6f2f35a049e596613f95907eca2f1478e29865dd737a"
+          "content": "54108087f5952be033b945a692078e41e6c847b18285474c78778a35e60790c26dbc6a689de84d6c162706e23ddaa3764e27e810c835aa2c834162a51615ec11"
         }
       ]
     },
@@ -391,8 +391,8 @@
     {
       "type": "library",
       "name": "@angular/forms",
-      "version": "22.1.3",
-      "purl": "pkg:npm/@angular%2Fforms@22.1.3",
+      "version": "22.1.5",
+      "purl": "pkg:npm/@angular%2Fforms@22.1.5",
       "scope": "required",
       "licenses": [
         {
@@ -404,15 +404,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "6f8b9a97da607cda9c9c41e8adde74c3deb40c3148cad1b741bddbbb668283399a82f46583dc2bb7040da98fa8a98d8556aedcf4c70d50decc65171697d1cd75"
+          "content": "13ba4310ab52bced4c370db6d9972fa61cd3e06010f43ef6e6fd91abb7edf28ad3daabc74ba46556711ce62a0f0e1613003d0799bc039aeb7191cbb1a9cd7a54"
         }
       ]
     },
     {
       "type": "library",
       "name": "@angular/platform-browser",
-      "version": "22.1.3",
-      "purl": "pkg:npm/@angular%2Fplatform-browser@22.1.3",
+      "version": "22.1.5",
+      "purl": "pkg:npm/@angular%2Fplatform-browser@22.1.5",
       "scope": "required",
       "licenses": [
         {
@@ -424,15 +424,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "03c31c13a01c97065ad9eb1ee2331f659bbea997c1150e0797a09a329cc9d42e95bfafac5e42eef69a2e4e8b0912c504f9eb5575ea43b2a6aef74961ce0c3712"
+          "content": "c515fb4ef1f315cbabe5b85952a4fb40f91ecdc4ae591cdc96d72caea87752c667109da9fa8962945c8bab9c809de3b5de17df3627c59319e0a12c55c0ac271f"
         }
       ]
     },
     {
       "type": "library",
       "name": "@angular/platform-browser-dynamic",
-      "version": "22.1.3",
-      "purl": "pkg:npm/@angular%2Fplatform-browser-dynamic@22.1.3",
+      "version": "22.1.5",
+      "purl": "pkg:npm/@angular%2Fplatform-browser-dynamic@22.1.5",
       "scope": "required",
       "licenses": [
         {
@@ -444,15 +444,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "75723c53b0b84193af5880365563c58c642327a71e1e561191285dbda96e2a69a5e82c713cfbe2ae3c101a3f86fecc9f01a02b4b32e28cae2133dc43b8ca38d7"
+          "content": "c6cd6853dd10e7e73f85c20bddd3af20a3facc06396c02fefdda6f6e257e1a0d1a164d5289669d1a7ac4f7d548161cd1e06445a7bd35b8e470fdca60a7864d37"
         }
       ]
     },
     {
       "type": "library",
       "name": "@angular/platform-server",
-      "version": "22.1.3",
-      "purl": "pkg:npm/@angular%2Fplatform-server@22.1.3",
+      "version": "22.1.5",
+      "purl": "pkg:npm/@angular%2Fplatform-server@22.1.5",
       "scope": "required",
       "licenses": [
         {
@@ -464,15 +464,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "b736cc412c07c76a0822359002046e9cd373dc55be00c62253056d7642815ef3d2a7677faf2fbfe973ba7d9d01222dde8e1c2d7c824bdc694eb663cc0874e4cb"
+          "content": "bf84f5b81c2c6f1da33633ab1870e9d1455f3983850470016fe5b024b0820f18b65d94fe5da307a52af2abe0ee3be08351fabe392b425b55784f322e2223d5e8"
         }
       ]
     },
     {
       "type": "library",
       "name": "@angular/router",
-      "version": "22.1.3",
-      "purl": "pkg:npm/@angular%2Frouter@22.1.3",
+      "version": "22.1.5",
+      "purl": "pkg:npm/@angular%2Frouter@22.1.5",
       "scope": "required",
       "licenses": [
         {
@@ -484,15 +484,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "db7a30bd9282a5d2fb621dc4cc18f838b7f7c74cfe8d3f5be7b424f7ac1dc08f0bb327fd2fbf3f4493d80aeb49e6bfb3ab7a4533f04754ac9dfb68647c7ecde9"
+          "content": "45880bda24c6a4c15ca99b578dc8f1195a86ada0df39d93f7a96cb2bccffbf2e5c23e5b6b95762bb96a2b7bc61bfcd8aa1a593f25514dec0dce23748d7ba8772"
         }
       ]
     },
     {
       "type": "library",
       "name": "@angular/service-worker",
-      "version": "22.1.3",
-      "purl": "pkg:npm/@angular%2Fservice-worker@22.1.3",
+      "version": "22.1.5",
+      "purl": "pkg:npm/@angular%2Fservice-worker@22.1.5",
       "scope": "required",
       "licenses": [
         {
@@ -504,15 +504,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "e407d3a8c4ddaaaa98eedf6330b664d7d69f2d2a35633eeb055d43808442a25b57feb8a18a70fe860a8f1aaa4bebfc2bd221d6a535950695cef314cc6a905a87"
+          "content": "c4dc5456873909151e5a3e7d2c2d2a0709967a7eaa726c79a5b0735e3cfc937182a38dacf1ae910cd4b364502faaac599adbd41aca20c947a91279e0d32aa095"
         }
       ]
     },
     {
       "type": "library",
       "name": "@angular/ssr",
-      "version": "22.1.5",
-      "purl": "pkg:npm/@angular%2Fssr@22.1.5",
+      "version": "22.1.7",
+      "purl": "pkg:npm/@angular%2Fssr@22.1.7",
       "scope": "required",
       "licenses": [
         {
@@ -524,7 +524,7 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "99744426fe112440883e2c54ecbc659d714062a7a6862ebbbf38ff57aac25eb6b871393fb4c3f86983040ad47d45871203c9e97767a3e1185a05c807be834ce3"
+          "content": "7d7efae901c37a231321af83d7f3906823325b410a3bb9d1fa150170277d80e72eddd32bdc99ee80498b6117820a440d2918cc9802d2b3b412ee8fa9b6b2ac2a"
         }
       ]
     },
@@ -711,8 +711,8 @@
     {
       "type": "library",
       "name": "@aws-sdk/client-bedrock-runtime",
-      "version": "3.1116.0",
-      "purl": "pkg:npm/@aws-sdk%2Fclient-bedrock-runtime@3.1116.0",
+      "version": "3.1126.0",
+      "purl": "pkg:npm/@aws-sdk%2Fclient-bedrock-runtime@3.1126.0",
       "scope": "required",
       "licenses": [
         {
@@ -724,15 +724,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "acd0009f45683acfd5ee71de2e0b629d52a1acd5d1baa219c7a8e31c7369afe0d89dd9f079a5d0d98aa29e02b74c509db1d4b2a7c5e2a8047f671f9ea8faa481"
+          "content": "64e34fbe2202cd6906d4e25cb958186ffa356d75bca77f5eba1c4738aeba5605b78574fc5aec62cd2dbd4cd4abf5e2197f2420bce8b1d4b08eda468f94ce85c1"
         }
       ]
     },
     {
       "type": "library",
       "name": "@aws-sdk/client-healthlake",
-      "version": "3.1116.0",
-      "purl": "pkg:npm/@aws-sdk%2Fclient-healthlake@3.1116.0",
+      "version": "3.1126.0",
+      "purl": "pkg:npm/@aws-sdk%2Fclient-healthlake@3.1126.0",
       "scope": "required",
       "licenses": [
         {
@@ -744,7 +744,7 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "a141ffda4d3e6df48c5d7c1f5dcaebf8a251a73b78a07f90cf0a94aff399f0cbbd91c5049f008cced277ff9a800c1e3510cbd86f2218332a2c088df1750514a1"
+          "content": "56e12f545f582e38c1e0210eb65f8f73f90f1608331223b93825ac16956b67ee083ca0782abeb2f5a57ec54d325eb1796220e76d6123f42de80fd176e2c2dab1"
         }
       ]
     },
@@ -851,8 +851,8 @@
     {
       "type": "library",
       "name": "@aws-sdk/credential-provider-node",
-      "version": "3.972.81",
-      "purl": "pkg:npm/@aws-sdk%2Fcredential-provider-node@3.972.81",
+      "version": "3.972.82",
+      "purl": "pkg:npm/@aws-sdk%2Fcredential-provider-node@3.972.82",
       "scope": "required",
       "licenses": [
         {
@@ -864,7 +864,7 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "46697e5a2b6816f5e6bfa259d7c53fc467460c61af07f98e8a7d326b49539d3add0b467596b5714d887b88d92564172f71132bb380e811feb1cb5296cab2d043"
+          "content": "ce70e410e19707c5b7906d4b25428fddfa01658ffda8b3347a297f0f15974a9dfb5ec76c44b40713f77f39a08619580aa40eb39d1dfc87ff88364f1da3516388"
         }
       ]
     },
@@ -1085,6 +1085,26 @@
         {
           "alg": "SHA-512",
           "content": "ca0222bcaaa1f1a1f3364b9c3825c7c880600692cf7eb488d260aa5c5faf2c1b0f4d42aa8f4552a806341853deee5425e079ed8ce710f8a4b24bba145760b9e1"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@aws-sdk/token-providers",
+      "version": "3.1126.0",
+      "purl": "pkg:npm/@aws-sdk%2Ftoken-providers@3.1126.0",
+      "scope": "required",
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0"
+          }
+        }
+      ],
+      "hashes": [
+        {
+          "alg": "SHA-512",
+          "content": "696fb82afd172beb16792e7351191af0004cf03ae43da86c2997086f44639b1b16de434b8b9d9730ebb4a02c454cc60d61f98c362928e6267707d326738d6cf4"
         }
       ]
     },
@@ -4351,8 +4371,8 @@
     {
       "type": "library",
       "name": "@genkit-ai/ai",
-      "version": "1.41.0",
-      "purl": "pkg:npm/@genkit-ai%2Fai@1.41.0",
+      "version": "1.42.0",
+      "purl": "pkg:npm/@genkit-ai%2Fai@1.42.0",
       "scope": "required",
       "licenses": [
         {
@@ -4364,15 +4384,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "ca7c192ea88aa8ba50d515ab749c72529487aa3e5eec5818e3c30aaccbef6b28dc65eaacfeb973924d5e520a5f308210c83b72150c307c6c656c0fb00ca445d8"
+          "content": "155d5b3233a7197ed144f4ff4f8655a15f375536b143d6584ca4123d723cc2f382b495e85b7d0e0d023a57e7c5bb2903e6954aadf8d16fbde97b49f8dc9fbf2b"
         }
       ]
     },
     {
       "type": "library",
       "name": "@genkit-ai/core",
-      "version": "1.41.0",
-      "purl": "pkg:npm/@genkit-ai%2Fcore@1.41.0",
+      "version": "1.42.0",
+      "purl": "pkg:npm/@genkit-ai%2Fcore@1.42.0",
       "scope": "required",
       "licenses": [
         {
@@ -4384,15 +4404,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "7702e7432288e6c28ee02d7eb515a1b1c403907ba64b4b2ab31c28345b621b420a219fd3b2a5dd5fe0cf49e76a977d0d09d9936d8946f7aebab2b6efe02af3dd"
+          "content": "5184edcba7b10d852d0d6314c5b4a28efc99f2d9fb05ff9ed029d3144a36a943bb22938f80f15a5f252c2d60fe12fb318575a42e1556d95fdefecb7ad29efdda"
         }
       ]
     },
     {
       "type": "library",
       "name": "@genkit-ai/firebase",
-      "version": "1.41.0",
-      "purl": "pkg:npm/@genkit-ai%2Ffirebase@1.41.0",
+      "version": "1.42.0",
+      "purl": "pkg:npm/@genkit-ai%2Ffirebase@1.42.0",
       "scope": "required",
       "licenses": [
         {
@@ -4404,15 +4424,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "1e88b1c437f8797ddd1c4815529d598aa9bc7914154686cb84d06df676259d0eaa6f278b05732d26990b55f45b7cad18e643fee6f6024a692260ac0c43e1b4e3"
+          "content": "545674548b3983bcd693d050697e5648e2da87a0b16792c60ef5047794a216d5ef14a0b004dcc1f280f0f5f5409af891a00a6fad9e6928f2084e4b48020bce24"
         }
       ]
     },
     {
       "type": "library",
       "name": "@genkit-ai/google-cloud",
-      "version": "1.41.0",
-      "purl": "pkg:npm/@genkit-ai%2Fgoogle-cloud@1.41.0",
+      "version": "1.42.0",
+      "purl": "pkg:npm/@genkit-ai%2Fgoogle-cloud@1.42.0",
       "scope": "required",
       "licenses": [
         {
@@ -4424,15 +4444,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "4b5af3362f38eeb45f9999d3995237608524caecdc2f6c3d2012372ddfb7e26c8f72fc2917cca27fe3e429763abb30b4e5bf09dd1783bcc137fd520a1d791423"
+          "content": "01fae73ffdfc06068c3af025ce5f5349578c903e901e987c76e79f752d13d6806253723170b4efa1dae37cb2c9970b3ab54ea737fe5336ba7221013c41d7bafe"
         }
       ]
     },
     {
       "type": "library",
       "name": "@genkit-ai/google-genai",
-      "version": "1.41.0",
-      "purl": "pkg:npm/@genkit-ai%2Fgoogle-genai@1.41.0",
+      "version": "1.42.0",
+      "purl": "pkg:npm/@genkit-ai%2Fgoogle-genai@1.42.0",
       "scope": "required",
       "licenses": [
         {
@@ -4444,7 +4464,7 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "d5ee60a3b647c184aae735d0951bcdbba2b084193b2c40dfcb5a85323ff57c9cf0cf14f5b79363fa50526eaae6a4d48df362b3c64edcf02df18f96c6957f94ea"
+          "content": "4e5cbfbd108643133baaedfc3e5e2ebab008b685a347ec8487752f2d151a61271a364698a4f3cf327a3b36c9f48a0870a02f3e2e6cd015d820fa96fc0d54dc6c"
         }
       ]
     },
@@ -4650,26 +4670,6 @@
     },
     {
       "type": "library",
-      "name": "@google-cloud/opentelemetry-cloud-monitoring-exporter",
-      "version": "0.21.0",
-      "purl": "pkg:npm/@google-cloud%2Fopentelemetry-cloud-monitoring-exporter@0.21.0",
-      "scope": "required",
-      "licenses": [
-        {
-          "license": {
-            "id": "Apache-2.0"
-          }
-        }
-      ],
-      "hashes": [
-        {
-          "alg": "SHA-512",
-          "content": "fa501ec38e295adeab03897c750d601a11fb528f79c1929fabf1817fd684cae3430cb4365e9a4610445ebbaba37ac4aa4ed67cb9e405b7bdfeed245e4876f0aa"
-        }
-      ]
-    },
-    {
-      "type": "library",
       "name": "@google-cloud/opentelemetry-cloud-trace-exporter",
       "version": "2.4.1",
       "purl": "pkg:npm/@google-cloud%2Fopentelemetry-cloud-trace-exporter@2.4.1",
@@ -4690,26 +4690,6 @@
     },
     {
       "type": "library",
-      "name": "@google-cloud/opentelemetry-cloud-trace-exporter",
-      "version": "3.1.0",
-      "purl": "pkg:npm/@google-cloud%2Fopentelemetry-cloud-trace-exporter@3.1.0",
-      "scope": "required",
-      "licenses": [
-        {
-          "license": {
-            "id": "Apache-2.0"
-          }
-        }
-      ],
-      "hashes": [
-        {
-          "alg": "SHA-512",
-          "content": "3bbb69b0c60b71903b784fb2e59a4b0581d97ebbaf9d886687844b236c537a554cb26476249a254028b7824e9d943a39f100e1ed4ce65f8f17f1378d1b5a06da"
-        }
-      ]
-    },
-    {
-      "type": "library",
       "name": "@google-cloud/opentelemetry-resource-util",
       "version": "2.4.0",
       "purl": "pkg:npm/@google-cloud%2Fopentelemetry-resource-util@2.4.0",
@@ -4725,26 +4705,6 @@
         {
           "alg": "SHA-512",
           "content": "ffbba394ca0ab43b6b6d09498a10a34279b7d67dacd914e5bc9a9c49bb768d5dce902ccf01da37bb7d50d771cdba0aad21151293b6d4a0bc7a033854464856e3"
-        }
-      ]
-    },
-    {
-      "type": "library",
-      "name": "@google-cloud/opentelemetry-resource-util",
-      "version": "3.1.0",
-      "purl": "pkg:npm/@google-cloud%2Fopentelemetry-resource-util@3.1.0",
-      "scope": "required",
-      "licenses": [
-        {
-          "license": {
-            "id": "Apache-2.0"
-          }
-        }
-      ],
-      "hashes": [
-        {
-          "alg": "SHA-512",
-          "content": "753bdb165faaf5a73431ef3e19a0eb15dc030626bf2fc431c62fcd63f8de1da528803229a8eb4ba2a71757d1dd8222f1cb9be310668932a8abd6756b6b5a86ef"
         }
       ]
     },
@@ -4911,8 +4871,8 @@
     {
       "type": "library",
       "name": "@google-cloud/secret-manager",
-      "version": "6.3.0",
-      "purl": "pkg:npm/@google-cloud%2Fsecret-manager@6.3.0",
+      "version": "7.0.0",
+      "purl": "pkg:npm/@google-cloud%2Fsecret-manager@7.0.0",
       "scope": "required",
       "licenses": [
         {
@@ -4924,7 +4884,7 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "4d4bb3bbc09c85b09dd9c5ddd29609497bc306c1155f7c2966ee223a974bad72db61bbc20ca85d8c3c8ec82eefa35e2a41113d27a67400bda17d7d3c1fe7e1dc"
+          "content": "aef885265efdaff7f1797c0314223388d1aed999d0ef3389269a0e977017cacdb506bf02ff1e7ed7c63b82d3a4af0195acf0efa9e0cf8ed07cc841e26a24bb48"
         }
       ]
     },
@@ -4971,8 +4931,8 @@
     {
       "type": "library",
       "name": "@google/adk",
-      "version": "1.6.0",
-      "purl": "pkg:npm/@google%2Fadk@1.6.0",
+      "version": "2.0.0",
+      "purl": "pkg:npm/@google%2Fadk@2.0.0",
       "scope": "required",
       "licenses": [
         {
@@ -4984,7 +4944,7 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "94a630f1394a1d919e32926193644948424ae9a2b51403fc6b996d9d08ffc139b540b40559cd9b60722a8bc0b93b1a51493dd9b1011b3d3caf42fbcd84e1ee91"
+          "content": "e75d15b2ed3fdb0624cb70e82b93e43bd8ed1f7619e1a105d14fc14daaf77f4c34af965cc108a091382feab401e949e8a535776090fac8f3a568227aa7ccc133"
         }
       ]
     },
@@ -5011,8 +4971,8 @@
     {
       "type": "library",
       "name": "@google/genai",
-      "version": "2.18.0",
-      "purl": "pkg:npm/@google%2Fgenai@2.18.0",
+      "version": "2.21.0",
+      "purl": "pkg:npm/@google%2Fgenai@2.21.0",
       "scope": "required",
       "licenses": [
         {
@@ -5024,7 +4984,7 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "bb2f605954c0657b80ff6b6577440997f40d886127e103a67d7e0f891819426785411421a23a43fc67f8d523e70499a31274fcddafa1e00754d471d8698bd50f"
+          "content": "f8f0ed728dbf67438d7730867a40a8093f8ed55252f7125034de17cd0a571bfb77125fd259632409694544ed4a9a2bce1cf6b8434563518bb51c128267fbf7dd"
         }
       ]
     },
@@ -5171,8 +5131,8 @@
     {
       "type": "library",
       "name": "@inquirer/ansi",
-      "version": "2.0.7",
-      "purl": "pkg:npm/@inquirer%2Fansi@2.0.7",
+      "version": "2.0.8",
+      "purl": "pkg:npm/@inquirer%2Fansi@2.0.8",
       "scope": "required",
       "licenses": [
         {
@@ -5184,7 +5144,7 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "dde4ee50ed6f1f67199b664a1de4319ceaa54e2f447d90c68087b704bdc8e2efab247a1cafd173f3a3387e360004fbc59d01bf8062b9e751ea0e221c113c14e9"
+          "content": "5a940cf938ba678d04170c2dfae2f6a7851a6d3f96d7bf731e9e8784b54ecdf6f09d59f4e483cefde5c865718da9c4f58db435e52ba334bcd0dfd93840f3f105"
         }
       ]
     },
@@ -5270,9 +5230,9 @@
     },
     {
       "type": "library",
-      "name": "@inquirer/editor",
-      "version": "5.3.0",
-      "purl": "pkg:npm/@inquirer%2Feditor@5.3.0",
+      "name": "@inquirer/core",
+      "version": "12.0.2",
+      "purl": "pkg:npm/@inquirer%2Fcore@12.0.2",
       "scope": "required",
       "licenses": [
         {
@@ -5284,7 +5244,27 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "9e7b0ffc8749f2cf37abb66e39b9a09f5d9033eb8b0a469bf44d0ea2b7688db9fad96520d5cfaff4ebbf17fd39ee9821d29a57d16f878f96cefc3a7986cc50b4"
+          "content": "f69061931135e2e5259c786cf253adeea54fb52e1c69163a0a300397c08e7a397d31fef0f22e94a1edc3ae58c2a98b6660cdc8bf643a1263f1c7fa1361bbd301"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@inquirer/editor",
+      "version": "5.3.2",
+      "purl": "pkg:npm/@inquirer%2Feditor@5.3.2",
+      "scope": "required",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "hashes": [
+        {
+          "alg": "SHA-512",
+          "content": "eebb8a3b977fc318461f17424377b23ff68136b3d367e26eec446d9c0c2e22cbb44522ecea4a2d9534643b11dab5b0fab0368411dc2c0fcda9cc5893f44488c9"
         }
       ]
     },
@@ -5311,8 +5291,8 @@
     {
       "type": "library",
       "name": "@inquirer/external-editor",
-      "version": "3.0.4",
-      "purl": "pkg:npm/@inquirer%2Fexternal-editor@3.0.4",
+      "version": "3.0.5",
+      "purl": "pkg:npm/@inquirer%2Fexternal-editor@3.0.5",
       "scope": "required",
       "licenses": [
         {
@@ -5324,15 +5304,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "b596db68ada8beaeaf96b441350be3af2a66ac40ffa79c769dc20743bf5c0f9e6d7a2ddd0fdeafe6094c300fbab62abb2b5d388bfdb90d560a5953c9b95ea9b4"
+          "content": "7f7410251217e591277811cd508b8f8e66ddcc79e6445240f2bd9d91c6fcabe38ce54bf92ad9ee02db50ba69eb8dc05504cde67135f50a49ad024539f15459c6"
         }
       ]
     },
     {
       "type": "library",
       "name": "@inquirer/figures",
-      "version": "2.0.8",
-      "purl": "pkg:npm/@inquirer%2Ffigures@2.0.8",
+      "version": "2.0.9",
+      "purl": "pkg:npm/@inquirer%2Ffigures@2.0.9",
       "scope": "required",
       "licenses": [
         {
@@ -5344,7 +5324,7 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "b40a5ba27efd18cf6bcb9ea36bf51ddd263608be1342c6a8f5f2300d06e04de358e79d36e4674ccd0dbe51d7a057f971e7554d194079f4cd2fd27329c9b618e1"
+          "content": "1005a0513190fd49a081ae75744dc1d8f5076ee7ee5daac37e0f3ab958284a034734d427c8529c3ab40b595a9832086e4b21e1f3ed87507d09b3d7130b558076"
         }
       ]
     },
@@ -5431,8 +5411,8 @@
     {
       "type": "library",
       "name": "@inquirer/rawlist",
-      "version": "5.3.2",
-      "purl": "pkg:npm/@inquirer%2Frawlist@5.3.2",
+      "version": "5.3.4",
+      "purl": "pkg:npm/@inquirer%2Frawlist@5.3.4",
       "scope": "required",
       "licenses": [
         {
@@ -5444,15 +5424,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "a0f48aad82b55f56cc9235c3cc8287524269d7de4b1527e06e756d5e78d2286163ac26d2e88fb0caf7c0653c0a13d052b771f05a07c3ec97ec5c02c1802a20cd"
+          "content": "7387c3c0ea50b232431e35dd1c9135ff15c7eb0f7f0408b2bb740acc7f56c395e6d6adfb9b3c9435adb42fba9db4cd440a2e1efa85042a384af21477ece30031"
         }
       ]
     },
     {
       "type": "library",
       "name": "@inquirer/search",
-      "version": "4.3.0",
-      "purl": "pkg:npm/@inquirer%2Fsearch@4.3.0",
+      "version": "4.3.2",
+      "purl": "pkg:npm/@inquirer%2Fsearch@4.3.2",
       "scope": "required",
       "licenses": [
         {
@@ -5464,7 +5444,7 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "1c5c57139c3bdbb72d494700c2b0eab9fb491a3320bb7e8e795e521c45cc96bda3fda8739915fdc5211e568955f2dcd89d37f8e5c83abc691d30c45d9b744f85"
+          "content": "60868485699f91d1c458e2b0845fe825aaf7e451534eb01dccd6c90e8f654ac453e84fe86d13f1f68566e2b91332d95c252a8662db4db4b6dc1d079ff50c36cb"
         }
       ]
     },
@@ -5491,8 +5471,8 @@
     {
       "type": "library",
       "name": "@inquirer/type",
-      "version": "4.0.7",
-      "purl": "pkg:npm/@inquirer%2Ftype@4.0.7",
+      "version": "4.1.1",
+      "purl": "pkg:npm/@inquirer%2Ftype@4.1.1",
       "scope": "required",
       "licenses": [
         {
@@ -5504,7 +5484,7 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "b76f229efd789cc4353e12a9b093d8fa412cfdcd34ab3782392da04cd4724e31b977aaac540d9f22dc56e2192f199e65bda9c62ddb42cd5231e5dc1d469375fa"
+          "content": "c89a0762b327c48b0964263ed156fae83cb785ede42f77b6c0e04a8684b059603364063cd9e9a5c70829ac2b69eb2462c6f35136af73b5f4564183cdaf71a8ec"
         }
       ]
     },
@@ -5831,8 +5811,8 @@
     {
       "type": "library",
       "name": "@jsonjoy.com/fs-core",
-      "version": "4.68.1",
-      "purl": "pkg:npm/@jsonjoy.com%2Ffs-core@4.68.1",
+      "version": "4.69.1",
+      "purl": "pkg:npm/@jsonjoy.com%2Ffs-core@4.69.1",
       "scope": "excluded",
       "licenses": [
         {
@@ -5844,15 +5824,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "579a19e06b7d5892b241e7f49fd70077437daa34a42019b7138318b203485819396883420cf2b130fa358b6f6b071aa24f82317f57a9925a95f5524c288c7097"
+          "content": "a21c6fff8299486d375268c3a3ffde22379d451404708734c382236f205c312e26764bd354c4307cd9b522fc63e33df9c48c2941b27ed6c18aab7978bd368588"
         }
       ]
     },
     {
       "type": "library",
       "name": "@jsonjoy.com/fs-fsa",
-      "version": "4.68.1",
-      "purl": "pkg:npm/@jsonjoy.com%2Ffs-fsa@4.68.1",
+      "version": "4.69.1",
+      "purl": "pkg:npm/@jsonjoy.com%2Ffs-fsa@4.69.1",
       "scope": "excluded",
       "licenses": [
         {
@@ -5864,15 +5844,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "1c21bbd948a89dcb8eec6c34f573551be4bce5eddcab686b502fe67b106bb16b1ade623b79e3e492a5a27b7b9561bb6c6fae0e47d60642ce52a9ab9f0d160172"
+          "content": "cfd21f750c991972fd181f60bfe75746e3233a363cb36126150f0385dc718c52467cf2130c35b58ff5bce23941af64a609cfb2bf8ef2622350de9a3092a58655"
         }
       ]
     },
     {
       "type": "library",
       "name": "@jsonjoy.com/fs-node",
-      "version": "4.68.1",
-      "purl": "pkg:npm/@jsonjoy.com%2Ffs-node@4.68.1",
+      "version": "4.69.1",
+      "purl": "pkg:npm/@jsonjoy.com%2Ffs-node@4.69.1",
       "scope": "excluded",
       "licenses": [
         {
@@ -5884,15 +5864,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "4790fd996b6a75447370e5a3d6f757af700f0b05f4c5c86d153fa4996edf5cb34389f59d0eb9e1dba8d2203f2976751f141c53c9f1ed16d4cbfcd58acc81fb91"
+          "content": "a08217bf911f02a8f65ac724f5d0dae678db4f20a979fe0e57e5b587b718ae5a61d2b4486b2f750c884d93e39d8b02e0287a2ac81994591cb71970071a25d067"
         }
       ]
     },
     {
       "type": "library",
       "name": "@jsonjoy.com/fs-node-builtins",
-      "version": "4.68.1",
-      "purl": "pkg:npm/@jsonjoy.com%2Ffs-node-builtins@4.68.1",
+      "version": "4.69.1",
+      "purl": "pkg:npm/@jsonjoy.com%2Ffs-node-builtins@4.69.1",
       "scope": "excluded",
       "licenses": [
         {
@@ -5904,15 +5884,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "1cad414e4b32b2890d67136ca6a0c7d323daa8df58811fc0608958888694d98b3804e93909dc9b23bafa060899ba288f895f27e2c2bf91976271eed99e9cb62b"
+          "content": "9c975d4ca371d85ac7f9f3511dc1c9a420fc6f066542661a4fc48f106f3a90a51a7b95f3594e615dd93d4f8bca53dc81a177d3da9a350372bfb707fcba305dd2"
         }
       ]
     },
     {
       "type": "library",
       "name": "@jsonjoy.com/fs-node-to-fsa",
-      "version": "4.68.1",
-      "purl": "pkg:npm/@jsonjoy.com%2Ffs-node-to-fsa@4.68.1",
+      "version": "4.69.1",
+      "purl": "pkg:npm/@jsonjoy.com%2Ffs-node-to-fsa@4.69.1",
       "scope": "excluded",
       "licenses": [
         {
@@ -5924,15 +5904,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "9692a65385fd7bfa21f0622e008ec45da4b94222cd337283d790a47617d2e8f626ac6be826a29073211f9cb8279da1ac961fcf15431848864109fd9e8c91b0f2"
+          "content": "d464ce4536d9d8672c846c9a18d82a2409bf20d396c9374731b7ae8f60ac0562981106075b866f90a1da47ee3a48eefadac91970d5636b774b21f937b3501d71"
         }
       ]
     },
     {
       "type": "library",
       "name": "@jsonjoy.com/fs-node-utils",
-      "version": "4.68.1",
-      "purl": "pkg:npm/@jsonjoy.com%2Ffs-node-utils@4.68.1",
+      "version": "4.69.1",
+      "purl": "pkg:npm/@jsonjoy.com%2Ffs-node-utils@4.69.1",
       "scope": "excluded",
       "licenses": [
         {
@@ -5944,15 +5924,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "fc6c5f5b50d69bd4827647dbbea7af2cefcfe5dba86d07e62a41d7c5d3080db719310780828a00b2d21f661917a404f3abd41b090b27a1614cfdd1877597e777"
+          "content": "e399001a991350a04d460b92df87dd0645db901b9933be6853eb277f79118df4065879a9f7768d28776d6eaad5ab1a4e74ebd60059ccc7e50deab4522cdda9f6"
         }
       ]
     },
     {
       "type": "library",
       "name": "@jsonjoy.com/fs-print",
-      "version": "4.68.1",
-      "purl": "pkg:npm/@jsonjoy.com%2Ffs-print@4.68.1",
+      "version": "4.69.1",
+      "purl": "pkg:npm/@jsonjoy.com%2Ffs-print@4.69.1",
       "scope": "excluded",
       "licenses": [
         {
@@ -5964,15 +5944,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "a067993863d828af6fd4281e55e103b0ba261f59429ec952a6a50de4698fceb980546425b26b1d717340d8ee2557c638c64b92bb29f1d884c19141c955a4dba3"
+          "content": "02cf55ed16bf987b231d089ca2be4f4d3ca672a3dbd90453a2779d22c32ea8ccf6244019205751cbeaaf8b93b5e6521ef3c7c04b11d05cb214e87e46d3591fc6"
         }
       ]
     },
     {
       "type": "library",
       "name": "@jsonjoy.com/fs-snapshot",
-      "version": "4.68.1",
-      "purl": "pkg:npm/@jsonjoy.com%2Ffs-snapshot@4.68.1",
+      "version": "4.69.1",
+      "purl": "pkg:npm/@jsonjoy.com%2Ffs-snapshot@4.69.1",
       "scope": "excluded",
       "licenses": [
         {
@@ -5984,7 +5964,7 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "5d97cfd050d9377d9b6dce2dd9b64ddaa46b607839024b499f3936d874682862b8069aeb6cd447da4e5c792352fe4ba92987287c2b3e3bce35fb16806e39f1c1"
+          "content": "c147dfc907690d287945503ea2e6ca2cc728ac97e9c5489af844d83e72ba2cafa6c89e185432965f850c4a35026a9bdb863651c6beadbf0621e33137681a40b8"
         }
       ]
     },
@@ -7111,8 +7091,8 @@
     {
       "type": "library",
       "name": "@opentelemetry/api-logs",
-      "version": "0.221.0",
-      "purl": "pkg:npm/@opentelemetry%2Fapi-logs@0.221.0",
+      "version": "0.222.0",
+      "purl": "pkg:npm/@opentelemetry%2Fapi-logs@0.222.0",
       "scope": "required",
       "licenses": [
         {
@@ -7124,7 +7104,7 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "3a56a7696d6fbfbb9f4ea437fdf3cb2386ab1ade59a0cf8ff1a6ce3248bab84627a516b37a94960f00e79f0fa56bb904dba487542d7cfff48c71cac3bcb28e5d"
+          "content": "f666f521ff8817abb46555e41d0ea880469ee47c00e9a8c85548294834324404b17ede814971ef06f3e8a1195edf214dfdf2a709d48e9eebb4382dcf2dc17afa"
         }
       ]
     },
@@ -7151,8 +7131,8 @@
     {
       "type": "library",
       "name": "@opentelemetry/auto-instrumentations-node",
-      "version": "0.79.0",
-      "purl": "pkg:npm/@opentelemetry%2Fauto-instrumentations-node@0.79.0",
+      "version": "0.80.0",
+      "purl": "pkg:npm/@opentelemetry%2Fauto-instrumentations-node@0.80.0",
       "scope": "required",
       "licenses": [
         {
@@ -7164,15 +7144,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "a8be776888ddc39eac443ab3e8b5c3f61d79bcf4c980fa6abfcd2b6ec9d18f386e0bd56a679f1f824fe5c7449d102276adcbbc91e7a38b96608f32708906747e"
+          "content": "31c3d2c5d359aae7599c2f16b18b62eb74320e88fe40e07810a569dcd76babe82ae543a88b619c0ef5e3a61231817505a09de3cd6a2273385178a5b6dce2ac3b"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/configuration",
-      "version": "0.221.0",
-      "purl": "pkg:npm/@opentelemetry%2Fconfiguration@0.221.0",
+      "version": "0.222.0",
+      "purl": "pkg:npm/@opentelemetry%2Fconfiguration@0.222.0",
       "scope": "required",
       "licenses": [
         {
@@ -7184,7 +7164,7 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "b84f72e7a65d8bd1adfd177162754ea3762615990a249300d20aad05ef3087c81db45e40b2a7be3a1fd35a20ed15bd6cfb7d63358e025a09df201d4a3884df14"
+          "content": "ccd586984bf25fb0946d2e85e8f2a2ee17f7085fd27dfcde058c9655001f69d67c84e0ebbcb9aa577214195b754a2ab261a9d13c773c56e8683b4421f4e12eba"
         }
       ]
     },
@@ -7211,8 +7191,8 @@
     {
       "type": "library",
       "name": "@opentelemetry/context-async-hooks",
-      "version": "2.10.0",
-      "purl": "pkg:npm/@opentelemetry%2Fcontext-async-hooks@2.10.0",
+      "version": "2.11.0",
+      "purl": "pkg:npm/@opentelemetry%2Fcontext-async-hooks@2.11.0",
       "scope": "required",
       "licenses": [
         {
@@ -7224,15 +7204,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "6efc8c7202c4928cf34b3a44104a3538ca1e43dedbc63e90b36b8dde63eb49d0ef39b308d66c9f7c3fc13ea70b97364ef7ffddd52a9003f58fc3b0b3d808aa84"
+          "content": "4ebefd0f2588f22b6c05d83e8c7fa8a637ebc0bcd7f9eae4d7f131908c215a80158d5ac9227db2e7e7068d30b4572f1fc8d200ff2f30b893d9c2bd53df109979"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/core",
-      "version": "2.10.0",
-      "purl": "pkg:npm/@opentelemetry%2Fcore@2.10.0",
+      "version": "2.11.0",
+      "purl": "pkg:npm/@opentelemetry%2Fcore@2.11.0",
       "scope": "required",
       "licenses": [
         {
@@ -7244,15 +7224,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "ff0359f2dc27110400e07a07bb6dbebdcb1daeeea958f5b15beef0f859714fa21decf13f5886d99952a4b5ef8f17bd9ed05d9d9c89857870f6b32c84d4cc3a31"
+          "content": "ed83f8e171f4b55ebe31be78c766067fce22ef28bedf530166513c270be8ce4c724ef5db4a9d745fb708ed8138f42849dec84c268066089177fb540504972d18"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/exporter-logs-otlp-grpc",
-      "version": "0.221.0",
-      "purl": "pkg:npm/@opentelemetry%2Fexporter-logs-otlp-grpc@0.221.0",
+      "version": "0.222.0",
+      "purl": "pkg:npm/@opentelemetry%2Fexporter-logs-otlp-grpc@0.222.0",
       "scope": "required",
       "licenses": [
         {
@@ -7264,7 +7244,7 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "b711b51b422b612b0a28c7a25997e3fe2e5c426581fa1fa17f71f33e917746a655c29fa2410108b2ff15b66cf2e9159574774965fca0995ac1237f584c1bd673"
+          "content": "1c7e0e8bf13c1d704ab5c8e07153c91acae0fa54acb5dc359bdddbad1769563e428cca724e4bff3b46583173fa41754468b8e3162bedcd4bb863cfa2d542698f"
         }
       ]
     },
@@ -7291,8 +7271,8 @@
     {
       "type": "library",
       "name": "@opentelemetry/exporter-logs-otlp-http",
-      "version": "0.221.0",
-      "purl": "pkg:npm/@opentelemetry%2Fexporter-logs-otlp-http@0.221.0",
+      "version": "0.222.0",
+      "purl": "pkg:npm/@opentelemetry%2Fexporter-logs-otlp-http@0.222.0",
       "scope": "required",
       "licenses": [
         {
@@ -7304,15 +7284,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "9ca5e4af84e89a2e9f8d854e7fecad716ddd64056be2fe01bf982c4fa76bda0be950f2692a01c1e176ccb9f32c3e8b511378345c7d86c1554290ddb0e9238df9"
+          "content": "1aac0b6688494dffecb6d6253a94f5a054c9f5271868a9e4d2c3b1e107bff8a99761539afaff7871f9e452414a0eebd33835a108be741f3de0bec643ea7810a6"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/exporter-logs-otlp-proto",
-      "version": "0.221.0",
-      "purl": "pkg:npm/@opentelemetry%2Fexporter-logs-otlp-proto@0.221.0",
+      "version": "0.222.0",
+      "purl": "pkg:npm/@opentelemetry%2Fexporter-logs-otlp-proto@0.222.0",
       "scope": "required",
       "licenses": [
         {
@@ -7324,15 +7304,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "007e8463ee3b81715a598806de17de3a7786884f712191ad0c193ef60d2c33c3595b3b108619aa3db4105c9cd2ee9c828798d146bda760d5d5ae40a6a288d1bd"
+          "content": "2e508326e6b39df14fce31e82978cdfebf53e6980266999585e67f126c0c52132fa7123b4570e6b1d2d7a18a65e6cb9840d930c970146615445ca7b795ebfc1e"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/exporter-metrics-otlp-grpc",
-      "version": "0.221.0",
-      "purl": "pkg:npm/@opentelemetry%2Fexporter-metrics-otlp-grpc@0.221.0",
+      "version": "0.222.0",
+      "purl": "pkg:npm/@opentelemetry%2Fexporter-metrics-otlp-grpc@0.222.0",
       "scope": "required",
       "licenses": [
         {
@@ -7344,7 +7324,7 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "28e802b4ed79142e82d53ff13aa05cafb13252cec1fbbca898635be58f7b777b37f2b3db082939b1ec24984d9bd3f8ad3a443f3e9b57f022e50fe927da612d4e"
+          "content": "9cf53682941625f42db5ff80ef568b90a10e4283ba9fa406b39413b4f6a08bfadbdcb735239e5ba915e82d0119b16a968a673c79ab36568d7af0d913681cb143"
         }
       ]
     },
@@ -7371,8 +7351,8 @@
     {
       "type": "library",
       "name": "@opentelemetry/exporter-metrics-otlp-http",
-      "version": "0.221.0",
-      "purl": "pkg:npm/@opentelemetry%2Fexporter-metrics-otlp-http@0.221.0",
+      "version": "0.222.0",
+      "purl": "pkg:npm/@opentelemetry%2Fexporter-metrics-otlp-http@0.222.0",
       "scope": "required",
       "licenses": [
         {
@@ -7384,15 +7364,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "b117c229b3b3832f316505766acd11cc86659c2982b1e08a6462df45cae9a360819e0243afeacfb57d33906d3ea14095e647d03d4a16dd6dc2f7a020dd8fc296"
+          "content": "e8aa3ed1b80d3fa5781bf46c98d05293994ed41fe5a3dcfab6f2e9158df290f3debd7373166396dc2f611264edd33282bc7a2fcaba25dd36258381d56f98308e"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/exporter-metrics-otlp-proto",
-      "version": "0.221.0",
-      "purl": "pkg:npm/@opentelemetry%2Fexporter-metrics-otlp-proto@0.221.0",
+      "version": "0.222.0",
+      "purl": "pkg:npm/@opentelemetry%2Fexporter-metrics-otlp-proto@0.222.0",
       "scope": "required",
       "licenses": [
         {
@@ -7404,15 +7384,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "60c1782ef798d88df2870eb5ae7ea7982f4513c536e086473de294d43b9ce7eb1bc2331df05c190306dadf5f0899d4e10a0fc7b9542f866db2e9b7e034f9df62"
+          "content": "b3564fc12f0883b7294662f7902a1b3da15b7a633cd5d274dcb34faecb8ddf68779820ef345d8d435a511ebb8e8eed0fd28d53676e0b91903af39aed41a97528"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/exporter-prometheus",
-      "version": "0.221.0",
-      "purl": "pkg:npm/@opentelemetry%2Fexporter-prometheus@0.221.0",
+      "version": "0.222.0",
+      "purl": "pkg:npm/@opentelemetry%2Fexporter-prometheus@0.222.0",
       "scope": "required",
       "licenses": [
         {
@@ -7424,15 +7404,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "916efd6b6d2a584488b80743af1ce0f5628cf7cb7057f341581151007e7b6a9ffeb2c661882a3485c933293d33a6ec11fe0487ac50108492f46d80eb9c4337e2"
+          "content": "23b9da9679c166b8654e08e5aac55e1232467100852b990a018564ed74f3fdc6ee6ef8f97ef8cb39a97f31a9f2d2d68717618890e5a67a0b1b43cbdb4098e116"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/exporter-trace-otlp-grpc",
-      "version": "0.221.0",
-      "purl": "pkg:npm/@opentelemetry%2Fexporter-trace-otlp-grpc@0.221.0",
+      "version": "0.222.0",
+      "purl": "pkg:npm/@opentelemetry%2Fexporter-trace-otlp-grpc@0.222.0",
       "scope": "required",
       "licenses": [
         {
@@ -7444,7 +7424,7 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "cd79a29e565e76dabd2ef396eb80a73643aa935e7357be64f0982d753b961607bafa39369b81a60149ba2f6788886d68d9ad9b6715f0d8f0ebb339be6e9b3420"
+          "content": "ba2b2295e3c474e31ade121f5d6f365d753a1687c5f20c378aff8fa1ba08316114042ed76c90775e720749dad20eca82c379e347f21fd3ca83d32cce63553d4a"
         }
       ]
     },
@@ -7471,8 +7451,8 @@
     {
       "type": "library",
       "name": "@opentelemetry/exporter-trace-otlp-http",
-      "version": "0.221.0",
-      "purl": "pkg:npm/@opentelemetry%2Fexporter-trace-otlp-http@0.221.0",
+      "version": "0.222.0",
+      "purl": "pkg:npm/@opentelemetry%2Fexporter-trace-otlp-http@0.222.0",
       "scope": "required",
       "licenses": [
         {
@@ -7484,15 +7464,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "03249788aa02fa67a25a6eb37558f94f62e73c366e6adbde05bcb570c39e42d7885ac617014c6cf12aeed771b6a5548fad45f3eaf17ea20ed05415fa19d0bfa1"
+          "content": "4429cf59c1e9a708aab90f9c5779d6bcdc1d7f4306d70dba7b98dec16d93f379d364e95781c83cf2c63dba509581a8061dcab59a3d0bd063fa607833936bfca0"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/exporter-trace-otlp-proto",
-      "version": "0.221.0",
-      "purl": "pkg:npm/@opentelemetry%2Fexporter-trace-otlp-proto@0.221.0",
+      "version": "0.222.0",
+      "purl": "pkg:npm/@opentelemetry%2Fexporter-trace-otlp-proto@0.222.0",
       "scope": "required",
       "licenses": [
         {
@@ -7504,15 +7484,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "67d8b64fbbe065b59ef6b48b6315d521b796f97cb352ae2b65a9d6dd9c95370543a82b21d0424a520056590d0265f7ae500f9140fcca80940732e5805272aa5f"
+          "content": "8a62eb2f33619c0049b77b54c93eb787a32a7d9ac6dc676fdd313bf8e5104efc03d3cf117c2531deb174d657207eed8a5c1164d77bf08b4c8a64bbc511a96420"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/exporter-zipkin",
-      "version": "2.10.0",
-      "purl": "pkg:npm/@opentelemetry%2Fexporter-zipkin@2.10.0",
+      "version": "2.11.0",
+      "purl": "pkg:npm/@opentelemetry%2Fexporter-zipkin@2.11.0",
       "scope": "required",
       "licenses": [
         {
@@ -7524,15 +7504,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "ee0b2f81fd140e827897d39baf0066cf91bf6688223e4fa5abe8391a92e9db861017fbcf33f052b2739f70b9df8a76acb790125202e8efcb920bf39b8e59d782"
+          "content": "98589b038e725cb1044c88fe55c4d5c9c1457b847dd620f8d5dfabdc25347f70c35890ab202887c5422399805309922ecb05c478da3efb69677107969c7ee559"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/instrumentation",
-      "version": "0.221.0",
-      "purl": "pkg:npm/@opentelemetry%2Finstrumentation@0.221.0",
+      "version": "0.222.0",
+      "purl": "pkg:npm/@opentelemetry%2Finstrumentation@0.222.0",
       "scope": "required",
       "licenses": [
         {
@@ -7544,7 +7524,7 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "70293cd19fe24437ffe607ec28c0787fbe0ba95039c8a11307ff688cfcd55bfebf7fbd22bbcf6726f1b1b050b1c785df4a885a3a87e4535f648989bce0088097"
+          "content": "7e16d10ee020ccf2a9ab5939fa15f7b92fb740060d71ad289f4360a2dfd1f1d0ec42db856800de6671b6b92831001baf708ed2da984069185b72df6389e78a67"
         }
       ]
     },
@@ -7591,8 +7571,8 @@
     {
       "type": "library",
       "name": "@opentelemetry/instrumentation-amqplib",
-      "version": "0.68.0",
-      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-amqplib@0.68.0",
+      "version": "0.69.0",
+      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-amqplib@0.69.0",
       "scope": "required",
       "licenses": [
         {
@@ -7604,15 +7584,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "53d15cdc2d3ad6af801b13f7c4425320026d05db98d462f6d49e128ce4b10a69a5b38514bdad7a8f3439664ba741ed2929a96b46367f0e567ec207e0431aa307"
+          "content": "86849f346c6aa2ca44170d12d911fb718f0c1795350512ac01f5fb3e18a26601835b13dc99f00a61d5e29669f40ea3c1191158ceaf876ed4a9f91fb6b32e265c"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/instrumentation-aws-lambda",
-      "version": "0.73.0",
-      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-aws-lambda@0.73.0",
+      "version": "0.74.0",
+      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-aws-lambda@0.74.0",
       "scope": "required",
       "licenses": [
         {
@@ -7624,15 +7604,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "3760591655a656ddb38e98aa3e77e62258fbb55ff07ca49908517f95a2c09c949366348475cf496125d6f8a515d053143437e92c2780708d710cc7462ddc4526"
+          "content": "37b2fe348ca77445160b4123b4dece98d045d09e5b79743cd7ee3aaadd4d080d980c2f79a2cf53221da259f28bf94df020d909792b4c58111080566112f8f5ab"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/instrumentation-aws-sdk",
-      "version": "0.76.0",
-      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-aws-sdk@0.76.0",
+      "version": "0.77.0",
+      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-aws-sdk@0.77.0",
       "scope": "required",
       "licenses": [
         {
@@ -7644,15 +7624,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "820d90683b567857b346dda6025f6f050dfccbad2dcd44a12a0d4a03db9382c3098a65076819c1dd7f24107f4e7fc8ca593e030e80dc480dfb80f72811cd2188"
+          "content": "8a0ae2f0317b656958b508d3d6ed80defe86adbe7d552b188a1786acba6723bae5100c6615e5873f08b0cf3928dfd94cd0b3bb36d7f75493d1040d59346c05d7"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/instrumentation-bunyan",
-      "version": "0.66.0",
-      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-bunyan@0.66.0",
+      "version": "0.67.0",
+      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-bunyan@0.67.0",
       "scope": "required",
       "licenses": [
         {
@@ -7664,15 +7644,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "22a6100b575abf7e4d1e50f99d89e90572bcb48e8a27dfcc22df0b60a171c2584c2307c109f6af6a49723fc36d54aa09d1664acd7daff5287ec462b55ef4a789"
+          "content": "6bfb9c92ed72c78a96db3a58a5ea5333fad996ff760c6fc2fa4fcac67fe7aa18791cea1ede91c56d7517ba7bf2d84b475bfee5f353c8fbe0149beac8c57aa54e"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/instrumentation-cassandra-driver",
-      "version": "0.66.0",
-      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-cassandra-driver@0.66.0",
+      "version": "0.67.0",
+      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-cassandra-driver@0.67.0",
       "scope": "required",
       "licenses": [
         {
@@ -7684,15 +7664,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "e24b0decf7d72e0eeb683c9722322bb71c73bae0e5531e85874b3c557a23765fa79f6a34c6461af63aead5ff417ea866f9271edc639ad518c4df272f03093a5f"
+          "content": "3c81db8e60567d8798a801fc5c30b2a09a17691e939046a4370dc15fcb83b7c6fdce3624dee7ad8c2a0ff27b9b4436fc9b7d2f9036ecd3d420d3da453972a3db"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/instrumentation-connect",
-      "version": "0.64.0",
-      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-connect@0.64.0",
+      "version": "0.65.0",
+      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-connect@0.65.0",
       "scope": "required",
       "licenses": [
         {
@@ -7704,15 +7684,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "0f54e9a26dc1a58f20dbd1453844361598a85458f25f05c7b21dc13a7d811dc83b4da8a983ec9cf833c6530bdd478599aca9cd3001bff8505735ad12d0a84960"
+          "content": "8bbc643a4cf379a61b68ad868e9c5aea0f4525dd67aa81f4f8a1724575748b0787fc5dbec593e29ed4450f981c48de7f1f89a97ec96c2db0ea453f3dec2bf311"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/instrumentation-cucumber",
-      "version": "0.37.0",
-      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-cucumber@0.37.0",
+      "version": "0.38.0",
+      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-cucumber@0.38.0",
       "scope": "required",
       "licenses": [
         {
@@ -7724,15 +7704,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "7b3867e83d03494664c0b04675f9ebf8f00436f07dd8085b107fdd91c48b601f1d6d08b0fcd43ccb5f633a7dc4e8c653b74f850f56321edac94b6b240cee270d"
+          "content": "b28ae0ad1dc5381cbe604c15badc5c9bce094c8d25b823481a9d2488bfa34a852b1fd5bfa58552a4fe22b0b07756d40c80d9c3e1c7747bda8dbefafb47028ba4"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/instrumentation-dataloader",
-      "version": "0.38.0",
-      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-dataloader@0.38.0",
+      "version": "0.39.0",
+      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-dataloader@0.39.0",
       "scope": "required",
       "licenses": [
         {
@@ -7744,15 +7724,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "3a639569d2b49bbb1d96f3306edd606f6895502caf54d0e8df1e492c68272a080b4c90604dc43180c977a4084500ccd61a8f5446e331ba1dc1a61cbd3dbf6767"
+          "content": "d35fa334fd611122bc1984c2b913288900047fd648e5bdd7c1f4a4edb5838972c1dbfce697931dfd4ff1696c851d0da4632539e7742fafc75ccaea7905ebbba8"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/instrumentation-dns",
-      "version": "0.64.0",
-      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-dns@0.64.0",
+      "version": "0.65.0",
+      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-dns@0.65.0",
       "scope": "required",
       "licenses": [
         {
@@ -7764,15 +7744,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "2daeacf5274a8288d9415143ec072540161edd68a855eeb389c26cc0cdd03cf3c7a42b9f2589f0f2b3bf1bda36625fce51e4bb3d8a73c0787837a95ec736c470"
+          "content": "ed05c80ace1e57f19e8a146a3e7b11ed39caeae8002bcfc1eed5abf141714731937cd1bdecb11f0727af84d7cc104f291452c752188213999eb440f694ef2787"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/instrumentation-express",
-      "version": "0.69.0",
-      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-express@0.69.0",
+      "version": "0.70.0",
+      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-express@0.70.0",
       "scope": "required",
       "licenses": [
         {
@@ -7784,15 +7764,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "f75a4732e8d0803ca1110add83c46b88c06b459fea3da274636768a50ea51e35b9623a1ecad5a2f2bb8cfff4fa7f9a340fde619ea465bfbf4f7a5d6518fa9a62"
+          "content": "387763ff66a945936130a91deb0e0e5784a75ff692d8b58c2f21f0186358856adab6087cf28f9c5494bd16fa82f870985920d64c45847e5ffc77b05d108edcfa"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/instrumentation-fs",
-      "version": "0.40.0",
-      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-fs@0.40.0",
+      "version": "0.41.0",
+      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-fs@0.41.0",
       "scope": "required",
       "licenses": [
         {
@@ -7804,15 +7784,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "a77f5ac5a69854a86797997833ed5a8979b1ac01b61ee4ed8bb0c7c6cda30c946cb7cdbccb98b0a9464b0b551620a2215bd15f755e60a205e0fa745185273410"
+          "content": "ae4d51731bce79be63ec68ba3ff3c1e8cf4c451610ce9e2df5960dfe2ea354cfa6d23db30946061f85e8ea898d8741614c3861cad0cf1baa3de69f3679714bdb"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/instrumentation-generic-pool",
-      "version": "0.64.0",
-      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-generic-pool@0.64.0",
+      "version": "0.65.0",
+      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-generic-pool@0.65.0",
       "scope": "required",
       "licenses": [
         {
@@ -7824,15 +7804,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "c0cf77f63f0ec790411e8034affa7d7ad769c92dc67147ffb1fad4c7576d65da86294e19701c4bc8f0fc427b70164488f4f1ea97ead17a34c203a06d92dcfc2a"
+          "content": "88a927ffc9b4a1eadfd34a82c73f7fc5eb9af8489e5fab654a62e11a254b80bb0eb29995d6c6f7dde7bc44f8969c989a9dd195260280d064c65195f054a80f9d"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/instrumentation-graphql",
-      "version": "0.69.0",
-      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-graphql@0.69.0",
+      "version": "0.70.0",
+      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-graphql@0.70.0",
       "scope": "required",
       "licenses": [
         {
@@ -7844,15 +7824,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "bf22b3ba206812e955d458cc49ee228aec1979db7e9cd02e69254e87fdd6c630c8b8643d5ac1fed2885df6c9e1218ea0b808d83868eabd38982ece8af8e4d042"
+          "content": "cf2053106d03c66eab61fd086a822ab7565102e8aae0050f0e1022d2f97f8416d8c1e539e8295e4b9cc7f27f86437f84b13056e8a60a50b1ef5e4db5f94268f7"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/instrumentation-grpc",
-      "version": "0.221.0",
-      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-grpc@0.221.0",
+      "version": "0.222.0",
+      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-grpc@0.222.0",
       "scope": "required",
       "licenses": [
         {
@@ -7864,15 +7844,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "d54e39d7bd9288f586d4c3dfae02c8b48b9764efd17c9aade6cc6cadd94a375351574a54b6fee56e9801d674a1c0ffd219229a005928bdb560ddad617f2de6a5"
+          "content": "e605058491795fcb2ceb46a9b76a7b733bc8788cd31d9412ab5428c222954b88017cfe671d9361058a0eb6ad63d7803c217b3fa8bf079ffb1f9e2e2468f54b44"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/instrumentation-hapi",
-      "version": "0.67.0",
-      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-hapi@0.67.0",
+      "version": "0.68.0",
+      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-hapi@0.68.0",
       "scope": "required",
       "licenses": [
         {
@@ -7884,15 +7864,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "7085c8378bd95e6e9a238cb3fb8a142119e4880c4222938dacc86719323e20b28a12c2173fc52c7a57ebf7aeb7f939e2b2b8112c1ee42a9f92a0eb862511c6b7"
+          "content": "c094a1108e1a29a8d04f94a0fec27a8d5df117a4aa24a7d71d32c376b99632fd21d6c0d7a789a94930f55d425f3b91f4959154b4425aa71b56975dbacc099ff7"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/instrumentation-host-metrics",
-      "version": "0.4.0",
-      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-host-metrics@0.4.0",
+      "version": "0.5.0",
+      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-host-metrics@0.5.0",
       "scope": "required",
       "licenses": [
         {
@@ -7904,15 +7884,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "8e71725f6b139f607ef668ec2f7aa0007ce9c5d6a26b8fc557619295ff50ae96a2322e8ed0cd2503d2594ec7f8153bee3b0ac89e00a4f8c7955e3b318015d7ca"
+          "content": "ac0c39966636bb76f0505a2146d4786583439e1313892790aaaf01078068f9a250fbbbc838ec16ff77786b02cf30343af55780e63b21f8808be682629eb588c0"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/instrumentation-http",
-      "version": "0.221.0",
-      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-http@0.221.0",
+      "version": "0.222.0",
+      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-http@0.222.0",
       "scope": "required",
       "licenses": [
         {
@@ -7924,15 +7904,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "a083fdd423c800db98af4f6d1851253c528087a2546abf9ac097f590145895a7a8f5bd200f0647101db305f165bdd3451e6d30015bad319383562e6c98a4f7d2"
+          "content": "1e13075b7d8bc86cc8244994125c5a30be2851ee89882ab41ef8edfc0c316fad1294cb1215eb452c58de778e60ff4c2b3ebd67ef3fb15bec7507fe7ce1604092"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/instrumentation-ioredis",
-      "version": "0.69.0",
-      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-ioredis@0.69.0",
+      "version": "0.70.0",
+      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-ioredis@0.70.0",
       "scope": "required",
       "licenses": [
         {
@@ -7944,15 +7924,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "23db19b715d6675b515ed44d4c4571a68906b57cba44bd52661b4f561ef3c47efcb7c6abef55790f1e1b9d08948ca4c3cc8b690bbde4ac3f1cd3f704580f682e"
+          "content": "014ca7f0ae6f9521a4205d805cf954b1ae5de595d189d1cc5e5007340ca4be05b7bbc8ee0d9a864e0b0e2893189cb7e595ac3281ac0baea2ba16bda59cf70151"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/instrumentation-kafkajs",
-      "version": "0.30.0",
-      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-kafkajs@0.30.0",
+      "version": "0.31.0",
+      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-kafkajs@0.31.0",
       "scope": "required",
       "licenses": [
         {
@@ -7964,15 +7944,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "fe9fc3e1eb7126924607456b4be92a17c59f54030559fe726e16349a3cc811dfddfd3ebcfa7c53589688e4c257162c8e9c1505b8c96e9f5d9526df9024309264"
+          "content": "f7f10139bd5a5b96a2e3e53b9aed844797e127b39864d2bf8214521137c27fddb109ea10919712f0b105f1ed39c3a3a5ae0642c2aef1faf2ee5315ed9113efdf"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/instrumentation-knex",
-      "version": "0.65.0",
-      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-knex@0.65.0",
+      "version": "0.66.0",
+      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-knex@0.66.0",
       "scope": "required",
       "licenses": [
         {
@@ -7984,15 +7964,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "ac94d3d765650e72fac0e59fc6706f913508cd6da3bbeee7aa54e8332d6d96a2f48faa219553f1af23024b987a52a137085a6aec7b47a9539b407660ac0dfb28"
+          "content": "b4f2354f4babf8fdaabec39671a76ff55896b49f20d17b0a38030f891e6b6ac6416400ba9c4238bb80409c085a66d75992e309ac66b8b99babe714e7d5bbfb31"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/instrumentation-koa",
-      "version": "0.69.0",
-      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-koa@0.69.0",
+      "version": "0.70.0",
+      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-koa@0.70.0",
       "scope": "required",
       "licenses": [
         {
@@ -8004,15 +7984,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "7f1b80f2314e76a433255f528ad774764fb39eced140215ed7d89adcb1dec79a0b8903da690a2f06fdfb8e7757ff3019c3a10139101378f1c4f0e414c2b68f09"
+          "content": "f821722fb5746ae3741732af194c0e20e193ffc5530b704cf1c77c5f45281d198f2847587f0356b8722403ace49d93c331737d58b7d90b1759d0b9ff62a2f1e3"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/instrumentation-lru-memoizer",
-      "version": "0.65.0",
-      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-lru-memoizer@0.65.0",
+      "version": "0.66.0",
+      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-lru-memoizer@0.66.0",
       "scope": "required",
       "licenses": [
         {
@@ -8024,15 +8004,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "b362a2b0b67cda20ef085d906ec575935c2bcf70cc4813fd3a231f98d9f9a12c9a353ee370da61478bb1afb5a3c07facb2e72ebe1296a8acc9daf771eca44c54"
+          "content": "91825016a911d9e1301b3a93470d8d73f362432ad0454deb2c79ac12f76795fe346117c205a75b0eedc8f02e465a8567d57c842854ef9a7f39528b254696d48c"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/instrumentation-memcached",
-      "version": "0.64.0",
-      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-memcached@0.64.0",
+      "version": "0.65.0",
+      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-memcached@0.65.0",
       "scope": "required",
       "licenses": [
         {
@@ -8044,15 +8024,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "7a4df8b69ed08dc8b808b6a15f26c9dda6a2c54d5dda3dbc5f92525d25dba7afeb2221468cc0805c95b0dc57a262603cd83fe057fc333e12fbafb9bfa78814cf"
+          "content": "40b1abc77dd31c4368802764062d432713f0bd67b84089e82946f1eeed79cdbdfb6f1acac30ebc66ba9b305e25baaf5865b190505a84b274a9ac757c914f7740"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/instrumentation-mongodb",
-      "version": "0.74.0",
-      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-mongodb@0.74.0",
+      "version": "0.75.0",
+      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-mongodb@0.75.0",
       "scope": "required",
       "licenses": [
         {
@@ -8064,15 +8044,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "1919c7bbaf582d0518820bae6242a2eb0a62ccc638afb80b0b4f2b4aaf1c838d69eadefed58232e675e8182eb5340eca099504f636dc0e7cdde398b7d886e566"
+          "content": "05ff40cfacdd3ac9d11547b0d424e84caa5f85c164009e128269c6a71203fefbb3547237d68661030b8a0531e7cbf12aef27577e77036c44fc8d5e9ddcbf1113"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/instrumentation-mongoose",
-      "version": "0.67.0",
-      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-mongoose@0.67.0",
+      "version": "0.68.0",
+      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-mongoose@0.68.0",
       "scope": "required",
       "licenses": [
         {
@@ -8084,15 +8064,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "88406036bc9c843dfaa88d7a5ff57c5996f625a6e340f13ea72ae42d4df6d00a59ca1195b1853d2c7dcdaade0c920d6716c6bda9685142b09f86800d0a04fa10"
+          "content": "1ab0cfa72f571f058952929be0d8c7f1b75153d12fb52dfb0f5d362e130e9e334ea7aa2ebed54198570f2ccb092ac65c14e1b86329121119dabb89796beb32db"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/instrumentation-mysql",
-      "version": "0.67.0",
-      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-mysql@0.67.0",
+      "version": "0.68.0",
+      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-mysql@0.68.0",
       "scope": "required",
       "licenses": [
         {
@@ -8104,15 +8084,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "1b8691ad529c77602876a8bb5b3459dcb40934aaccf01a6c5c454c1eb39bf6cf0b8348d95cdbe52d8d0d58bd72549ae39ea23fba7c04b29d9a5479152263cc78"
+          "content": "37a4c23225a68ac746f43cd2b8c1f167e379a83de67a80b2ef499513a7e77998fa336e045e3f3a7b9e81ccb150f0f91de8181a3c125c74c4d3fc605f3ee5b5e7"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/instrumentation-mysql2",
-      "version": "0.67.0",
-      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-mysql2@0.67.0",
+      "version": "0.68.0",
+      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-mysql2@0.68.0",
       "scope": "required",
       "licenses": [
         {
@@ -8124,15 +8104,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "026be247b974c4cc610bcdec718deef8d9244fa6e5843ff12bdb4f8bd9d8b63346d60c0fb4c8198d839addff6518ec295ecfc4c0def08b2020c623b829370434"
+          "content": "c4dbd42f49f093fb748063dbd464902562a2477823e02777be4e296a5aedb4bcbf1586e744138e0510a86e293782b00cce3b329c483261dcc4ce25f1fc2be9c9"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/instrumentation-nestjs-core",
-      "version": "0.67.0",
-      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-nestjs-core@0.67.0",
+      "version": "0.68.0",
+      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-nestjs-core@0.68.0",
       "scope": "required",
       "licenses": [
         {
@@ -8144,15 +8124,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "9576fba63a1b7768bff469a285ff70ace3343209c3601c4e26aeee5848593aa50ba1d3452f23c24549d6c5221b3d0754ce5537e90b478ee01e684054267a9790"
+          "content": "042b2a28f2d654382b4c3c9549c47010d5a0f2e347ecb034401cbea23b8f431f42f45f39c8e84d91a95ee4c766406d2cbbb2fa04b2d334f07264e65e2a9ddce4"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/instrumentation-net",
-      "version": "0.65.0",
-      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-net@0.65.0",
+      "version": "0.66.0",
+      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-net@0.66.0",
       "scope": "required",
       "licenses": [
         {
@@ -8164,15 +8144,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "5bcd87f14bda4ab5b29e9239d7408d25bab602ae8be3fcee47f740be8099558791882862d0b1cc23c8b7acf7b74e66aed960701348e299a5a03acd0609f2076d"
+          "content": "3b19f30b4ebdebe35eef31e2b07a3de51664613e1ed82e0ea01faad1da90c99d3ff6494b43d0b20bf62ef8ecd8ad0ccf8ddcd141554f3438685bee7e7179375d"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/instrumentation-openai",
-      "version": "0.19.0",
-      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-openai@0.19.0",
+      "version": "0.20.0",
+      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-openai@0.20.0",
       "scope": "required",
       "licenses": [
         {
@@ -8184,15 +8164,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "cc7cfb9bf694303c806a9ed433369ac4391b9b113250e7cc05f87eeca2023704c19883b2a4c9ee516c175807c824b825fb6767665373c594649d42de4b860886"
+          "content": "be5f11787f5dabd8284566da8c5d3142dfe69c26439762827263af802d6c48a09103c0e7a9232aed9f5954a3c0f4f9da578b462276f7f6ab4674620e454904a9"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/instrumentation-oracledb",
-      "version": "0.46.0",
-      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-oracledb@0.46.0",
+      "version": "0.47.0",
+      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-oracledb@0.47.0",
       "scope": "required",
       "licenses": [
         {
@@ -8204,15 +8184,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "9eac50bdba7b1efb153f20dd8226400cf417e81e9952d2df9be5cfb891ed4376a7c4872a53aaa1265ac32043362eb64c4a1a9fedbb3ce111df0eddab82ca7b86"
+          "content": "dc30e072c9760855f8f36f53c5988d603dbda4537dc724fbd47501378ef90ae150f787aafb58f23193ec84ef8aeea265b6b258d837f731657600dae5c3c1fc7d"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/instrumentation-pg",
-      "version": "0.73.0",
-      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-pg@0.73.0",
+      "version": "0.74.0",
+      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-pg@0.74.0",
       "scope": "required",
       "licenses": [
         {
@@ -8224,15 +8204,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "c9fded055c0b1c1f5c64d34f493a0daed871dfaa2e3dee0572d171cbbc9aeaf489ea06a22a335f03f2201457ae06965f944421cba69eb0fab3668f198c592f36"
+          "content": "f22e7d67b334163130a76845d5e46a12bf8d66d8b08ef3d81a5db1b065847cbfe117a7df98f11159bc92c8ad445daee01b21c202bc0d9072d286c31f172c2aa5"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/instrumentation-pino",
-      "version": "0.67.0",
-      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-pino@0.67.0",
+      "version": "0.68.0",
+      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-pino@0.68.0",
       "scope": "required",
       "licenses": [
         {
@@ -8244,7 +8224,7 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "1dbea9862db1d5bab6dce2227ac8f88a642f5ecf58e4c30bb698171fd84eb8c9bd2e9058cf67313cd829819fd7013b917253f57913e84a5dfdf68e572b07e820"
+          "content": "53482000cf5ea837bb8ec52765e14cbfa4086706a135fc8f650025515f594376806296aaf8083d3a479cef9160cf087bdbe7b881ec1f4fdf4739b90383a63f6c"
         }
       ]
     },
@@ -8271,8 +8251,8 @@
     {
       "type": "library",
       "name": "@opentelemetry/instrumentation-redis",
-      "version": "0.69.0",
-      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-redis@0.69.0",
+      "version": "0.70.0",
+      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-redis@0.70.0",
       "scope": "required",
       "licenses": [
         {
@@ -8284,15 +8264,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "972088116f3d71884cc1a512301cec2877701f6c0ea2a9aec173804499dea3d50be79828bcb21409b618009e39ee833c91d2800f29a5638f92516d032907881f"
+          "content": "8d71ddb97b7a1905a5b86b6a04f89b02fa70dbbb1e46303a48cc8ba7439ce35033490cf524566ad42370ea0bdd3ab45ab07e0024fa51ca43f1c34d888c762bd0"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/instrumentation-restify",
-      "version": "0.66.0",
-      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-restify@0.66.0",
+      "version": "0.67.0",
+      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-restify@0.67.0",
       "scope": "required",
       "licenses": [
         {
@@ -8304,15 +8284,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "f736e72f430bda3160266986d573d04eac28a42a200bc780b54434497bd86fe531db2b8e04ebd283d5ef464fe17107fa5ac44c965e3b7042c2302f88688f48fa"
+          "content": "4f8b238f15f409a7983443143440db08bf6718f211904980ce3edbd47c08d18260655e39f5a4ad56c8094532a6b9a788a094a2853a87db2526701fa0751e50c6"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/instrumentation-router",
-      "version": "0.65.0",
-      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-router@0.65.0",
+      "version": "0.66.0",
+      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-router@0.66.0",
       "scope": "required",
       "licenses": [
         {
@@ -8324,15 +8304,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "b62f6d0cb14b84ba1ebf953f706790a454e53a3145c2b15b89e666c1316a97dcfc1228d70f3144edadfede6827c4697d09947496e282c050ffa39d4d3d4f8d82"
+          "content": "d7c19689336e20c0c5c5ea71615d0f56290000c99ca8b66c3338895e2d8fcae3f7afd9ac3e33099d4ed167e0cb4b537c6a6c168addc465898523874d13877db9"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/instrumentation-runtime-node",
-      "version": "0.34.0",
-      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-runtime-node@0.34.0",
+      "version": "0.35.0",
+      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-runtime-node@0.35.0",
       "scope": "required",
       "licenses": [
         {
@@ -8344,15 +8324,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "61bdcf726b8afe220e598e3d19211c48697b7d1e2be94aa1667bb2e445af15aa8aaaab3d4989d07b24141006e70674a8ba0469c050436dd37549219cbcc85bb5"
+          "content": "fdc396e1096fe279ebe105c30a4bf44c4b4e05af51f655c7bbffc9b83e7e9d13d847be20f622e67f9b5a75c62f9f7da8cf647cbd09d5f054e730bce37c018c09"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/instrumentation-socket.io",
-      "version": "0.68.0",
-      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-socket.io@0.68.0",
+      "version": "0.69.0",
+      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-socket.io@0.69.0",
       "scope": "required",
       "licenses": [
         {
@@ -8364,15 +8344,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "061774280a5505857859031965b29161fbdebfb4ae76f0ad4a7e9bdfabb251b2a8c0e304a06a6756822f9b4ae5aeb051d0a9a4715dd8dfb4a7802194ad39b796"
+          "content": "5654ba185796777d9dd3d5b3893651f5c7cb3cd2759d5ef8eecb810a0522bd1573230ae0d541be0c10a6317fe4beb3261897054406dfe88eacea72ec47af896a"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/instrumentation-tedious",
-      "version": "0.40.0",
-      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-tedious@0.40.0",
+      "version": "0.41.0",
+      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-tedious@0.41.0",
       "scope": "required",
       "licenses": [
         {
@@ -8384,15 +8364,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "cd334dc6cf8a5097f527e947cde4c3c40219755258bd0f26bc651fca259c545815765efee1757ec0e04c49dd6d65c451968a5f7153830c2395331fcdefecef70"
+          "content": "76dac7c04b38d27cc3fdf47d8e448d6d2887a822077f6b1770c33c9d8dbd124736e69c341000d106a37861ada9aeb09234656d231e8df68ddf4d2edfb000b2b0"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/instrumentation-undici",
-      "version": "0.31.0",
-      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-undici@0.31.0",
+      "version": "0.32.0",
+      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-undici@0.32.0",
       "scope": "required",
       "licenses": [
         {
@@ -8404,15 +8384,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "aae9c27e048557e6e345d018916223557dfc8c837f5e3f340a21115d777360099d8a0085bc93c1dc06378f8ddb8c99648606c925208675bbd0512badf10222c9"
+          "content": "32cf283e4ac21daea124e62875c142f103add401659ecdca0f50aa5c1122857c9315e2d70cef38b485d8c8a957347afc8ccae5d469b6bde943bec4835c0ba1f7"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/instrumentation-winston",
-      "version": "0.65.0",
-      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-winston@0.65.0",
+      "version": "0.66.0",
+      "purl": "pkg:npm/@opentelemetry%2Finstrumentation-winston@0.66.0",
       "scope": "required",
       "licenses": [
         {
@@ -8424,7 +8404,7 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "85648f9d2e77d1d7916beb6dcd8f908869a0b0aeda407a6ac5b4119b9eb23b58f8aa7217b986076a8489f3fe252ce11c5c1fa166cd2600027a422325d5a6a218"
+          "content": "c300599e5abdff6aa20692282c1e720bcf16b34ce838b15d7ba0ee21b1182fe4a60be6e0601213615e7d00895a0c6a6fa2cfe7ec033e93c105c3ecbf65056e77"
         }
       ]
     },
@@ -8471,8 +8451,8 @@
     {
       "type": "library",
       "name": "@opentelemetry/otlp-exporter-base",
-      "version": "0.221.0",
-      "purl": "pkg:npm/@opentelemetry%2Fotlp-exporter-base@0.221.0",
+      "version": "0.222.0",
+      "purl": "pkg:npm/@opentelemetry%2Fotlp-exporter-base@0.222.0",
       "scope": "required",
       "licenses": [
         {
@@ -8484,15 +8464,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "5053c8abcd0e1f736cfe83c51d18f5e1de034cec54a3e314154f215220aae634ea16175e2677d54803474fec69f76e34f5c03ea31cef95909ee8d335c2f0ae04"
+          "content": "61bcb01b7bde126d856fa4db771464baab96a1be9e5565ee03cfc16b5b57cfd8c77d4aa9744de47a294e1c4b4f6e80b80af4b56e379e55f36458638eacb8fe97"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/otlp-grpc-exporter-base",
-      "version": "0.221.0",
-      "purl": "pkg:npm/@opentelemetry%2Fotlp-grpc-exporter-base@0.221.0",
+      "version": "0.222.0",
+      "purl": "pkg:npm/@opentelemetry%2Fotlp-grpc-exporter-base@0.222.0",
       "scope": "required",
       "licenses": [
         {
@@ -8504,7 +8484,7 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "ad00e6360ca21824eb7ac7239f31f69ed57250a548aba236523b8af3eb2d4ff5e0d19393ef515526ac2315db29425e98a25fd8aacbadf5b0e8f9a99ef284e60d"
+          "content": "2b0e56a830586290a063e79d1d6652fc9a776dd82ea8d902c8458eb2a1617fc466b5c12e598ccf140f62f8be94b0da095d3b3c9e079007a77010b1f57333588c"
         }
       ]
     },
@@ -8551,8 +8531,8 @@
     {
       "type": "library",
       "name": "@opentelemetry/propagator-b3",
-      "version": "2.10.0",
-      "purl": "pkg:npm/@opentelemetry%2Fpropagator-b3@2.10.0",
+      "version": "2.11.0",
+      "purl": "pkg:npm/@opentelemetry%2Fpropagator-b3@2.11.0",
       "scope": "required",
       "licenses": [
         {
@@ -8564,15 +8544,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "1a7039076e07fb5c3c04edb5274abe216341d33d6ff8019b72ab93748b7f76e7e26e19e1831680f182afcf42376a4459841d631d3fbfb65ccafaa9408c40f26d"
+          "content": "95dc91657c7aaacaaef52a6a77bad5c68e92340509a8ff08af7bf0222e0df31c992d7365ff65de426207bc59de8953aa3705a453e246160d8ef7f4f57de7d4d3"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/propagator-jaeger",
-      "version": "2.10.0",
-      "purl": "pkg:npm/@opentelemetry%2Fpropagator-jaeger@2.10.0",
+      "version": "2.11.0",
+      "purl": "pkg:npm/@opentelemetry%2Fpropagator-jaeger@2.11.0",
       "scope": "required",
       "licenses": [
         {
@@ -8584,7 +8564,7 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "cb0fc85fc0cbe3bd1d48c649a04f3649c7d81a9ec9599fc6f24149a37e5920b5154c1da314f4ce6a2a0dfbcb34f691f4447b16361c1e5596fe6678c926908286"
+          "content": "4543aa82822a5ce3d04ce86906bb34ed8f2c065c55a0b6391646bab9e674a6b5be93a7d642c6dafe71c3638826fa099fbb0b51a9b5f963d60a843be4b636c8a9"
         }
       ]
     },
@@ -8611,8 +8591,8 @@
     {
       "type": "library",
       "name": "@opentelemetry/resource-detector-alibaba-cloud",
-      "version": "0.36.0",
-      "purl": "pkg:npm/@opentelemetry%2Fresource-detector-alibaba-cloud@0.36.0",
+      "version": "0.37.0",
+      "purl": "pkg:npm/@opentelemetry%2Fresource-detector-alibaba-cloud@0.37.0",
       "scope": "required",
       "licenses": [
         {
@@ -8624,15 +8604,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "b3be73255d5286960be6793670e0df658d391dac36846c5c7c414cbb7ca6be1d905371eb8576825beae6364857851acef18a2984c153c9575bee208395e0bf25"
+          "content": "b446e2e993eb3d91bbf6865d425cf0e7147bb22aed632f8b05bb7f4bf2710d4667992584626a3b9768e9f7ce57538521b1f303a5c7dd398f869edd9b3ccb6fc9"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/resource-detector-aws",
-      "version": "2.21.0",
-      "purl": "pkg:npm/@opentelemetry%2Fresource-detector-aws@2.21.0",
+      "version": "2.22.0",
+      "purl": "pkg:npm/@opentelemetry%2Fresource-detector-aws@2.22.0",
       "scope": "required",
       "licenses": [
         {
@@ -8644,15 +8624,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "55e6afcbe921a32c11f87bf4eb9494e63b9c153193896d4a5e8dfd0ac27ef30a9d618cfc8e24493e7436d0a77e5fd1db576f806dbd25e42ac921dc4ad593aa06"
+          "content": "de433ec5fb121ecd214a1500c7d205857e639e2697c492f70938db08c342152f8463b6ecc166ee915ddabb48dfa8483378dc46c47132f112c0d533a10152e94d"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/resource-detector-azure",
-      "version": "0.29.0",
-      "purl": "pkg:npm/@opentelemetry%2Fresource-detector-azure@0.29.0",
+      "version": "0.30.0",
+      "purl": "pkg:npm/@opentelemetry%2Fresource-detector-azure@0.30.0",
       "scope": "required",
       "licenses": [
         {
@@ -8664,15 +8644,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "9569b4be38e540ca1ce17bef77e756fce6564ff488e30f9c20dee46e6f0a8a62190abd44a40cafc90ed610eac6a01a170a9402aec675f2e293a280e088108623"
+          "content": "7f01833d5189e8fc9131ce423dd1c17c0497e69ae0de62e1640d2bb3e9fc6492b80e3a49c3d0af07516e8d697c974400b139afad8066f4379a9777ef7ea64191"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/resource-detector-container",
-      "version": "0.8.12",
-      "purl": "pkg:npm/@opentelemetry%2Fresource-detector-container@0.8.12",
+      "version": "0.8.13",
+      "purl": "pkg:npm/@opentelemetry%2Fresource-detector-container@0.8.13",
       "scope": "required",
       "licenses": [
         {
@@ -8684,15 +8664,15 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "1094457c8636eb0858d30e510f13115e57c10e00d2d34d4960c1ee395b83041b11ad5e0c06aa156a347d0742fd572ef6f3ec3f1cd56749092924569c16bfa496"
+          "content": "e3800a0ff14ea42e1a99fb1990abedca65274e158b04f4eb65abefe6da513d513744412d1426d0574acc4f9953457983920f2b93c33fd915f8f4d65d4d29e98f"
         }
       ]
     },
     {
       "type": "library",
       "name": "@opentelemetry/resource-detector-gcp",
-      "version": "0.56.0",
-      "purl": "pkg:npm/@opentelemetry%2Fresource-detector-gcp@0.56.0",
+      "version": "0.57.0",
+      "purl": "pkg:npm/@opentelemetry%2Fresource-detector-gcp@0.57.0",
       "scope": "required",
       "licenses": [
         {
@@ -8704,7 +8684,7 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "1fcc8d7aa4ecb9aa5b5ece8c2d94ed7a57d40a4fb90fc8c3dfe2a8b0225a5cecb1e609771165afb3bd076cd5d350ee1560bc5c73248560961509df1830cd0d27"
+          "content": "c29fa193b8c3ee6c40eacc00a9ae704378f0b367a08750c23d9f457c4827b66170fe673c31a1998f0badb4ea0c7918c895c04209a3541ee37c07e3196ae8c05d"
         }
       ]
     },
@@ -8731,8 +8711,8 @@
     {
       "type": "library",
       "name": "@opentelemetry/resources",
-      "version": "2.10.0",
-      "purl": "pkg:npm/@opentelemetry%2Fresources@2.10.0",
+      "version": "2.11.0",
+      "purl": "pkg:npm/@opentelemetry%2Fresources@2.11.0",
       "scope": "required",
       "licenses": [
         {
@@ -8744,7 +8724,7 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "aba30c9b6ce1820cec1d535b69b630badf9aea76ee4107b7511528c5aa2333ff0ad4805fc303f3bf1223362dbf948d5315ef9f307316f4c5a1aed0cb11712790"
+          "content": "21eefef2af0c0c5e05004402295313c7745e52fc622008088a25b773d25d98ff3e1cc703cb6d29b93f801e37b19c4c609dbbc1c6343d7e39050d6ae2909da340"
         }
       ]
     },
@@ -8811,8 +8791,8 @@
     {
       "type": "library",
       "name": "@opentelemetry/sdk-logs",
-      "version": "0.221.0",
-      "purl": "pkg:npm/@opentelemetry%2Fsdk-logs@0.221.0",
+      "version": "0.222.0",
+      "purl": "pkg:npm/@opentelemetry%2Fsdk-logs@0.222.0",
       "scope": "required",
       "licenses": [
         {
@@ -8824,7 +8804,7 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "15a0dc6b38f2329ed3659640b2a6e8e08928bcfd147a0a02bb410192236dfaa0aabd47fb14f02c7dcad9dfe64490a81767f8c769fa29f89a063c39370344a62e"
+          "content": "fb5f581ce0c88da50202bc6579a26dbae7c5655a73ff1bef2be565950a84f96f211e89717684701df2bfb3aebbcdecf0875864c7a14517ea18cdeb5882a2be06"
         }
       ]
     },
@@ -8851,8 +8831,8 @@
     {
       "type": "library",
       "name": "@opentelemetry/sdk-node",
-      "version": "0.221.0",
-      "purl": "pkg:npm/@opentelemetry%2Fsdk-node@0.221.0",
+      "version": "0.222.0",
+      "purl": "pkg:npm/@opentelemetry%2Fsdk-node@0.222.0",
       "scope": "required",
       "licenses": [
         {
@@ -8864,7 +8844,27 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "51b62ebed06b4100793ebb21f4a38acb8931cdec45c5f32ce4c92d787796328b30b0407b922361c9456400e156feab04ccd1edae4832821ac3da295925afb960"
+          "content": "b7cb6514dfdecd857b888e24eaededda315b211797f7d6748953154982c9b1c13831cc485bd6061e174e95d798d5e9477a8abc9a310ee01f6ce0593bfb325bb2"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@opentelemetry/sdk-trace",
+      "version": "2.11.0",
+      "purl": "pkg:npm/@opentelemetry%2Fsdk-trace@2.11.0",
+      "scope": "required",
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0"
+          }
+        }
+      ],
+      "hashes": [
+        {
+          "alg": "SHA-512",
+          "content": "7c59d3a869bcfc6ef7190567c588bb2d76b565560452f80be972352e9bd5d1b3c2ed643f64680ac424a5f059e56412ada3d2471c41533bab3a094a6fbedc05ac"
         }
       ]
     },
@@ -8931,8 +8931,8 @@
     {
       "type": "library",
       "name": "@opentelemetry/sdk-trace-node",
-      "version": "2.10.0",
-      "purl": "pkg:npm/@opentelemetry%2Fsdk-trace-node@2.10.0",
+      "version": "2.11.0",
+      "purl": "pkg:npm/@opentelemetry%2Fsdk-trace-node@2.11.0",
       "scope": "required",
       "licenses": [
         {
@@ -8944,7 +8944,7 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "1992bf1baa19c812c6947d69520783721ec3f752a81dddaea2d5062245823e2f462394fd5f4a782fb9cd00c0d1d414239116280eaa3e75d7d5c7db79521cacf9"
+          "content": "0aebc2309999c6cc2134b94cd8b7ee2ce5b78777d9ba303886c1b807e4b3e1d5f6cef6973bc360ef87270c7583eb880bb334e58621b773488d5238f883ed3fb0"
         }
       ]
     },
@@ -10871,8 +10871,8 @@
     {
       "type": "library",
       "name": "@schematics/angular",
-      "version": "22.1.5",
-      "purl": "pkg:npm/@schematics%2Fangular@22.1.5",
+      "version": "22.1.7",
+      "purl": "pkg:npm/@schematics%2Fangular@22.1.7",
       "scope": "required",
       "licenses": [
         {
@@ -10884,7 +10884,7 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "dd45e53b86281a043a9c405b0931914474df42e0dc2a01db45a8a2bf34a29c7cce62282cb24c2f96832c6b42c20423bfdee2690c88c92324d6d172a10ed8b488"
+          "content": "69c06fd78ec98e7c2d585802f007f42850733e96ff4d6698c6858dfcebb7a57b54858884aa7add25ea05cf7b2c0f0dba78a1487569d504b07f74739107290f06"
         }
       ]
     },
@@ -11631,8 +11631,8 @@
     {
       "type": "library",
       "name": "@types/aws-lambda",
-      "version": "8.10.162",
-      "purl": "pkg:npm/@types%2Faws-lambda@8.10.162",
+      "version": "8.10.163",
+      "purl": "pkg:npm/@types%2Faws-lambda@8.10.163",
       "scope": "required",
       "licenses": [
         {
@@ -11644,7 +11644,7 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "167eb9f20aed2ce722d68c62d77f75bef0d625128d196452a9fc5192637f232ddcd2d407d5448c2845dc3d81cbbe8a5ef99813168731f45450271d66b812faab"
+          "content": "fb8ceea040774bc4488629ad3854fbcc0124d926e9c2b2a38c697d0b2627411ea4d3cbb29f17dab88201d290d4d6cb2bd3917ca321a2113c299fef1e5d932a3f"
         }
       ]
     },
@@ -11685,26 +11685,6 @@
         {
           "alg": "SHA-512",
           "content": "cfd7c9e489b4eb3bd42f9e3c2af60d79c115940edc543906522ea466eb1bd389a9c8414a088649be5a02726a662da21a843a4e4061da1e61ba8a6b4f3263d719"
-        }
-      ]
-    },
-    {
-      "type": "library",
-      "name": "@types/bunyan",
-      "version": "1.8.11",
-      "purl": "pkg:npm/@types%2Fbunyan@1.8.11",
-      "scope": "required",
-      "licenses": [
-        {
-          "license": {
-            "id": "MIT"
-          }
-        }
-      ],
-      "hashes": [
-        {
-          "alg": "SHA-512",
-          "content": "ef9f1f447eee988324e6ab7910b99131f7f898b0e537ec726330be7643d374ac1b4a4245bf3eb1c3249caf2b4f53440805b451c1b884f3f04883c6e96a37ab35"
         }
       ]
     },
@@ -12110,26 +12090,6 @@
     },
     {
       "type": "library",
-      "name": "@types/mysql",
-      "version": "2.15.27",
-      "purl": "pkg:npm/@types%2Fmysql@2.15.27",
-      "scope": "required",
-      "licenses": [
-        {
-          "license": {
-            "id": "MIT"
-          }
-        }
-      ],
-      "hashes": [
-        {
-          "alg": "SHA-512",
-          "content": "61f5a2575e8863439e05f04293cfa15ca99d4caaca97028dd4c34a00f06ee496312f0044665ed0cde1291a79596f754c189aeb1a607ce205e21fea1fb3f4decc"
-        }
-      ]
-    },
-    {
-      "type": "library",
       "name": "@types/node",
       "version": "20.19.43",
       "purl": "pkg:npm/@types%2Fnode@20.19.43",
@@ -12165,26 +12125,6 @@
         {
           "alg": "SHA-512",
           "content": "e48be2ba54d9791369daf009e75e1c73f1d4958e6767d7c26eaf433320b9d81ae1159002a379c8d11eea0718509a8fdddbb3457bdeaeaff6fb5b0c6495d6be92"
-        }
-      ]
-    },
-    {
-      "type": "library",
-      "name": "@types/oracledb",
-      "version": "6.5.2",
-      "purl": "pkg:npm/@types%2Foracledb@6.5.2",
-      "scope": "required",
-      "licenses": [
-        {
-          "license": {
-            "id": "MIT"
-          }
-        }
-      ],
-      "hashes": [
-        {
-          "alg": "SHA-512",
-          "content": "90ad5e052fc075eca2b3edce9410cc79042e6ac2032d4617b22d93d7971c349d22c94a50e310c5eecbc5bb7f9b195ac8d0230151c94f722cfe96c411dc95f74d"
         }
       ]
     },
@@ -12505,26 +12445,6 @@
         {
           "alg": "SHA-512",
           "content": "021655f3f108ade1c5981579c00b3483325436af496db4978092d0b9b082d23b48a3aa6b9c8f4c2114719d4e0c657f5107dc97c45d55e11ee3b4b97f59c8f7d6"
-        }
-      ]
-    },
-    {
-      "type": "library",
-      "name": "@types/tedious",
-      "version": "4.0.14",
-      "purl": "pkg:npm/@types%2Ftedious@4.0.14",
-      "scope": "required",
-      "licenses": [
-        {
-          "license": {
-            "id": "MIT"
-          }
-        }
-      ],
-      "hashes": [
-        {
-          "alg": "SHA-512",
-          "content": "2873ec7d7fc5a156d419bc98be4d6af4c3101cb3de45985125974ee39438623bc592fe2130d8210964efcbbadd29eb2c06c9adcf87ae58258007afed56923523"
         }
       ]
     },
@@ -16638,8 +16558,8 @@
     {
       "type": "library",
       "name": "electron-to-chromium",
-      "version": "1.5.412",
-      "purl": "pkg:npm/electron-to-chromium@1.5.412",
+      "version": "1.5.422",
+      "purl": "pkg:npm/electron-to-chromium@1.5.422",
       "scope": "required",
       "licenses": [
         {
@@ -16651,7 +16571,7 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "cf8acc7b77ac073973a2f2878f8831267b0219944ae65e1b694be6fa00862413c4fa0b3250c2acb94f6d9c452d23574e79b5f3d72b403c68ef5e1990eeb20fc0"
+          "content": "52f03fdf65eaacb0dd6529fb265968d4060d7168e2fc6d1de4cd064d5884ecaa0606232e9f0ddadf849bd8a3b8659cab48486ab3116856159626c85dc9f2aa24"
         }
       ]
     },
@@ -17638,8 +17558,8 @@
     {
       "type": "library",
       "name": "fastq",
-      "version": "1.20.1",
-      "purl": "pkg:npm/fastq@1.20.1",
+      "version": "1.20.3",
+      "purl": "pkg:npm/fastq@1.20.3",
       "scope": "required",
       "licenses": [
         {
@@ -17651,7 +17571,7 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "1864e8c49ff0d71df6b3f0f610a343ee44e29789fc39593ff66c9c4dce150f36b5de53afa54653197de61520ad57d92c746055cefb320152ccea61c54e1c57c7"
+          "content": "5cabf99e72ecea72c5ef536088a24b21914b90fc8812e3ac7a52c6eee8d99c6ad17d02bc1e9bd8f96a8a84025401d2e89b054712b552e0b7f11653ead3f15303"
         }
       ]
     },
@@ -18438,8 +18358,8 @@
     {
       "type": "library",
       "name": "genkit",
-      "version": "1.41.0",
-      "purl": "pkg:npm/genkit@1.41.0",
+      "version": "1.42.0",
+      "purl": "pkg:npm/genkit@1.42.0",
       "scope": "required",
       "licenses": [
         {
@@ -18451,7 +18371,7 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "9b26964dd7855675eba7570a4956ccd1ab3a42f06044f23bb7a49f05328a6f5df441d57328d3de7e0ba010c3f0a6268ada398cf998217ca2e9421fd945594099"
+          "content": "c8676ca08a34510b64354aca58641d462846cdb19fda78f162a7290db9167503f3306effb3971a4b4a2f33e58376458f2b0301c31003fbc7fdb9098323b64e09"
         }
       ]
     },
@@ -18792,6 +18712,26 @@
         {
           "alg": "SHA-512",
           "content": "57a7a4cbfc73da670a7c0775228c7277a9e603ad606a8de7d350be61eb88c2edefcccf440d1eb0715ccc4886cb3035d67a88bd48761cb57b8a602e6e2544f779"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "google-gax",
+      "version": "6.2.0",
+      "purl": "pkg:npm/google-gax@6.2.0",
+      "scope": "required",
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0"
+          }
+        }
+      ],
+      "hashes": [
+        {
+          "alg": "SHA-512",
+          "content": "222e521d90534c3fd2c9afd18a5600e10c0663ea1da306a93a7b3aec73d0f6ebd4d1b7ba085fa8c192323e1b957a0a4c3aa22de8481e18021bcf0e4ddf56ed9e"
         }
       ]
     },
@@ -19758,9 +19698,29 @@
     {
       "type": "library",
       "name": "import-in-the-middle",
+      "version": "3.4.0",
+      "purl": "pkg:npm/import-in-the-middle@3.4.0",
+      "scope": "required",
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0"
+          }
+        }
+      ],
+      "hashes": [
+        {
+          "alg": "SHA-512",
+          "content": "5df8f07daae17be2c69a86a87feb1ec5e368dec191cac6f9c79e96ad92f01ed9aa4f43a29522ad55692fd25ac270c8122b228ff68068801022b0766fb491f46b"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "import-in-the-middle",
       "version": "3.3.3",
       "purl": "pkg:npm/import-in-the-middle@3.3.3",
-      "scope": "required",
+      "scope": "excluded",
       "licenses": [
         {
           "license": {
@@ -21238,8 +21198,8 @@
     {
       "type": "library",
       "name": "karma-jasmine-html-reporter",
-      "version": "2.1.0",
-      "purl": "pkg:npm/karma-jasmine-html-reporter@2.1.0",
+      "version": "2.3.0",
+      "purl": "pkg:npm/karma-jasmine-html-reporter@2.3.0",
       "scope": "excluded",
       "licenses": [
         {
@@ -21251,7 +21211,7 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "b0f404d7e9e5b27e87c1be6df871f0cb2d00d4534254ab8bd75f766fe5cd6ae318593873da4c1e881556d43aa5a11a55bd9209908a07541ed74692bbf27d716d"
+          "content": "8850e35697161e7ba946825f9e3b8078d17af2c00693eed17dc782ce6df71c760d57a3a005ae840b59cf80950533eb550c72e543936181c4cacfb01b76b57701"
         }
       ]
     },
@@ -22451,8 +22411,8 @@
     {
       "type": "library",
       "name": "memfs",
-      "version": "4.68.1",
-      "purl": "pkg:npm/memfs@4.68.1",
+      "version": "4.69.1",
+      "purl": "pkg:npm/memfs@4.69.1",
       "scope": "excluded",
       "licenses": [
         {
@@ -22464,7 +22424,7 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "383f880d152f231bb74072fe9c59bd81dcae8089c3dbb14327eb25e01e5082898f1d73256f0f863fdd7c3fc54d2aed8590d9557aa064a7393044ea5a99589f47"
+          "content": "c782289f6ded2e6a3fe824cd62b2ab8b000245696cc39860f990d8af8b11ae2622644bb4e1498afbb644fe35e301e0df7b60e52f850814054a965a99956089fa"
         }
       ]
     },
@@ -24411,8 +24371,8 @@
     {
       "type": "library",
       "name": "piscina",
-      "version": "5.3.1",
-      "purl": "pkg:npm/piscina@5.3.1",
+      "version": "5.3.2",
+      "purl": "pkg:npm/piscina@5.3.2",
       "scope": "required",
       "licenses": [
         {
@@ -24424,7 +24384,7 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "2d86d55321dbe42cdabea360b3ae14bfe80792b09d12def791f3dacddb099e774348989a1032333142001dbb55de99736a8054a6165f5d9090285d352c73205f"
+          "content": "befee5fe633b07d5a0ae10dab9d22abf5c7abf82ce0516189a9586756bac861a5b0a6547a75d6c501dafe218f5080793197571b99173eb1394d516a50223ca7d"
         }
       ]
     },
@@ -24525,8 +24485,8 @@
     {
       "type": "library",
       "name": "postcss",
-      "version": "8.5.26",
-      "purl": "pkg:npm/postcss@8.5.26",
+      "version": "8.5.28",
+      "purl": "pkg:npm/postcss@8.5.28",
       "scope": "required",
       "licenses": [
         {
@@ -24538,7 +24498,7 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "bbcd8def82c5cc6f1c6be743f29b8f9e99535e8187e1f4cfa551ae21bb77e86deabcd964bdf0f49440194b16a5cb7297f134bf2f503582c0849af2a605c55b91"
+          "content": "451bb3a83b6de58f61deabb3e615a12be4cf9ec995b3a5b0494e8b90931e6381ecb54103b984c6f1425275ac0c4739b302d57e284a06f0ddd0836a8bcb9bccfc"
         }
       ]
     },
@@ -24865,6 +24825,26 @@
     {
       "type": "library",
       "name": "proto3-json-serializer",
+      "version": "4.0.2",
+      "purl": "pkg:npm/proto3-json-serializer@4.0.2",
+      "scope": "required",
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0"
+          }
+        }
+      ],
+      "hashes": [
+        {
+          "alg": "SHA-512",
+          "content": "5544256ff2765a3386f012a174bc09533f8c2b148cb4119887e4da36646d898561948cd78f3780188c7b82d737957940da2511cdf176f9c5da42f0b6a1fc33a6"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "proto3-json-serializer",
       "version": "3.0.4",
       "purl": "pkg:npm/proto3-json-serializer@3.0.4",
       "scope": "required",
@@ -24885,8 +24865,8 @@
     {
       "type": "library",
       "name": "protobufjs",
-      "version": "7.6.5",
-      "purl": "pkg:npm/protobufjs@7.6.5",
+      "version": "7.6.6",
+      "purl": "pkg:npm/protobufjs@7.6.6",
       "scope": "required",
       "licenses": [
         {
@@ -24898,7 +24878,7 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "fc53c3d2751cf631faadf1638e2f4806a3b3e297121370ac4f59bb129e8c75bd0bc5250c8fc86097a1a898ebd9ce936902aa866970343f7552ad92c5cc8850af"
+          "content": "7580d67634a5e5135bed280fc4641c454f86b6f3fbb367e992b634af8df63dc388699d3fac17311199d037aee226116e422570ef9e090e83ebb8f08d746b1b8e"
         }
       ]
     },
@@ -25579,6 +25559,26 @@
         {
           "alg": "SHA-512",
           "content": "7543af2cc274fc9258127f0dae939a18d13b5f7be92395e5652feed00363aad71954a9c8c4fec8802170aca4f110dc36f5e9a6c2e839ddac0ab5a326e22f60e7"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "retry-request",
+      "version": "9.0.1",
+      "purl": "pkg:npm/retry-request@9.0.1",
+      "scope": "required",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "hashes": [
+        {
+          "alg": "SHA-512",
+          "content": "e24187101974304ea047ef10075b0f332839f235312d470264d7aa2c3adfab393479640df1724599ebbb7e66428e5642456d12daeeb8224d4790eff4b1680261"
         }
       ]
     },
@@ -27365,8 +27365,8 @@
     {
       "type": "library",
       "name": "systeminformation",
-      "version": "5.33.1",
-      "purl": "pkg:npm/systeminformation@5.33.1",
+      "version": "5.33.8",
+      "purl": "pkg:npm/systeminformation@5.33.8",
       "scope": "required",
       "licenses": [
         {
@@ -27378,7 +27378,7 @@
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "0c437a2021e4dd393451ffe1ac01e1ef196dee22f9089141b4f6629c0d07eb60eb186fca3caaaafcdce3ea50973d2e00cbfb1fff5e3336793d2e9a8acc121cfb"
+          "content": "bf817a38660687bc03bd5ebc6268ce999c068b157d03f190eddd9bf38b74505e0268ecbd8e2a4d588243907a980d88933ee8a88ea97055077485f50a39437bb5"
         }
       ]
     },
@@ -27419,6 +27419,26 @@
         {
           "alg": "SHA-512",
           "content": "adeb2fc5d73a3206fb6044e1c3a1ba6c4c655ca92febe61bbb31a0f71b97c52831245ecececfa8f18f7ed91dec02b756756f273a892841bd72ae9141d2940ada"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "teeny-request",
+      "version": "11.0.1",
+      "purl": "pkg:npm/teeny-request@11.0.1",
+      "scope": "required",
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0"
+          }
+        }
+      ],
+      "hashes": [
+        {
+          "alg": "SHA-512",
+          "content": "6cdaf98f662349d6a380256ca7ef0956345fd6e1c86e934848b78aa7fed5d4d9d5317dc687a1ff90408d1a59b643723af0008e0d0d22bfa699dd1be6f1680b18"
         }
       ]
     },

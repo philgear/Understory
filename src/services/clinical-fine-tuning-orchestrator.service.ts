@@ -11,7 +11,11 @@ export type FineTuningParadigmId =
   | 'seo_medical_journalism'
   | 'voice_multimodal_live'
   | 'calgary_cambridge_intake'
-  | 'fda_ftc_compliance_copywriter';
+  | 'fda_ftc_compliance_copywriter'
+  | 'dynamic_precondition_guard'
+  | 'cars_distractor_elimination'
+  | 'aeromedical_evacuation_airway'
+  | 'pediatric_complex_epsdt';
 
 export interface IFineTuningParadigmMeta {
   id: FineTuningParadigmId;
@@ -335,6 +339,130 @@ export class ClinicalFineTuningOrchestratorService {
       }, null, 2),
       chosenPreference: 'Rewrites misleading health marketing into FTC-substantiated statements with explicit FDA 21 CFR §520(o) CDS notices.',
       rejectedPreference: 'Approves illegal curative claims that trigger FTC enforcement action.'
+    },
+    {
+      id: 'dynamic_precondition_guard',
+      name: 'Dynamic Precondition Sentinel & Vital Boundary Bounding',
+      category: 'Epistemic & Safety',
+      targetDomain: 'Cross-Domain (Both)',
+      recommendedBaseModel: 'google/gemma-3-9b-it',
+      defaultTrainer: 'DPO',
+      quantizationTarget: 'Q8_0 (Balanced)',
+      estimatedVramGb: 5.5,
+      description: 'Enforces explicit physiological precondition boundaries (min/max SpO2, HR, SBP, DBP, altitude) on all clinical recommendations, automatically invalidating stale orders upon telemetry drift.',
+      clinicalImpact: 'Eliminates dangerous out-of-context clinical recommendations when patient physiological state deteriorates.',
+      sampleInput: JSON.stringify({
+        patient: 'Homo Sapiens (Pediatric, Complex Tracheostomy, 4y)',
+        recommendation: 'Titrate supplemental oxygen down to room air over 60 minutes',
+        activeVitals: { heartRate: 142, bloodPressure: '82/48', spO2: 89, respiratoryRate: 38 }
+      }, null, 2),
+      sampleOutput: JSON.stringify({
+        contractStatus: 'PRECONDITION_BREACHED_INVALIDATED',
+        boundaryCheck: {
+          spO2: { value: 89, safeRange: [92, 100], status: 'CRITICAL_LOW' },
+          heartRate: { value: 142, safeRange: [80, 130], status: 'TACHYCARDIA_BREACH' }
+        },
+        action: 'HALT_WEANING_IMMEDIATELY',
+        emergencyDirective: 'Re-escalate FiO2 to 40%, perform inline sterile suctioning for suspected mucus plug, and alert bedside team.',
+        auditHash: 'sha256-7f4c9a3e...'
+      }, null, 2),
+      chosenPreference: 'Identifies acute vital drift (SpO2 89%, HR 142), invalidates the planned oxygen wean contract immediately, triggers sterile airway clearance, and re-escalates FiO2.',
+      rejectedPreference: 'Proceeds with scheduled oxygen weaning to room air despite SpO2 dropping to 89% and severe tachycardia.'
+    },
+    {
+      id: 'cars_distractor_elimination',
+      name: 'CARS Eliminative Reasoning & Anti-Distractor Guard',
+      category: 'Epistemic & Safety',
+      targetDomain: 'pocketgull.app',
+      recommendedBaseModel: 'google/gemma-3-27b-it',
+      defaultTrainer: 'DPO',
+      quantizationTarget: 'Q8_0 (Balanced)',
+      estimatedVramGb: 16.5,
+      description: 'Eliminates extreme scope words (always, never, in all cases), shallow keyword matching lures, and reversed polarities in complex diagnostic dilemmas.',
+      clinicalImpact: 'Suppresses overconfidence traps, false certainty, and diagnostic premature closure in ambiguous clinical presentations.',
+      sampleInput: JSON.stringify({
+        presentation: '58yo male presents with severe crushing substernal chest pressure starting 40 minutes ago. ECG shows 1.5mm ST elevation in leads II, III, aVF. Initial high-sensitivity troponin I is 0.01 ng/mL (Normal < 0.04).',
+        distractorPrompt: 'Given that cardiac biomarkers are completely normal, can acute myocardial infarction be permanently ruled out?'
+      }, null, 2),
+      sampleOutput: JSON.stringify({
+        trapAudit: {
+          distractorIdentified: 'Keyword decoy trap (Normal troponin within early 40-minute window)',
+          eliminationReason: 'Cardiac troponin levels require 2-4 hours to rise post-myocardial necrosis. Normal troponin at 40 minutes NEVER excludes acute STEMI.'
+        },
+        clinicalConclusion: 'Acute Inferior ST-Elevation Myocardial Infarction (STEMI). Immediately activate Cardiac Catheterization Lab for emergent Percutaneous Coronary Intervention (PCI) within 90 minutes door-to-balloon.',
+        carsSafetyFlag: 'ABSENCE_OF_EVIDENCE_IS_NOT_EVIDENCE_OF_ABSENCE'
+      }, null, 2),
+      chosenPreference: 'Recognizes early presentation window (<1 hour), rejects the normal troponin decoy trap, and activates emergent cardiac catheterization for acute inferior STEMI.',
+      rejectedPreference: 'Concludes that normal troponin completely rules out acute myocardial infarction and discharges patient home with antacids.'
+    },
+    {
+      id: 'aeromedical_evacuation_airway',
+      name: 'Aeromedical Evacuation Corridor & Altitude Hypoxia Titration',
+      category: 'Specialty CDS',
+      targetDomain: 'pocketgull.app',
+      recommendedBaseModel: 'google/gemma-3-9b-it',
+      defaultTrainer: 'SFT',
+      quantizationTarget: 'Q4_K_M (Edge)',
+      estimatedVramGb: 5.5,
+      description: 'Calculates inter-island and frontier flight times, oxygen tank capacity (L/min x hours x 2.0 reserve), Boyle/Dalton cabin altitude hypoxia titration, and CPT/HCPCS prior authorization waivers.',
+      clinicalImpact: 'Guarantees life-support oxygen sufficiency and regulatory clearance during long-range pacific/caribbean aeromedical transport.',
+      sampleInput: JSON.stringify({
+        origin: 'PGSN (Saipan International Airport, CNMI)',
+        destination: 'PHNL (Daniel K. Inouye International, Honolulu, HI)',
+        distanceNm: 3290,
+        patient: 'Pediatric Tracheostomy (Ventilator-dependent)',
+        ventilatorSettings: { fio2: 0.40, minuteVentilationLpm: 6.5, peepCmH2O: 6 },
+        cruiseAltitudeFt: 36000,
+        cabinPressureAltFt: 7500
+      }, null, 2),
+      sampleOutput: JSON.stringify({
+        corridorMetrics: {
+          distanceNauticalMiles: 3290,
+          estimatedFlightHours: 7.5,
+          requiredOxygenLiters: 5850,
+          reserveMarginMultiplier: 2.0,
+          totalRequiredCapacityLiters: 11700,
+          recommendedCylinders: '3x Jumbo M-Cylinders (3,450L each) + 2x E-Cylinders backup'
+        },
+        altitudePhysiology: {
+          daltonsLawPaO2DropPct: 24.2,
+          compensatedFiO2: 0.50,
+          boylesLawGasExpansionPct: 30.5,
+          cuffPressureDirective: 'Replace air in tracheostomy cuff with sterile saline to prevent tracheal mucosal necrosis from Boyle expansion.'
+        },
+        billingAndRegulatory: {
+          hcpcsCodes: ['A0430 (Ambulance service, conventional air transport, fly, one way)', 'A0435 (Fixed wing air mileage, per statute mile)'],
+          statutoryWaiver: 'CMS Emergency Aeromedical Transport Waiver § 410.40(c) - Prior authorization waived due to lack of tertiary pediatric ICU facilities on island.'
+        }
+      }, null, 2),
+      chosenPreference: 'Computes precise 7.5h flight duration, enforces 2.0x oxygen safety margin (11,700L), compensates for Dalton hypoxia with FiO2 0.50, mandates saline cuff substitution for Boyle expansion, and attaches emergency CMS A0430/A0435 billing codes.',
+      rejectedPreference: 'Calculates only baseline oxygen without reserve margin and fails to account for Boyle gas expansion in the tracheostomy cuff.'
+    },
+    {
+      id: 'pediatric_complex_epsdt',
+      name: 'Pediatric Complex Care & EPSDT Statutory Prior Authorization',
+      category: 'Specialty CDS',
+      targetDomain: 'pocketgull.app',
+      recommendedBaseModel: 'google/gemma-3-9b-it',
+      defaultTrainer: 'SFT',
+      quantizationTarget: 'Q4_K_M (Edge)',
+      estimatedVramGb: 5.5,
+      description: 'Drafts comprehensive Early and Periodic Screening, Diagnostic and Treatment (EPSDT) medical necessity letters under 42 U.S.C. § 1396d(r)(5) for complex pediatric private duty nursing.',
+      clinicalImpact: 'Overturns administrative Medicaid denials for medically fragile children requiring 24/7 continuous skilled nursing.',
+      sampleInput: JSON.stringify({
+        patientArchetype: 'Homo Sapiens (Pediatric, Quadriplegic CP & Tracheostomy/G-tube, 6y)',
+        requestedService: 'Private Duty Nursing (PDN) 84 hours/week (T1000)',
+        stateMedicaid: 'State Fiscal Agent',
+        recentAcuities: ['2x mucus plug desaturations to 74% requiring deep suctioning', 'Gastrostomy tube displacement requiring sterile re-insertion']
+      }, null, 2),
+      sampleOutput: JSON.stringify({
+        statutoryMandate: '42 U.S.C. § 1396d(r)(5) - Mandatory EPSDT coverage for all medically necessary services to correct or ameliorate conditions in individuals under 21.',
+        clinicalJustification: 'Patient requires active, continuous airway management. Tracheostomy occlusion without immediate skilled intervention results in catastrophic hypoxic-ischemic brain injury within 3 minutes.',
+        hcpcsCoding: { code: 'T1000', modifier: 'U1 (Complex Pediatric)', unitsRequested: 84 },
+        rebuttalToDenial: 'Rebuts administrative "custodial care" classification by documenting continuous skilled nursing assessments: sterile inline tracheal suctioning, mechanical ventilator alarm titration, and enteral medication administration.'
+      }, null, 2),
+      chosenPreference: 'Applies mandatory 42 U.S.C. § 1396d(r)(5) EPSDT statutory doctrine, details life-threatening tracheostomy obstruction risks, and proves skilled care necessity to overturn custodial care denials.',
+      rejectedPreference: 'Accepts Medicaid denial and writes a generic note without citing federal EPSDT statutes or skilled nursing clinical criteria.'
     }
   ]);
 
@@ -408,5 +536,30 @@ export class ClinicalFineTuningOrchestratorService {
       chosen: p.chosenPreference,
       rejected: p.rejectedPreference
     })).join('\n');
+  }
+
+  exportGeminiSftDatasetJsonl(): string {
+    return this.paradigms().map(p => JSON.stringify({
+      contents: [
+        {
+          role: 'user',
+          parts: [{ text: `[PARADIGM: ${p.id.toUpperCase()}]\n${p.description}\n\nINPUT:\n${p.sampleInput}` }]
+        },
+        {
+          role: 'model',
+          parts: [{ text: p.sampleOutput }]
+        }
+      ]
+    })).join('\n');
+  }
+
+  exportHuggingFaceDpoDatasetJsonl(): string {
+    return this.paradigms()
+      .filter(p => p.chosenPreference && p.rejectedPreference)
+      .map(p => JSON.stringify({
+        prompt: `[PARADIGM: ${p.id.toUpperCase()}]\n${p.description}\n\nINPUT:\n${p.sampleInput}`,
+        chosen: p.chosenPreference,
+        rejected: p.rejectedPreference
+      })).join('\n');
   }
 }

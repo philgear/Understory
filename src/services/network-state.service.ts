@@ -43,7 +43,9 @@ export class NetworkStateService {
             const path = this.telemetry.recommendedExecutionPath();
             const prefix = this.isOnline() ? 'Local' : 'Offline';
 
-            if (path === 'local-nvidia') {
+            if (path === 'local-lemonade') {
+                return `${prefix} (Lemonade - Gemma 3 4B Vulkan)`;
+            } else if (path === 'local-nvidia') {
                 return `${prefix} (CUDA - PubGemma)`;
             } else if (path === 'local-webgpu') {
                 return `${prefix} (WebGPU - WebLLM)`;

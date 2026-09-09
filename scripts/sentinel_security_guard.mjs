@@ -97,6 +97,8 @@ const APPROVED_EGRESS_DOMAINS = [
   'zenodo.org',
   'clinicaltrials.gov',
   'www.clinicaltrials.gov',
+  'trade.gov',
+  'hhs.texas.gov',
   'smarthealthit.org',
   'launch.smarthealthit.org',
   'smarthealth.cards',

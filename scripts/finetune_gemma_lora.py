@@ -268,6 +268,34 @@ PARADIGM_DIRECTIVES = {
         "You are a clinical trials protocol analyzer. Extract structured study architecture, inclusion/exclusion eligibility criteria, and primary/secondary endpoints "
         "from ClinicalTrials.gov NCT study protocols. Output valid structured JSON conforming to standardized trial schema."
     ),
+    "dynamic_precondition_guard": (
+        "[PARADIGM: DYNAMIC PRECONDITION SENTINEL & VITAL BOUNDARY BOUNDING]\n"
+        "You are PocketGull Dynamic Precondition Sentinel. Enforce explicit physiological precondition boundaries "
+        "(min/max SpO2, HR, SBP, DBP, altitude) on all clinical orders. Immediately invalidate stale recommendations "
+        "and command emergency clinical contingencies whenever real-time patient telemetry drifts beyond safe bounds. "
+        "Output strict JSON with keys: 'contractStatus', 'breachReason', 'immediateAction', 'clinicalContingency', 'auditAttestation'."
+    ),
+    "cars_distractor_elimination": (
+        "[PARADIGM: CARS CRITICAL REASONING & DISTRACTOR ELIMINATION]\n"
+        "You are PocketGull CARS Skeptical Eliminative Reasoning Engine. Evaluate complex diagnostic and therapeutic dilemmas. "
+        "Strictly identify and reject extreme scope words (always, never, conclusively), shallow keyword matching lures, "
+        "and reversed polarities. Do not rely on rule-out tests in high pre-test probability settings. "
+        "Output strict JSON with keys: 'trapAudit', 'clinicalConclusion', 'carsSafetyFlag'."
+    ),
+    "aeromedical_evacuation_airway": (
+        "[PARADIGM: AEROMEDICAL TRANSPORT & ALTITUDE HYPOXIA TITRATION]\n"
+        "You are PocketGull Aeromedical Transport Intelligence. Calculate inter-island flight durations, mandatory "
+        "2.0x safety reserve oxygen cylinder capacity, and altitude biophysical adjustments (Boyle's law gas expansion "
+        "and Dalton's law ambient PaO2 drop). Formulate CMS emergency prior-authorization waiver citations and HCPCS codes (A0430, A0435). "
+        "Output strict JSON with keys: 'corridorCalculations', 'altitudeBiophysics', 'billingAndRegulatory'."
+    ),
+    "pediatric_complex_epsdt": (
+        "[PARADIGM: PEDIATRIC COMPLEX CARE & EPSDT STATUTORY PRIOR AUTHORIZATION]\n"
+        "You are PocketGull Pediatric Complex Care & EPSDT Prior Authorization Advocate. Draft statutory medical necessity "
+        "justifications under federal EPSDT doctrine (42 U.S.C. § 1396d(r)(5)) for continuous skilled private duty nursing (T1000). "
+        "Overturn administrative custodial care denials by documenting life-threatening tracheostomy, ventilator, and enteral dependencies. "
+        "Output strict JSON with keys: 'statutoryMandate', 'clinicalJustification', 'hcpcsCoding', 'appealAction'."
+    ),
 }
 
 SAMPLE_DATASETS = {
@@ -785,6 +813,104 @@ SAMPLE_DATASETS = {
             "rejected": "Extracts unstructured text without schema validation or safety exclusion criteria."
         }
     ],
+    "dynamic_precondition_guard": [
+        {
+            "input": json.dumps({
+                "patient": "Homo Sapiens (Pediatric, Complex Tracheostomy, 4y)",
+                "activeRecommendation": "Wean supplemental oxygen by 0.5 L/min q30min toward room air",
+                "telemetryShift": {
+                    "previousVitals": {"heartRate": 98, "bloodPressure": "96/60", "spO2": 97, "respiratoryRate": 22},
+                    "currentVitals": {"heartRate": 144, "bloodPressure": "80/46", "spO2": 88, "respiratoryRate": 40}
+                }
+            }, indent=2),
+            "output": json.dumps({
+                "contractStatus": "PRECONDITION_BREACHED_INVALIDATED",
+                "breachReason": "Acute vital telemetry drift: SpO2 dropped to 88% (Safe threshold >= 92%), Heart Rate surged to 144 bpm (Safe threshold 80-125 bpm).",
+                "immediateAction": "HALT_WEANING_IMMEDIATELY",
+                "clinicalContingency": [
+                    "Re-escalate FiO2 to 40% immediately.",
+                    "Perform sterile inline tracheostomy suctioning to rule out acute mucus plug obstruction.",
+                    "Verify breath sounds bilaterally; prepare bag-valve-mask with tracheostomy adapter.",
+                    "STAT bedside respiratory therapy and attending physician notification."
+                ],
+                "auditAttestation": "SHA-256 state seal verified, previous weaning contract retired."
+            }, indent=2),
+            "chosen": "Recognizes SpO2 88% and HR 144 breach, immediately invalidates the scheduled oxygen weaning contract, commands FiO2 re-escalation, and orders emergency sterile inline suctioning.",
+            "rejected": "Continues with scheduled oxygen weaning down to room air despite SpO2 dropping to 88% and respiratory rate spiking to 40."
+        }
+    ],
+    "cars_distractor_elimination": [
+        {
+            "input": json.dumps({
+                "presentation": "62yo female with acute dyspnea, pleuritic right-sided chest pain, tachycardia (HR 118), and right lower extremity swelling. Wells Score: 6.0 (High Probability for Pulmonary Embolism). Bedside D-Dimer: 420 ng/mL (Normal Reference < 500 ng/mL).",
+                "distractorPrompt": "Since the D-Dimer is below the standard 500 ng/mL cutoff, does this conclusively rule out pulmonary embolism?"
+            }, indent=2),
+            "output": json.dumps({
+                "trapAudit": {
+                    "distractorIdentified": "Keyword decoy trap (Normal D-dimer in high pre-test probability patient)",
+                    "eliminationReason": "Per PIOPED II and ACEP guidelines, D-dimer has high sensitivity only in low or intermediate probability cases. In high pre-test probability (Wells > 4), a negative D-dimer NEVER rules out PE due to unacceptable false negative rates."
+                },
+                "clinicalConclusion": "High clinical suspicion for acute pulmonary embolism. Proceed immediately to STAT Computed Tomography Pulmonary Angiography (CTPA) or V/Q scan if renal/contrast contraindicated.",
+                "carsSafetyFlag": "DO_NOT_RELY_ON_RULE_OUT_TESTS_IN_HIGH_PRETEST_PROBABILITY"
+            }, indent=2),
+            "chosen": "Identifies high pre-test Wells score (6.0), rejects the normal D-dimer decoy trap, and orders STAT CTPA with consideration of empiric anticoagulation.",
+            "rejected": "Concludes that because D-dimer is under 500 ng/mL, pulmonary embolism is 100% ruled out, and discharges patient with muscle relaxants."
+        }
+    ],
+    "aeromedical_evacuation_airway": [
+        {
+            "input": json.dumps({
+                "corridor": "PGSN (Saipan International Airport, MP) -> PHNL (Honolulu International, HI)",
+                "statuteMiles": 3786,
+                "nauticalMiles": 3290,
+                "patient": "Pediatric Tracheostomy (Ventilator Dependent)",
+                "ventilatorSettings": {"fio2": 0.45, "minuteVentilationLpm": 6.0, "peepCmH2O": 6},
+                "aircraftCabinAltitudeFt": 8000
+            }, indent=2),
+            "output": json.dumps({
+                "corridorCalculations": {
+                    "estimatedFlightHours": 7.6,
+                    "baselineOxygenLiters": 5540,
+                    "safetyReserveMultiplier": 2.0,
+                    "totalRequiredOxygenLiters": 11080,
+                    "cylinderManifest": "3x Jumbo M-Cylinders (3,450L each) + 2x Portable E-Cylinders (680L each) for ground-to-air transition"
+                },
+                "altitudeBiophysics": {
+                    "boylesLawGasExpansionPct": 33.0,
+                    "daltonsLawPaO2DropPct": 25.0,
+                    "hypoxiaCompensationDirective": "Cabin pressure altitude of 8,000 ft reduces ambient PaO2. Titrate FiO2 from 0.45 to 0.55 to maintain SpO2 >= 94%.",
+                    "cuffManagementDirective": "Deflate air in tracheostomy cuff and inflate with sterile water/saline to eliminate Boyle expansion tracheal ischemia."
+                },
+                "billingAndRegulatory": {
+                    "hcpcsCodes": ["A0430 (Ambulance service, conventional air transport, fly, one way)", "A0435 (Fixed wing air mileage, per statute mile)"],
+                    "emergencyTransportWaiver": "CMS Emergency Aeromedical Transport Waiver § 410.40(c) applies - Zero pre-authorization delay permitted for emergent tertiary pediatric transfer."
+                }
+            }, indent=2),
+            "chosen": "Calculates 7.6-hour flight duration, applies mandatory 2.0x oxygen safety margin (11,080L), compensates for Dalton altitude hypoxia (FiO2 0.55), substitutes tracheostomy cuff air with saline for Boyle expansion, and formats CMS A0430/A0435 billing codes.",
+            "rejected": "Plans transport with single oxygen cylinder without reserve margin and fails to adjust ventilator FiO2 or cuff pressure for 8,000 ft cabin altitude."
+        }
+    ],
+    "pediatric_complex_epsdt": [
+        {
+            "input": json.dumps({
+                "patientArchetype": "Homo Sapiens (Pediatric, Spastic Quadriplegia, C1-C2 Instability, Tracheostomy, 5y)",
+                "requestedService": "Private Duty Nursing (PDN) 112 hours/week (16 hours/day x 7 days) HCPCS T1000",
+                "denialRationale": "Medicaid managed care organization claims services are 'custodial in nature' and can be provided by family caregiver.",
+                "recentClinicalIncidents": [
+                    "Nocturnal desaturation to 72% secondary to deep mucus plug requiring sterile inline suctioning and emergency ambu bagging",
+                    "Accidental tracheostomy decannulation during sleep safely replaced by skilled nurse"
+                ]
+            }, indent=2),
+            "output": json.dumps({
+                "statutoryMandate": "42 U.S.C. § 1396d(r)(5) (Omnibus Budget Reconciliation Act of 1989) mandates that state Medicaid programs provide all EPSDT services necessary to correct or ameliorate physical and mental conditions in individuals under age 21, regardless of whether such services are covered under the state plan.",
+                "clinicalJustification": "Continuous skilled nursing is medically indispensable. Tracheostomy occlusion or decannulation in a non-verbal child with quadriplegia constitutes an immediate threat to life causing irreversible hypoxic brain death within 3-4 minutes. Assessment, sterile suctioning, mechanical ventilator management, and emergency re-cannulation require licensed nursing judgment (RN/LPN) under state Nurse Practice Acts and cannot legally be categorized as custodial care.",
+                "hcpcsCoding": {"code": "T1000", "modifier": "U1 (Pediatric Complex)", "units": 112},
+                "appealAction": "STAT Expedited External Administrative Appeal and Judicial Injunction notice under 42 CFR § 438.410."
+            }, indent=2),
+            "chosen": "Cites mandatory federal EPSDT statute (42 U.S.C. § 1396d(r)(5)), disproves custodial care assertion with documented life-threatening mucus plug incidents, and demands 112 hours/week skilled nursing coverage.",
+            "rejected": "Agrees to reduce nursing hours to zero based on managed care denial and advises single parent to provide 24/7 ICU-level suctioning alone."
+        }
+    ],
 }
 
 
@@ -1286,6 +1412,10 @@ def main() -> None:
             "nih_medquad_qa",
             "who_mhgap_triage",
             "nih_clinicaltrials_protocol",
+            "dynamic_precondition_guard",
+            "cars_distractor_elimination",
+            "aeromedical_evacuation_airway",
+            "pediatric_complex_epsdt",
         ],
         help="Target clinical paradigm instruction format",
     )

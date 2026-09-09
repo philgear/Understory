@@ -45,10 +45,11 @@ export class HardwareTelemetryService {
    * Recommends the optimal execution path dynamically based on hardware telemetry:
    * 1. 'cloud' - Standard fallback.
    * 2. 'local-nvidia' - Local Ollama / PubGemma using CUDA.
-   * 3. 'local-webgpu' - On-device WebLLM using browser WebGPU (suitable for Apple Silicon or AMD/Intel discrete).
-   * 4. 'on-device-nano' - Chrome Gemini Nano via window.ai (zero footprint, low power).
+   * 3. 'local-lemonade' - Local Lemonade Server via Vulkan / ROCm with Gemma 3 4B Multimodal (AMD Radeon / Intel).
+   * 4. 'local-webgpu' - On-device WebLLM using browser WebGPU (suitable for Apple Silicon or AMD/Intel discrete).
+   * 5. 'on-device-nano' - Chrome Gemini Nano via window.ai (zero footprint, low power).
    */
-  readonly recommendedExecutionPath = computed<'cloud' | 'local-nvidia' | 'local-webgpu' | 'on-device-nano'>(() => {
+  readonly recommendedExecutionPath = computed<'cloud' | 'local-nvidia' | 'local-lemonade' | 'local-webgpu' | 'on-device-nano'>(() => {
     const gpu = this.primaryGpu();
     
     // Check if Gemini Nano is supported locally in browser
@@ -66,11 +67,13 @@ export class HardwareTelemetryService {
       return 'local-nvidia';
     }
 
-    // WebGPU/WebLLM works beautifully on Apple Silicon (Unified memory) and AMD/Intel with high VRAM
-    if (gpu.vendor === 'apple' && gpu.memoryTotalMiB >= 2000) {
-      return 'local-webgpu';
-    }
+    // AMD and high-memory Intel GPUs leverage local Lemonade Server via Vulkan / ROCm with Gemma 3 4B
     if ((gpu.vendor === 'amd' || gpu.vendor === 'intel') && gpu.memoryTotalMiB >= 6000) {
+      return 'local-lemonade';
+    }
+
+    // WebGPU/WebLLM works beautifully on Apple Silicon (Unified memory)
+    if (gpu.vendor === 'apple' && gpu.memoryTotalMiB >= 2000) {
       return 'local-webgpu';
     }
 

@@ -7,6 +7,18 @@ export type EpistemicStatus =
   | 'Evidence-Grounded Recommendation'
   | 'Hypothesis / Requires Clinical Correlation';
 
+export interface IBrierCalibration {
+  brierScore: number;       // 0.0 (perfect calibration) to 1.0 (worst)
+  brierSkillScore: number;  // Relative to climatological reference (1 - BS/BS_ref)
+  calibrationRating: 'EXCELLENT' | 'GOOD' | 'UNRELIABLE';
+}
+
+export interface IWilsonConfidenceInterval {
+  lower: number; // e.g. 0.78
+  upper: number; // e.g. 0.94
+  confidenceLevel: number; // e.g. 0.95
+}
+
 export interface IAiConfidenceMetrics {
   overallConfidencePercent: number; // 0-100%
   citationGroundingDensity: number; // Citations / References per 100 words
@@ -18,6 +30,8 @@ export interface IAiConfidenceMetrics {
   wordCount: number;
   citationCount: number;
   isFda520oCompliant: boolean;
+  brierCalibration?: IBrierCalibration;
+  confidenceInterval?: IWilsonConfidenceInterval;
 }
 
 const HEDGING_PATTERNS = [
@@ -38,7 +52,8 @@ const CITATION_PATTERNS = [
   /\bPMID[:\s]*(\d+)\b/gi,
   /\bDOI[:\s]*(10\.\d{4,9}\/[-._;()/:A-Za-z0-9]+)\b/gi,
   /\bCochrane\s+(?:Database|Review|CD\d+)\b/gi,
-  /\b(?:AHA|ACC|ADA|USPSTF|KDIGO|GOLD|NICE|ESMO|NCCN)\s+(?:Guidelines?|Criteria|Recommendation)\b/gi,
+  /\b(?:AHA|ACC|ADA|USPSTF|KDIGO|GOLD|NICE|ESMO|NCCN|AAP|CDC|CMS|Texas\s+HHS|Louisiana\s+DOH|WHO|NICE\s+ESF)\s+(?:Guidelines?|Criteria|Recommendation|Manual|Protocol)\b/gi,
+  /\b(?:ISO\/IEEE\s+11073(?:-\d+)?|IEEE\s+11073|RTMMS|HL7\s+FHIR(?:\s+R4)?|NIST\s+SP\s+800-90A|FDA\s+21\s+CFR\s+Part\s+11|15\s+U\.S\.C\.\s+§?\s*4723|Title\s+XIX\s+§?\s*1915\(c\))\b/gi,
   /\[(?:PMID|Ref|Citation)?[:\s]*([0-9]+)\]/gi,
   /\bLevel\s+[ABC]\s+Evidence\b/gi,
   /\bGrade\s+[ABC]\s+Recommendation\b/gi
@@ -52,7 +67,10 @@ const HIGH_EVIDENCE_MARKERS = [
   /\brandomized controlled trial\b/gi,
   /\bmeta-analysis\b/gi,
   /\bdouble-blind\b/gi,
-  /\bFDA approved\b/gi
+  /\bFDA approved\b/gi,
+  /\bCE Mark SaMD\b/gi,
+  /\bSafe Harbor de-identified\b/gi,
+  /\bForm 2603 ISP authorized\b/gi
 ];
 
 @Injectable({
@@ -156,6 +174,17 @@ export class AiConfidenceCalibrationService {
       }
     }
 
+    // 7. Calculate Brier Calibration & Wilson CI
+    const forecastProb = overallConfidencePercent / 100;
+    const isGroundingValid = guidelineConcordanceGrade !== 'Grade C (Expert Consensus)' && hedgingEntropyScore <= 35;
+    const brierScore = this.calculateBrierScore(forecastProb, isGroundingValid);
+    const brierSkillScore = this.calculateBrierSkillScore(brierScore, 0.25);
+    const calibrationRating: 'EXCELLENT' | 'GOOD' | 'UNRELIABLE' = brierScore <= 0.10 ? 'EXCELLENT' : (brierScore <= 0.22 ? 'GOOD' : 'UNRELIABLE');
+
+    const totalTrials = Math.max(5, citationCount + highEvidenceCount + hedgingCount);
+    const successfulTrials = Math.max(1, Math.round(forecastProb * totalTrials));
+    const confidenceInterval = this.calculateWilsonConfidenceInterval(successfulTrials, totalTrials, 0.95);
+
     return {
       overallConfidencePercent,
       citationGroundingDensity,
@@ -166,8 +195,54 @@ export class AiConfidenceCalibrationService {
       uncertaintyFlags,
       wordCount,
       citationCount,
-      isFda520oCompliant: true
+      isFda520oCompliant: true,
+      brierCalibration: {
+        brierScore,
+        brierSkillScore,
+        calibrationRating
+      },
+      confidenceInterval
     };
+  }
+
+  /**
+   * Computes the strictly proper scoring rule: Brier Score.
+   * BS = (p - o)^2 where p is forecast probability in [0, 1] and o is outcome in {0, 1}.
+   */
+  public calculateBrierScore(forecastProbability: number, outcomeOccurred: boolean): number {
+    const p = Math.max(0, Math.min(1, forecastProbability));
+    const o = outcomeOccurred ? 1 : 0;
+    return Number(Math.pow(p - o, 2).toFixed(4));
+  }
+
+  /**
+   * Computes Brier Skill Score against a baseline uninformative reference probability.
+   * BSS = 1 - (BS / BS_ref)
+   */
+  public calculateBrierSkillScore(brierScore: number, referenceScore = 0.25): number {
+    if (referenceScore <= 0) return 0;
+    return Number((1 - (brierScore / referenceScore)).toFixed(4));
+  }
+
+  /**
+   * Computes Wilson Score Interval for binomially distributed clinical assertions (95% CI).
+   */
+  public calculateWilsonConfidenceInterval(positiveCount: number, totalCount: number, confidenceLevel = 0.95): IWilsonConfidenceInterval {
+    if (totalCount <= 0) {
+      return { lower: 0, upper: 1, confidenceLevel };
+    }
+    const z = confidenceLevel === 0.99 ? 2.576 : (confidenceLevel === 0.90 ? 1.645 : 1.96);
+    const n = totalCount;
+    const p = positiveCount / n;
+    const z2 = z * z;
+    const denominator = 1 + z2 / n;
+    const center = p + z2 / (2 * n);
+    const spread = z * Math.sqrt((p * (1 - p) + z2 / (4 * n)) / n);
+
+    const lower = Math.max(0, Number(((center - spread) / denominator).toFixed(4)));
+    const upper = Math.min(1, Number(((center + spread) / denominator).toFixed(4)));
+
+    return { lower, upper, confidenceLevel };
   }
 
   /**
@@ -186,11 +261,21 @@ export class AiConfidenceCalibrationService {
       hedgingEntropyScore: 12,
       guidelineConcordanceGrade: 'Grade A (RCT/Guideline)',
       epistemicStatus: 'Definitive Standard of Care',
-      verifiableCitations: ['AHA/ACC 2024 Guideline', 'USPSTF Level A Evidence'],
+      verifiableCitations: ['AHA/ACC 2024 Guideline', 'USPSTF Level A Evidence', 'AAP Pediatric Standards'],
       uncertaintyFlags: [],
       wordCount: 150,
-      citationCount: 2,
-      isFda520oCompliant: true
+      citationCount: 3,
+      isFda520oCompliant: true,
+      brierCalibration: {
+        brierScore: 0.0144,
+        brierSkillScore: 0.9424,
+        calibrationRating: 'EXCELLENT'
+      },
+      confidenceInterval: {
+        lower: 0.7421,
+        upper: 0.9482,
+        confidenceLevel: 0.95
+      }
     };
   }
 }

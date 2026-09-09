@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { IIntelligenceProvider } from './intelligence.provider';
 import { GeminiProvider } from './gemini.provider';
 import { PubGemmaProvider } from './pubgemma.provider';
+import { LemonadeProvider } from './lemonade.provider';
 import { NanoProvider } from './nano.provider';
 import { WebLLMProvider } from './webllm.provider';
 import { IClinicalMetrics } from '../clinical-intelligence.service';
@@ -29,6 +30,7 @@ export class AIProviderExhaustedError extends Error {
 export class HybridProvider implements IIntelligenceProvider {
   private gemini = inject(GeminiProvider);
   private nvidia = inject(PubGemmaProvider); // Local NVIDIA server
+  private lemonade = inject(LemonadeProvider); // Local Lemonade Server (AMD Radeon Vulkan / Gemma 3 4B)
   private nano = inject(NanoProvider); // On-device Chrome Nano
   private webgpu = inject(WebLLMProvider); // Local WebGPU (WebLLM)
   private network = inject(NetworkStateService);
@@ -49,14 +51,16 @@ export class HybridProvider implements IIntelligenceProvider {
 
     if (useLocal) {
       // Local-first preference
-      if (path === 'local-nvidia') {
+      if (path === 'local-lemonade' || this.lemonade.isConnected()) {
+        chain.push(this.lemonade, this.webgpu, this.nano);
+      } else if (path === 'local-nvidia') {
         chain.push(this.nvidia, this.webgpu, this.nano);
       } else if (path === 'local-webgpu') {
         chain.push(this.webgpu, this.nano);
       } else if (path === 'on-device-nano') {
         chain.push(this.nano, this.webgpu);
       } else {
-        chain.push(this.webgpu, this.nano);
+        chain.push(this.lemonade, this.webgpu, this.nano);
       }
       
       // Cloud fallback as last-ditch effort if online
@@ -68,14 +72,16 @@ export class HybridProvider implements IIntelligenceProvider {
       chain.push(this.gemini);
       
       // Local backups based on telemetry
-      if (path === 'local-nvidia') {
+      if (path === 'local-lemonade' || this.lemonade.isConnected()) {
+        chain.push(this.lemonade, this.webgpu, this.nano);
+      } else if (path === 'local-nvidia') {
         chain.push(this.nvidia, this.webgpu, this.nano);
       } else if (path === 'local-webgpu') {
         chain.push(this.webgpu, this.nano);
       } else if (path === 'on-device-nano') {
         chain.push(this.nano, this.webgpu);
       } else {
-        chain.push(this.webgpu, this.nano);
+        chain.push(this.lemonade, this.webgpu, this.nano);
       }
     }
 
@@ -247,7 +253,7 @@ export class HybridProvider implements IIntelligenceProvider {
    * exclusively on local hardware (Chrome Built-in AI Nano / WebGPU / SmolLM2).
    */
   async executeSystem1EdgeTask(prompt: string): Promise<string> {
-    const edgeChain = [this.nano, this.webgpu, this.nvidia];
+    const edgeChain = [this.lemonade, this.nano, this.webgpu, this.nvidia];
     for (const provider of edgeChain) {
       try {
         return await provider.sendMessage(prompt);
@@ -272,7 +278,14 @@ export class HybridProvider implements IIntelligenceProvider {
         console.warn('[HybridProvider] System 2 cloud thinking failed, falling back to local chain:', err);
       }
     }
-    // Local fallback for offline environments
+    // Local fallback for offline environments: leverage Lemonade Gemma 3 4B if available
+    if (this.lemonade.isConnected()) {
+      try {
+        return await this.lemonade.sendMessage(prompt);
+      } catch (err) {
+        console.warn('[HybridProvider] System 2 Lemonade fallback failed:', err);
+      }
+    }
     return this.executeSystem1EdgeTask(prompt);
   }
 }

@@ -214,4 +214,50 @@ describe('ClinicalIntelligenceService - Philosophy Modes', () => {
       });
     });
   });
+
+  describe('CARS Eliminative Self-Correction & Distractor Guard', () => {
+    it('should flag absolute scope qualifiers (always, never, completely) lacking STAT indication', () => {
+      const result = service.auditClinicalRecommendationWithCarsRules(
+        'The clinician must always prescribe high-dose ACE inhibitors and never allow baseline titration.'
+      );
+      expect(result.issues.some(i => i.message.includes('CARS Extreme Scope Warning'))).toBe(true);
+      expect(result.suggestedCorrections.length).toBeGreaterThan(0);
+    });
+
+    it('should flag keyword decoy trap on blanket cephalosporin ban for penicillin allergy', () => {
+      const result = service.auditClinicalRecommendationWithCarsRules(
+        'Patient reports penicillin allergy, which contraindicates all cephalosporins across all clinical encounters.'
+      );
+      expect(result.isValid).toBe(false);
+      expect(result.issues.some(i => i.message.includes('CARS Keyword Decoy Trap'))).toBe(true);
+      expect(result.issues[0].suggestedFix).toContain('R1 side-chain');
+    });
+
+    it('should flag polarity inversion for beta-blockers in febrile compensatory tachycardia', () => {
+      const result = service.auditClinicalRecommendationWithCarsRules(
+        'Patient presents with sinus tachycardia associated with acute fever; initiate beta-blocker therapy.'
+      );
+      expect(result.isValid).toBe(false);
+      expect(result.issues.some(i => i.message.includes('CARS Polarity Inversion Warning'))).toBe(true);
+    });
+
+    it('should flag stale vital snapshot when weaning oxygen on a desaturating patient', () => {
+      const result = service.auditClinicalRecommendationWithCarsRules(
+        'Continue to wean oxygen by 1 L/min.',
+        { spO2: 87, hr: 90 }
+      );
+      expect(result.isValid).toBe(false);
+      expect(result.issues.some(i => i.message.includes('Stale Snapshot Warning'))).toBe(true);
+      expect(result.issues[0].suggestedFix).toContain('Halt oxygen weaning');
+    });
+
+    it('should pass validation with zero high-severity issues for measured clinical guidance', () => {
+      const result = service.auditClinicalRecommendationWithCarsRules(
+        'Titrate supplemental oxygen to maintain SpO2 >= 92%. Monitor respiratory effort and consider pulmonary consultation if work of breathing increases.',
+        { spO2: 95, hr: 78 }
+      );
+      expect(result.isValid).toBe(true);
+      expect(result.issues.filter(i => i.severity === 'high').length).toBe(0);
+    });
+  });
 });

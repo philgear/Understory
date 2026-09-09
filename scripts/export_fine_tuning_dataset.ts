@@ -41,7 +41,11 @@ export type FineTuningParadigm =
   | 'endocrinology_glycemic_pump'
   | 'id_antimicrobial_stewardship'
   | 'neurology_acute_stroke'
-  | 'rheumatology_autoimmune_serology';
+  | 'rheumatology_autoimmune_serology'
+  | 'dynamic_precondition_guard'
+  | 'cars_distractor_elimination'
+  | 'aeromedical_evacuation_airway'
+  | 'pediatric_complex_epsdt';
 
 export interface IFineTuningRecord {
   paradigm: FineTuningParadigm;
@@ -1110,10 +1114,159 @@ export function generateAllParadigmsDataset(): IFineTuningRecord[] {
       }, null, 2),
       chosen: 'Applies 2019 EULAR/ACR SLE criteria, orders gold-standard Hydroxychloroquine at safe 5 mg/kg actual weight dosing with baseline retinal OCT, and triggers STAT renal biopsy for active nephritis.',
       rejected: 'Diagnoses simple osteoarthritis, prescribes NSAIDs only, and fails to screen for lupus nephritis or initiate hydroxychloroquine.'
+    },
+    // 40. Dynamic Precondition Sentinel & Vital Boundary Bounding
+    {
+      paradigm: 'dynamic_precondition_guard',
+      instruction: 'Enforce explicit physiological precondition boundaries on clinical orders and immediately invalidate stale recommendations when telemetry drifts.',
+      input: JSON.stringify({
+        patient: 'Homo Sapiens (Pediatric, Complex Tracheostomy, 4y)',
+        activeRecommendation: 'Wean supplemental oxygen by 0.5 L/min q30min toward room air',
+        telemetryShift: {
+          previousVitals: { heartRate: 98, bloodPressure: '96/60', spO2: 97, respiratoryRate: 22 },
+          currentVitals: { heartRate: 144, bloodPressure: '80/46', spO2: 88, respiratoryRate: 40 }
+        }
+      }, null, 2),
+      output: JSON.stringify({
+        contractStatus: 'PRECONDITION_BREACHED_INVALIDATED',
+        breachReason: 'Acute vital telemetry drift: SpO2 dropped to 88% (Safe threshold >= 92%), Heart Rate surged to 144 bpm (Safe threshold 80-125 bpm).',
+        immediateAction: 'HALT_WEANING_IMMEDIATELY',
+        clinicalContingency: [
+          'Re-escalate FiO2 to 40% immediately.',
+          'Perform sterile inline tracheostomy suctioning to rule out acute mucus plug obstruction.',
+          'Verify breath sounds bilaterally; prepare bag-valve-mask with tracheostomy adapter.',
+          'STAT bedside respiratory therapy and attending physician notification.'
+        ],
+        auditAttestation: 'SHA-256 state seal verified, previous weaning contract retired.'
+      }, null, 2),
+      chosen: 'Recognizes SpO2 88% and HR 144 breach, immediately invalidates the scheduled oxygen weaning contract, commands FiO2 re-escalation, and orders emergency sterile inline suctioning.',
+      rejected: 'Continues with scheduled oxygen weaning down to room air despite SpO2 dropping to 88% and respiratory rate spiking to 40.'
+    },
+    // 41. CARS Eliminative Reasoning & Anti-Distractor Guard
+    {
+      paradigm: 'cars_distractor_elimination',
+      instruction: 'Apply CARS eliminative reasoning to reject absolute qualifiers, shallow keyword decoys, and reversed polarity traps in complex acute presentations.',
+      input: JSON.stringify({
+        presentation: '62yo female with acute dyspnea, pleuritic right-sided chest pain, tachycardia (HR 118), and right lower extremity swelling. Wells Score: 6.0 (High Probability for Pulmonary Embolism). Bedside D-Dimer: 420 ng/mL (Normal Reference < 500 ng/mL).',
+        distractorPrompt: 'Since the D-Dimer is below the standard 500 ng/mL cutoff, does this conclusively rule out pulmonary embolism?'
+      }, null, 2),
+      output: JSON.stringify({
+        trapAudit: {
+          distractorIdentified: 'Keyword decoy trap (Normal D-dimer in high pre-test probability patient)',
+          eliminationReason: 'Per PIOPED II and ACEP guidelines, D-dimer has high sensitivity only in low or intermediate probability cases. In high pre-test probability (Wells > 4), a negative D-dimer NEVER rules out PE due to unacceptable false negative rates.'
+        },
+        clinicalConclusion: 'High clinical suspicion for acute pulmonary embolism. Proceed immediately to STAT Computed Tomography Pulmonary Angiography (CTPA) or V/Q scan if renal/contrast contraindicated.',
+        anticoagulationAssessment: 'Evaluate contraindications for empiric weight-based low molecular weight heparin (Enoxaparin 1 mg/kg SC q12h) while awaiting CTPA imaging.',
+        carsSafetyFlag: 'DO_NOT_RELY_ON_RULE_OUT_TESTS_IN_HIGH_PRETEST_PROBABILITY'
+      }, null, 2),
+      chosen: 'Identifies high pre-test Wells score (6.0), rejects the normal D-dimer decoy trap, and orders STAT CTPA with consideration of empiric anticoagulation.',
+      rejected: 'Concludes that because D-dimer is under 500 ng/mL, pulmonary embolism is 100% ruled out, and discharges patient with muscle relaxants.'
+    },
+    // 42. Aeromedical Evacuation Corridor & Altitude Hypoxia Titration
+    {
+      paradigm: 'aeromedical_evacuation_airway',
+      instruction: 'Model inter-island pacific evacuation corridor, calculating flight time, Boyle/Dalton hypoxia adaptation, oxygen reserve margin, and emergency billing codes.',
+      input: JSON.stringify({
+        corridor: 'PGSN (Saipan International Airport, MP) -> PHNL (Honolulu International, HI)',
+        statuteMiles: 3786,
+        nauticalMiles: 3290,
+        patient: 'Pediatric Tracheostomy (Ventilator Dependent)',
+        ventilatorSettings: { fio2: 0.45, minuteVentilationLpm: 6.0, peepCmH2O: 6 },
+        aircraftCabinAltitudeFt: 8000
+      }, null, 2),
+      output: JSON.stringify({
+        corridorCalculations: {
+          estimatedFlightHours: 7.6,
+          baselineOxygenLiters: 5540,
+          safetyReserveMultiplier: 2.0,
+          totalRequiredOxygenLiters: 11080,
+          cylinderManifest: '3x Jumbo M-Cylinders (3,450L each) + 2x Portable E-Cylinders (680L each) for ground-to-air transition'
+        },
+        altitudeBiophysics: {
+          boylesLawGasExpansionPct: 33.0,
+          daltonsLawPaO2DropPct: 25.0,
+          hypoxiaCompensationDirective: 'Cabin pressure altitude of 8,000 ft reduces ambient PaO2. Titrate FiO2 from 0.45 to 0.55 to maintain SpO2 >= 94%.',
+          cuffManagementDirective: 'Deflate air in tracheostomy cuff and inflate with sterile water/saline to eliminate Boyle expansion tracheal ischemia.'
+        },
+        billingAndRegulatory: {
+          hcpcsCodes: ['A0430 (Ambulance service, conventional air transport, fly, one way)', 'A0435 (Fixed wing air mileage, per statute mile)'],
+          emergencyTransportWaiver: 'CMS Emergency Aeromedical Transport Waiver § 410.40(c) applies - Zero pre-authorization delay permitted for emergent tertiary pediatric transfer.'
+        }
+      }, null, 2),
+      chosen: 'Calculates 7.6-hour flight duration, applies mandatory 2.0x oxygen safety margin (11,080L), compensates for Dalton altitude hypoxia (FiO2 0.55), substitutes tracheostomy cuff air with saline for Boyle expansion, and formats CMS A0430/A0435 billing codes.',
+      rejected: 'Plans transport with single oxygen cylinder without reserve margin and fails to adjust ventilator FiO2 or cuff pressure for 8,000 ft cabin altitude.'
+    },
+    // 43. Pediatric Complex Care & EPSDT Statutory Prior Authorization
+    {
+      paradigm: 'pediatric_complex_epsdt',
+      instruction: 'Draft comprehensive EPSDT statutory medical necessity justification under 42 U.S.C. § 1396d(r)(5) for complex pediatric private duty nursing.',
+      input: JSON.stringify({
+        patientArchetype: 'Homo Sapiens (Pediatric, Spastic Quadriplegia, C1-C2 Instability, Tracheostomy, 5y)',
+        requestedService: 'Private Duty Nursing (PDN) 112 hours/week (16 hours/day x 7 days) HCPCS T1000',
+        denialRationale: 'Medicaid managed care organization claims services are "custodial in nature" and can be provided by family caregiver.',
+        recentClinicalIncidents: [
+          'Nocturnal desaturation to 72% secondary to deep mucus plug requiring sterile inline suctioning and emergency ambu bagging',
+          'Accidental tracheostomy decannulation during sleep safely replaced by skilled nurse'
+        ]
+      }, null, 2),
+      output: JSON.stringify({
+        statutoryMandate: '42 U.S.C. § 1396d(r)(5) (Omnibus Budget Reconciliation Act of 1989) mandates that state Medicaid programs provide all EPSDT services necessary to correct or ameliorate physical and mental conditions in individuals under age 21, regardless of whether such services are covered under the state plan.',
+        clinicalJustification: 'Continuous skilled nursing is medically indispensable. Tracheostomy occlusion or decannulation in a non-verbal child with quadriplegia constitutes an immediate threat to life causing irreversible hypoxic brain death within 3-4 minutes. Assessment, sterile suctioning, mechanical ventilator management, and emergency re-cannulation require licensed nursing judgment (RN/LPN) under state Nurse Practice Acts and cannot legally be categorized as custodial care.',
+        hcpcsCoding: { code: 'T1000', modifier: 'U1 (Pediatric Complex)', units: 112 },
+        appealAction: 'STAT Expedited External Administrative Appeal and Judicial Injunction notice under 42 CFR § 438.410.'
+      }, null, 2),
+      chosen: 'Cites mandatory federal EPSDT statute (42 U.S.C. § 1396d(r)(5)), disproves custodial care assertion with documented life-threatening mucus plug incidents, and demands 112 hours/week skilled nursing coverage.',
+      rejected: 'Agrees to reduce nursing hours to zero based on managed care denial and advises single parent to provide 24/7 ICU-level suctioning alone.'
     }
   ];
 
   return records;
+}
+
+export function exportGeminiTuningDataset(outputPath?: string): string {
+  const dataset = generateAllParadigmsDataset();
+  const targetDir = path.join(process.cwd(), 'scripts');
+  if (!fs.existsSync(targetDir)) {
+    fs.mkdirSync(targetDir, { recursive: true });
+  }
+
+  const file = outputPath || path.join(targetDir, 'gemini_tuning_dataset.jsonl');
+  const content = dataset.map(rec => JSON.stringify({
+    contents: [
+      {
+        role: 'user',
+        parts: [{ text: `[PARADIGM: ${rec.paradigm.toUpperCase()}]\n${rec.instruction}\n\nINPUT:\n${rec.input}` }]
+      },
+      {
+        role: 'model',
+        parts: [{ text: rec.output }]
+      }
+    ]
+  })).join('\n');
+
+  fs.writeFileSync(file, content, 'utf-8');
+  console.log(`✅ Exported ${dataset.length} Gemini SFT fine-tuning records to: ${file}`);
+  return file;
+}
+
+export function exportDpoPreferenceDataset(outputPath?: string): string {
+  const dataset = generateAllParadigmsDataset();
+  const targetDir = path.join(process.cwd(), 'scripts');
+  if (!fs.existsSync(targetDir)) {
+    fs.mkdirSync(targetDir, { recursive: true });
+  }
+
+  const dpoRecords = dataset.filter(rec => rec.chosen && rec.rejected);
+  const file = outputPath || path.join(targetDir, 'dpo_preference_dataset.jsonl');
+  const content = dpoRecords.map(rec => JSON.stringify({
+    prompt: `[PARADIGM: ${rec.paradigm.toUpperCase()}]\n${rec.instruction}\n\nINPUT:\n${rec.input}`,
+    chosen: rec.chosen,
+    rejected: rec.rejected
+  })).join('\n');
+
+  fs.writeFileSync(file, content, 'utf-8');
+  console.log(`✅ Exported ${dpoRecords.length} DPO preference records to: ${file}`);
+  return file;
 }
 
 export function exportDatasetToJsonl(outputPath?: string): string {
@@ -1127,7 +1280,11 @@ export function exportDatasetToJsonl(outputPath?: string): string {
   const content = dataset.map(rec => JSON.stringify(rec)).join('\n');
   fs.writeFileSync(file, content, 'utf-8');
 
-  console.log(`✅ Successfully exported ${dataset.length} fine-tuning records across all 15 paradigms to: ${file}`);
+  // Also export the Gemini SFT and DPO datasets for Vertex AI and Hugging Face pipelines
+  exportGeminiTuningDataset();
+  exportDpoPreferenceDataset();
+
+  console.log(`✅ Successfully exported ${dataset.length} fine-tuning records across all paradigms to: ${file}`);
   return file;
 }
 
